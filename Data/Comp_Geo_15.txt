@@ -1,0 +1,661 @@
+Computational Geometry 48 (2015) 507–519
+
+Contents lists available at ScienceDirect
+
+Computational Geometry: Theory and
+Applications
+www.elsevier.com/locate/comgeo
+
+Triangulations from topologically correct digital Voronoi
+diagrams
+Thanh-Tung Cao a,∗ , Herbert Edelsbrunner b , Tiow-Seng Tan a
+a
+b
+
+School of Computing, National University of Singapore, Singapore
+Institute of Science and Technology, Klosterneuburg, Austria
+
+a r t i c l e
+
+i n f o
+
+Article history:
+Received 17 April 2013
+Accepted 27 March 2015
+Available online 2 April 2015
+Keywords:
+GPU
+GPGPU
+Digital geometry
+Delaunay triangulation
+
+a b s t r a c t
+We prove that the dual of the digital Voronoi diagram constructed by ﬂooding the plane
+from the data points gives a geometrically and topologically correct dual triangulation. This
+provides the proof of correctness for recently developed GPU algorithms that outperform
+traditional CPU algorithms for constructing two-dimensional Delaunay triangulations.
+© 2015 Elsevier B.V. All rights reserved.
+
+1. Introduction
+In recent years, the computational power of graphics processing units (GPUs) has surpassed that of central processing
+units (CPUs). Continuing the trend, the gap between the two is expected to widen in the foreseeable future. With the
+introduction of programming models, such as CUDA [8] and OpenCL [7], there are now more application areas that beneﬁt
+from the computational power of GPUs. These areas include scientiﬁc computing, games, data mining, and computational
+ﬁnance [9]. In computational geometry, GPUs have been used to solve problems in discrete as well as in continuous space.
+An example is the digital Voronoi diagram approximating the corresponding Euclidean structure, which has a wide range
+of applications in image processing, computer vision, and graphics [2]. Another is the Delaunay triangulation, which has
+applications in mesh generation and scientiﬁc computing [5].
+In Euclidean space, the Voronoi diagram and the Delaunay triangulation are but different geometric expressions of the
+same combinatorial structure. In digital geometry, the translation from one to the other is made diﬃcult by the need to
+approximate. Indeed, it is easy to construct a digital Voronoi diagram, just by coloring the pixels or their higher-dimensional
+analogues. Early work in this direction uses graphics hardware [6] and the texture unit of the GPU [15]. More recent work
+takes the vector propagation approach [3], which leads to algorithms whose running time depends solely on the image
+resolution and not on the number of data points [1,11,13]. In contrast, computing the Delaunay triangulation with GPUs has
+been more challenging. While Hoff et al. [6] mention the possibility to dualize the digital Voronoi diagram, it was not until
+recently that a complete GPU algorithm for the Delaunay triangulation has been described [12]. With the tremendous power
+of GPUs, this algorithm outperforms all traditional CPU algorithms, including the optimized Triangle software of Shewchuk
+[14]. This work has also been improved and further extended to handle constraints [10]. The reason for the diﬃculty is the
+approximate character of digital Voronoi diagrams, which may lead to unwanted artifacts when dualized, such as crossing
+
+*
+
+Corresponding author at: School of Computing, National University of Singapore, 13 Computing Drive, Singapore 117417.
+E-mail addresses: todd.t.cao@gmail.com (T.-T. Cao), edels@ist.ac.at (H. Edelsbrunner), tants@comp.nus.edu.sg (T.-S. Tan).
+
+http://dx.doi.org/10.1016/j.comgeo.2015.04.001
+0925-7721/© 2015 Elsevier B.V. All rights reserved.
+
+508
+
+T.-T. Cao et al. / Computational Geometry 48 (2015) 507–519
+
+edges and missing triangles. However, there is experimental evidence suggesting that a careful implementation can avoid
+such artifacts.
+In this paper, we present a detailed proof that dualizing the digital Voronoi diagram gives a topologically and geometrically correct triangulation. Leaving the correction of non-locally Delaunay diagonals to a postprocessing step, we call the
+result of the dualization the digital Delaunay triangulation. We base our proof on the recent improvement of the GPU Delaunay triangulation algorithm described in [10]. The proof has been used in the latest implementation of that algorithm.1
+After presenting a conceptual version of this algorithm in Section 2, we prove its correctness in Section 3. Speciﬁcally, we
+show that the digital Voronoi diagram obtained by ﬂooding the pixel array can be dualized to give a topologically as well
+as geometrically valid triangulation in the plane. Our proof takes three steps to establish the validity of the digital Delaunay
+triangulation. The ﬁrst step rationalizes the ﬂooding algorithm by proving that the pixels are colored in the order of distance
+from the data points. The second step exploits this ordering to prove a technical topological result about loops. The third
+step uses this result to establish the desired properties of the digital Delaunay triangulation. We believe that our approach
+to proving the correctness of digital geometry algorithms by progressive abstraction is of independent interest.
+2. The algorithm
+In this section, we formally state the problem and give a conceptual but precise description of the algorithmic solution
+ﬁrst presented in [10].
+Problem speciﬁcation The setting is a rectangular array of pixels. To talk about it, we deﬁne a pixel as the closed unit square
+centered at an integer point in the plane: A + [− 12 , 12 ]2 , with A ∈ Z2 . It has four sides: east, north, west, south, and four
+corners: north-east, north-west, south-east, south-west. We say two pixels are neighbors if they share a side or a corner. The
+decomposition of the plane into pixels is denoted by Z2 + [− 12 , 12 ]2 . Since computers are ﬁnite, we consider only a ﬁnite
+rectangular piece of the thus decomposed plane and call this piece the texture within which all computations are performed.
+Now suppose we are given a subset of the pixels in the texture. We call the center of each such pixel a seed point and write
+S = {x1 , x2 , . . . , xn } for the set of seed points. We assume that the points do not all lie on a single straight line. Equivalently,
+at least three of the seed points span a proper triangle. The goal is to connect the seed points in S with edges and triangles
+to form a simplicial complex. It will be convenient to add a dummy seed point, x0 , which we imagine at inﬁnity and use as
+an additional vertex when we form the simplicial complex. With this modiﬁcation, we consider a simplicial complex a valid
+solution to our problem if it satisﬁes the following three conditions:
+I. The set of vertices is S ∪ {x0 }.
+II. The simplicial complex triangulates the sphere.
+III. Removing x0 gives a geometric realization in the plane.
+Condition I prescribes the relationship between input and output. Condition II summarizes the required topological properties. It includes the local requirements of a 2-manifold, that every edge belongs to two triangles and every vertex belongs
+to a ring of triangles. It also prescribes the global topology of the simplicial complex to that of the 2-dimensional sphere.
+Condition III summarizes the required geometric properties, namely that the edges do not intersect other than at shared
+vertices, and the triangles do not intersect other than along shared edges. Note that Condition III applies only to the ﬁnite
+portion of the simplicial complex, obtained by removing the star of x0 , that is, x0 together with all edges and triangles that
+connect to x0 . Since removing a single vertex star from a triangulated sphere keeps the rest connected, the ﬁnite portion of
+the simplicial complex is thus required to be connected.
+Digital Voronoi diagrams Our approach to solving the problem mimics the computation of the Euclidean case. Recall that
+the (Euclidean) Voronoi region of a point xi is the set of points for which xi is the closest seed points, that is,
+
+V i = {x ∈ R2 | x − xi ≤ x − x j , ∀ j }.
+It is easy to see that V i is convex. The collection of V i is the (Euclidean) Voronoi diagram of S. Finally, the (Euclidean)
+Delaunay triangulation is the dual of this diagram. Working with integer instead of real coordinates, we can only approximate
+this Euclidean construction. We do this with two types of digital Voronoi diagrams. To construct the ﬁrst, we color each pixel
+with the index of the closest seed point:
+
+E i = { A ∈ Z2 | A − xi ≤ A − x j , ∀ j }.
+We assume a ﬁxed tie-breaking rule so that each pixel receives only one color. The bulk of E i is the component B i that
+contains the seed point, xi . All the other pixels of E i are debris, which exist only inside a sharp corner of the Euclidean
+Voronoi region; see Fig. 1. The debris is a serious drawback as it makes it diﬃcult to turn the decomposition into a valid
+
+1
+
+URL: http://www.comp.nus.edu.sg/~tants/delaunay2DDownload.html.
+
+T.-T. Cao et al. / Computational Geometry 48 (2015) 507–519
+
+509
+
+Fig. 1. A region with a sharp corner. Its corresponding digital region consists of the bulk and one debris pixel.
+
+Fig. 2. The seven types of colorings of a 2-by-2 array of pixels. The ﬁrst two are digital Voronoi vertices.
+
+solution to our triangulation problem.
+This diﬃculty is alleviated by introducing a second kind of digital Voronoi diagram. It is obtained by growing the regions
+simultaneously until they run into each other. In other words, we run n versions of breadth-ﬁrst search in parallel, making
+sure they do not invade each other’s territory. To make this process precise, we say a pixel A is eligible to be colored i
+if A = xi or A has a neighboring pixel of color i. Initially, after s = 0 steps, all pixels are uncolored. Write F i ,s for the
+set of pixels colored i after s steps, and Q s for the set of eligible pixel-color pairs ( A , i ). Writing N ( A ) for the set of
+pixels neighboring A. We implement Q s as a priority queue and allow it to contain additional pairs whose pixels are
+already colored. These pairs do not interfere with the proper execution of the algorithm. Let min( Q s ) be the operation
+that removes and returns the pair with minimum distance between the pixel center and the seed point of the color,
+with respect to a tie-breaking mechanism. We now state the algorithm more formally, suppressing the counter for the
+number of steps, which is implicit. We initialize the regions to F i = ∅ and the queue to the set of pairs (xi , i ), for all i.
+repeat
+( A , i ) = min( Q );
+if A is not colored then
+F i = F i ∪ { A };
+Q = Q ∪ {( B , i ) | B ∈ N ( A )};
+end if
+until Q = ∅.
+It is easy to see that this algorithm succeeds in coloring all pixels. Writing F i for the set of pixels colored i after the last
+step of the algorithm, this is equivalent to saying that the union of the F i covers the entire texture. Indeed, in any other
+case there would be an uncolored pixel neighboring a colored pixel and the algorithm could continue coloring.
+An important aspect of the algorithm is its tie-breaking mechanism. Any total order of the pixel pairs consistent with
+the Euclidean distance between pixel centers will do. For example, we may exploit the total order of the integers as follows.
+A pair of pixels is speciﬁed by four coordinates, which we sort into a vector of length four and write ( A , B ) <lex (C , D )
+if the vector obtained from A , B ∈ Z2 is lexicographically smaller than the vector obtained from C , D ∈ Z2 . We say
+( A , B ) has higher priority than (C , D ), denoted as A − B ≺ C − D , if A − B < C − D or A − B = C − D and
+( A , B ) <lex (C , D ). Note that A − B ≺ C − D implies A − B ≤ C − D but not always A − B < C − D . This will
+be important in our analysis of the algorithm.
+Digital Delaunay triangulation Similar to the Euclidean case, we dualize the digital Voronoi diagram, and in particular the
+regions F i . The key concept is that of a digital Voronoi vertex. This is a corner shared by four pixels that have either four
+different colors or three different colors in which the two pixels sharing the color also share a side. Equivalently, a digital
+Voronoi vertex is a 2-by-2 array of the type which is shaded in Fig. 2. We note that the third type of array, which is not a
+digital Voronoi vertex, is called a neck of the region whose color is repeated. We will see in Section 3 that the fourth type,
+with two crossing necks, does not arise. This is important when we dualize the colored regions as follows:
+
+• For each digital Voronoi vertex with three different colors, i , j , k in counterclockwise order, we add the edges xi x j , x j xk ,
+xk xi to E and the triangle xi x j xk to T .
+• For each digital Voronoi vertex with four different colors, i , j , k, in counterclockwise order, we add the edges xi x j ,
+x j xk , xk xi and xi xk , xk x , x xi to E and the triangles xi x j xk , xi xk x to T .
+
+510
+
+T.-T. Cao et al. / Computational Geometry 48 (2015) 507–519
+
+Fig. 3. The digital Delaunay triangulation superimposed on the digital Voronoi diagram obtained by ﬂooding.
+
+Note that in the second case, we have a choice between the two diagonals, which we make arbitrarily. Here, E and T are
+multisets. We will prove that T is in fact a set and E contains each edge exactly twice. Identifying the edges in pairs thus
+gives a simplicial complex; see Fig. 3 for an example. We call this the digital Delaunay triangulation of S. Its ﬁnite portion is
+obtained by removing x0 together with all edges and triangles that share x0 .
+3. The proof
+In this section, we present the proof that the digital Delaunay triangulation is a valid solution to our triangulation
+problem. It consists of three consecutive steps, explained in the following three subsections.
+3.1. Flooding sorts
+In this subsection, we rationalize ﬂooding by proving some basic properties. Recall our tie-breaking mechanism and that
+A − B ≺ C − D implies A − B ≤ C − D .
+Order by distance The main technical result in this section is a proof that ﬂooding colors the pixels in the order of their
+distance from the seed points. This is plausible but diﬃcult to establish. We consider two versions of this claim, a weak
+version that claims the ordering separately within each color, and a strong version that claims one order for the entire
+collection of pixels. The proof is inductive, moving from the weak version after s steps to the strong version after s steps to
+the weak version after s + 1 steps.
+Ordered Coloring Lemma For every s ≥ 0 and every two colors i and j, we have
+all uncolored pixels Y that are eligible to be colored j after s steps.
+
+A − xi ≺ Y − x j
+
+for all A ∈ F i ,s and
+
+Proof. This is the strong version of the claim and we get the weak version as a special case, when i = j. We begin by
+proving that the weak version implies the strong version. The only reason the latter is not trivial is that at step s a pixel A
+is colored with i. Since we use a priority queue to select A, all other existing pixel-color pairs in Q have priorities lower
+than the priority of ( A , i ). On the other hand, for a pixel Y ∈ N ( A ) newly eligible to be colored i, by the weak version after
+s steps, (Y , i ) also has priority lower than that of ( A , i ). By the strong version after s − 1 steps, the priority of ( A , i ) is lower
+than that of all colored pixels we have seen so far. This implies the strong version after s steps.
+We now prove that the strong version after s steps implies the weak version after s + 1 steps. To get a contradiction, we
+let Y 0 be the ﬁrst uncolored pixel that violates the claimed inequality for the weak version and we let s0 be the number
+of steps after which this violation arises. We deﬁne a predecessor of a colored pixel as a neighboring pixel that received
+the same color earlier. By assumption, after s < s0 steps, all predecessors of a pixel colored i are at least as close to xi
+as this pixel. After s0 steps, Y 0 has a neighbor A with color i that satisﬁes Y 0 − xi ≺ A − xi . Note that A is the only
+neighbor with color i, else Y 0 would have contradicted the inequality before the s0 steps or it would have been colored
+before A. There are two cases to consider: when A and Y 0 share a side and when they share only a corner. Both cases are
+further decomposed into subcases, and for each subcase, we either derive a contradiction directly, or we reduce it to another
+subcase working our way up a path of predecessors one pixel closer to xi . Since this path is ﬁnite, we get a contradiction
+eventually. To discuss the two cases, we assume the positions of A and Y 0 are as depicted in Fig. 4.
+Case 1.
+
+A is the neighbor to the west of Y 0 . Without loss of generality, assume that xi lies in the lower right quadrant
+of Y 0 . A has a predecessor at least as close to xi but not neighboring Y 0 . The only possibility is the south-west
+neighbor B. This further constrains the location of xi to within a 45◦ wedge. The neighbor U to the south of A
+must have been colored before B, but with a different color k, else it would have violated the claimed inequality
+before Y 0 did. By inductive assumption, U − xk ≺ B − xi ≺ B − xk . Similarly, U − xk ≺ A − xi ≺ A − xk .
+
+T.-T. Cao et al. / Computational Geometry 48 (2015) 507–519
+
+511
+
+Fig. 4. Illustration of Case 1 on the left and Case 2 on the right. In both cases, the shaded right-angled wedge represents the possible locations of xi .
+
+We now have two constraints that express that A and B lie on the same side of the perpendicular bisector of xi
+and xk , namely
+
+A − xi ≤ A − xk ,
+B − xi ≤ B − xk .
+Since U lies inside the triangle xi A B but not on the edge A B, the two inequalities imply U − xi < U − xk and
+therefore U − xi ≺ U − xk . But this is only possible if U has no neighbor of color i at the time it is colored.
+We consider three subcases:
+Case 1.1. The south-east neighbor W of B is a predecessor of B. Therefore, U must have been colored before W .
+By inductive assumption, we have U − xi ≺ U − xk ≺ W − xi . But this contradicts the inequality
+W − xi ≺ U − xi , which we get from the restriction of xi to the 45◦ wedge.
+Case 1.2. The neighbor V to the south of B is a predecessor of B, and W is not. Therefore, we get
+U − xi ≺ U − xk ≺ V − xi as U must have been colored before V . This implies U − xi ≤ V − xi ,
+which further limits xi to within a narrow diagonal strip, as indicated in Fig. 4 on the left. Let the
+color of W be = i, and observe that W must have been colored before V , else it would have violated the claimed inequality before Y 0 did. Therefore, W − x ≺ V − xi ≺ V − x , and similarly,
+W − x ≺ B − xi ≺ B − x , which implies
+
+B − xi ≤ B − x
+
+,
+
+V − xi ≤ V − x
+
+.
+
+Recalling that xi lies inside the diagonal strip, we observe that W lies inside the triangle xi BV but not
+on the edge BV. Hence, the two inequalities imply W − xi ≺ W − x . We now repeat the analysis of
+Case 1, substituting V , W for B , U .
+Case 1.3. The south-west neighbor C of B is a predecessor of B, and V and W are not. The neighbor V to the
+south of B must have been colored before C , else it would have contradicted the claimed inequality
+before Y 0 did. We repeat the analysis of Case 1, substituting C , V , B for B , U , A.
+
+Case 2.
+
+We will shortly relax the condition on xi by adding the column of pixels below A to the quadrant that contains xi .
+Indeed, the only reason for not doing so right from the start is the condition Y 0 − xi ≺ A − xi , which is violated
+for pixels in that column.
+A is the north-west neighbor of Y 0 . Without loss of generality assume that xi lies in the lower quadrant of Y 0 ;
+see Fig. 4 on the right. Recall that A is the only neighbor of Y 0 colored i. The neighbor U to the south of A must
+therefore have been colored before A, with a color k different from i, else it would have violated the claimed
+inequality before Y 0 did. Using the inductive assumption, we therefore get U − xk ≺ A − xi ≺ A − xk . There
+are only two possible predecessors of A.
+Case 2.1. The south-west neighbor V of A is a predecessor of A. We consider two subcases:
+Case 2.1.1. U − xi ≺ V − xi . Here U must have been colored before V , else it would have violated
+the claimed inequality before Y 0 did. We therefore get U − xk ≺ V − xi ≺ V − xk . Since
+xi lies in the lower right quadrant of A, we can now apply the analysis of Case 1, substituting
+V , U , A here for B , U , A there. Indeed, all steps of the analysis in Case 1 are valid for xi in that
+quadrant, except for Y 0 − xi ≺ A − xi , which now holds because Y 0 is the south-east rather
+than the east neighbor of A, as it was in the original description of Case 1.
+Case 2.1.2. V − xi ≺ U − xi . Here xi lies in the lower left quadrant of A. Notice that A − xi
+≺ Y 0 − xk , else Y 0 would have been colored before A. Together with Y 0 − xi ≺ A − xi
+and A − xi ≺ A − xk , we have
+
+512
+
+T.-T. Cao et al. / Computational Geometry 48 (2015) 507–519
+
+Y 0 − xi ≤ Y 0 − xk ,
+A − xi ≤ A − xk .
+Since U lies inside the triangle xi AY 0 but not on the edge AY 0 , the two inequalities imply U − xi ≺ U − xk . Hence, U must have been colored before V , else color i would
+have taken precedence over color k. But this implies U − xk ≺ V − xi and therefore
+U − xi ≺ V − xi , a contradiction to the assumption.
+Case 2.2. The west neighbor B of A is a predecessor of A, and V is not. This constrains xi to lie within the same
+45◦ wedge considered in Case 2.1.2; see Fig. 4 on the right. Here, U must have been colored before B,
+else it would have violated the claimed inequality before Y 0 did. We can now repeat the analysis of
+Case 2, substituting B , V for A , U .
+An amendment to Case 2.1 is in order. The reason is that we may encounter Case 2.2 ﬁrst, one or more times, and
+then reach Case 2.1. If we do, Y 0 is no longer neighbor of the new A, which is equal to the original B or one of
+its predecessors. The analysis in Case 2.1.1 is unaffected by this difference, regardless of the actual position of Y 0 ,
+as Case 2.1.1 can reduce to Case 1 as long as xi lies in the lower right quadrant of A. However, in Case 2.1.2, we
+need to ﬁnd a new argument for U − xi ≺ U − xk . To this end, let T be the neighbor to the east of the new A.
+Noting that T lies on a path of predecessors from the original pixel A back to xi , we get T − xi ≺ T − xk , else
+color k would have taken precedence over color i. Together with A − xi ≺ A − xk , this gives
+
+T − xi ≤ T − xk ,
+A − xi ≤ A − xk .
+Since U lies in the triangle xi AT but not on AT , the above two inequalities imply U − xi ≺ U − xk , as desired.
+Let us reﬂect on the recursive structure of the inductive argument. Cases 1.2 and 1.3 reduce to Case 1, but one pixel closer
+to the end along the path back to xi . Similarly, Case 2.2 reduces to Case 2, also one pixel closer to xi . In contrast, Case 2.1
+either leads to a contradiction or reduces to Case 1 without getting closer to xi . But this reduction can happen only once
+throughout the recursive argument. We thus see that there is no cycle and each sequence of recursive arguments must end
+with a contradiction. This completes the case analysis and shows that the uncolored pixels have lower priority than the
+colored pixels throughout the algorithm. The claim follows. ✷
+Recall the weak version of the claim, namely that ﬂooding colors the pixels in a region F i in the order of their distance
+from xi . This implies that we can ﬁnd a monotonic path from xi to each pixel in F i . All pixels on the path have color i, and
+the distance to xi does not decrease along the path. We get such a path to A by tracing backward, from A to a predecessor
+to a predecessor of the predecessor and so on. We summarize:
+Monotonic Path Lemma For each A ∈ F i , there is a monotonic path from xi to A within the region F i .
+Necks A neck is a pair of diagonally adjacent pixels of the same color whose two common neighbors both have colors that
+are different from that of the pair. We claim that the colors of the two common neighbors are also different from each
+other. In other words, a square of four pixels cannot have two necks. This property is useful because it implies that curves
+drawn within different color regions do not cross. Contradicting two necks is easy for Euclidean coloring since the bisector
+of the two seed points cannot separate the four pixel centers according to their color. For ﬂooding, we need a proof, which
+we now present.
+One Neck Lemma Flooding produces a coloring in which every square of four pixels has at most one neck.
+Proof. Label the four pixels A, B, U , and V . Assuming two necks, we have that the algorithm colors the diagonally adjacent
+pixels A and B with i and the other two diagonally adjacent pixels U and V with j = i; see the fourth type in Fig. 2.
+Consider the following two right-angled wedges,
+
+W A = {x ∈ R2 | A − x ≤ min{ U − x , V − x }},
+W B = {x ∈ R2 | B − x ≤ min{ U − x , V − x }}.
+Without loss of generality, we may assume that A gets colored ﬁrst. Using the Ordered Coloring Lemma, we have
+A − xi ≺ U − x j ≺ U − xi , else U would be colored i. Similarly, A − xi ≺ V − x j ≺ V − xi , which implies xi ∈ W A .
+If B gets colored second, before U and V , then we also have xi ∈ W B . But W B intersects W A in a single point, namely the
+corner shared by the four pixels, thus we get a contradiction because this point does not have integer coordinates. So we
+may assume that U gets colored before B and before V . Therefore, B − xi ≺ B − x j , else B would be colored j. Together
+
+T.-T. Cao et al. / Computational Geometry 48 (2015) 507–519
+
+513
+
+Fig. 5. The bulk of E i after coloring the ﬁrst s pixels by ﬂooding.
+
+with U − x j ≺ U − xi and V − x j ≺ V − xi , this implies that the perpendicular bisector of xi and x j separates B
+from U and V . Because the bisector is constrained to pass between B on one side and U , V on the other, the half-plane
+that contains xi and B intersects W A in at most one point, namely the shared corner of the four pixels, which is again a
+contradiction. ✷
+Bulk When we remove a point from S, the Euclidean Voronoi region of a remaining point either stays the same or it grows.
+The same is true for the regions E i obtained by Euclidean coloring. Similarly, it is true for the bulk of E i . However, it is
+not necessarily true for the regions obtained by ﬂooding. For example, because of two sites x j and xk , the region E i of xi
+contains a debris, which during ﬂooding is colored by j. After the removal of xk , the debris becomes connected with the
+bulk of E i and thus can be colored i. As a result, the region of color j obtained by ﬂooding shrinks at a pixel. We prove a
+weaker statement, namely that the regions obtained by ﬂooding contain the bulks of Euclidean coloring. It follows that the
+deletion of a seed point can shrink a region only by debris pixels, of which there are generally few.
+Bulk Lemma Each region F i constructed by ﬂooding contains the bulk of E i .
+Proof. We prove that the preﬁxes of the bulk of E i obtained by adding the pixels in order from xi are connected. It follows
+that the pixels of the bulk are colored in this same order and with the same color. Let B i ,s contain the s pixels of the bulk
+of E i closest to the seed point. Thus
+
+{xi } = B i ,1 ⊆ B i ,2 ⊆ . . . ⊆ B i ,m = B i .
+Suppose not all of the preﬁxes are connected and let B i ,s = B i ,s−1 ∪ { A } be the ﬁrst that is not connected. Draw the line
+that passes through A and xi , as in Fig. 5. There are neighbors of A on both sides of the line whose distance from xi is less
+than A − xi . On the other hand, A belongs to the bulk of E i , which is connected, so we can ﬁnd a path within the bulk
+that connects A with xi . Drawing it from pixel center to pixel center with straight edges in between, the path belongs to
+the Euclidean Voronoi region, V i , by convexity. Hence, the region bordered by the path and the straight segment from A
+to xi also belongs to V i by convexity, and thus all pixel centers enclosed in this region belong to E i . The region contains
+the pixel center of at least one neighbor B of A with B − xi ≺ A − xi . This neighbor precedes A in the ordering of the
+pixels in the bulk of E i and thus belongs to B i ,s−1 , a contradiction to A being separated from B i ,s−1 . ✷
+3.2. Lassos go empty
+In this subsection, we prove two technical results about monotonic paths which are instrumental in proving the lemmas
+needed for the validity of the digital Delaunay triangulation.
+Lassos Given a seed point xi and a pixel A colored i, a lasso consists of a monotonic path from xi to A and the line segment
+from A back to xi . We call xi and A the base points and the line oriented from A to xi the base line of the lasso. The size
+of the lasso is the distance between the two base points. When we compare the sizes of two lassos, we use the same
+tie-breaking mechanism as for the pairs of pixels. The lasso decomposes the plane into two components, an inside and an
+outside. The inside includes all pixels of the lasso.
+Lasso Lemma There is no seed point inside a lasso.
+Proof. To get a contradiction, assume the opposite. Let L i be the smallest lasso that encloses one or more seed points, and
+let xi and A be its base points. Let x j be the enclosed seed point that is furthest from the base line; see Fig. 6. Given an
+
+514
+
+T.-T. Cao et al. / Computational Geometry 48 (2015) 507–519
+
+Fig. 6. The ﬁrst lasso consists of a monotonic path from xi to A and the line segment from A back to xi . Inside the ﬁrst lasso, we see another seed point,
+x j . The second lasso deﬁned by xk and B encloses A. The third lasso deﬁned by x and U also encloses A.
+
+oriented line, a pixel belongs to the corresponding staircase if its interior intersects the line or its boundary intersects the
+line and its center lies to the right of the line. The orientation of the line induces an ordering of the pixels along the line.
+Consider the staircase deﬁned by the line that passes through x j and is orthogonal to the base line of L i . Traversing it from
+x j and moving away from the base line, we let B be the ﬁrst pixel not colored j. Because of the choice of B on the staircase
+orthogonal to the base line of L i , we have B − x j ≺ B − xi . It follows that B does not have color i either. Let k ∈
+/ {i , j }
+be the color of B. By the Monotonic Path Lemma, there is a monotonic path from xk to B. We do a case analysis in which
+every possibility leads to a contradiction. It will follow that x j cannot exist.
+Case 1.
+
+Case 2.
+
+xk and B lie on opposite sides of the line parallel to the base line of L i and passes through x j . Then we get
+B − x j ≺ B − xk . On the other hand, by the choice of B, it has a neighbor with color j and with smaller
+distance from x j , thus B would have been colored j instead of k, a contradiction.
+xk and B lie on the same side of that line, as in Fig. 6. By the extremality of the choice of x j , the seed point xk
+cannot lie inside the lasso L i . Let L k be the lasso consisting of a monotonic path from xk to B and the line segment
+from B back to xk . By the One Neck Lemma, the monotonic path cannot cross the path from xi to A and therefore
+must cross the base line of L i . Hence L k encloses either xi or A. For the former, we have
+
+B − xk
+
+≺ B − x j ≺ B − xi ,
+
+and by drawing a line from xi through B, we get a pixel on the path from xi to A that is even further from xi than
+B. It follows that B − xi ≺ A − xi , thus B − xk ≺ A − xi . Hence, the size of L k is less than the size of L i ,
+and by the extremality of the choice of L i , L k cannot enclose xi . The only remaining possibility is that L k encloses
+A, as in Fig. 6. The ﬁnal contradiction will rest on the properties of two particular pixels which we now describe.
+Traverse the staircase from A to xi and let U be the ﬁrst pixel whose color is not i. Let V be the predecessor
+of U in the staircase. Such pixels U and V exist because the staircase crosses the monotonic path from xk to B,
+where pixels have color k = i. However, we may reach U before crossing the path. Let = i be the color of U . We
+have U colored before V ; otherwise, the coloring of V would result in putting (U , i ) into the priority queue, a
+contradiction to the Ordered Coloring Lemma. So we have U − x ≺ V − xi . This implies U − x ≺ A − xi .
+Let L be a lasso with base points x and U . Because of the extremal choice of the ﬁrst lasso, L cannot enclose
+any seed points. There are three cases to consider.
+
+= k. We have U − xk ≺ V − xk , else V would have been colored k. But this also implies that xk and
+U lies on the same side of the perpendicular bisector of U and V , thus L encloses V . Draw a half-line
+from xk through V , we get a pixel on the monotonic path from xk to U whose distance from xk exceeds
+U − xk . This contradicts the monotonicity of the path.
+Case 2.2.
+= k and x and B are on opposite sides of the line parallel to the base line of L i and passes through
+x j . The lasso L thus either encloses xk or B, since x must lie outside L k . If it encloses B, it also encloses
+x j because the two pixels are connected by a piece of a staircase of color j = . As mentioned earlier, L
+cannot enclose a seed point so we have a contradiction in either case.
+Case 2.3.
+= k and x and B are on the same side of the line passing through x j . Avoiding to enclose
+xi , the only possibility for the monotonic path from x to U is as shown in Fig. 6. Here we use
+U − x ≺ V − xi ≺ V − x . But V is enclosed by L , so we can draw a directed line from x through
+V , as in Case 2.1. This gives a pixel on the path from x to U whose distance from x exceeds U − x ,
+again a contradiction.
+Case 2.1.
+
+This implies that x j does not exist, which proves the claim.
+
+✷
+
+Spliced lassos We extend the lasso to a slightly more elaborate construction. Let xi and x be two different seed points and
+A ∈ F i , D ∈ F two pixels. For the construction, we require that A and D are neighbors sharing a common side or at least a
+common corner, but in the latter case the remaining two pixels sharing the same corner must have colors that are different
+
+T.-T. Cao et al. / Computational Geometry 48 (2015) 507–519
+
+515
+
+Fig. 7. The two edges cross and so do the two spliced paths.
+
+from each other. Drawing a monotonic path of color i from xi to A, another monotonic path of color from x to D, and
+the line segment between xi and x , we get what we call a spliced lasso. We refer to xi and x as its base points and the
+connecting line as its base line. Similar to the lasso, a spliced lasso decomposes the plane into an inside and an outside.
+Another monotonic path cannot cross the spliced paths. Indeed, the only weak point is the corner at which the two paths
+are spliced, but we cannot cross there either if that corner is a digital Voronoi vertex. The only possibility to go from outside
+to inside the spliced lasso is therefore to cross the base line.
+Spliced Lasso Lemma There is no seed point inside a spliced lasso.
+Proof. Assume to the contrary that we have a spliced lasso with base points xi and x that encloses other seed points.
+Let x j be the seed point that maximizes the distance from the base line. Starting at x j , construct a piece of a staircase
+orthogonal to and moving away from the base line. Let B be the ﬁrst pixel not colored j. As before, we argue that the
+color of B is k ∈
+/ {i , j , } and we construct a lasso L k connecting xk to B and back. If xk and B lie on opposite sides of the
+line passing through x j and parallel to the base line of the spliced lasso, then we get B − x j ≺ B − xk , contradicting the
+Ordered Coloring Lemma. On the other hand, if xk and B lie on the same side of the line then the extremal choice of x j
+prohibits that xk be inside the spliced lasso. Hence L k encloses either xi or x , contradicting the Lasso Lemma. ✷
+3.3. The triangulation is valid
+In this subsection, we use the two lasso lemmas to show that the digital Delaunay triangulation is a valid solution to
+our triangulation problem.
+No crossing edges Recall that E is the multiset of edges identiﬁed when we dualize the digital Voronoi diagram obtained by
+ﬂooding. We say two edges cross each other if the endpoints of each lie on opposite sides of the line spanned by the other.
+Here we require implicitly that no three of the four endpoints lie on a common line. In particular, two copies of the same
+edge are not considered to cross each other.
+No Crossing Lemma No two edges in E cross each other.
+Proof. Assume the opposite and let xi x j and x p xq be two edges that cross. The four seed points thus form a convex
+quadrilateral whose diagonals are the two edges; see Fig. 7 on the left. Let A , B and C , D be the corresponding pixels in the
+two digital Voronoi vertices identifying the two edges. Connecting xi to A and x j to B by monotonic paths, we get a ﬁrst
+spliced lasso, which we denote as L i j . Similarly, we construct a second spliced lasso, L pq . By the Spliced Lasso Lemma, the
+two cannot enclose any seed points. This implies that the spliced paths of L i j cross the edge x p xq an odd number of times,
+and the spliced paths of L pq cross xi x j an odd number of times. But then the two paths must cross, which is prohibited by
+the One Neck Lemma. ✷
+
+Consistent orientation Recall that T is the multiset of triangles in the digital Delaunay triangulation. As we will see shortly,
+T is in fact a set. The sequence of the three vertices of a triangle implies an orientation, which is either clockwise or
+counterclockwise. Assuming xi x j xk is in T , it has a dual digital Voronoi vertex that contains three pixels colored i, j, and k.
+By deﬁnition of digital Voronoi vertex, the color of the fourth pixel is different from the color of the diagonally opposite
+pixel in the 2-by-2 array; see Fig. 2. We say the orientation of xi x j xk is consistent with the three corresponding pixels if
+both are clockwise or both are counterclockwise.
+Consistent Orientation Lemma The orientation of each triangle in T is consistent with the orientation of the corresponding pixels in the dual digital Voronoi vertex.
+Proof. Let xi x j xk be a triangle in T with corresponding pixels A , B , C in the dual digital vertex. Note that in a digital
+Voronoi vertex, two diagonal pixels cannot have the same color. Without loss of generality, we assume that horizontally xk
+is between xi and x j , and the triangle has clockwise orientation. That is, xk lies between the two vertical lines through xi
+
+516
+
+T.-T. Cao et al. / Computational Geometry 48 (2015) 507–519
+
+Fig. 8. If the orientation of xi x j xk is not consistent with A BC , either a lasso (left) or a spliced lasso (right) encloses a seed point.
+
+Fig. 9. Left: the insides of the three spliced lassos cover the triangle. Right: Planar drawing of a complete bipartite graph.
+
+and x j respectively, and is below the line through xi and x j . To get a contradiction, we suppose the orientation of A BC is
+counterclockwise. We analyze two possible cases of the position of C .
+Case 1.
+
+Case 2.
+
+C is below the line through xi and x j ; see Fig. 8 on the left. The spliced lasso from xi to x j encloses C , else either
+the lasso from xi to A encloses x j or the lasso from x j to B encloses xi , contradicting the Lasso Lemma. On the
+other hand, xk is outside this spliced lasso. As such, for the monotonic path from xk to reach C , it has to enclose
+either xi or x j , contradicting the Lasso Lemma.
+C is above the line through xi and x j ; see Fig. 8 on the right. Also, the lasso from xi to A cannot enclose x j , and
+that from x j to B cannot enclose xi . As such, C always lies outside the spliced lasso between xi and x j . Since xk is
+below the line through xi and x j while C is above this line, either the spliced lasso from xk to xi encloses x j , or
+the spliced lasso from xk to x j encloses xi , contradicting the Spliced Lasso Lemma. ✷
+
+No nesting triangles Using the consistent orientation between the triangles and the pixels in the dual digital Voronoi vertices, we now show that no two triangles in T are nested. This includes the case in which the two triangles are the same.
+No Nesting Lemma No two triangles in T are nested or the same.
+Proof. Let xi x j xk and x p xq xr be two triangles with different dual digital Voronoi vertices. We ﬁrst consider the case in which
+the second triangle has at least one new seed point, xr ∈
+/ {xi , x j , xk }. To show that the triangles are not nested, it suﬃces to
+prove that xr does not lie inside the triangle xi x j xk . As usual, we draw the monotonic paths from the seed points to the
+dual vertex; see Fig. 9 on the left. Splicing the paths in pairs, we get three spliced lassos. To complete the proof, we think
+of the insides of the three spliced lassos as the projection of the three faces of a tetrahedron built on top of the triangle.
+Observe that the projections cover the triangle. If xr lies inside the triangle then it is enclosed by one of the spliced lassos,
+a contradiction to the Spliced Lasso Lemma.
+We consider second the case in which the two triangles are the same. Connecting the seed points with the dual vertices,
+we get a complete bipartite graph with ﬁve vertices and six edges; see Fig. 9 on the right. We may assume that the drawing
+of the graph is plane, that is, the paths do not cross. Indeed, two paths can only cross if they have the same color, and in
+this case we can cut and splice the pieces to remove the crossing. Now observe how the three seed points connect to the
+two Voronoi vertices. If xi , x j , and xk connect in a clockwise order to one vertex then they connect in a counterclockwise
+order to the other vertex. It follows that one of the two triangles contradicts the Consistent Orientation Lemma. ✷
+We have now completed the proof that the digital Delaunay triangulation satisﬁed Condition III. It remains to prove that
+it has the right topology, that is, it satisﬁes Condition II.
+
+T.-T. Cao et al. / Computational Geometry 48 (2015) 507–519
+
+517
+
+Connectivity If an edge in E belongs to three or more triangles then there are two that are nested, the same, or have
+crossing edges. This would contradict the No Crossing Lemma or the No Nesting Lemma, implying that each edge in E
+belongs to either one or two triangles in T . In the latter case, the two triangles lie on opposite sides of the edge. We argue
+that each edge belongs to exactly two triangles. In other words, there are no holes in the triangulation. We begin by proving
+that each region F i is simply connected. In the plane this is equivalent to being connected and having no holes.
+Simply Connectedness Lemma All digital Voronoi regions constructed by ﬂooding are simply connected.
+Proof. Suppose there is a region F i that is not simply connected. By construction, F i is connected, so we can splice two
+monotonic paths to form a loop going around one of the holes. If possible, we do the splicing along a shared side of two
+pixels. If this is not possible, we splice the two paths at a shared pixel corner and recall from the One Neck Lemma that
+the other two pixels sharing that corner have colors different from each other. The two spliced paths both originate at the
+seed point, so we have a spliced lasso with the base line being a single point. Drawing the piece of a staircase emanating
+from a presumed seed point, x j , inside the lasso away from that pixel, the proof of the Spliced Lasso Lemma still applies. It
+follows that the hole contains no seed points. But then the hole must be empty, else we could construct a monotonic path
+connecting the hole to the outside. ✷
+Write ∂ F i for the set of sides and corners shared between pixels in F i and pixels not in F i . We can orient the sides so
+that F i lies locally to the left and the resulting curve is connected and goes around the region in a counterclockwise order.
+This construction is unambiguous except in one important special case. If F i has a neck, there is a corner shared by four
+sides. In this case, we duplicate the corner and we connect the sides in pairs so that the curve does not cross the neck. This
+gives a cyclic sequence in which each corner appears only once. Replacing every corner by the four pixels around it, we get
+a cyclic sequence of 2-by-2 arrays. Each such array contains at least one and at most three pixels from F i . Since every side
+is either vertical or horizontal, any two contiguous arrays overlap in exactly two pixels, one colored i and the other j = i.
+As we walk along the sequence, the color j can only change when we pass through a digital Voronoi vertex. Indeed, the
+only other array with at least three different colors is the neck, but it shares the color j with both its predecessor and its
+successor along the sequence.
+This observation allows us to interpret the information as we read along the sequence of arrays. Speciﬁcally, the digital
+Voronoi vertices decompose the cycle into segments within which the color j = i of the shared pixels is constant. It follows
+that two contiguous digital Voronoi vertices share one pair of colors. In other words, the segment gives rise to two triangles
+sharing a common edge. It follows that each edge in E belongs to at least two triangles in T . Because of the No Nesting
+Lemma, this number is at most two and therefore exactly two. Because the regions are simply connected, we get exactly
+one cycle of arrays for each F i , which implies that the triangles incident to a vertex xi form a ring around the seed
+point. Hence, the triangulation has the topology of a 2-manifold. To conclude the argument, we use the Nerve Theorem
+[4, Section III.2], which applies because each region is simply connected and it intersects each other region in a point or
+a connected segment, if at all. This theorem implies that the triangulation has the same homotopy type as the union of
+regions. The outside region, F 0 , complements the texture to form a 2-dimensional sphere, so the only remaining possibility
+is that we have a triangulation of the 2-sphere.
+This completes the proof that the digital Delaunay triangulation satisﬁes Condition II and is therefore a valid solution to
+our triangulation problem.
+4. Discussion
+The main contribution of this paper is a proof that the digital Delaunay triangulation has the geometric and topological
+properties we usually expect from a triangulation in the plane: its edges do not cross and after connecting the boundary to
+a dummy vertex at inﬁnity, we get a triangulation of the 2-dimensional sphere. We get these properties if we dualize the
+collection of digital Voronoi regions colored by ﬂooding. In contrast to coloring by Euclidean distance to the seed points,
+ﬂooding forms regions that are connected. We can therefore think of ﬂooding as a method to remove the topological noise
+caused by the digital approximation of the real plane. The most interesting next question is the extension of our correctness
+proof to 3-dimensional voxel arrays.
+Acknowledgement
+We would like to thank the anonymous reviewer for the valuable feedback to improve the paper. The research of the
+ﬁrst and the third author is partially supported by NUS under grant R-252-000-337-112. The research of the second author
+is partially supported by NSF under grant DBI-0820624 and by DARPA under grants HR011-05-1-0057 and HR0011-09-0065.
+Appendix A. Overview of proof steps
+The proof consists of three major steps, each consisting of a small number of lemmas. In Fig. 10, we show the steps
+as three dashed boxes with implications in sequences; they correspond to Sections 3.1, 3.2, and 3.3. Each smaller, shaded
+
+518
+
+T.-T. Cao et al. / Computational Geometry 48 (2015) 507–519
+
+Fig. 10. Steps in the proof and their dependencies.
+
+box is a lemma. The most important are the Ordered Coloring Lemma, which encapsulates most of the digital geometry
+reasoning, and the Lasso Lemma, which forms the primary topological tool used to prove the rest.
+Appendix B. Notation
+Table 1 provides a list of notation used in this paper.
+Table 1
+Notation for geometric concepts, sets, functions, vectors, variables.
+S = {x1 , . . . , xn }
+xi x j , xi x j xk
+A, B , C , U , V , Y 0
+V i , Ei , Fi
+Bi
+F i ,s , B i ,s , Q s
+Li , Li j
+S, E, T
+
+data set, seed points
+edges, triangles
+pixels
+Euclidean, digital Voronoi regions
+bulk
+region, bulk, queue after s steps
+lasso, spliced lasso
+Delaunay vertices, edges, triangles
+
+References
+[1] T.T. Cao, K. Tang, A. Mohamed, T.S. Tan, Parallel banding algorithm to compute exact distance transform with the GPU, in: I3D ’10: Proc. ACM Symp.
+Interactive 3D Graphics and Games, ACM, New York, NY, USA, 2010, pp. 83–90.
+[2] O. Cuisenaire, Distance transformations: fast algorithms and applications to medical image processing, Ph.D. thesis, Universite Catholique de Louvain
+(UCL), Louvain-la-Neuve, Belgium, 1999.
+[3] P.E. Danielsson, Euclidean distance mapping, Comput. Graph. Image Process. 14 (1980) 227–248, http://dx.doi.org/10.1016/0146-664X(80)90054-4.
+[4] H. Edelsbrunner, J. Harer, Computational Topology: An Introduction, American Mathematical Soc., 2009.
+[5] S. Fortune, Voronoi diagrams and Delaunay triangulations, in: J.E. Goodman, J. O’Rourke (Eds.), Handbook of Discrete and Computational Geometry,
+CRC Press, Inc., Boca Raton, FL, USA, 1997, pp. 377–388.
+[6] K.E. Hoff III, J. Keyser, M. Lin, D. Manocha, T. Culver, Fast computation of generalized Voronoi diagrams using graphics hardware, in: Proc. ACM
+SIGGRAPH ’99, ACM Press/Addison-Wesley Publishing Co., New York, NY, USA, 1999, pp. 277–286.
+[7] J. Lee, J. Kim, S. Seo, S. Kim, J. Park, H. Kim, T.T. Dao, Y. Cho, S.J. Seo, S.H. Lee, S.M. Cho, H.J. Song, S.B. Suh, J.D. Choi, An OpenCL framework for
+heterogeneous multicores with local memory, in: PACT ’10: Proc. Intern. Conf. Parallel Architectures and Compilation Techniques, ACM, New York, NY,
+USA, 2010, pp. 193–204.
+[8] J. Nickolls, I. Buck, M. Garland, K. Skadron, Scalable parallel programming with CUDA, Queue 6 (2) (2008) 40–538, http://dx.doi.org/10.1145/
+1365490.1365500.
+[9] J.D. Owens, D. Luebke, N. Govindaraju, M. Harris, J. Krüger, A. Lefohn, T.J. Purcell, A survey of general-purpose computation on graphics hardware, in:
+Eurographics 2005, in: State of the Art Reports, 2005, pp. 21–51.
+[10] M. Qi, T.T. Cao, T.S. Tan, Computing 2D constrained Delaunay triangulation using the GPU, in: I3D ’12: Proc. Symp. Interactive 3D Graphics and Games,
+ACM, New York, NY, USA, 2012, pp. 39–46.
+
+T.-T. Cao et al. / Computational Geometry 48 (2015) 507–519
+
+519
+
+[11] G. Rong, T.S. Tan, Jump ﬂooding in GPU with applications to Voronoi diagram and distance transform, in: I3D ’06: Proc. Symp. Interactive 3D Graphics
+and Games, ACM, New York, NY, USA, 2006, pp. 109–116.
+[12] G. Rong, T.S. Tan, T.T. Cao, Stephanus, Computing two-dimensional Delaunay triangulation using graphics hardware, in: I3D ’08: Proc. Symp. Interactive
+3D Graphics and Games, ACM, New York, NY, USA, 2008, pp. 89–97.
+[13] J. Schneider, M. Kraus, R. Westermann, GPU-based real-time discrete Euclidean distance transforms with precise error bounds, in: Intern. Conf. Computer Vision Theory and Applications (VISAPP), Springer, Berlin/Heidelberg, 2009, pp. 435–442.
+[14] J. Shewchuk, Triangle: engineering a 2D quality mesh generator and Delaunay triangulator, in: M. Lin, D. Manocha (Eds.), Applied Computational
+Geometry Towards Geometric Engineering, in: Lecture Notes in Computer Science, vol. 1148, Springer, Berlin/Heidelberg, 1996, pp. 203–222.
+[15] A. Sud, N. Govindaraju, R. Gayle, D. Manocha, Interactive 3D distance ﬁeld computation using linear factorization, in: I3D ’06: Proc. Symp. Interactive
+3D Graphics and Games, ACM, New York, NY, USA, 2006, pp. 117–124.
+
+

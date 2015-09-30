@@ -1,0 +1,2863 @@
+Parallel Computing 45 (2015) 49–66
+
+Contents lists available at ScienceDirect
+
+Parallel Computing
+journal homepage: www.elsevier.com/locate/parco
+
+SpiNNaker: Enhanced multicast routing
+Javier Navaridas ⇑, Mikel Luján, Luis A. Plana, Steve Temple, Steve B. Furber
+School of Computer Science, The University of Manchester, Manchester, UK
+
+a r t i c l e
+
+i n f o
+
+Article history:
+Available online 17 January 2015
+Keywords:
+Multicast route generation
+Massively-parallel processing
+Triangular toroidal mesh
+Neuromimetic architecture
+Spiking neural network simulation
+Low-power architecture
+
+a b s t r a c t
+The human brain is a complex biological neural network characterised by high degrees of
+connectivity among neurons. Any system designed to simulate large-scale spiking neuronal
+networks needs to support such connectivity and the associated communication trafﬁc in
+the form of spike events. This paper investigates how best to generate multicast routes for
+SpiNNaker, a purpose-built, low-power, massively-parallel architecture. The discussed
+algorithms are an essential ingredient for the efﬁcient operation of SpiNNaker since generating multicast routes is known to be an NP-complete problem. In fact, multicast communications have been extensively studied in the literature, but we found no existing
+algorithm adaptable to SpiNNaker. The proposed algorithms exploit the regularity of the
+two-dimensional triangular torus topology and the availability of selective multicast at
+hardware level. A comprehensive study of the parameters of the algorithms and their effectiveness is carried out in this paper considering different destination distributions ranging
+from worst-case to a real neural application. The results show that two novel proposed
+algorithms can reduce signiﬁcantly the pressure exerted onto the interconnection infrastructure while remaining effective to be used in a production environment.
+Ó 2015 The Authors. Published by Elsevier B.V. This is an open access article under the CC BY
+license (http://creativecommons.org/licenses/by/4.0/).
+
+1. Introduction
+The SpiNNaker neuromimetic architecture system is a biologically-inspired massively-parallel architecture based on a
+custom-made multicore System-on-Chip (SoC). SpiNNaker targets the simulation, in biological real-time, of very large-scale
+spiking neural networks, with more than 109 neurons. To put this number in context, it roughly represents 1% of the human
+brain, a small primate [22], ten mice [23] or one thousand bees [34].
+Spiking neural networks communicate by means of spike events which occur when a neuron is stimulated beyond a given
+threshold and discharges an electrical impulse. These spikes are communicated to all connected neurons, with typical fanouts of the order of 103 [14]. At a realistic biological ﬁring rate of 10 Hz, there could be more than 1010 neuron ﬁrings per
+second, which can replicate up to 1013 communication events per second in the largest SpiNNaker conﬁguration. Thus, an
+essential problem inherent to the simulation of spiking neural networks is how to distribute large numbers of small packets
+very widely amongst up to the million processors featured by SpiNNaker in an efﬁcient way and with minimal latency.
+Previous work demonstrated the beneﬁts of using a pure multicast architecture, rather than a more conventional unicast
+or point-to-point one, for this kind of application through both analytical [38] and empirical [39] evaluations. However, constructing multicast routes from a source to a set of destinations is known to be an NP-complete problem [31]. For this reason,
+adequate routing algorithms are essential for SpiNNaker operation. We present and evaluate a collection of routing algo-
+
+⇑ Corresponding author.
+E-mail address: javier.navaridas@manchester.ac.uk (J. Navaridas).
+http://dx.doi.org/10.1016/j.parco.2015.01.002
+0167-8191/Ó 2015 The Authors. Published by Elsevier B.V.
+This is an open access article under the CC BY license (http://creativecommons.org/licenses/by/4.0/).
+
+50
+
+J. Navaridas et al. / Parallel Computing 45 (2015) 49–66
+
+rithms and compare them with each other. Our evaluation considers a range of trafﬁc patterns: non-local trafﬁc as a worst
+case, centroid-based clustered trafﬁc as a general case with varying degrees of locality and real neural trafﬁc from a thalamocortical column model. The baseline algorithms are based upon well-known, oblivious routing algorithms used in pointto-point communications. The other two novel algorithms present an intelligent behaviour as they use exploration to substantially reduce the number of network resources employed to perform the multicast communication. This paper performs
+exhaustive analysis of the latter two algorithms by investigating the different implementation decisions, how they inﬂuence
+their performance and what the involved tradeoffs are.
+1.1. SpiNNaker machines
+The construction of large-scale versions of SpiNNaker is ongoing and is expected to culminate with the million-core system in the following months. Some prototypes and production systems have already been designed and fabricated. Back in
+2010 a ﬁrst batch of test chips (two cores and a fully functional router) were produced and successfully demonstrated running spiking neural nets. This was followed in 2011 by the production of small quantities of full-ﬂedged SpiNNaker chips
+with 18 ARM cores and the development of small boards, able to house four SpiNNaker chips and to support inter-board
+communications. These boards, due to their low-power design, have been used as control devices for robotic systems
+[12], providing them with real-time stimulus–response behaviour [17].
+As shown in Fig. 1 we have a reached most milestones in the path towards the full-ﬂedged SpiNNaker: a 48-chip board
+has been designed and large numbers of them have been produced and can be interconnected to construct increasingly large
+machines. One board forms a 103-core machine, one rack frame with 24 boards forms the 104 one, a cabinet with ﬁve of these
+frames (120 boards) has just been put together and forms the 105 machine. The ﬁnal expansion will be to put ten of these
+cabinets together to conform the full-ﬂedged, million-core SpiNNaker machine. As we approach the largest conﬁgurations of
+the system, the route generation is becoming an increasingly important aspect of the machine’s operation, and so the proposed algorithms aim to meet this requirement.
+Aside from the hardware, an extensive collection of system software and application libraries is already offered to operate
+SpiNNaker and new features are developed and released frequently. Among all the software involved in SpiNNaker, is especially important the PyNN [13] frontend. This is a domain speciﬁc language devised to deﬁne spiking neural networks and
+which is widely used within the neuroscientist community. The PyNN/SpiNNaker combination exploits the ﬂexibility of the
+SpiNNaker architecture and decouples neural applications from the actual hardware, allowing users to rapidly develop and
+simulate spiking neural networks without any knowledge of the intricacies of the underlying system. Thanks to this transparency for the end-user, the adoption of SpiNNaker as a simulation platform is rapidly growing within the cognitive computing community.
+2. Related work
+2.1. Large-scale neural systems and multicast
+The development of artiﬁcial neural network-based computing systems has remained a topic of interest for decades as it
+is believed they could help to understand how the brain operates—still a mystery for science. Here we review the most nota-
+
+(a) Unpackaged and packaged SpiNNaker chips.
+
+(b) 48-chip production board (10 3 machine)
+
+(c) 24-board frame 10 4 machine)
+
+5
+(d) 19" rack cabinet (10 machine)
+
+Fig. 1. SpiNNaker chip, 4-chip experimental board, production board with 48 chips and 24-board card frame.
+
+J. Navaridas et al. / Parallel Computing 45 (2015) 49–66
+
+51
+
+ble projects in this area and highlight the absence of related systems considering the use of multicast communications even
+when it seems to be a natural candidate due to the high connectivity shown by biological neural networks.
+In the eighties and nineties the Connectionist Machine family of supercomputers came out from the MIT. Although they
+were designed as general purpose parallel machines, simulating neural models was one of the target applications [24]. Connectionist Machines featured specialized interconnection networks for data and control communications but did not include
+multicast—only a broadcast mechanism for system-level synchronization.
+Later on, in the early nineties a team at U.C. Berkeley worked on the Connectionist Network Supercomputer, a system
+speciﬁcally tailored for neural computation [5]. The system had a target size of 128 nodes (scalable to 512) arranged as a
+2D mesh. Nodes included a router to communicate but multicast was not supported, based on the expectation that the system would rely on spatial locality to improve performance. To our knowledge, a prototype of the node was built (under the
+codename T0), but the system never operated as a network, only a few experiments using up to ﬁve nodes in a bus conﬁguration were performed [41], never scaling up to the target system size.
+The Blue Brain project [33] and the early stages of SyNAPSE [4] have somewhat similar applications to SpiNNaker and
+target similar application scales. However they do not contemplate the development of a custom-made architecture, but
+rather rely on a general-purpose massively-parallel system: IBM Blue Gene systems [20]. This family of supercomputers
+is composed of tens of thousands of compute nodes, each having several PowerPC processors. Blue Gene’s main interconnect
+is point-to-point which, as we show in this paper, might not be the most efﬁcient way of dealing with the high connectivity
+of neural models.
+The SyNAPSE project [16] follows a broad approach to neural modelling and is not restricted to using Blue Gene supercomputers—their stated aim is to ‘develop electronic neuromorphic machine technology that scales to biological levels’. The
+project also involves creating custom hardware and even research into less conventional technologies such as memristors
+[35]. No indication has been made, however, towards investigating ways to handle the high connectivity inherent to spiking
+neural networks, not to mention in using multicast-based communication architectures.
+Finally, the FACETS project [18] is creating a faster-than-real-time custom hardware system for simulations of large (but
+unspeciﬁed) size networks of biologically-inspired neurons. Its distinctive characteristic is that it relies on analogue circuits
+to implement neural dynamics. Communication is based on digital logic, circuit-switched synchronous communications
+with no support for multicast communication. Again, the high connectivity of the neural models is not addressed at hardware-level which could end up limiting the scalability of the system.
+2.2. Multicast in other areas
+Outside of the ﬁeld of neural networks simulation, there is plenty of research on multicast communication strategies.
+However, none of those strategies could be employed in SpiNNaker because they are devised with rather different purposes
+and architectures in mind. To our knowledge, the most proliﬁc areas in which research related to multicast route generation
+is carried out are those of communication networks (Internet Protocol networks, or simply IP networks) and multistage networks for high performance computing systems.
+In the ﬁeld of IP networks, topologies are mostly irregular and hence the multicast algorithms are not devised to exploit
+network regularity, as those proposed in this paper do. In fact, in that kind of network, topology discovery and exploration
+are the most signiﬁcant parts of the research [8,45].
+In multistage networks for high performance computing systems the construction of multicast routes focuses on minimizing the interactions between concurrent multicast communications in order to increase network throughput [6,9].
+Reducing network or routing table utilisation, however, are not considered in these areas of research.
+Research on multicast for mesh-like topologies similar to the one in SpiNNaker was quite common in the nineties
+[30,40,47] but had several limitations that discourage their use for SpiNNaker. Firstly, only wormhole switching was considered whereas SpiNNaker uses store and forward. Secondly, most proposals were based on the use of virtual channels, a facility not available in SpiNNaker due to its area constraints. Finally, the main concern of those studies was deadlock avoidance;
+reducing network utilisation was merely a secondary issue, at best. Given that SpiNNaker already has a built-in deadlock
+avoidance scheme and scarcity in terms of network resources (both routing tables and bandwidth) a different approach is
+desirable.
+More recently, interest in multicast communications has emerged again with the generalisation of Networks-on-Chip in
+MPSoCs and manycore systems [26,48]. Some of the limitations of previous work still apply but, in addition, they typically
+require the addition of speciﬁc microarchitectural router features which are not directly applicable to SpiNNaker. The following section will discuss SpiNNaker architecture and how its design is adjusted to meet very tight power and area constraints.
+3. Overview of spinnaker
+The main foundations of SpiNNaker’s design philosophy were to reduce power consumption, to improve reliability by
+means of high redundancy and to provide a ﬂexible architecture, general enough to run a wide range of applications [42]:
+from the simulation of neural non-spiking neural models—e.g. Multilayer Perceptron [43]—to a wide variety of applications
+completely unrelated to neural networks—e.g. discrete simulation, many-body interaction or others.
+
+52
+
+J. Navaridas et al. / Parallel Computing 45 (2015) 49–66
+
+Each SpiNNaker SoC (depicted in Fig. 2) contains 18 low-power general-purpose ARM968 cores, each running an independent event-driven neural process, which responds to events generated by different on-chip modules: timer, communications
+controller and DMA controller, among others. The chip is packaged together with a 128 MB SDRAM, whose primary function
+is to store synaptic information. Detailed simulations of the chip conﬁrmed that each core can support up to around 1000
+neurons in biological real-time [27].
+3.1. Communications
+Although the SpiNNaker architecture could be scaled up to 65,536 nodes (256 Â 256), for practical reasons the largest
+SpiNNaker under construction will house 57,600 nodes (240 Â 240)—creating a system with over a million computing cores.
+The nodes are interconnected using a two-dimensional triangular torus as depicted in Fig. 3. Neurons are modelled in software and their spikes generate packets that propagate through the on- and inter-chip communication fabric relying on custom-made on-chip multicast routers [19,49]. The primary role of this router is to direct neural event packets to those chips
+and cores containing destination neurons. One remarkable characteristic of the router is that it is used to perform both interand intra-chip communications. It has 18 ports for the cores plus six external ports to communicate with adjacent chips. To
+avoid the high complexity intrinsic to crossbar-based designs, the SpiNNaker router uses a simpler architecture in which
+ports are hierarchically merged into a single pipelined queue so that only one packet can use the routing engine at once
+(see Fig. 2). The routing engine is not expected to become a bottleneck as it has much higher bandwidth than the transmission ports (8 Gbps vs. 250 Mbps). This means, router load will be very low so it barely affects the pace at which packets are
+processed. The router supports point-to-point and multicast communications using small packets of 40 bits. The multicast
+engine reduces the pressure at the injection ports and the number of packets traversing the network [38,39].
+Following the Address Event Representation protocol [32], packets do not contain any information about their destination(s), only an identiﬁer of the neuron that has ﬁred. The information necessary to deliver a neural packet to all the relevant
+cores and chips is compressed and distributed across the 1024-word routing table within each router. To minimize the
+impact of such an exiguous resource and allow the system to perform complex routing, routing tables offer a masked associative route look-up and routers are designed to perform a default routing—which requires no entry in the routing table—by
+sending the packet to the port opposite to the one the packet comes from, i.e. if a packet comes from the North it will be sent
+to the South. As routing tables have a limited number of entries, keeping their utilisation low is essential for the proper operation of SpiNNaker, for this reason, routing table entries will be one of the ﬁgures of merit in the following evaluations. Note
+that the routing tables need to be ﬁlled before starting the neural simulation and, consequently, fast multicast routing algorithms would be preferred to reduce set-up time as long as they are able to keep network resources below the limits of SpiNNaker. Routing tables are not intended to remain static during long simulations. They can be modiﬁed dynamically in realtime to accommodate scenarios of congestion or even failures in the interconnection network. For the sake of simplicity this
+scenario has not been considered in the evaluations that follow.
+Network ﬂow-control is very simple. When a packet arrives at the router, one or more output ports are selected according
+to the information stored in the routing table and the packet is transmitted through all of them. Deadlock- and livelockavoidance are based on packet dropping mechanisms which were studied during the design phases of the architecture [37].
+The design of the network fabric was scaled assuming some degree of locality of spike trafﬁc—most destination neurons
+are proximate to the transmitting neuron—as is typically seen in the brain [7,21]. The inter-node connections were designed
+to support sustained bandwidths of 1 Gbps. However their self-timed nature made them more sensitive to latency than was,
+in principle, anticipated. This reason, together with the decision of using low-power chip technologies has affected negatively the communications of SpiNNaker. The actual maximum link bandwidth attained by the real chip has been measured
+
+Chip Overlay
+
+N etwo rk-ce ntric Sc he matic D esig n
+Fig. 2. SpiNNaker 18-core SoC chip.
+
+J. Navaridas et al. / Parallel Computing 45 (2015) 49–66
+
+53
+
+Fig. 3. 8 Â 8 instance of SpiNNaker topology. Most peripheral wrap-around links are hidden for the sake of clarity.
+
+to be reduced to roughly 250 Mbps. We will use this ﬁgure later on to derive the number of neurons that a system can support during our experimental work.
+3.2. Modelled application
+SpiNNaker is designed to simulate spiking neural networks using simple spiking neural models widely accepted by the
+neuroscientist community. The classic Leaky Integrate and Fire (LIF) model [28] and the more complex Izhikevich model
+[25] are fully supported by SpiNNaker.
+Neurophysiology has provided a deep and clear understanding of the physical operation of biological spiking neurons
+[14]. Neurons have a membrane potential which ﬂuctuates over time and which is affected by each received signal. Whenever an excitatory signal is received the membrane potential is increased; in contrast, if the signal is inhibitory the membrane potential is reduced. When the membrane potential exceeds a given threshold, the neuron discharges and ﬁres a
+spike which affects similarly all neurons sharing a synaptic connection, typically in the order of the thousands. The high connectivity of the neurons exacerbates the spike distribution problem.
+In biological neural networks, connectivity is typically split into two different categories (see Fig. 4): short-range and
+long-range projections. Short-range projections include the connections to closely located neurons. Long-range projections
+connect neurons with remote areas of the brain. In general a long-range projection is connected to several neurons in the
+same distant area. In the experiments that follow we will use a destination distribution which is consistent with this behaviour—a collection of destinations clustered around a number of centroids which model long-range projections.
+4. Multicast route generation
+In this section we describe the four algorithms to generate multicast routes considered in this research work. As
+explained above, we did not ﬁnd any previous algorithm in the literature that can be applied directly to SpiNNaker because
+multicast routes are generated often with rather different objectives and restrictions.
+
+Fig. 4. Example of neural communications depicting short-range (blue) and long-range (green) projections. (For interpretation of the references to color in
+this ﬁgure legend, the reader is referred to the web version of this article.)
+
+54
+
+J. Navaridas et al. / Parallel Computing 45 (2015) 49–66
+
+(a) Dimension Order Routing
+
+(b) Longest Dimension First Routing
+
+(c) Enhanced Shortest Path Routing
+
+(d) Neighbour Exploring Routing
+
+Fig. 5. Example of multicast trees for each algorithm. Legend: ‘x’ source, ‘o’ destinations, ‘⁄’ an entry is required in routing table, ‘-’ ‘|’ ‘/’ default route (no
+entry needed).
+
+For this reason our starting point was to consider and to adapt oblivious routing algorithms typically used in unicast
+interconnects [10]. Dimension order routing (DOR), which is typically the baseline multicast routing in cube-like topologies
+[30], was our ﬁrst approach. Further we implemented longest dimension ﬁrst routing (LDFR), another well-known algorithm
+and a good candidate because, as we will see later on, it favours route overlapping. Also, we devised two novel, more sophisticated algorithms which make intelligent decisions by exploring how to connect different branches of the multicast tree to
+avoid inefﬁcient parallel branches.
+In the algorithmic deﬁnitions below, all the functions have comprehensible names and will not be discussed unless
+required for a proper explanation of the algorithm. In all cases, source represents the node for which the multicast route
+is being generated, destinations contains the destination set and route stores the multicast route under construction. All
+the proposed algorithms work in a greedy fashion: they start with an empty route and build the multicast route by adding
+links in a destination-by-destination basis as determined by the algorithm. More elaborated algorithms with backtracking
+facilities or randomised search could be proposed, but as the generation time is an important concern we have tried to keep
+things as simple as practically possible. Exemplar multicast routes generated with each algorithm are shown in Fig. 5. Note
+that in all the discussions following, we consider the diagonal a third, non-orthogonal dimension (namely, W). Note also that
+the algorithms presented here are focused on SpiNNaker’s triangular torus topology (see Fig. 2 again), but are not restricted
+to it. The proposed algorithms are general enough so they could be extended to any mesh-like topology—e.g. the 3D torus
+topologies implemented in IBM BlueGene/L [1] and BlueGene/P [3] and Cray’s XT supercomputers [44], the 5D topology in
+IBM’s BlueGene/Q [36] or the 6D Tofu interconnect in the K computer [2].
+4.1. Dimension order routing
+Dimension Order Routing (DOR) is, by far, the most common routing strategy used in mesh-like interconnection networks. For this reason it was the ﬁrst algorithm implemented in SpiNNaker and the one that has been used in the small-scale
+simulations run up to date (using a few 48-chip boards). However, as we will see later, this algorithm may not be adequate
+because of the high number of parallel branches it generates (as easily appreciated in Fig. 5). For this reason we aim to
+replace it with a better-suited routing algorithm for the scaled up versions of SpiNNaker. The DOR description is very simple:
+follow a path from the source to each destination travelling dimensions in order (in our implementation we ﬁrst advance
+through X, then through Y and then through W but, as the topology is vertex symmetric, any order of dimensions would lead
+to similar results). This will result in only shortest paths being considered with most communications sharing dimension X.
+The algorithmic deﬁnition of this strategy is shown in Algorithm 1. Function dor returns the collection of links traversed from
+source to d using dimension order.
+Algorithm 1. Multicast route generation with DOR
+Input: The location of the source node (source)
+A collection of locations for the destination nodes (destinations).
+Output: The generated route.
+route = Ø
+for each destination d in destinations
+path = dor (source, d)
+for each link l in path
+if l is not in route
+add (l, route)
+return route
+
+J. Navaridas et al. / Parallel Computing 45 (2015) 49–66
+
+55
+
+4.2. Longest dimension ﬁrst routing
+Longest Dimension First Routing (LDFR) is the ﬁrst replacement for DOR implemented in SpiNNaker [11]. It uses another
+classic algorithm which also ensures shortest paths. In LDFR, routes are generated travelling ﬁrst in the dimensions with
+more hops. This favours the sharing of resources in all the dimensions and reduces the number of inefﬁcient parallel
+branches which, in turn, results in lighter use of the communications infrastructure (compare Fig. 5(a) and (b)). Note that
+if two dimensions have the same number of hops, one of them will be chosen at random. The deﬁnition of this strategy
+(see Algorithm 2) is similar to DOR’s, but using a different routing function, ldfr which returns the links traversed using
+longest ﬁrst routing.
+Algorithm 2. Multicast route generation with LDFR
+Input: The location of the source node (source)
+A collection of locations for the destination nodes (destinations).
+Output: The generated route.
+route = Ø
+for each destination d in destinations
+path = ldfr (source, d)
+for each link l in path
+if l is not in route
+add (l, route)
+return route
+
+4.3. Enhanced shortest path routing
+Enhanced Shortest Path Routing (ESPR) is a more complex strategy, but is still restricted to use shortest path routes. Each
+destination, d, looks for the closest route segment, c, (the source, an already considered destination or a bypassed node)
+reachable using a shortest path towards the source and adds the route from c to d (using longest ﬁrst routing) to the solution.
+If no intermediate route segment is found, then c will default to be the source. ESPR creates similar multicast routes to those
+produced by the LDFR strategy but reduces the number of inefﬁcient parallel branches when several nodes are close to each
+other as can be seen clearly in the bottom branches of Fig. 5(b) and (c) (highlighted with a red dotted square for the sake of
+clarity). Algorithm 3 shows ESPR’s pseudo-code. There are some implementation decisions that have a clear impact on the
+performance of this algorithm: whether the destinations are sorted or not by proximity to the source and whether connection is restricted to some types of route segment only. Section 7 evaluates in detail and discusses the effects of these two
+decisions allowing us to improve the effectiveness of ESPR.
+Algorithm 3. Multicast route generation with ESPR
+Input: The location of the source node (source)
+A collection of locations for the destination nodes (destinations).
+The sorting method to use, if any (sort)
+The type of valid route points (connect)
+Output: The generated route.
+route = Ø
+sort(destinations)
+for each destination d in destinations
+c = closest (source, d, connect)
+path = ldfr (c, d)
+for each link l in path
+if l is not in route
+add (l, route)
+return route
+
+4.4. Neighbour Exploring Routing
+The last strategy, called Neighbour Exploring Routing (NER), expands the exploration to all directions, not restricting to go
+towards the source. Each destination, d, looks for the closest route segment, s, in its surroundings and adds the route between
+s and d to the solution. This way, as each node is connected to its closest route segment, the requirements in terms of
+network resources should be reduced drastically. Algorithm 4 shows the pseudo-code deﬁnition of this strategy. Function
+
+56
+
+J. Navaridas et al. / Parallel Computing 45 (2015) 49–66
+
+surroundings performs the search for the closest route point. It explores around a destination (ﬁrst at distance one, then two,
+and so on within the given range) for a valid route point. As with ESPR, the efﬁciency of this algorithm is affected by the sorting, the type of valid route segments and, also, the exploration range. These parameters are explored in detail in Section 7 in
+order to enable the best implementation possible of NER.
+Algorithm 4. Multicast route generation with NER
+Input: The location of the source node (source)
+A collection of locations for the destination nodes (destinations).
+The sorting method to use, if any (sort)
+The range to explore (range)
+The type valid connection points (connect)
+Output: The generated route.
+route = Ø
+sort(destinations)
+for each destination d in destinations
+s = surroundings (d, range, connect)
+path = ldfr (s, d)
+for each link l in path
+if l is not in route
+add (l, route)
+return route
+
+5. Experimental set-up
+From the example multicast trees shown in Fig. 5 the differences in terms of number of network resources employed by
+each of the algorithms are already apparent. We will proceed now to evaluate how they will behave when generating routes
+for the largest possible SpiNNaker conﬁguration (256 Â 256 nodes) and workloads covering a wide range of scenarios, some
+of them far beyond the most extreme conﬁgurations expected. We will study conﬁgurations having between 1 and 2048 different destination nodes. Given the high number of neurons we can multiplex within a chip, the high locality nature of the
+trafﬁc and the neural network generation procedure implemented in SpiNNaker [11] the number of destination nodes should
+not exceed the tens very often. The cases with above one hundred destination nodes should be considered worst-case.
+As discussed in Section 3, there are several important ﬁgures of merit: (i) use of network resources, (ii) number of entries
+in the routing tables, (iii) compute time required to construct the multicast routes. In our results, we show average values
+obtained from executing the algorithms for 200,000 different random samples for each conﬁguration. All the samples
+remained the same across the different experiments. The experimental platform was a 64-core AMD Opteron(TM) Processor
+6276 with 256 GB of RAM with low (but non-zero) background load. Time measurements are precise and reliable but hindered by sample-generation and stat-capturing instrumentation. This instrumentation is algorithm-independent and should
+not affect the discussions signiﬁcantly.
+5.1. Uniformly distributed distances
+Our study starts with a worst-case scenario in which destinations are selected without any locality or clustering. This will
+stress the communications fabric because of the large distances and the low resource sharing. This trafﬁc model represents
+system conﬁgurations in which the allocation of populations to chips is very poor and, therefore, the intense pressure
+exerted on the communication fabric can be used as a motivation for an effective allocation policy for irregular and/or
+unstructured neural nets. In this model, we select randomly a distance, and then a destination at that distance from the
+source. Note that this does not create a uniform distribution of destinations but empirical comparison showed that the destination distribution is similarly challenging to a pure uniform distribution but the experimentation time is reduced
+considerably.
+5.2. Centroid-based trafﬁc
+A more reﬁned model is the centroid-based trafﬁc model which resembles neural communications (as explained in Section 3.2) and, in addition, provides a ﬂexible workload capable of varying the degree of locality of communications. In this
+model each centroid deﬁnes the centre of a long-range projection and has a 5% of probability of being chosen by destinations.
+In other words, destinations will be clustered around the source and around each of the centroids—see Fig. 6, where the
+probability distribution of a 4-centroid example is shown. The location of each centroid is selected uniformly with a single
+restriction: they have to be located at a distance of, at least, 32 hops from the source node to ensure that the centroids are
+
+J. Navaridas et al. / Parallel Computing 45 (2015) 49–66
+
+57
+
+100
+
+200
+
+100
+
+200
+
+Fig. 6. Example of a randomly-generated destination distribution with four centroids. For the sake of clarity, the source is located at node (128, 128) in the
+centre of the topology. Darker means higher probability of a node being selected as destination.
+
+actually located in a remote area of the network. In this paper we considered four and ten centroids, with 20% and 50% probability, respectively, of destinations belonging to long-range projections. Once a destination is assigned to a centroid or to the
+area around the source, it selects randomly a node using an exponential distribution of the distance, so that closer nodes are
+more likely to be selected. Selecting the same node more than once is not permitted so, if a node has been selected before, a
+new destination will be chosen.
+5.3. Thalamocortical model
+We close our experimentation with a simpliﬁed biologically-inspired thalamocortical model [46] based on cortical columns. Cortical columns [15] are hypothesised to support the information-processing carried out by the cortex and offer a good
+demonstration for scalable neural systems. In addition, they provide a good model to exercise the capabilities of the routing
+algorithms. The model is rather simple: columns are divided into layers with high levels of connectivity within. Some of the
+layers may be connected to the same layer in physically adjacent columns, typically with higher connectivity to closer columns.
+A high-level depiction of the model used in our evaluation can be seen in Fig. 7. Fig. 7(a) shows a ﬁve-layer cortical columns in which circles represent populations—with the number of neurons within—, whereas arrows represent the projections: solid for short-range and dotted blue for long-range projections. The structure of the long-range projections between
+different cortical columns can be seen in Fig. 7(b) in which the circles represent cortical columns, and the arrows represent
+the projections among them. All the cortical columns follow the same structure of projections. For the sake of completeness
+we considered three scenarios with increasing connectivity: connections to neighbours (i) at distance one, (ii) at distance one
+or two, (iii) at distances one, two or three. Note that four columns ﬁt in a SpiNNaker chip and that columns are allocated
+sequentially from the pool of columns. This means that all the populations in a column will be located in the same chip,
+so short-range connections will not generate any remote node destination. Similarly, a small fraction of the long range connections will be between columns located within the same chip. The rest of long-range projections will either be located in
+remote areas of the network (distance > 125) or just around the source (distance < 3). For a more detailed explanation of the
+thalamocortical model please refer to [11]. Note that this model generates the least demanding patterns of all the trafﬁc
+models considered in our study and requires, at most 20 destination nodes.
+6. Performance evaluation
+As discussed there are three implementation details which may have a substantial effect on the performance and effectiveness of ESPR and NER algorithms. In the previous paper, we made these decisions arbitrarily without further justiﬁcation
+or evaluation. This section builds upon that and performs a comprehensive analysis of the tradeoffs involved and helps to
+understand better the algorithms and to look for the best implementation. We will close this section by comparing these
+enhanced implementations against the two oblivious algorithms (DOR and LDFR).
+6.1. Sorting of destinations in ESPR and NER
+Given that the routes are created incrementally, the order in which we process the destinations will have a deﬁnite
+impact on the efﬁciency of routes generated by ESPR and NER. A priori, processing the destinations from the closest to
+
+58
+
+J. Navaridas et al. / Parallel Computing 45 (2015) 49–66
+Excitatory
+populations
+
+Inhibitory
+populations
+
+Layer 2/3
+
+Layer
+2/3
+
+Layer 2/3
+
+Layer
+2/3
+
+512
+
+128
+
+Layer
+Layer 4
+4
+
+Layer
+Layer 4
+4
+
+512
+
+128
+
+Layer
+Layer 5
+5
+
+Layer
+Layer 5
+5
+
+128
+
+32
+
+Layer
+Layer 6
+6
+
+Layer
+Layer 6
+6
+
+384
+
+96
+
+(a) Example of cortical columns showing the populations within.
+
+(b) Inter-cortical-column projections (at distance one).
+
+Fig. 7. Details of the thalamocortical model.
+
+12000
+
+4500
+ESPR-bsort
+
+ESPR-isort
+3500
+
+ESPR-bkt1
+ESPR-nosort
+
+8000
+
+Traversed links
+
+Traversed links
+
+ESPR-bsort
+
+4000
+
+ESPR-isort
+
+10000
+
+NER-bsort
+6000
+
+NER-isort
+NER-bkt1
+NER-nosort
+
+4000
+
+ESPR-bkt1
+ESPR-nosort
+
+3000
+
+NER-bsort
+
+2500
+
+NER-isort
+
+2000
+
+NER-bkt1
+NER-nosort
+
+1500
+1000
+
+2000
+500
+0
+
+0
+1
+
+2
+
+4
+
+8
+
+16
+
+32
+
+64
+
+128
+
+256
+
+512
+
+1024
+
+2048
+
+1
+
+2
+
+4
+
+8
+
+Number of destinations
+
+16
+
+32
+
+64
+
+128
+
+256
+
+512
+
+1024
+
+2048
+
+Number of destinations
+
+(a) Uniformly distributed distances
+
+(b) 10-centroid model
+150
+
+3500
+ESPR-bsort
+3000
+
+ESPR-isort
+
+125
+
+ESPR-nosort
+
+2000
+
+NER-bsort
+
+Traversed links
+
+Traversed links
+
+ESPR-bkt1
+2500
+
+NER-isort
+1500
+
+NER-bkt1
+NER-nosort
+
+100
+
+75
+
+50
+
+1000
+25
+
+500
+0
+
+0
+1
+
+2
+
+4
+
+8
+
+16
+
+32
+
+64
+
+128
+
+256
+
+512
+
+1024
+
+2048
+
+dist ≤ 1
+
+dist ≤ 2
+
+Number of destinations
+
+Long-range projections distance
+
+(c) 4-centroid model
+
+(d) Thalamocortical model
+
+dist ≤ 3
+
+Fig. 8. Employed network resources (links traversed).
+
+the furthest seems preferable because it would facilitate remote destinations to ﬁnd a connection point once the closer ones
+are placed and will also minimize the incidence of backwards connections in NER.
+In our ﬁrst implementation [39], we took this into consideration and assumed destination nodes were sorted as a precondition in NER. To comply with this condition we naïvely implemented a simple iterative bubble sort (bsort in the plots). This
+seemed appropriate because the routing will normally be dealing with small number of destinations and because the ultimate goal of the routing algorithms is to be ofﬂoaded to SpiNNaker whose cores have quite limited resources. This discouraged the use of recursive algorithms (such as quicksort or merge sort) as they will quickly deplete the small local memories
+just to maintain the application stack. However, bubblesort is known [29] not to perform quite well with randomly distributed data such as most of the destination distributions employed in this study. For this reason we also consider here insertion sort (isort) which should get higher performance.1 Even when this algorithm generally performs better, the sorting can
+still dominate generation time. For this reason, we considered a simpler solution: rather than performing a full sort of the destinations, we decided to use a bucket approach to simplify sorting. The original idea was to split the destinations into a few
+buckets and then sort the buckets, but then we decided to take advantage of the distance being a discrete variable. This way
+we can have a bucket for each possible distance (bkt1) so that the sorting step is avoided completely, effectively transforming
+an O(n2) problem into O(n). We tried several bucket conﬁgurations with and without sorting and we found this to be always the
+best option in every aspect. For the sake of simplicity, we do not plot other bucket conﬁgurations here.
+
+1
+
+Note that performing an analysis of the wide range of existing sorting algorithms is outside of the scope of this paper.
+
+59
+
+J. Navaridas et al. / Parallel Computing 45 (2015) 49–66
+
+As expected, sorting can help to reduce the consumed resources—both bandwidth (Fig. 8) and routing table entries
+(Fig. 9)—as it favours connections to closer areas to the multicast trees. This difference is increasingly noticeable as the number of destinations grows and can reach a saving of 20% in terms of bandwidth and 5% reduction of the routing table entries
+for ESPR. The other algorithm (NER) seems to be inﬂuenced less by sorting but still beneﬁts from it, especially in terms of
+routing entries. If we look at the route generation times in Fig. 10, we can see how the use of the sorting functions can
+become quite prohibitive for large number of destinations. Although, as explained above, very large numbers of destinations
+are not expected in the target application, we deem it good practice to get ride of them and use the bucket approach instead.
+
+3500
+
+3000
+ESPR-bsort
+
+3000
+
+ESPR-bsort
+
+ESPR-isort
+
+ESPR-isort
+
+2500
+
+2500
+
+ESPR-bkt1
+Routing table entries
+
+Routing table entries
+
+ESPR-bkt1
+ESPR-nosort
+
+2000
+
+NER-bsort
+NER-isort
+
+1500
+
+NER-bkt1
+NER-nosort
+
+1000
+
+ESPR-nosort
+
+2000
+
+NER-bsort
+1500
+
+NER-isort
+NER-bkt1
+NER-nosort
+
+1000
+
+500
+
+500
+0
+
+0
+1
+
+2
+
+4
+
+8
+
+16
+
+32
+
+64
+
+128
+
+256
+
+512
+
+1024
+
+2048
+
+1
+
+2
+
+4
+
+8
+
+16
+
+Number of destinations
+
+32
+
+64
+
+128
+
+256
+
+512
+
+1024
+
+2048
+
+Number of destinations
+
+(a) Uniformly distributed distances
+
+(b) 10-centroid model
+
+2500
+
+25
+ESPR-bsort
+ESPR-isort
+20
+
+ESPR-bkt1
+Routing table entries
+
+Routing table entries
+
+2000
+
+ESPR-nosort
+1500
+NER-bsort
+NER-isort
+NER-bkt1
+
+1000
+
+NER-nosort
+500
+
+15
+
+10
+
+5
+
+0
+
+0
+1
+
+2
+
+4
+
+8
+
+16
+
+32
+
+64
+
+128
+
+256
+
+512
+
+1024
+
+dist ≤ 1
+
+2048
+
+di st ≤ 2
+
+Number of destinations
+
+dist ≤ 3
+
+Long-range projections distance
+
+(c) 4-centroid model
+
+(d) Thalamocortical model
+Fig. 9. Employed routing table entries.
+
+50
+
+60
+
+ESPR-bsort
+
+ESPR-bsort
+
+ESPR-isort
+
+ESPR-isort
+
+50
+
+40
+
+ESPR-nosort
+
+40
+
+Execution time (ms)
+
+Execution time (ms)
+
+ESPR-bkt1
+
+NER-bsort
+30
+
+NER-isort
+NER-bkt1
+NER-nosort
+
+20
+
+ESPR-bkt1
+ESPR-nosort
+
+30
+NER-bsort
+NER-isort
+NER-bkt1
+
+20
+
+NER-nosort
+10
+
+10
+
+0
+
+0
+1
+
+2
+
+4
+
+8
+
+16
+
+32
+
+64
+
+128
+
+256
+
+512
+
+1024
+
+1
+
+2048
+
+2
+
+4
+
+8
+
+16
+
+32
+
+64
+
+128
+
+256
+
+512
+
+1024
+
+Number of destinations
+
+Number of destinations
+
+(a) Uniformly distributed distances
+
+(b) 10-centroid model
+0.75
+
+40
+ESPR-bsort
+35
+
+ESPR-isort
+ESPR-nosort
+
+Execution time (ms)
+
+Execution time (ms)
+
+0.60
+
+ESPR-bkt1
+
+30
+25
+
+NER-bsort
+20
+
+NER-isort
+NER-bkt1
+
+15
+
+NER-nosort
+
+0.45
+
+0.30
+
+10
+0.15
+5
+0
+
+0.00
+1
+
+2
+
+4
+
+8
+
+16
+
+32
+
+64
+
+128
+
+256
+
+512
+
+1024
+
+2048
+
+dist ≤ 1
+
+di st ≤ 2
+
+Number of destinations
+
+Long-range projections distance
+
+(c) 4-centroid model
+
+(d) Thalamocortical model
+Fig. 10. Execution time to generate a route.
+
+dist ≤ 3
+
+2048
+
+60
+
+J. Navaridas et al. / Parallel Computing 45 (2015) 49–66
+
+The bucket version gets the beneﬁts of sorting but, at the same time, is generally able to generate routes faster than the
+nosort version. This is easily explained by the fact that bkt1 commonly has a connecting segment closer than nosort, and
+so the exploration step ﬁnalizes earlier. These results motivate the use of bkt1 in the ﬁnal implementation and, hence, it will
+be the only one considered in the graphs hereafter.
+6.2. Connection policy in ESPR and NER
+Another important implementation detail is where to connect to when exploring. There exist three possibilities, in
+increasingly restrictive order: (i) connect to any route point, even if that implies adding an extra routing table entry—marked
+as any, in the plots—, (ii) connect only to nodes in which there is already a routing entry—entries –, (iii) connect to other destination nodes only—nodes.
+Figs. 11–13 show the number of traversed links, the employed routing table entries and the route generation time,
+respectively. We can see that differences are not as signiﬁcant now (mostly below 8%) as they were in the previous case.
+In general we can see that the less restrictive the connection policy is the faster the generation and the fewer the links used
+are but at the cost of more routing table entries. This can be explained by the fact that a more restrictive a policy will need to
+discard more possibilities for connection, so that the exploration step will take longer and connections may not be made to
+the closest segments. Again NER seems to be affected less than ESPR by this implementation decision.
+In this set of experiments, it is worth mentioning the special pathological case in the Thalamocortical model (in
+Fig. 11(d)). We can see that when the model has connections with neighbours at distance three, ESPR is signiﬁcantly harmed
+by the two restrictive policies (node and entries). This is because, preventing connections to parts of the multicast tree that do
+not have a routing table favours the kind of the parallel branches we are aiming to avoid (see Fig. 5 again). In this speciﬁc
+case, two long parallel branches are not prevented by the node and entries policies, which can otherwise be prevented by the
+non-restrictive any policy. This, together with the overall lower network requirement and faster route generation, tips the
+balance in favour of the latter. Consequently, we decided to use the any policy in the ﬁnal implementation and will stick
+to it in the following evaluations.
+6.3. Range of NER
+Given that NER looks for connection points in all directions, the range at which it looks for connecting segments also has
+an impact on the algorithm efﬁciency. Intuitively, a greater range means a larger space to explore, so routes will be generated
+more slowly. On the other hand, a larger exploration area anticipates a potentially better route. However, given that connections are not restricted to go towards the source, it may happen that sometimes a poor direction is taken. This is especially
+true if the destinations are not sorted as the closer connection segment is likely to be in the opposite direction of the source.
+
+4500
+
+10000
+ESPR-nodes
+
+9000
+8000
+
+ESPR-entries
+
+3500
+
+ESPR-any
+
+7000
+6000
+
+NER-node
+
+5000
+
+NER-entries
+
+Traversed links
+
+Traversed links
+
+ESPR-nodes
+
+4000
+
+ESPR-entries
+
+NER-any
+
+4000
+3000
+
+NER-node
+
+2500
+
+NER-entries
+
+2000
+
+NER-any
+
+1500
+
+2000
+
+1000
+
+1000
+
+500
+
+0
+
+ESPR-any
+
+3000
+
+0
+1
+
+2
+
+4
+
+8
+
+16
+
+32
+
+64
+
+128
+
+256
+
+512
+
+1
+
+1024 2048
+
+2
+
+4
+
+8
+
+16
+
+32
+
+64
+
+128
+
+256
+
+512
+
+1024 2048
+
+Number of destinations
+
+Number of destinations
+
+(a) Uniformly distributed distances
+
+(b) 10-centroid model
+
+3500
+
+300
+ESPR-nodes
+
+3000
+
+ESPR-entries
+
+250
+Traversed links
+
+Traversed links
+
+ESPR-any
+
+2500
+NER-node
+
+2000
+
+NER-entries
+NER-any
+
+1500
+
+200
+150
+100
+
+1000
+50
+
+500
+0
+
+0
+1
+
+2
+
+4
+
+8
+
+16
+
+32
+
+64
+
+128
+
+Number of destinations
+
+(c) 4-centroid model
+
+256
+
+512
+
+1024 2048
+
+dist ≤ 1
+
+dist ≤ 2
+Long-range projections distance
+
+(d) Thalamocortical model
+
+Fig. 11. Employed network resources (links traversed).
+
+dist ≤ 3
+
+61
+
+J. Navaridas et al. / Parallel Computing 45 (2015) 49–66
+2500
+
+3500
+ESPR-nodes
+3000
+
+ESPR-nodes
+
+ESPR-entries
+
+ESPR-entries
+2000
+
+2500
+
+Routing table entries
+
+Routing table entries
+
+ESPR-any
+NER-node
+2000
+
+NER-entries
+NER-any
+
+1500
+1000
+
+ESPR-any
+NER-node
+
+1500
+
+NER-entries
+NER-any
+1000
+
+500
+500
+0
+
+0
+1
+
+2
+
+4
+
+8
+
+16
+
+32
+
+64
+
+128
+
+256
+
+512
+
+1024
+
+1
+
+2048
+
+2
+
+4
+
+8
+
+16
+
+32
+
+64
+
+128
+
+256
+
+512
+
+1024
+
+2048
+
+Number of destinations
+
+Number of destinations
+
+(a) Uniformly distributed distances
+
+(b) 10-centroid model
+
+2500
+
+25
+ESPR-nodes
+ESPR-entries
+20
+
+ESPR-any
+Routing table entries
+
+Routing table entries
+
+2000
+
+NER-node
+
+1500
+
+NER-entries
+NER-any
+1000
+
+500
+
+15
+
+10
+
+5
+
+0
+
+0
+1
+
+2
+
+4
+
+8
+
+16
+
+32
+
+64
+
+128
+
+256
+
+512
+
+1024
+
+dist ≤ 1
+
+2048
+
+di st ≤ 2
+
+Number of destinations
+
+dist ≤ 3
+
+Long-range projections distance
+
+(c) 4-centroid model
+
+(d) Thalamocortical model
+Fig. 12. Employed routing table entries.
+
+6
+
+4
+ESPR-nodes
+
+ESPR-nodes
+
+ESPR-entries
+ESPR-any
+
+ESPR-any
+Execution time (ms)
+
+3
+Execution time (ms)
+
+ESPR-entries
+
+5
+
+NER-node
+NER-entries
+
+2
+
+NER-any
+
+4
+NER-node
+NER-entries
+
+3
+
+NER-any
+2
+
+1
+1
+
+0
+
+0
+1
+
+2
+
+4
+
+8
+
+16
+
+32
+
+64
+
+128
+
+256
+
+512
+
+1024
+
+1
+
+2048
+
+2
+
+4
+
+8
+
+16
+
+32
+
+64
+
+128
+
+256
+
+512
+
+1024
+
+2048
+
+Number of destinations
+
+Number of destinations
+
+(a) Uniformly distributed distances
+
+(b) 10-centroid model
+
+7
+
+0.75
+ESPR-nodes
+
+6
+
+ESPR-entries
+
+0.60
+Execution time (ms)
+
+Execution time (ms)
+
+ESPR-any
+5
+NER-node
+
+4
+
+NER-entries
+NER-any
+
+3
+2
+
+0.45
+
+0.30
+
+0.15
+1
+0
+
+0.00
+1
+
+2
+
+4
+
+8
+
+16
+
+32
+
+64
+
+128
+
+256
+
+512
+
+1024
+
+2048
+
+dist ≤ 1
+
+di st ≤ 2
+
+Number of destinations
+
+Long-range projections distance
+
+(c) 4-centroid model
+
+(d) Thalamocortical model
+
+dist ≤ 3
+
+Fig. 13. Execution time to generate a route.
+
+The longer the range is, the larger can be the impact of one of these poor decisions. For this reason we need to investigate
+which are the appropriate values for this parameter and what tradeoffs are entailed.
+Figs. 14–16 show the number of traversed links, the employed routing table entries and the route generation time,
+respectively. From there, the ﬁrst thing we can notice is that the number of routing table entries is barely affected by the
+range. Shorter ranges can require slightly more entries for large sets of destinations, but in general, this resource seems
+to be rather independent from the range, so we can discard it from the discussion. From the perspective of the number of
+links employed, it seems that range values above 20 can generally offer good results. It is noticeable that, as we move
+
+62
+
+J. Navaridas et al. / Parallel Computing 45 (2015) 49–66
+12000
+
+3500
+range=5
+range=10
+range=20
+range=30
+range=40
+range=60
+range=80
+
+8000
+
+6000
+
+range=5
+range=10
+range=20
+range=30
+range=40
+range=60
+range=80
+
+3000
+2500
+Traversed links
+
+Traversed links
+
+10000
+
+4000
+
+2000
+1500
+1000
+
+2000
+
+500
+
+0
+
+0
+1
+
+2
+
+4
+
+8
+
+16
+
+32
+
+64
+
+128
+
+256
+
+512
+
+1024
+
+2048
+
+1
+
+2
+
+4
+
+8
+
+(a) Uniformly distributed distances
+
+32
+
+64
+
+128
+
+256
+
+512
+
+1024
+
+2048
+
+(b) 10-centroid model
+
+3000
+
+150
+range=5
+range=10
+range=20
+range=30
+range=40
+range=60
+range=80
+
+2000
+
+1500
+
+125
+
+Traversed links
+
+2500
+
+Traversed links
+
+16
+
+Number of destinations
+
+Number of destinations
+
+1000
+
+500
+
+100
+
+75
+
+50
+
+25
+
+0
+
+0
+1
+
+2
+
+4
+
+8
+
+16
+
+32
+
+64
+
+128
+
+256
+
+512
+
+1024
+
+dist ≤ 1
+
+2048
+
+dist ≤ 2
+
+Number of destinations
+
+dist ≤ 3
+
+Long-range projections distance
+
+(c) 4-centroid model
+
+(d) Thalamocortical model
+
+Fig. 14. Employed network resources (links traversed).
+
+3500
+
+2500
+range=5
+range=10
+range=20
+range=30
+range=40
+range=60
+range=80
+
+2500
+2000
+
+range=5
+range=10
+range=20
+range=30
+range=40
+range=60
+range=80
+
+2000
+Routing table entries
+
+Routing table entries
+
+3000
+
+1500
+1000
+
+1500
+
+1000
+
+500
+500
+0
+
+0
+1
+
+2
+
+4
+
+8
+
+16
+
+32
+
+64
+
+128
+
+256
+
+512
+
+1024
+
+2048
+
+1
+
+2
+
+Number of destinations
+
+8
+
+16
+
+32
+
+64
+
+128
+
+256
+
+512
+
+1024
+
+2048
+
+Number of destinations
+
+(a) Uniformly distributed distances
+
+(b) 10-centroid model
+
+2500
+
+25
+range=5
+range=10
+range=20
+range=30
+range=40
+range=60
+range=80
+
+1500
+
+20
+Routing table entries
+
+2000
+Routing table entries
+
+4
+
+1000
+
+500
+
+15
+
+10
+
+5
+
+0
+
+0
+1
+
+2
+
+4
+
+8
+
+16
+
+32
+
+64
+
+128
+
+256
+
+512
+
+1024
+
+2048
+
+dist ≤ 1
+
+Number of destinations
+
+di st ≤ 2
+
+dist ≤ 3
+
+Long-range projections distance
+
+(c) 4-centroid model
+
+(d) Thalamocortical model
+Fig. 15. Employed routing table entries.
+
+towards higher locality trafﬁc, the effects of the range are diluted: with uniform the difference can be up to 40%, this goes
+down to 10% for 10-centroid model, further down to 5% for 4-centroid model and becomes completely undistinguishable for
+the thalamocortical model. If we focus on route generation time, range 20 tends to remain quite competitive in most cases.
+Ranges 30 and 40 seem acceptable as well for all cases but uniform. Longer ranges would require quite longer generation
+times. Overall, values between 20 and 30 seem to be the sweet spot for this parameter. Given the small differences between
+their results, doing a ﬁne-grained evaluation between these two values would not add extra value to this research so, for the
+ﬁnal evaluation below, we will stick to the value of 20 we arbitrarily selected in our previous paper.
+
+63
+
+J. Navaridas et al. / Parallel Computing 45 (2015) 49–66
+6
+range=5
+range=10
+range=20
+range=30
+range=40
+range=60
+range=80
+
+3
+
+2
+
+range=5
+range=10
+range=20
+range=30
+range=40
+range=60
+range=80
+
+5
+Execution time (ms)
+
+Execution time (ms)
+
+4
+
+4
+
+3
+
+2
+
+1
+1
+
+0
+
+0
+1
+
+2
+
+4
+
+8
+
+16
+
+32
+
+64
+
+128
+
+256
+
+512
+
+1024
+
+1
+
+2048
+
+2
+
+4
+
+8
+
+16
+
+(a) Uniformly distributed distances
+
+64
+
+128
+
+256
+
+512
+
+1024
+
+2048
+
+(b) 10-centroid model
+
+7
+
+1.2
+range=5
+range=10
+range=20
+range=30
+range=40
+range=60
+range=80
+
+5
+4
+
+1
+Execution time (ms)
+
+6
+Execution time (ms)
+
+32
+
+Number of destinations
+
+Number of destinations
+
+3
+2
+
+0.8
+
+0.6
+
+0.4
+
+0.2
+
+1
+0
+
+0
+1
+
+2
+
+4
+
+8
+
+16
+
+32
+
+64
+
+128
+
+256
+
+512
+
+1024
+
+dist ≤ 1
+
+2048
+
+dist ≤ 2
+
+dist ≤ 3
+
+Long-range projections distance
+
+Number of destinations
+
+(c) 4-centroid model
+
+(d) Thalamocortical model
+Fig. 16. Execution time to generate a route.
+
+1.2
+Traversed links (normalized to DOR)
+
+Traversed links (normalized to DOR)
+
+1.2
+
+1.0
+
+0.8
+
+0.6
+
+dor
+
+0.4
+
+ldfr
+0.2
+
+espr
+
+1.0
+
+0.8
+
+0.6
+
+dor
+
+0.4
+
+ldfr
+0.2
+
+espr
+
+ner
+
+ner
+
+0.0
+
+0.0
+1
+
+2
+
+4
+
+8
+
+16
+
+32
+
+64
+
+128
+
+256
+
+512
+
+1024
+
+2048
+
+1
+
+2
+
+4
+
+8
+
+16
+
+Number of destinations
+
+(a) Uniformly distributed distances
+
+64
+
+128
+
+256
+
+512
+
+1024
+
+2048
+
+(b) 10-centroid model
+500
+
+1.2
+
+dor
+1.0
+
+400
+Traversed links
+
+Traversed links (normalized to DOR)
+
+32
+
+Number of destinations
+
+0.8
+
+0.6
+
+ldfr
+espr
+
+300
+
+ner
+
+200
+dor
+
+0.4
+
+ldfr
+100
+
+espr
+
+0.2
+
+ner
+0.0
+
+0
+1
+
+2
+
+4
+
+8
+
+16
+
+32
+
+64
+
+128
+
+256
+
+512
+
+1024
+
+2048
+
+dist ≤ 1
+
+dist ≤ 2
+
+Number of destinations
+
+(c) 4-centroid model
+
+dist ≤ 3
+
+Number of destinations
+
+(d) Thalamocortical model
+
+Fig. 17. Employed network resources (links traversed).
+
+6.4. Comparison of algorithms
+This subsection will evaluate the four explained algorithms against each other. Recapitulating from above, we consider
+four different algorithms. The baseline are two simple oblivious algorithms: DOR, typically the ﬁrst routing algorithm considered when dealing with multicast in cube-like topologies, which traverses all dimension in order (XYW), and LDFR which
+traverses the dimension with more hops ﬁrst and which was previously shown to be more efﬁcient [39]. Further we have
+
+64
+
+J. Navaridas et al. / Parallel Computing 45 (2015) 49–66
+
+proposed two exploration-based algorithms that explore around the destinations either towards the source (ESPR) or in any
+direction (NER). As per the analyses above, we will consider implementations of these two algorithms in which the destinations are sorted using a bucket approach, use the non-restrictive any connection policy and, in the case of NER, the exploration range is 20.
+Figs. 17–19 show the number of traversed links, the employed routing table entries and the route generation time for
+each algorithm under the different destination distributions. From the ﬁgures we can gather that the two proposed algorithms (ESPR and NER) can reduce signiﬁcantly (up to four times less) the number of traversed links at small cost in terms
+
+1.2
+Routing table entries (normalized to DOR)
+
+Routing table entries (normalized to DOR)
+
+1.4
+1.2
+1.0
+0.8
+0.6
+dor
+
+0.4
+
+ldfr
+espr
+
+0.2
+
+ner
+0.0
+
+1.0
+
+0.8
+
+0.6
+
+0.4
+
+dor
+ldfr
+espr
+
+0.2
+
+ner
+0.0
+
+1
+
+2
+
+4
+
+8
+
+16
+
+32
+
+64
+
+128
+
+256
+
+512
+
+1024
+
+2048
+
+1
+
+2
+
+4
+
+8
+
+Number of destinations
+
+32
+
+64
+
+128
+
+256
+
+512
+
+1024
+
+2048
+
+Number of destinations
+
+(a) Uniformly distributed distances
+
+(b) 10-centroid model
+
+1.2
+
+30
+
+1.0
+
+25
+
+dor
+ldfr
+espr
+Routing table entries
+
+Routing table entries (normalized to DOR)
+
+16
+
+0.8
+
+0.6
+
+0.4
+
+dor
+
+ner
+
+20
+
+15
+
+10
+
+ldfr
+0.2
+
+5
+
+espr
+ner
+
+0.0
+
+0
+1
+
+2
+
+4
+
+8
+
+16
+
+32
+
+64
+
+128
+
+256
+
+512
+
+1024
+
+dist ≤ 1
+
+2048
+
+di st ≤ 2
+
+Number of destinations
+
+dist ≤ 3
+
+Number of destinations
+
+(d) Thalamocortical model
+
+(c) 4-centroid model
+Fig. 18. Employed routing table entries.
+
+1.4
+
+1.8
+
+dor
+
+1.6
+
+ldfr
+
+Execution time (normalized to DOR)
+
+Execution time (normalized to DOR)
+
+2.0
+
+espr
+
+1.4
+
+ner
+1.2
+1.0
+0.8
+0.6
+0.4
+
+1.2
+1.0
+0.8
+0.6
+dor
+0.4
+
+ldfr
+espr
+
+0.2
+
+0.2
+
+ner
+
+0.0
+
+0.0
+1
+
+2
+
+4
+
+8
+
+16
+
+32
+
+64
+
+128
+
+256
+
+512
+
+1024
+
+1
+
+2048
+
+2
+
+4
+
+Number of destinations
+
+16
+
+32
+
+64
+
+128
+
+256
+
+512
+
+1024
+
+Number of destinations
+
+(a) Uniformly distributed distances
+
+(b) 10-centroid model
+0.7
+
+1.2
+
+0.6
+
+1.0
+Execution time (ms)
+
+Execution time (normalized to DOR)
+
+8
+
+0.8
+
+0.6
+
+0.4
+
+dor
+
+0.5
+0.4
+0.3
+dor
+0.2
+
+ldfr
+0.2
+
+espr
+
+0.1
+
+ldfr
+espr
+ner
+
+ner
+0.0
+
+0
+1
+
+2
+
+4
+
+8
+
+16
+
+32
+
+64
+
+128
+
+256
+
+512
+
+1024
+
+2048
+
+dist ≤ 1
+
+dist ≤ 2
+Number of destinations
+
+Number of destinations
+
+(c) 4-centroid model
+
+(d) Thalamocortical model
+Fig. 19. Execution time to generate a route.
+
+dist ≤ 3
+
+2048
+
+J. Navaridas et al. / Parallel Computing 45 (2015) 49–66
+
+65
+
+of routing entries or execution time. With the uniformly distributed distances model and large numbers of destinations, the
+price to pay is substantial enough (up to 30% increase in routing entries for both ESPR and NER and 80% increase in terms of
+generation time for NER). For other conﬁgurations, the differences in generation time and entries are consistently below a
+mere 5% and, in fact, sometimes even outperform the baseline algorithms. Considering that this second case resembles better
+the kind of trafﬁc we could expect from actual neural trafﬁc, it is safe to say that the two proposed algorithms are better
+suited for multicast route generation in SpiNNaker than the baseline algorithms.
+Focusing on the algorithms individually, we can see that DOR, the arguably ubiquitous algorithm, is the worst performing
+of all the studied algorithms. This should serve to discourage our colleagues from using this straightforward extension of a
+typical point-to-point routing algorithm to build multicast routes upon. LDFR, also based on an oblivious point-to-point routing algorithm outperforms it in almost every aspect and so should be preferable as the ﬁrst implementation step for future
+architectures. ESPR can consistently reduce network load much further than LDFR while keeping generation time and table
+entries low. Finally NER can reduce trafﬁc even further but may slow down route generation signiﬁcantly when dealing with
+destination distributions with high fan-out and low locality. As this is not expected to be a very common scenario in the real
+system and given that it is the one reducing bandwidth demands the most, NER is the best candidate to be included in SpiNNaker’s operational workﬂow.
+7. Conclusions and future work
+The main contribution of this paper is the description of four routing algorithms to construct multicast trees for mesh-like
+topologies, such as the one in SpiNNaker, and the evaluation of them against a comprehensive number of performance metrics related to the most sensitive resources of SpiNNaker’s communications infrastructure using a reasonable collection of
+trafﬁc models. Our results show that generating multicast routes using DOR, one of the most frequently used algorithms
+for mesh-like topologies, and the ﬁrst one that was implemented on SpiNNaker, is counterproductive because it demands
+the highest network resources both in terms of bandwidth and routing entries. Using DOR may be required to prevent deadlock in some systems, but as for SpiNNaker, it has its own deadlock-avoidance mechanism built-in into the router. Consequently it was substituted by LDFR, another oblivious routing algorithm which proved to be a well-rounded solution as
+the multicast routes can be generated very quickly while keeping resource requirements low and balanced.
+More sophisticated strategies, which look for routes in their surroundings, have also been considered. ESPR searches for
+connections using shortest paths; whereas NER searches in all the surroundings even if no shortest path is used. These two
+strategies can further reduce the network requirements but required some ﬁne-tuning in order to make them competitive—
+especially in terms of generation time. First we found that sorting the destinations based on their distance to the source is
+desirable as it favours building a more effective multicast tree. We also found that restricting the connection points during
+the exploration phase may help reduce a little the number of routing table entries, but may end up resulting in inefﬁcient
+parallel branches. Finally we investigated the effect that the exploration range may have in the NER algorithm and found that
+relatively short ranges (between 20 and 30) should be enough to generate efﬁcient multicast routes without slowing down
+the generation process signiﬁcantly. A comparison of the four algorithms suggests that NER seems to be the best candidate to
+be used for the largest conﬁgurations of SpiNNaker.
+In this paper these four mechanisms have been described and implemented in the context of the SpiNNaker topology, but
+they are general enough to be employed in other mesh-like topologies. For example we could adapt the presented algorithms
+to the 3D tori implemented in state-of-the-art massively parallel processors such as the IBM’s BlueGene or the Cray’s XT families. This adaptation is straightforward simply by using 3D torus routing functions while keeping the strategy formulations,
+as they can use the diagonal as the Z dimension of a 3D topology.
+Acknowledgements
+The SpiNNaker project is supported by the UK Engineering and Physical Sciences Research Council (EPSRC), through Grant
+EP/G015740/1, and also by ARM. Dr Luján holds a Royal Society University Research Fellowship. Steve Temple, Luis Plana and
+Steve Furber are supported by ERC Advanced Grant no. 320689. Dr. Javier Navaridas is supported by the UK Engineering and
+Physical Sciences Research Council (EPSRC), through Grant EP/K015680/1.
+References
+[1] N.R. Adiga. et al., An overview of the BlueGene/L supercomputer, in: Proc. of the ACM/IEEE Supercomputing conference (SC’02). Baltimore, MD, USA,
+2002, pp. 60:1–60:22.
+[2] Y. Ajima, Y. Takagi, T. Inoue, S. Hiramoto, T. Shimizu, The tofu interconnect, in: Proc. of the IEEE 19th Annual Symposium on High Performance
+Interconnects, Santa Clara, CA, USA, 2011, pp. 87–94.
+[3] S. Alam, R. Barrett, M. Bast, M.R. Fahey, J. Kuehn, C. McCurdy, J. Rogers, P. Roth, R. Sankaran, J.S. Vetter, P. Worley, W. Yu, Early evaluation of IBM
+BlueGene/P, in: Proc. of the ACM/IEEE Conference on Supercomputing, Austin, TX, USA, 2008, pp. 1–12.
+[4] R. Ananthanarayanan, S.K. Esser, H.D. Simon, D.S. Modha, The cat is out of the bag: cortical simulations with 109 neurons, 1013 synapses, in: Proc. of
+Conf. on High Performance Computing Networking, Storage and Analysis, SC ’09, New York, NY, USA, 2009, pp. 63:1–63:12.
+[5] K. Asanovic, J. Beck, J. Feldman, N. Morgan, J. Wawrzynek, A supercomputer for neural computation, in: Proc. 1994 International Conference on Neural
+Networks (ICNN94), Orlando, FL, pp. 5–9.
+
+66
+
+J. Navaridas et al. / Parallel Computing 45 (2015) 49–66
+
+[6] S. Bhattacharya, G. Elsesser, W.T. Tsai, D.Z. Du, Multicasting in generalized multistage interconnection networks, J. Parallel Distrib. Comput. 22 (1)
+(1994) 80–95.
+[7] T. Binzegger, R.J. Douglas, K.A. Martin, Topology and dynamics of the canonical circuit of cat V1, Neural Networks 22 (8) (2009) 1071–1078.
+[8] Y. Breitbart, M. Garofalakis, B. Jai, C. Martin, R. Rastogi, A. Silberschatz, Topology discovery in heterogeneous IP networks: the NetInventory system,
+Trans. Network. 12 (3) (2004) 401–414.
+[9] S. Coll, F.J. Mora, J. Duato, F. Petrini, Efﬁcient and scalable hardware-based multicast in fat-tree networks, IEEE Trans. Parallel Distrib. Syst. 20 (9) (2009)
+1285–1298.
+[10] W.J. Dally, B. Towles, Principles and Practices of Interconnection Networks, in: Morgan Kaufmann Series in Computer Architecture and Design, Morgan
+Kaufmann, 2004.
+[11] S. Davies, J. Navaridas, F. Galluppi, S. Furber, Population-based routing in the SpiNNaker neuromorphic architecture, in: International Joint Conference
+on Neural Networks (IJCNN 2012), June 10–15, 2012, Brisbane, Australia, pp. 1–8.
+[12] S. Davies, C. Patterson, F. Galluppi, A.D. Rast, D. Lester, S.B. Furber, Interfacing real-time spiking I/O with the SpiNNaker neuromimetic architecture, in:
+17th International Conference on Neural Information Processing, ICONIP 2010, Sydney, Australia, November 22–25, 2010. Theory and Algorithms
+Lecture Notes in Comput. Sci., vol. 6443, pp 58–65.
+[13] A.P. Davison, D. Brüderle, J. Eppler, J. Kremkow, E. Muller, D. Pecevski, L. Perrinet, P. Yger, PyNN: a common interface for neuronal network simulators,
+Front. Neuroinform. 2 (2008) 11.
+[14] P. Dayan, L. Abbott, Theoretical Neuroscience, MIT Press, Cambridge, 2001.
+[15] J. Defelipe, H. Markram, K.S. Rockland, The neocortical column, Front. Neuroanat. 6 (22) (2012).
+[16] Defense Sciences Ofﬁce, Systems of neuromorphic adaptive plastic scalable electronics (SYNAPSE), 2011.
+[17] T. Elliott, N. Shadbolt, Developmental robotics: manifesto and application, Philos. Trans. R. Soc., A 361 (2003).
+[18] J. Fieres, J. Schemmel, K. Meier, Realizing biological spiking network models in a conﬁgurable wafer-scale hardware system, in: Proc. of the 2008 IEEE
+International Joint Conference on Neural Networks, Hong Kong, 2008, pp. 969–976.
+[19] S.B. Furber, S. Temple, A. Brown, On-chip and inter-chip networks for modelling large-scale neural systems, in: Proc. of the International Symposium
+on Circuits and Systems, ISCAS-2006, Kos, Greece, 2006, pp. 1945–1948.
+[20] A. Gara, J. Moreira, IBM Blue Gene supercomputer, IBM research report, 2011.
+[21] P. Hagmann, L. Cammoun, X. Gigandet, R. Meuli, C.J. Honey, V.J. Wedeen, O. Sporns, Mapping the structural core of human cerebral cortex, PLoS Biol. 6,
+7 (2008) e159.
+[22] S. Herculano-Houzel, The human brain in numbers: a linearly scaled-up primate brain, in: Front. Hum. Neurosci., vol. 3, 2009, p. 31.
+[23] S. Herculano-Houzel, B. Mota, R. Lent, Cellular scaling rules for rodent brains, Proc. Natl. Acad. Sci. USA 103 (32) (2006) 12138–12143.
+[24] W.D. Hillis, L.W. Tucker, The CM-5 connection machine: a scalable supercomputer, Commun. ACM 36 (11) (1993) 31–40.
+[25] E. Izhikevich, Simple model of spiking neurons, Trans. Neural Networks 14 (2003) 1569–1572.
+[26] N.E. Jerger, L.S. Peh, M. Lipasti. Virtual circuit tree multicasting: a case for on-chip hardware multicast support, in: Proc. of the 2008 International
+Symposium on Computer Architecture, Beijing, 2008, pp. 229–240.
+[27] X. Jin, S.B. Furber, J.V. Woods, Efﬁcient modelling of spiking neural networks on a scalable chip multiprocessor, in: Proc. of the 2008 International Joint
+Conference on Neural Networks, Hong Kong, 2008, pp. 2812–2819.
+[28] C. Koch, I. Segev, Methods in Neuronal Modelling, The MIT Press, 1989.
+[29] D.E. Knuth, The Art of Computer Programming, Addison-Wesley, ISBN: 978-0321751041.
+[30] X. Lin, P.K. McKinley, L.M. Ni, Deadlock-free multicast wormhole routing in 2-D mesh multicomputers, IEEE Trans. Parallel Distrib. Syst. 5 (8) (1994)
+793–804.
+[31] X. Lin, L.M. Ni, Multicast communication in multicomputer networks, IEEE Trans. Parallel Distrib. Syst. 4 (10) (1993) 1105–1117.
+[32] W. Maas, C.M. Bishop, Pulsed Neural Networks, The MIT Press, 1998.
+[33] H. Markram, The blue brain project, Nat. Rev. Neurosci. 7 (2) (2006) 153–160.
+[34] R. Menzel, M. Giurfa, Cognitive architecture of a mini-brain: the honeybee, Trends Cognitive Sci. 5 (2) (2001).
+[35] P. Merolla, J. Arthur, F. Akopyan, N. Imam, R. Manohar, D.S. Modha, A digital neurosynaptic core using embedded crossbar memory with 45 pJ per spike
+in 45 nm, in: Custom Integrated Circuits Conference, San Jose, CA, 2011.
+[36] J. Milano, P. Lembke, IBM System Blue Gene Solution: Blue Gene/Q Hardware Overview and Installation Planning, IBM Red Books, 2012.
+[37] J. Navaridas, M. Luján, J. Miguel-Alonso, L.A. Plana, S.B. Furber, Understanding the interconnection network of SpiNNaker, in: Proc. of the 23rd
+International Conference on Supercomputing, York Town Heights, NY, 2009.
+[38] J. Navaridas, M. Luján, L.A. Plana, J. Miguel-Alonso, S.B. Furber, Analytical assessment of the suitability of multicast communications for the SpiNNaker
+neuromimetic system, in: IEEE International Conference on High Performance Computing and Communications (HPCC 2012), June 25–27, 2012,
+Liverpool, United Kingdom, pp 1–8.
+[39] J. Navaridas, M. Lujan, L. Plana, S. Temple, S. Furber, On generating multicast routes for SpiNNaker, a massively-parallel system for neural net
+simulation, in: ACM Computing Frontiers 2014, May 20–22, 2014, Cagliari, Italy.
+[40] D.K. Panda, S. Singal, R. Kesavan, Multidestination message passing in wormhole k-ary n-cube networks with base routing conformed paths, IEEE
+Trans. Parallel Distrib. Syst. 10 (1) (1999) 76–96.
+[41] P. Pfaerber, K. Asanovic, Parallel neural network training on multispert, in: Proc. IEEE Third International Conference on Algorithms and Architectures
+for Parallel Processing (ICA3PP’97), Melbourne, Vic., 1997, pp. 659–666.
+[42] A.D. Rast, J. Navaridas, X. Jin, F. Galluppi, L.A. Plana, J. Miguel-Alonso, C. Patterson, M. Luján, S.B. Furber, Managing burstiness and scalability in eventdriven models on the SpiNNaker neuromimetic system, Int. J. Parallel Prog. 40 (6) (2011) 553–582.
+[43] F. Rosenblatt, Principles of Neurodynamics: Perceptrons and the Theory of Brain Mechanisms, Spartan Books, Washington, 1961.
+[44] A.R. Sadaf, J.A. Kuehn, R.F. Barrett, J.M. Larkin, M.R. Fahey, R. Sankaran, P.H. Worley, Cray XT4: an early evaluation for petascale scientiﬁc simulation, in:
+Proc. of the 2007 ACM/IEEE Conference on Supercomputing, Reno, NV, USA, 2007, pp. 1–12.
+[45] J.K. Shapiro, J. Kurose, D. Towsley, S. Zabele, Topology discovery service for router-assisted multicast transport, in: IEEE Open Architectures and
+Network Programming, New York, NY, 2002.
+[46] A.M. Thomson, C. Lamy, Functional maps of neocortical local circuitry, Front. Neurosci. 1 (1) (2007) 19–42.
+[47] Y.C. Tseng, D.K. Panda, T.H. Lai, A trip-based multicasting model in wormhole-routed networks with virtual channels, IEEE Trans. Parallel Distrib. Syst.
+7 (2) (1996) 138–150.
+[48] L. Wang, Y. Jin, H. Kim, E.J. Kim, Recursive partitioning multicast: a bandwidth-efﬁcient routing for networks-on-chip, in: Proc. of the International
+Symposium on Networks-on-Chip. Washington, DC, USA, 2009.
+[49] J. Wu, S.B. Furber, A multicast routing scheme for a universal spiking neural network architecture, Comput. J. 53 (3) (2010) 280–288.
+
+

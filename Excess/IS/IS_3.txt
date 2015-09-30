@@ -1,0 +1,1199 @@
+j o u r n a l o f i n f o r m a t i o n s e c u r i t y a n d a p p l i c a t i o n s 2 0 ( 2 0 1 5 ) 3 7 e4 6
+
+Available online at www.sciencedirect.com
+
+ScienceDirect
+journal homepage: www.elsevier.com/locate/jisa
+
+Advanced password based authentication scheme
+for wireless sensor networks
+Sheetal Kalra a,*, Sandeep K. Sood b,1
+a
+b
+
+Dept. of Computer Science & Engg., GNDU, Regional Campus, Jalandhar, India
+Dept. of Computer Science & Engg., GNDU, Regional Campus, Gurdaspur, India
+
+article info
+
+abstract
+
+Article history:
+
+This era of ubiquitous computing has led to the development of complex communication
+
+Available online 4 November 2014
+
+networks all over the world. Wireless sensors, due to their wide applicability, form a key
+component of any complex network. But, security is a major challenge in making wireless
+
+Keywords:
+
+sensor networks robust. Many remote user authentication schemes have been proposed
+
+Authentication
+
+for authenticating the legitimate users of a wireless sensor network. Most of the recently
+
+Complex networks
+
+proposed schemes are vulnerable to one or more security attacks and are inefficient in
+
+Smart card
+
+terms of processing time. In this paper, the scheme proposed by Xue et al. has been
+
+Wireless sensor networks
+
+reviewed and it has been found that the scheme is vulnerable to impersonation attack,
+stolen smart card attack, server spoofing attack. This paper proposes a robust and efficient
+password based authentication scheme which is secure against all well known security
+attacks. Moreover, the scheme has a low computation and communication cost and does
+not suffer from time synchronization problem. A formal security analysis has been performed using AVISPA tool to prove the security of the protocol.
+© 2014 Elsevier Ltd. All rights reserved.
+
+1.
+
+Introduction
+
+Wireless sensor network (WSN) is an emerging technology
+that shows great potential for various futuristic applications,
+both military and civilians. A wireless sensor network is a
+collection of sensor nodes organized into cooperative networks. The basic idea of sensor networks is to disperse tiny
+sensing devices which are capable of sensing variations in
+specific parameters related to a particular application and
+communicating with other devices in the network. The
+sensing technology combined with processing power and
+wireless communication makes an ideal choice for many applications in defense as well as public. This new technology
+
+has unlimited potential for applications in the area of military,
+transportation, entertainment, medical, homeland defense
+etc. Sensor networks usually interact with sensitive data and
+operate in hostile environments where the communication
+over WSN is subjected to various security threats. Therefore,
+network security is a desirable requirement for the successful
+implementation of such networks. Wireless sensors technology also holds great application for Internet-of-Things (IoT). In
+2012, Ning and Hu (2012) described the role of sensors in future
+IoT.
+In 2012, Xue et al. (2012) proposed a temporal credential
+based mutual authentication and key agreement scheme for
+wireless sensor networks. The scheme provides mutual
+authentication between the user, sensor node and gateway
+
+* Corresponding author. Tel.: þ91 9357314576.
+E-mail addresses: sheetal.kalra@gmail.com (S. Kalra), san1198@gmail.com (S.K. Sood).
+1
+Tel.: þ91 9465204534.
+http://dx.doi.org/10.1016/j.jisa.2014.10.008
+2214-2126/© 2014 Elsevier Ltd. All rights reserved.
+
+38
+
+j o u r n a l o f i n f o r m a t i o n s e c u r i t y a n d a p p l i c a t i o n s 2 0 ( 2 0 1 5 ) 3 7 e4 6
+
+node (GWN). In this paper, the scheme proposed by Xue et al.
+(2012) has been analyzed and it has been found that their
+protocol is vulnerable to impersonation attack, server spoofing attack and stolen smart card attack. In addition to this, the
+protocol has other weaknesses like impractical assumption
+and incorrect login phase. This paper proposes an efficient
+remote user authentication scheme for wireless sensor networks using smart cards. Sensors and smart cards are small
+electronic devices with limited resources and need such
+authentication protocols which are not only secure but also
+cater to severely resource constraint environment of a wireless sensor network. Authentication protocols based on static
+identity schemes leak out the partial information about the
+user thus again leading to compromise of the scheme (Yeh
+et al., 2010; Cheng et al., 2006). On the other hand, in dynamic identity schemes the identity of the user changes with
+every login and even if the attacker launches a replay attack
+by recording various communication messages, he fails to
+login as a legitimate user. The protocol operates under the
+assumption that the smart is tamper-resistance.
+The scheme proposed in this paper has the following
+merits: 1) The protocol is based on the concept of dynamic
+identity and is immune to replay attack; 2) The concept of
+dynamic identity is implemented using nonce values so there
+is no time synchronization problem; 3) The protocol has a low
+computation and communication cost; 4) It prevents offline
+dictionary attack even if the information stored in the storage
+device is compromised; 5) The identity of the user changes
+dynamically for every new session; 6) It achieves mutual
+authentication between the three communicating viz. the
+user, sensor and GWN; 7) It provides two factor authentication
+using GWN and smart cards; 8) All well known attacks are
+prevented using our protocol.
+
+2.
+
+Communication architecture
+
+In a typical Wireless Sensor Network (WSN), a gateway node
+GWN is used to communicate the information of a particular
+application between the sensor node and outside world and
+vice versa. The communication between the sensor node,
+gateway node and other communicating devices must be
+implemented using secure and efficient authentication protocols. The three communicating entities viz. user of the
+network, the sensor node and the gateway, must mutually
+authenticate each other before processing any request for
+data (Fig. 1).
+In complex wireless sensor network, hundreds or thousands of sensor nodes are randomly deployed over a certain
+area of interest. One of fundamental goals for wireless sensor
+networks is to collect information from the physical world
+where sensor nodes sense the physical phenomenon, process
+it and send the data to the environment via gateway node. The
+gateway node helps to connect to an external network such as
+Internet. Communications over wireless channels are, by
+nature, insecure and easily susceptible to various kinds of
+threats. Typical sensor nodes are small with limited
+communication and computing capabilities and are equipped
+with limited power source and in some cases replenishment
+of power sources may not be feasible. In WSN, the energy
+
+consumption can be categorized based on sensing, communication and data processing. The lifetime of the WSN will be
+increased if the energy consumption is reduced. The security
+protocols devised for traditional networks cannot be directly
+applied on such networks because in comparison with traditional computer networks, wireless sensor networks work in
+constrained computational and energy resources. Applying
+encryption/decryption techniques devised for traditional
+networks require transmission of extra bits hence need extra
+processing memory and battery power which are the most
+critical resources for the sensor's longevity. Due to these
+power constraints, it is impossible to directly employ the
+existing security approaches to a WSN. All security approaches require certain amount of resources including data
+memory, code space and processing power for implementation. Thus, the challenge is to devise such security protocols
+which are capable of maximizing the processing capability
+and energy reserves of WSN while securing them against
+attackers.
+
+3.
+
+Related work
+
+In last few years, a number of schemes have been proposed for
+authenticating remote users of a wireless network. In 2004,
+Watro et al. (2004) proposed a public key cryptography based
+authentication protocol for sensor networks. But their protocol was computationally inefficient as it was based on RSA
+and Diffie-Hellman algorithms which involve complex mathematical equations. In 2009, Das (2009) found that the scheme
+proposed by Watro et al. (2004) and was insecure against user
+masquerading, Replay and sensor spoofing attack. In 2007,
+Wong et al. (2007) proposed a less complex dynamic user
+authentication protocol which was based on symmetric
+cryptographic parameters of hash function. In 2009, Das (2009)
+found that the schemes proposed Wong et al. (2007) were
+vulnerable to replay, forgery and stolen verifier attack. He
+proposed a two factor authentication scheme for wireless
+networks involving GWN architecture. The schemes provided
+a password authenticated solution based on hash function
+and XOR operation for resource constrained environment of
+sensor networks. Although the scheme was computationally
+efficient but it did not provided mutual authentication and
+session key agreement. In 2010, He et al. (2010) and Khan and
+Alghathbar (2010) improved the scheme proposed by Das
+(2009). The improvements made by He et al. (2010) were not
+very significant as those done by Khan and Alghathbar (2010).
+The later had improved the scheme of Das (2009) by using the
+hash value of the password instead of direct password and
+providing mutual authentication among GWN and sensor
+node. The scheme proposed by Khan and Alghathbar (2010)
+had the limitation of storage lookups for GWN and incorrect
+password updating procedure. In 2010, Chen and Shih (2010)
+proposed an authentication scheme which provides mutual
+authentication among the user, GWN and the sensor node but
+the scheme is vulnerable to forgery and replay attack.
+Recently, a few authentication schemes based on ECC have
+also been proposed by the researchers. In 2011, Yeh et al.
+(2011) proposed an ECC based remote user authentication
+scheme. The computational cost of the protocol was high as
+
+j o u r n a l o f i n f o r m a t i o n s e c u r i t y a n d a p p l i c a t i o n s 2 0 ( 2 0 1 5 ) 3 7 e4 6
+
+compared to other protocols. In 2009, Xu et al. (2009) and in
+2010 Song (2010) proposed mutual authentication schemes
+based on Deffie-Hellman key exchange. Both the schemes
+very computationally expensive as made use of public keys
+and additional overhead storage space. Recently, in 2013 Ruan
+et al. (2013) proposed a coding scheme for securing data in
+sensors. Also, He et al. (2013) had proposed password
+authenticated protocol for mobile ad hoc networks.
+In 2012, Xue et al. (2012) proposed a temporal credential
+based mutual authentication and key agreement scheme for
+wireless sensor networks. The scheme provided mutual
+authentication between the user, sensor node and GWN. Xue
+et al.'s (2012) scheme has been found vulnerable to impersonation attack, server spoofing attack and stolen smart card
+attack. In addition to this, the protocol has other weaknesses
+like impractical assumption and incorrect login phase. A
+robust remote authentication scheme which is secure against
+all the security attacks has been proposed in this paper. The
+scheme is efficient in terms of communication and computation cost.
+
+4.
+
+Review of Xue et al. protocol (2012)
+
+This section, describes the smart card based remote user
+authentication protocol for wireless sensor networks proposed by Xue et al. (2012). Their protocol includes three phases: (1) Registration phase; (2) Login phase; (3) Authentication
+and key agreement phase. Notations used in this section are
+listed in Table 1.
+
+4.1.
+
+Registration phase
+
+The user Ui submits his IDi timestamp value TS1 and H (TS1 jj H
+(PWi)) to GWN in an open and public environment. After
+verification, GWN issues a temporal credential to Ui.
+Step 1: Ui / GWN {IDi, TS1,VIi}.
+
+Table 1 e Notations used in the Xue et al.'s protocol.
+Ui
+GWN
+PWi
+Ci, CGWN, Cj
+KGWN_U
+KGWN_S
+Ki, Kj
+KEYij
+PKSi, PKSGWN, PKSj
+PTCi
+REGj
+SIDj
+TCi,TCj
+TEi
+VIi
+
+ith user
+Gateway node
+Password of ith user
+Information computed by Ui, GWN,
+Sj
+Private security parameters only
+known to GWN
+Random key chosen by Ui, Sj
+Shared session key between Ui and
+Sj
+Security Information computed by
+Ui, GWN, Sj
+Temporal credential of Ui
+Registration information of Sj
+Sj's identity
+Temporal credential issued by GWN
+to Ui or Sj
+Expiration time of a user's temporal
+credential
+Verification information of user Ui
+
+39
+
+The user computes VIi ¼ H (TS1 jj H (PWi)) and submits TS1,
+VIi and his IDi to GWN in an open and public environment.
+Step 2: GWN / Ui (Smart Card) {H (.),IDi, H (H (PWi)), TEi,
+TCi}.
+GWN after checking the transmission delay, computes
+VIi* ¼ H (TS1 jj H (PWi)) using its own copy of H (PWi) and
+verifies whether VIi*? ¼ VIi. If they are equal GWN computes
+Pi ¼ H (IDi jj TEi), TCi ¼ H (KGWN_U jj Pi jj TEi) and PTCi ¼ TCi 4 H
+(PWi) where TEi is the expiration time of the temporal
+credential set by GWN. GWN issues the smart card to the user
+which the parameters {H (.),IDi, H (H (PWi)), TEi, TCi}.
+Each sensor node Sj also registers itself with GWN with its
+identity SIDj and random password PWj. After the deployment, the sensor node Sj submits its SIDj, timestamp value TS2
+and H (TS2 jj H (PWj)) to GWN in a public environment.GWN
+issues a temporal credential TCj to Sj.
+Step 3: Sj / GWN: {SIDj, TS2, VIj}.
+Sensor node Sj gets its current timestamp value TS2 and
+computes VIj ¼ H (TS2 jj H (PWj)) and submits its SIDj, TS2 and
+VIj to GWN.
+Step 4: GWN / Sj: {TS3, REGj}.
+After checking the transmission delay GWN computes
+VIj* ¼ H (TS2 jj H (PWj)) using its own copy of H (PWj) and
+verifies VIj*? ¼ VIj. If they are equal, GWN computes TCj ¼ H
+(KGWN_S jj SIDj), REGj ¼ H (H (PWj) jj TS3) 4 TCj.
+After receiving the message, Sj checks the transmission
+delay and computes its temporal credential TCj ¼ REGj 4 H (H
+(PWj) jj TS3) and stores it.
+
+4.2.
+
+Login phase
+
+User Ui inserts his smart card into a card reader machine and
+enters his IDi and PWi. The terminal validates IDi and PWi with
+stored IDi and H (H (PWi)) in the smart card. If the credentials
+do not match the login request is terminated. Otherwise, the
+Ui passes the verification and can read the information stored
+in the smart card. After passing the verification, Ui computes
+TCi ¼ PTCi 4 H (PWi).
+
+4.3.
+
+Authentication and key agreement phase
+
+User Ui generates timestamp value TS4 and chooses a key Ki
+and computes DIDi ¼ IDi 4 H (TCi jj TS4), Ci ¼ H (H
+(IDi jj TS4) 4 TCi), PKSi ¼ Ki 4 H (TCi jj TS4 j “000”) and Ui sends
+these parameters DIDi, Ci, PKSi, TS4, TEi and Pi to GWN.
+Step 1: Ui / GWN: {DIDi, Ci, PKSi, TS4, TEi, Pi}.
+After receiving this message GWN checks whether the
+transmission delay is within the allowed time interval and
+computes IDi ¼ DIDi 4 H (H (KGWN_U jj Pi jj TEi) jj TS4), Pi* ¼ H
+(IDi jj TEi), TCi ¼ H (KGWN_U jj Pi* jj TEi), Ci* ¼ H (H
+(IDi* jj TS4) 4 TCi*).
+
+40
+
+j o u r n a l o f i n f o r m a t i o n s e c u r i t y a n d a p p l i c a t i o n s 2 0 ( 2 0 1 5 ) 3 7 e4 6
+
+Step 2: GWN / Sj: {TS5, DIDi, DIDGWN, CGWN, PKSGWN}.
+GWN checks Ci*? ¼ Ci, Pi*? ¼ Pi and terminates the session if
+they are not equal. Else GWN computes Ki ¼ PKSi 4 H
+(TCi jj TS4 jj “000”). Then GWN computes Sj's temporal
+credential TCj ¼ H (KGWN_S jj SIDj) and parameters
+DIDGWN ¼ IDi 4 H (DIDi jj TCj jj TS5), CGWN ¼ H (IDi jj TCj jj TS5)
+PKSGWN ¼ Ki 4 H (TCj jj TS5) and sends them to sensor node Sj.
+Step 3: Sj / Uj, GWN: { SIDj, TS6, Cj,PKSj}.
+After receiving the message, the sensor checks the transmission delay and computes IDi ¼ DIDGWN 4 H
+(DIDi jj TCj jj TS5), C*GWN ¼ H (IDi jj TCj jj TS5). Then the sensor
+node checks whether C*GWN? ¼ CGWN and then computes
+Ki ¼ PKSGWN 4 H (TCj jj TS5), Cj ¼ H (Kj jj IDi jj SIDj jj TS6) and
+PKSj ¼ Kj 4 H (Ki jj TS6) where TS6 is the timestamp selected by
+sensor.
+Step 4: After receiving the message, the user Ui and GWN
+separately compute Kj ¼ PKSj 4 H (Ki jj TS6) and Cj* ¼ H
+(Kj jj IDi jj SIDj jj TS6). GWN and the user confirms the
+legitimacy of Sj by confirming Cj*? ¼ Cj.
+
+5.
+Cryptanalysis of Xue et al.'s protocol
+(2012)
+Xue et al. (2012) claimed that their protocol is secure against
+various types of security attacks. But on analyzing their protocol, it was found that their protocol is subjected to impersonation attack, stolen smart card attack and server spoofing
+attack.
+
+5.1.
+
+Impersonation attack
+
+A malicious privileged user having his own smart card can
+gather information {H (.), IDi, H (H (PWi)), TEi, TCi}and by
+applying brute force attack on H (H (PWi), he can get the
+password and also the identity IDi of the user Ui is being
+transmitted in clear text. Using both these parameters the
+malicious user can generate a valid login request where he
+enters the forged IDi and PWi in the card reader terminal. In
+Xue et al.'s (2012) scheme, the card reader's terminal validates
+the user's credentials with the stored value of identity IDi and
+password PWi. Therefore, the malicious user can easily get
+validated and impersonate as a legitimate user.
+
+5.2.
+
+Stolen smart card attack
+
+An attacker can steal the smart card of a legitimate user which
+contains the parameters {H (.), IDi, H (H (PWi)), TEi, TCi}. Now,
+by using reverse engineering techniques such as monitoring
+their power consumption, the attacker can extract the stored
+values in the smart card. Now by applying brute force attack,
+he can get the password from H (H (PWi). The identity of the
+user IDi is also being transmitted in clear text over insure
+communication channel. Therefore, the attacker can use the
+IDi and PWi to generate a valid login request. Hence, the protocol is subjected to stolen smart card attack.
+
+5.3.
+
+Server spoofing attack
+
+In the beginning of the protocol, it is assumed that each user
+and the sensor node has a preconfigured identity and secure
+password, hash of which is stored in the GWN's side. The
+GWN can any anytime be spoofed by the attacker to gather the
+identity IDi of the user Ui and password of the user and the
+sensor node. After that the attacker may generate a valid login
+request and access the resources of a sensor node. Hence, the
+protocol is subject to server spoofing attack.
+
+5.4.
+
+Incorrect login phase
+
+In login phase of the protocol when the user Ui inserts his
+smart card into a terminal and enters his identity IDi and
+password PWi, the terminal validates the user's IDi and PWi
+Nowhere in the protocol is it mentioned about the parameters stored in the terminal. Therefore, the legitimacy of the
+user is not verified either by the smart card or by the terminal. Hence, the login phase of Xue et al.'s (2012) protocol is
+incorrect.
+
+5.5.
+
+Fatal assumption
+
+As pointed in Section 5.3, the protocol assumes that the user
+and the sensor share the identity and the hash value of the
+password with GWN. With the advancements in technology,
+it is very easy to gather this information by the attacker by
+launching an offline dictionary attack. Hence, this is a very
+fatal assumption which will lead to the failure of the
+protocol.
+
+5.6.
+
+No password updating procedure
+
+There is no provision in the protocol by which the user Ui may
+update his password. Instead, the static password is shared by
+the user Ui with GWN, which can be forged by the attacker.
+
+5.7.
+
+Use of time stamps
+
+The dynamic identity of the user is implemented using
+timestamps in the protocol. Protocols based on timestamps
+suffer from time synchronization problem where is becomes
+difficult to synchronize the user and the server's clock.
+
+6.
+
+Proposed protocol
+
+This section proposes a dynamic identity based authentication protocol for wireless sensor networks. The proposed
+protocol provides mutual authentication between the user,
+GWN and sensor node. A smart card is allotted to the
+legitimate user after successful registration with GWN. A
+legitimate user may easily log on to the wireless sensor
+network by submitting his correct credentials after inserting
+the smart card. The notations used in the protocol are listed
+in Table 2.
+This protocol consist of four phases i.e. registration, login,
+authentication and session key agreement, password change
+phase. Fig. 2. shows various phases of authentication protocol.
+
+j o u r n a l o f i n f o r m a t i o n s e c u r i t y a n d a p p l i c a t i o n s 2 0 ( 2 0 1 5 ) 3 7 e4 6
+
+Table 2 e Notations used in the proposed protocol.
+Ui
+GWN
+Ss
+SIDs
+SKs
+SK
+IDi
+Pi
+H()
+yi
+X
+N1
+N2
+N3
+4
+j
+
+ith user
+Gateway node
+sth sensor node
+Unique secret key of sensor node Ss
+Unique secret key of sensor node Ss
+Common Session key
+Unique identity of user Ui
+Password of the user Ui
+One-way hash function
+Random value chosen by GWN for
+the user Ui
+Master secret parameter of GWN
+Random nonce value generated by
+user's smart card
+Random nonce value generated by
+sensor node
+Random nonce value generated by
+GWN
+XOR operation
+Concatenation
+
+1. Registration phase: In order to become a legal client, a user
+Ui submits his identity IDi and password verification information to GWN via a secure communication channel.
+GWN computes necessary security parameters and stores
+them on the smart card and issues the smart card to the
+user. The user also computes and stores some security
+parameters on the smart card.
+2. Login phase: The user Ui inserts his smart card into a card
+reader machine and submits his identity IDi and password
+Pi in order to login to the wireless sensor network. Smart
+card verifies the identity of the user Ui and sends the
+verification information to the destination sensor node.
+3. Authentication and session key agreement phase: The
+sensor node forwards user's and sensors verification information to the GWN. After authenticating the user,
+sensor node, and the GWN sends some security parameters to smart card of the user. Using these parameters,
+smart of the user verifies the authenticity of GWN and
+sensor node. Once, the mutual authentication is done,
+GWN, sensor node and user agree on a common session
+key for further communication.
+4. Password change phase: The user Ui is capable of changing
+his password without the intervention of GWN. The user Ui
+is authenticated before password updating process.
+
+6.1.
+
+41
+
+Registration phase
+
+The user Ui selects a random number n, computes the security
+parameters Ei ¼ H (IDi j n), Fi ¼ H (n 4 Pi), and submits Ei and Fi
+to GWN for registration over a secure communication
+channel.
+Step 1: Ui / GWN: Ei, Fi
+GWN computes security parameters Gi ¼ Ei 4 yi, Hi ¼ Fi 4 H
+(yi) 4 H (x) and Ji ¼ Ei 4 H (yi) 4 x, where x is the secret key of
+GWN and yi is the random value chosen by GWN for the user
+Ui. The value of yi is chosen by GWN in such a way that the
+value of Ji is unique for each user. Then GWN stores yi 4 x
+corresponding to Ji in its client's database. Now, GWN issues a
+smart card containing security parameters (Gi, Hi, H (.)) to the
+user through a secure communication channel.
+Step 2: GWN / Ui: Smart Card
+Once the user gets the smart card, he computes security
+parameters Ai ¼ n 4 H (IDi j Pi), Bi ¼ H (IDi j Pi) 4 Pi and enters
+the value of Ai and Bi in his smart card. Now, the smart card
+contains the security parameters (Ai, Bi, Gi, Hi, H (.)) in its
+memory.
+Each sensor node in the wireless network also registers
+itself with GWN. Each sensor node and GWN agree on a
+unique secret key SKs and GWN stores the secret key SKs as
+SKs 4 H (x j SIDs) corresponding to the server identity SIDs in
+its service provider server's database.
+
+6.2.
+
+Login phase
+
+The user Ui inserts his smart card into the card reader machine to access the data from the wireless network and inputs
+his IDi* and password Pi*. The smart card computes Bi* ¼ H
+(IDi* j Pi*) 4 Pi* and compares it with the stored value of Bi in its
+memory to verify the legitimacy of the user Ui.
+Step 1: Smart Card checks Bi*? ¼ Bi
+After verification, smart generates random nonce value N1
+and computes n ¼ Ai 4 H (IDi j Pi), Ei ¼ H (IDi j n), Fi ¼ H (n 4 Pi),
+yi ¼ Gi 4 Ei, H (x) ¼ Hi 4 Fi 4 H (yi). Ci ¼ H2 (x) 4 N1,
+CIDi ¼ Ei 4 H (yi) 4 H (x) 4 N1 and Ki ¼ H (H (x) j yi j N1). Then
+
+Fig. 1 e Communication architecture of wireless sensor network.
+
+42
+
+j o u r n a l o f i n f o r m a t i o n s e c u r i t y a n d a p p l i c a t i o n s 2 0 ( 2 0 1 5 ) 3 7 e4 6
+
+Fig. 2 e Phases of authentication protocol.
+
+smart card sends the login request message (Ci j CIDi j Ki) to
+GWN.
+Step 2: Smart Card / GWN: Ci, CIDi, Ki
+The gateway node passes the request to the nearest
+available sensor node with the sensor ID: SIDs
+
+6.3.
+
+Authentication and session key agreement phase
+
+After receiving the login request from the GWN sent via the
+user Ui, the sensor node SIDs generates random nonce value
+N2 computes Di ¼ N2 4 SKs and sends the login request
+message (SIDs, Ci, CIDi, Ki, Di) to GWN.
+Step1: Sj / GWN: SIDs, Ci, CIDi, Ki, Di
+GWN extracts SKs from SKs 4 H (x j SIDs) corresponding to
+SIDs of the wireless sensors in its database. GWN computes
+N1 ¼ Ci 4 H2 (x), N2 ¼ Di 4 SKs, Ji* ¼ CIDi 4 N1 4 H (x) 4 x and
+finds the matching value of Ji corresponding to Ji* from its
+database pertaining to the users of wireless network.
+Step 2: GWN checks Ji*? ¼ Ji
+If the value of Ji* does not match with any value of Ji in its
+user's database, the login request is rejected and GWN terminates the session. Otherwise, GWN extracts yi from yi 4 x
+corresponding to Ji* from its user's database. After this GWN
+computes Ki* ¼ H (H (x) j yi j SIDs j N1) and compares Ki* with
+the received value of Ki to verify the legitimacy of the user and
+the sensor node Ss.
+Step 3: GWN checks Ki*? ¼ Ki
+In case the values do not match, GWN rejects the login
+request and terminates the communication session.
+
+Otherwise, GWN generates random nonce value N3 and
+computes Mi ¼ N1 4 N3 4 H (SKs j N2), Ri ¼ H (CIDi j yi j N1) 4 H
+(N1 4 N2 4 N3), Vi ¼ H [H (N1 4 N2 4 N3) j H (CIDi j yi j N1)],
+Wi ¼ N2 4 N3 4 H (yi j CIDi j H (x) j N1) and sends the security
+parameters back to the sensor node Ss. Sensor node computes
+N1 4 N3 using Mi, and H (CIDi j yi j N1) using Ri, using these
+values to compute Vi* ¼ H [H (N1 4 N2 4 N3) j H (CIDi j yi j N1)]. It
+compares the computed value of Vi* with the received value of
+Vi to verify the legitimacy of the gateway node GWN.
+Step 4: Sensor node checks Vi*? ¼ Vi
+Then the sensor node Ss sends (Vi,Wi) to smart card of the
+user Ui. The smart card then computes N2 4 N3 ¼ Wi 4 H
+(yi j CIDi j H (x) j N1), Vi* ¼ H [H (N1 4 N2 4 N3) j H (CIDi j yi j N1)]
+and compares the computed value of Vi* with the received
+value Vi.
+Step 5: Smart Card checks Vi*? ¼ Vi.
+This mutual authentication between the user Ui, GWN and
+sensor node Ss proves the legitimacy of each entity. Once
+mutually authenticated, the user Ui's smart card, the sensor
+node Ss and the gateway node GWN agree on a common
+session key SK ¼ H (H (IDi j yi j N1) j (N1 4 N2 4 N3)). All the
+communication messages between the user Ui, sensor node Ss
+and the gateway node GWN are XORed with this session key.
+Therefore, the communication is very secure between the
+three entities.
+
+6.4.
+
+Password change phase
+
+The user Ui is capable of changing his password without the
+intervention of GWN. The user inserts his smart card into a
+card reader machine and enters his identity IDi* and password
+Pi*. Smart card computes the security parameter Bi* ¼ H
+(IDi* j Pi*) 4 Pi*and compares the computed value of Bi* with
+
+j o u r n a l o f i n f o r m a t i o n s e c u r i t y a n d a p p l i c a t i o n s 2 0 ( 2 0 1 5 ) 3 7 e4 6
+
+the stored value of Bi in its memory to verify the legitimacy of
+the user Ui. After the smart card holder is authenticated, the
+smart card computes the value of b, H (yi), H (x) and the user is
+. Then values of
+prompted to resubmit a new password Pnew
+i
+the security parameter Ai ¼ b 4 H (IDi j Pi), Bi ¼ H (IDi j Pi) 4 Pi
+and Hi ¼ H (b 4 Pi) 4 H (yi) 4 H (x) stored in the smart card of
+¼ b 4 H (IDi j Pnew
+),
+the card holder are updated with Anew
+i
+i
+new
+new
+new
+¼ H (IDi j Pi ) 4 Pi
+and Hi ¼ H (b 4 Pnew
+) 4 H (yi) 4 H
+Bi
+i
+(x). Hence, the proposed protocol has an efficient password
+change phase.
+
+7.
+
+Security analysis
+
+The information stored on the smart card can be extracted by
+using various reverse engineering techniques. In 1999, Kocher
+et al. (1999) had given a detailed discussion on such techniques where the hackers may extract this information for
+their potential benefit. In 2002, Messerges et al. (2002) also
+pointed out that the most of the existing schemes based on
+smart cards are vulnerable to various security attacks because
+of above said reason. Either the smart card of a legitimate user
+is stolen by an attacker or a malicious user having his own
+smart card may extract the security parameters from his
+smart card. In both cases, the security protocol may be
+compromised. But in the proposed protocol, even if the malicious user is able to extract the information from the smart
+card, he will not be able to compromise the scheme. The
+following section shows a detailed security analysis of our
+protocol proves its efficiency.
+1. Impersonation attack: In this type of attack, the attacker
+forges the authentication information gathered from
+the communication messages and impersonates as a
+legitimate user. An attacker has to guess Ei, H (x), yi to
+masquerade as a legitimate user Ui to log into the
+wireless sensor network. In the proposed protocol, it is
+not possible to guess all these security parameters
+correctly together in real polynomial time. Also, the
+attacker will not be able to compute Ei, H (x), yi from the
+intercepted communication parameters Ci, CIDi, Ki, Di,
+Mi, Ri, Vi, Wi over the insecure channel. Therefore, the
+proposed protocol is secure against impersonation
+attack.
+2. Stolen smart card attack: The smart card of a legitimate
+user Ui may be stolen by a malicious user and he may
+extract the security information stored in the smart
+card. The malicious user can extract Ai ¼ n 4 H (IDi j Pi),
+Bi ¼ H (IDi j Pi) 4 Pi, Gi ¼ Ei 4 yi and Hi ¼ Fi 4 H (yi) 4 H (x)
+from the memory of the smart card. After gathering this
+information, the malicious user has to guess minimum
+two security parameters simultaneously in real polynomial time. Therefore, the proposed protocol is secure
+against stolen smart card attack.
+3. Denial of service attack: In this type of attack, an attacker
+is able to get the smart card of a legitimate user and
+then modifies the verification information stored on the
+smart card so that the user Ui may not be able to log into
+the wireless network in subsequent login request. In the
+proposed protocol, the smart card checks the validity of
+
+4.
+
+5.
+
+6.
+
+7.
+
+43
+
+the identity IDi and password Pi before the password
+update procedure of the user Ui. On getting the smart
+card of a legitimate user, the malicious user would
+insert the smart card into the card reader machine and
+try to guess the identity IDi and password Pi of the user
+Ui. Since the smart card computes Bi* ¼ H (IDi* j Pi*) 4 Pi*
+and compares it with the stored value of Bi to verify the
+authenticity of the user Ui before accepting the password update request. The proposed protocol is secure
+against this type of attack as it is not possible to guess
+the identity IDi and password Pi together in real polynomial time.
+Online dictionary attack: In this type of attack, the malicious user tries to guess various passwords from the
+dictionary for obtaining the access to the wireless
+network. In the proposed protocol even after getting a
+valid smart card of a legitimate user, the malicious user
+has to guess the identity IDi and password Pi simultaneously corresponding to the user Ui. The user may get
+only a maximum of three chances to login correctly into
+the network and after that the smart gets locked.
+Further, as it is not possible to guess IDi and Pi together
+in real polynomial time. Therefore, the proposed protocol is secure against online dictionary attack.
+Replay attack: In this type of attack, the malicious user
+first listen to the communication messages between the
+user Ui and the GWN and then tries to imitate as a
+legitimate user by retransmitting the captured messages. This kind of attach would certainly fail as user's
+smart card, GWN and the sensor node chooses different
+nonce values (N1, N2, N3) in each new session. All the
+communication messages are dynamic and retransmitting them is useless. Further, the attacker would not
+be able to compute the session key Sk ¼ H (H
+(IDi j yi j N1) j (N1 4 N2 4 N3)) as the smart card, GWN and
+sensor node choose different nonce values
+(N1 4 N2 4 N3) in each new session and the malicious
+user does not know the values of IDi, yi, N1, N2, N3.
+Therefore, the proposed protocol is secure against this
+type of attack.
+Offline dictionary attack: In this type of attack, the malicious user records the communication messages and
+attempts to guess the user's identity IDi and password Pi
+offline from the recorded messages. The malicious user
+tries to obtain the security parameters Ai ¼ n 4 H
+(IDi j Pi), Bi ¼ H (IDi j Pi) 4 Pi, Gi ¼ Ei 4 yi and Hi ¼ Fi 4 H
+(yi) 4 H (x) and then tries to guess the identity IDi and
+password Pi by offline guessing. It is not possible to get
+two parameters simultaneously in real polynomial
+time. Further, even if the malicious user is able to get
+one parameter correct by guessing, it cannot be verified
+using any password verification information. Hence,
+the proposed protocol is secure against offline dictionary attack.
+Mutual authentication: The protocol achieves mutual
+authentication as the three communicating entities viz.
+the smart card, GWN and the sensor node mutually
+authenticate each other. All the three parties contribute
+their random nonce values N1, N2 and N3 for the derivation of session key Sk ¼ H (H (IDi j yi j N1) j (N1 4 N2 4 N3)).
+
+44
+
+j o u r n a l o f i n f o r m a t i o n s e c u r i t y a n d a p p l i c a t i o n s 2 0 ( 2 0 1 5 ) 3 7 e4 6
+
+The GWN authenticates the user Ui using verification information as Ki* ¼ H (H (x) j yi j SIDs j N1), the sensor node
+authenticates GWN using Vi* ¼ H [H (N1 4 N2 4 N3) j H
+(IDi j yi j N1)] and the user Ui authenticates the sensor node
+and GWN using Vi* ¼ H [H (N1 4 N2 4 N3) j H (IDi j yi j N1)].
+Hence, the protocol achieves mutual authentication.
+8. Message modification or insertion attack: In this type of
+attack, the attacker modifies or inserts some messages
+on the communication channel in order to discover the
+user's password. But in the proposed protocol, modification and insertion attack can only cause authentication between the user and GWN to fail but will not allow
+the malicious user to gain any information about the
+user Ui identity and password Pi. Therefore, the proposed protocol is secure against message modification
+or insertion attack.
+9. Identity protection: The proposed protocol provides
+identity protection as instead of communicating the
+real identity IDi of the user Ui in authentication, the
+pseudo identification CIDi ¼ CIDi ¼ Ei 4 H (yi) 4 H
+(x) 4 N1 is generated by the smart card corresponding to
+the legitimate user Ui for its authentication to the
+sensor node and GWN. The real identity information of
+the user is never communicated during login and
+authentication and session key agreement phase.
+Therefore this approach provides privacy and every
+login request is dynamic and is unique from previous
+login request. The malicious user cannot link various
+login requests belonging to the same user.
+10. Man-in-the-middle attack: In this type of attack, the
+attacker intercepts the messages sent between the user
+and GWN and replays these intercepted messages.
+Then the malicious user acts as a legitimate user to
+GWN or vice-versa with recorded messages. In our
+proposed protocol, a malicious user may intercept the
+login request message (Ci, CIDi, Ki) from the user Ui to
+the sensor node. Then he tries to start a new login
+session by replaying the login request. But in the proposed protocol the malicious user will not be able to
+compute
+the
+session
+key
+Sk
+¼
+H
+(H
+(IDi j yi j N1) j (N1 4 N2 4 N3)) as he does not know the
+values of IDi, yi, N1, N2, N3. Therefore the proposed
+protocol is secure against man-in-the-middle attack.
+
+8.
+
+Fig. 3 e Result using OFMC backend.
+
+analyzing their design and security from a theoretical and
+formal point of view, actual implementation results may vary.
+HLPSL is an expressive language for modeling communication
+and security protocols. HLPSL has been defined in such a way
+as to closely resemble a language for defining guarded transitions within a state-transition system and is equipped with
+constructs, which allow the modular specification of protocols. It supports symmetric and asymmetric keys, keytables, hash functions, etc. Protocol specifications in HLPSL
+are divided into roles, which describe the actions of one single
+agent in a run of a protocol or sub-protocol. Given a set of roles
+describing the protocol, sessions are defined whose execution
+is to be considered. The HLPSL2IF translator automatically
+translates a HLPSL protocol specification provided by the user
+
+Verification of the protocol using AVISPA
+
+The Automated Validation of Internet Security Protocols and
+Applications (AVISPA) project is developed to provide a real
+working implementation for error detection in security protocols, by targeting the design of security protocols. In order to
+achieve this, the HLPSL (High Level Protocol Specification
+Language) was developed. The analysis is performed with the
+definition of the protocol, and all the testing is based on formal
+methods and theoretical axioms. This type of analysis is
+intended for locating design flaws and problems that would be
+very difficult and expensive to solve once the protocol has
+been deployed in real systems. Although this approach plays a
+very important role in the evaluation of security protocols by
+
+Fig. 4 e Result using CL-AtSe.
+
+45
+
+j o u r n a l o f i n f o r m a t i o n s e c u r i t y a n d a p p l i c a t i o n s 2 0 ( 2 0 1 5 ) 3 7 e4 6
+
+3. Role node (sensor node)
+4. Role server
+5. Goal and Environment and session roles used in execution
+of the protocol.
+
+Table 3 e Cost comparison between the proposed
+protocol and related schemes.
+
+Proposed protocol
+Xue et al. (2012)
+Yeh et al. (2011)
+Khan and Alghathbar
+(2010)
+Chen and Shih (2010)
+Das (2009)
+
+E1 (User)
+
+E2 (GWN)
+
+E3
+(Sensor node)
+
+11TH
+7TH
+TH þ 2TECC
+3TH
+
+7TH
+10TH
+4TH þ 4TECC
+5TH
+
+7TH
+5TH
+3TH þ 2TECC
+2TH
+
+4TH
+3TH
+
+5TH
+4TH
+
+2TH
+TH
+
+into an IF specification, which is then given as input to the
+different back-ends of the AVISPA tool (Izquierdo et al., 2009;
+Lv et al., 2013a). Recently, many researchers have been using
+AVISPA to check the security of the authentication protocols
+(Marin-Lopez et al., 2010; Izquierdo et al., 2009; Lv et al., 2013b).
+To analyze the protocol with the AVISPA tool, the following
+steps were executed:
+Step 1 The protocol is represented in the HLPSL
+specification.
+Step 2 Using the translator HLPSL2IF, the HLPSL code is to
+be translated into IF.
+Step 3 The translated IF specification is input to the backend of the AVISPA tool.
+The proposed scheme is analyzed in the OFMC and CL-AtSe
+back-ends, and the results are shown in Figs. 3 and 4. Under
+this model, the intruder has full control over the network,
+such that all messages sent by the agents corresponding to the
+roles are available to the intruder. The intruder may intercept,
+analyze, and/or modify messages as far as he knows the
+required keys, and send any message he composes to whoever
+he pleases, posing as any other agent. As a consequence, the
+agents can send and receive on whichever channel they want;
+the intended connection between certain channel variables is
+irrelevant because the intruder has full control of the network.
+The protocol is modeled using following roles in HLPSL
+according to the entities of the protocol and results show that
+the protocol is safe against intruder attacks.
+1. Role user
+2. Role smart card
+
+The messages being exchanged in the protocol stream is
+done over a network that is being controlled by Dolev-Yao
+intruder as an active intruder (Izquierdo et al., 2009). The
+back ends implement different techniques to search the corresponding infinite-state transition system for states that
+represent attacks on the intended properties of the protocols.
+The output format of AVISPA states whether the input problem was solved, giving a description of the considered protocol goal or, in case it was violated, the related attack trace. The
+first printed section is SUMMARY; it indicates if the protocol is
+safe, unsafe, or if the analysis is inconclusive. A second section titled DETAILS will either explain under what conditions
+the protocol is declared safe, or what conditions have been
+used for finding an attack, or finally why the analysis was
+inconclusive. The next sections, PROTOCOL, GOAL and
+BACKEND recall the name of the protocol, the goal of the
+analysis and the name of the back-end used, respectively. The
+trace of the attack (if any) is printed in an Alice and Bob notation. If a security goal of the specification is violated, the
+back ends provide a trace, which shows the sequence of
+events leading up to the violation.
+From the simulation results shown in Figs. 3 and 4, the
+proposed protocol is found to be secure against all the attacks.
+
+9.
+
+Cost and functionality analysis
+
+An efficient authentication protocol must consider the
+communication and computation cost while authenticating
+the user. Assume that the identity IDi, password Pi, x, yi, nonce
+values (N1, N2, N3) are all 128 bit long. The output of secure
+one-way hash function and the block size of secure symmetric
+cryptosystem is 128 bit long. Table 4 shows the functionality
+comparison between the proposed protocol and the related
+scheme.
+Let TH denote the time for one hash operation, TECC denote
+the time for one ECC-160 encryption/decryption operation. Let
+E1, E2, E3 be the computational overhead of the user, GWN and
+the sensor node respectively. The comparison between the
+
+Table 4 e Functionality comparison between the proposed protocol and related schemes.
+Proposed Xue et al. Yeh et al. Song He et al.
+Khan and
+Xu et al. Das Wong et al.
+protocol
+(2012)
+(2011)
+(2010)
+(2010)
+Alghathbar (2010)
+(2009)
+(2009)
+(2007)
+Identity protection
+Key agreement
+Mutual authentication
+Password updating
+Password protection
+Impersonation attack
+Insider attack
+Replay attack
+Stolen smart card attack
+Masquerade attack
+
+Y
+Y
+Y
+Y
+Y
+N
+N
+N
+N
+N
+
+N
+Y
+Y
+N
+N
+Y
+Y
+Y
+Y
+Y
+
+N
+Y
+Y
+N
+Y
+N
+N
+Y
+Y
+N
+
+N
+Y
+Y
+Y
+Y
+N
+Y
+N
+N
+Y
+
+Y
+N
+N
+Y
+Y
+Y
+Y
+N
+Y
+Y
+
+Y
+N
+Y
+Y
+Y
+Y
+N
+N
+Y
+N
+
+N
+Y
+Y
+Y
+N
+Y
+Y
+N
+Y
+Y
+
+Y
+N
+N
+N
+N
+Y
+Y
+N
+Y
+Y
+
+N
+N
+N
+N
+N
+Y
+N
+Y
+Y
+N
+
+46
+
+j o u r n a l o f i n f o r m a t i o n s e c u r i t y a n d a p p l i c a t i o n s 2 0 ( 2 0 1 5 ) 3 7 e4 6
+
+parameters E1, E2, E3 is depicted in Table 3. With a minimum
+overhead of few hash operations our protocol achieves
+maximum robustness against all the security attacks.
+
+10.
+
+Conclusion
+
+User's privacy is an important issue that needs to be addressed
+in applications running over wireless sensor networks. Smart
+card based password authentication is one of the most
+convenient method to provide multi-factor authentication
+between a client and a server. This paper analyzes the protocol proposed by Xue et al. (2012) for wireless sensor networks and found that their protocol is inefficient and
+subjected to security attacks. This paper proposes a novel
+smart card based authentication protocol for the constraint
+environment of wireless sensor network. The proposed protocol is secure against all the security attacks and has a low
+computational cost. The legitimate user is allowed to access
+data in a sensor node by achieving mutual authentication
+between the user, sensor node and GWN. The future scope of
+this work is to test the security of the protocol using randomoracle model.
+
+references
+
+Chen TH, Shih WK. A robust mutual authentication protocol for
+wireless sensor networks. ETRI J 2010;32(5):704e12.
+Cheng Hong-bing, Yang Geng, Wang Jiang-tao, Huang Xiao. An
+authenticated identity based key establishment and
+encryption scheme for wireless sensor networks. J China Univ
+Posts Telecommun 2006;13(2):31e8.
+Das ML. Two-factor user authentication in wireless sensor
+networks. IEEE Trans Wirel Commun 2009;8(3):1086e90.
+He D, Gao Y, Chan C, Bu J. An enhanced two-factor user
+authentication scheme in wireless sensor networks. Ad Hoc
+Sens Wirel Netw 2010;10(4):361e71.
+He DJ, Chen C, Ma MD, Chan SM, Bu JJ. A secure and efficient
+password authenticated group key exchange protocol for
+mobile ad hoc networks. Int J Commun Syst
+2013;26(4):495e504.
+Izquierdo Antonio, Sierra Jose M, Torres Joaquin. An analysis of
+conformance issues in implementations of standardized
+security protocol. Comput Stand Interface 2009;31:249e51.
+
+Khan MK, Alghathbar K. Cryptanalysis and security
+improvements of ‘Two-factor user authentication in wireless
+sensor networks’. Sensors 2010;10:2450e9.
+Kocher P, Jaffe J, Jun B. Differential power analysis. In:
+Proceedings of Crypto'99. Springer- Verlang; 1999.
+p. 388e97.
+Lv Chao, Ma Maode, Li Hui, Ma Jianfeng, Zhang Yaoyu. A novel
+three-party authenticated key exchange protocol using onetime key. J Comput Netw Appl 2013;36:298e503.
+Lv Chao, Ma Maode, Li Hui, Ma Jianfeng, Zhang Yaoyu. An novel
+three-party authenticated key exchange protocol using onetime key. J Netw Comput Appl 2013;36:498e503.
+Marin-Lopez R, Pereniguez F, Bernal F, Gomez AF. Secure threeparty key distribution protocol for fast network access in EAPbased wireless networks. Comput Netw 2010;54:2651e73.
+Messerges TS, Dabbish EA, Sloan RH. Examining smart card
+security under the threat of power analysis attack. IEEE Trans
+Comput 2002;51:541e52.
+Ning HS, Hu S. Technology classification, industry and education
+future Internet of things. Int J Commun Syst
+2012;25(9):1230e41.
+Ruan ZQ, Sun XM, Liang W. Securing sensor data storage and
+query based on k-out of n coding. Int J Commun Syst
+2013;26(5):549e66.
+Song R. Advanced smart card based password authentication
+protocol. Comput Stand Interfaces 2010;32:312e5.
+Watro R, Kong D, Cuti SF, Gardiner C, Lynn C, Kruus P, et al.
+Securing sensor networks with public key technology. In:
+Proceedings of the 2nd ACM workshop on security of ad hoc
+and sensor networks. Washington DC, USA; 25 Oct, 2004.
+p. 59e64.
+Wong KHM, Zheng Y, Cao J, Wang S. A dynamic user
+authentication scheme for wireless sensor networks. In:
+Proceeding of IEEE international conference on sensor
+networks, ubiquitous, and trustworthy computing. Taichung,
+Taiwan; 5e7 June, 2007. p. 32e58.
+Xu J, Zhu W, Feng D. An improved smart card based password
+authentication scheme with provable security. Comput Stand
+Interfaces 2009;31(4):723e8.
+Xue K, Ma C, Hong P, Ding R. A temporal-credentials-based
+mutual authentication and key agreement scheme for
+wireless sensor networks. J Netw Comput Appl
+2012;36:316e23.
+Yeh Kuo-Hui, Su Chunhua, Lo NW, Li Yingjiu, Hung Yi-Xiang.
+Two robust remote user authentication protocol using smart
+cards. J Syst Softw 2010;83(12):2556e65.
+Yeh HL, Chen TH, Liu PC, Kim TH, Wei HW. A secured
+authentication protocol for wireless sensor networks using
+elliptic curves cryptography. Sensors 2011;11:4767e79.
+
+

@@ -1,0 +1,834 @@
+Robotics and Autonomous Systems 73 (2015) 135–143
+
+Contents lists available at ScienceDirect
+
+Robotics and Autonomous Systems
+journal homepage: www.elsevier.com/locate/robot
+
+Soft robotic glove for combined assistance and at-home rehabilitation
+Panagiotis Polygerinos a,b , Zheng Wang a,b , Kevin C. Galloway a , Robert J. Wood a,b ,
+Conor J. Walsh a,b,∗
+a
+
+Wyss Institute for Biologically Inspired Engineering, Harvard University, 60 Oxford Street, Cambridge, MA 02138, USA
+
+b
+
+School of Engineering and Applied Sciences, Harvard University, Cambridge, MA 02138, USA
+
+highlights
+•
+•
+•
+•
+•
+
+Soft actuator design and fabrication that mechanically program desired motions.
+Hand motion study to conform and match actuators to fingers joint motions.
+Overall system including an open-palm glove and a portable power/control unit.
+Closed-loop nonlinear controller that regulates the actuator hydraulic pressure.
+Quantitative and qualitative evaluation of the soft robotic glove.
+
+article
+
+info
+
+Article history:
+Available online 8 September 2014
+Keywords:
+Soft glove
+Soft actuators
+Rehabilitation
+Assistive
+Portable
+
+abstract
+This paper presents a portable, assistive, soft robotic glove designed to augment hand rehabilitation
+for individuals with functional grasp pathologies. The robotic glove utilizes soft actuators consisting
+of molded elastomeric chambers with fiber reinforcements that induce specific bending, twisting and
+extending trajectories under fluid pressurization. These soft actuators were mechanically programmed
+to match and support the range of motion of individual fingers. They demonstrated the ability to generate
+significant force when pressurized and exhibited low impedance when un-actuated. To operate the soft
+robotic glove, a control hardware system was designed and included fluidic pressure sensors in line with
+the hydraulic actuators and a closed-loop controller to regulate the pressure. Demonstrations with the
+complete system were performed to evaluate the ability of the soft robotic glove to carry out gross and
+precise functional grasping. Compared to existing devices, the soft robotic glove has the potential to
+increase user freedom and independence through its portable waist belt pack and open palm design.
+© 2014 Elsevier B.V. All rights reserved.
+
+1. Introduction
+There are approximately four million chronic stroke survivors
+with hemiparesis or other similar conditions in the US today and
+another six million in developed countries globally [1,2]. For the
+majority of these cases, loss of hand motor ability is observed,
+and whether partial or total, this can greatly inhibit activities of
+daily living (ADL) and considerably reduce one’s quality of life [2].
+Improving hand function requires repetitive task practice (RTP)
+rehabilitation, which involves breaking a task down into individual movements and practicing these exercises (typically with an
+occupational therapist) to improve hand strength, accuracy, and
+
+∗ Correspondence to: 328 Pierce Hall, Harvard University, Cambridge, MA 02138,
+USA.
+E-mail address: walsh@seas.harvard.edu (C.J. Walsh).
+http://dx.doi.org/10.1016/j.robot.2014.08.014
+0921-8890/© 2014 Elsevier B.V. All rights reserved.
+
+range of motion [2,3]. These methods, however, are labor intensive,
+costly, and slow, often leading to challenges with patient compliance [2]. A system where patients can carry out exercises on their
+own — either at home or in the clinic — would make physical therapy more accessible, affordable, results driven, increasing the potential for better outcomes.
+Clinical studies have shown that stroke patients who have
+robotic assistance when performing intense repetitive movements
+demonstrate significant improvement in hand motor functions
+[2,4–7]. Numerous robotic rehabilitation systems have been
+developed for the hand that consists of multi-degree-of-freedom
+exoskeletons [5–22]. Most of these devices require the biological
+joints to be aligned with those of the exoskeleton, while only a few
+have passive degrees of freedom or self-alignment features [3,16,
+23,24]. These systems are also typically expensive and are designed
+for in-clinic use as they are generally not portable. Moreover, the
+majority of these robotic devices require experienced oversight
+
+136
+
+P. Polygerinos et al. / Robotics and Autonomous Systems 73 (2015) 135–143
+Table 1
+Design requirements of a soft robotic glove.
+Characteristic
+
+Requirements
+
+Practical design considerations [25,45]:
+Weight of glove
+Waist pack weight
+Profile of glove
+Glove size
+Safety
+
+<0.5 kg
+<3 kg
+<2 cm
+Customizable
+Easy to don/doff
+Minimal ADL interference
+
+Motion/force requirements [3,25,26]:
+
+Fig. 1. The prototyped soft and lightweight robotic hand assistive device.
+
+for patient safety since they use actuators that are less compliant
+than the joints themselves. However, their rigid mechanical design
+provides robust and reliable devices capable of exerting high
+forces that allow more challenging rehabilitation scenarios to be
+executed. For a more comprehensive view on the hand exoskeleton
+literature, the authors refer to review works of Heo et al. [25], and
+Maciejasz et al. [26].
+Recently, a number of hand rehabilitation designs have followed an alternative approach to that of traditional exoskeletons.
+These designs combine soft gloves with either cables that connect
+to fingers and are driven by a number of motors located away
+from the hand [27–30], or soft pressurizable elastomeric actuators that support finger flexion or extension [31–36]. The latter is
+a new paradigm of soft robotics that combines classical principles
+of robot design and control with active soft materials to enable a
+new class of applications [37–44].
+A soft wearable robotic device could lead to greater advances in
+at-home assistive activity and rehabilitation by providing: (a) more
+degrees of freedom and thus larger range of motion with single inputs (e.g. fluid pressurization), (b) safe human–robotic interaction
+due to the soft and compliant materials used for their fabrication,
+(c) low component cost due to inexpensive materials (e.g. fabrics,
+elastomers, etc.) and single actuation source to actuate all fingers
+(i.e. pump), (d) portability, and (e) ability to provide customizable
+actuation based on patient anatomy. This paper presents such a device that utilizes inexpensive hydraulic soft actuators made from
+elastomeric materials with fiber reinforcements to control the fingers (Fig. 1). The hydraulic soft actuators are mounted to the dorsal side of the hand, resulting in an open-palm design. Integrated
+fluidic pressure sensors measure the internal pressure of soft actuators and allow control of finger flexion/extension. All electromechanical components are mounted in a portable waist belt pack in
+order to enable untethered operation.
+In Section 2 of this paper, a study on finger motion is described
+that is used to determine requirements for the design of actuators
+that match the finger and thumb joint motion of a healthy subject. Section 3 describes the soft actuator fabrication method and
+the design approach used to mechanically program the desired actuator motion. The overall system, including the open-palm glove
+and portable power/control unit, is presented in Section 4 and the
+closed-loop controller used to regulate the actuator hydraulic pressure is described in Section 5. Finally, Section 6, provides preliminary quantitative and qualitative evaluation of the soft robotic
+glove.
+2. System requirements
+The system performance requirements for a soft wearable
+robotic glove are grouped into three main categories: practical considerations, motion and force requirements, and control requirements. Summarized in Table 1, these requirements were obtained
+from a combination of experimental studies, review of the literature, and discussions with physicians/occupational therapists.
+
+DOFs
+DOFs for thumb
+Bending angle (thumb)
+Bending angle (middle)
+Speed of actuation (closed loop bandwidth)
+Force range
+
+3 per finger
+2 bending, 1 rotating
+∼160°
+∼250°
+0.5 Hz
+Adequate to enable ADL
+
+Control requirements:
+Hours of autonomy
+Controller frequency
+
+2 h continuous,
+4–6 h intermittent
+>10 Hz
+
+2.1. Practical considerations
+One of the main practical considerations is the weight of the
+soft robotic glove. Aubin et al. determined that weight of such a
+device mounted on a hand should not exceed 0.5 kg [45]. Any additional components of the system required for power, actuation or
+control can be distributed around the waist or the back and should
+weigh no more than 3 kg, which is the typical weight of portable
+consumer electronic products (e.g. laptop). The design should allow some customization to hand size to enable a user with limited hand function to don and doff the device easily. Additionally,
+it should be made with soft and compliant materials that do not resist finger motion when unpowered. For this study, the soft robotic
+glove was fitted to an adult male hand which in turn determined
+its geometrical profile constraints; that is ∼2 cm for actuator width
+and height so it does not exceed the finger width and height, and
+customized actuator lengths to fit each finger.
+2.2. Motion and force requirements
+To comfortably support hand flexion and extension the soft
+actuators need to follow the range of motion of a natural finger and
+generate adequate force to perform the appropriate movement. A
+number of hand studies in the literature provide measurements
+on the range of motion of finger joints [45–47]. Based on these
+literature measurements, the soft actuators must have three
+bending degrees of freedom (DOF) for each finger (i.e. index,
+middle, ring, and little finger). Similarly, at least two bending DOFs
+and a rotating one (combination of flexion and abduction) around
+the carpometacarpal (CMC) joint of the thumb are needed to enable
+opposition grasping.
+As part of our prototype development of a soft robotic glove, we
+also conducted a range of motion hand study with a healthy participant to serve as a benchmark for the device. An electromagnetic
+(EM) tracking system was employed (TrakSTAR, Ascension Tech.
+Corp., Milton, VT) and small EM tracking sensors were positioned
+in a stretchable, thin silicone strip above the fingers. Five tracking
+sensors were used on each digit to measure flexion and skin extension. Three of these sensors were placed on top of each finger joint
+— metacarpophalangeal (MCP), proximal interphalangeal (PIP) and
+distal interphalangeal (DIP) — one was placed at the fingertip and
+the final one at the wrist (carpal level), to act as a reference point
+for all other sensors. For the thumb, two were placed on top of the
+interphalangeal (IP) and metacarpophalangeal (MCP) joints, one at
+
+P. Polygerinos et al. / Robotics and Autonomous Systems 73 (2015) 135–143
+
+137
+
+of the impairment can be close to zero. With this in mind, the soft
+actuators do not necessarily need to generate the maximum grip
+strength of a healthy individual. A study from Matheus et al. benchmarked grasping and manipulating forces (e.g. grasping a glass of
+water or a fruit, picking up a wallet or telephone, stirring a pot,
+etc.) and found that objects of daily living do not weigh more than
+1.5 kg [50]. We estimate that to achieve such a palmar grasp (four
+fingers against the palm of the hand) with a conservative coefficient of friction of 0.255 (determined by [50]), each soft actuator
+would need to exert a distal tip force of around 7.3 N. Lastly, to be
+effective, the soft actuators should be able to actuate with a speed
+that enables normal rehabilitation exercises and ADL. We also approximate that a maximum of 30 open–close finger cycles every
+minute is sufficient for repetitive flexion/extension exercises. The
+same speed of actuation (around 0.5 Hz) is also desired during ADL,
+such that finger motions are conducted relatively fast.
+2.3. Control requirements
+A minimum controller bandwidth of 10 Hz (i.e. 20 times higher
+than bandwidth of the soft wearable robotic glove) should produce
+a smooth response. Finally, to support repetitive rehabilitation and
+assistance with ADL, two and six hours are required for continuous
+and intermittent operation respectively.
+3. Soft fiber-reinforced actuators
+3.1. Actuator design and fabrication
+
+Fig. 2. A. Illustration showing the numbered EM trackers location on the hand.
+B. The measured trajectories for the index, middle, ring and small fingers while
+the thumb remains extended. C. The measured trajectory of the thumb while
+performing an opposition motion while all the rest of the fingers remain extended.
+Location numbered as 1 indicates the reference EM tracker at the wrist.
+
+the fingertip, and the last at the CMC joint of the wrist. By resting
+the forearm on a comfortable support, each finger was individually
+flexed five times while the position coordinates of the EM tracking
+sensors were recorded relative to the reference tracker located at
+the wrist (numbered as 1 in Fig. 2A). Fig. 2B and C, show the trajectory of each fingertip and the location of each joint in the final
+flexed position in space. The thumb motion combines flexion at
+the IP and MCP joints and rotation at the CMC joint resulting in
+an opposition motion of the finger (see illustration on the right in
+Fig. 2A).
+For the participant of this study, the sum of joint angles was
+measured to be approximately 250° and 160° for the middle finger
+and the thumb, respectively. These results were found to be within
+the range of motion of joints reported in the literature [45–47],
+therefore making these a fair representation of average hand range
+of motion and generalizable to other hand sizes. Furthermore,
+this experimental method can be applied to measure the range of
+motion of the soft robotic glove and used to evaluate its ability to
+support the range of motion of a human hand.
+Previous studies on hand grasping have recorded that a healthy
+individual can generate maximum grip strength up to 300 and 450
+N in the cases of adult females and males, respectively [10,48,49].
+However, in cases where hand impairment is present, these force
+values are dramatically reduced [10] and depending on the severity
+
+Soft fiber-reinforced actuators
+The soft actuators presented in this work are composite tubular constructions consisting of anisotropic fiber reinforcements in
+an elastomeric matrix [31,43,44,51,52]. By reinforcing the walls
+of the tubular body, it is possible to mechanically program the
+actuator to perform a range of motions under fluid pressurization including bending, extending, extend-twist, and bend-twist
+motions [53]. Fig. 3A presents the components to assemble a fiberreinforced soft bending actuator, which incorporates a symmetric arrangement of radial reinforcements to limit radial expansion
+and a strain-limiting layer to promote bending by inhibiting linear growth along a portion of the tubular body. The other class of
+programmable motions — extending, extend-twist, bend-twist — is
+created by adjusting the combination of the radial reinforcements
+(Fig. 3B–D).
+The soft, fiber-reinforced actuators used in the glove device are
+fabricated in four stages. In the first stage, a half-round rod defines
+the hollow geometry of the tubular body. Each end of the rod is
+supported by a 3D printed mold (Connex 500, Objet Geometries,
+Billerca, MA) defining the tubular body’s exterior geometry (Fig. 4).
+Three dimensional printing of the molds enables rapid iteration of
+cross-sectional geometry (i.e. wall thickness, shape, etc.), actuator
+length, and enables features such as thread winding paths to be
+molded into the exterior surface of the soft actuator. In this first
+stage, actuator material properties can also be adjusted according
+to the application requirements [51,53]. After the rubber has cured,
+the tubular body and half-round rod are removed from the first
+mold and reinforcements are applied as part of the second stage
+(Fig. 4B–C). For bend and bend-twist actuators, a strain limiting
+layer such as higher durometer rubber, woven material (i.e. fiberglass), or non-woven material (i.e. Tyvek, Dupont, Wilmington, DE)
+is applied to the flat face first followed by radial reinforcements.
+The third stage of the fabrication uses a second 3D printed mold to
+encapsulate the tubular body and reinforcements in a thin layer of
+rubber. This anchors the reinforcements during handling and operation. In the last stage, the tubular body is pulled off the half-round
+rod (Fig. 4E) and the open ends of the body are capped.
+
+138
+
+P. Polygerinos et al. / Robotics and Autonomous Systems 73 (2015) 135–143
+
+soft actuators were presented capable of supporting a complete
+hand closure. The first actuator type was designed to support the
+fingers (i.e. index, middle, ring, and small finger) closing in the
+sagittal plane by combining bending and extending fiber reinforcement strategies (Fig. 5A). By enabling sections of the actuator to
+extend, this approach generated an actuation motion compatible
+with the finger skeletal kinematic by compensating for the distance
+between the soft actuator laying on the dorsal side of the finger,
+and the finger joint axes. This strategy can also be used to support
+the range of motion of the thumb, specifically for an opposition
+grasp motion, where the actuator bends above the joints, extends
+in between segments and bends/twists along another segment (see
+Fig. 5B). The length of each extending, bending and twisting actuator segment was empirically estimated such that when pressurized
+up to 345 kPa (50 psi), the deformation analogously corresponded
+to the individual skin extension, joint angle and twisting joint angle
+of flexed biological fingers.
+The silicone material (Elastosil M4601, Wacker Chemie AG, Germany) used in the development of multi-segment soft actuators
+was easily moldable and offered high elongation before failure
+(∼700%) and good tear strength (∼30 N/mm). The selected silicone
+durometer (Hardness Shore 28 A) allowed high hydraulic pressures
+and reduced the risk of delamination or material failure. The general geometry of the multi-segment soft actuators was mainly defined by the physiology of the participant’s fingers (see Section 2.1).
+Based on this, a half-round actuator design was used able to sit on
+its flat side above each finger. Its cross-sectional width was set to
+20 mm to match the width of the fingers, and height to 10 mm to
+ensure a low profile. The length of each soft actuator was measured
+such that it covered the entire length of the participant’s individual
+fingers.
+3.2. Actuator characterization
+Fig. 3. Exploded and assembled view of soft actuator components of the inactive
+and active states. A. Soft bending actuator. B. Bend-twist soft actuator. C. Linearly
+extending soft actuator. D. Twisting soft actuator.
+
+Multi-segment soft actuators
+We define multi-segment soft actuators as those that combine multiple programmable motions in series along the actuator’s length (e.g. separate bending and extending sections on one
+actuator). For the soft robotic glove, two types of multi-segment
+
+EM tracking sensors were placed along the bottom face of the
+multi-segment soft actuators for the index finger and the thumb to
+capture their behavior. The actuators were pressurized until they
+matched the maximum range of motion of each biological finger.
+These experiments were repeated five times and their average is
+presented in Fig. 6B–C. As shown in Fig. 6C, the trajectories of the
+distal ends of the soft multi-segmented actuator and biological
+index finger follow similar paths while transitioning from being
+fully extended to flexed. The pressure required to reach the flexed
+
+Fig. 4. Schematic diagram outlining some stages of the soft fiber-reinforced actuator fabrication process. A. In the first molding step, the actuator is molded using 3D printed
+parts. B. The strain limiting layer is attached to the flat face of the actuator. C. Fiber reinforcing thread is wound along the length of the actuator. D. The second molding step,
+the entire actuator is encapsulated in a layer of silicone to anchor all reinforcements. E. The steel rod is removed and both ends of the actuator are capped allowing one end
+to have a port for the inflow/outflow of fluid.
+
+P. Polygerinos et al. / Robotics and Autonomous Systems 73 (2015) 135–143
+
+139
+
+Fig. 5. Segmented fiber reinforcement configurations to generate multiple forms of motion in a single soft actuator. A. Illustrates the lower layer of a soft actuator with
+alternating bending and extending segments which is achieved by selective addition or elimination of the strain limiting layer. B. Illustrates a soft actuator with bend-twist,
+extend, and bend segments which is achieved by modifying strain fiber reinforcements.
+
+Fig. 6. A. The biological index finger in a flexed position and the numbered EM
+tracking sensor locations. B. The pressurized state (at 345 kPa (50 psi)) of the multisegment bending and extending soft actuator designed for the index finger. The
+numbers represent the EM tracking sensors location. C. Comparison between index
+finger motion and soft actuator tip trajectory, extension of segments and bending
+angles of the joints.
+
+state was measured at 345 kPa (50 psi). Similarly in Fig. 7, at a lower
+input pressure of 275 kPa (40 psi) due to the twisting segment,
+the path followed by the soft multi-segment actuator for the
+thumb agrees with the path of the biological thumb. Higher fluidic
+pressures above that point would result in increased bending,
+twisting and extension of the various actuators beyond those
+measured in the biomechanics studies. However, we found that
+when the actuators were integrated into the glove and constrained
+by the hand anatomy, they could be pressurized up to 400 kPa (∼60
+psi) and provide comfortable forces to the wearer.
+To measure the forces acting at the distal end of the multisegment soft actuators a test setup with a multi-axis force/torque
+sensor (Nano17, ATI Industrial Automation, NC USA) was developed (Fig. 8A). The multi-segment soft actuators were constrained
+along their top and sides while the distal end was in contact with
+the multi-axis force/torque sensor. This constraint is thought to be
+a fair representation of the soft actuators integrated in the glove
+and worn by the user. The proximal end was fixed along the main
+multi-segment soft actuator axis, allowing the twisting segment of
+the actuator for the thumb to rotate during pressurization. In this
+way, the force generated by each bending and rotating segment
+was transferred to the distal end where it could be measured. The
+pressure was gradually increased up to a pressure of 345 kPa (50
+
+Fig. 7. A. The flexed opposition state of the biological thumb and the numbered EM
+tracking sensors locations. B. The pressurized state (at 275 kPa (40 psi)) of the multisegment bending, extending and twisting soft actuator designed for the thumb.
+The numbers represent the EM tracking sensors location. C. Comparison between
+thumb motion and soft actuator’s EM sensors trajectories, extension of segments
+and bending angles of the joints.
+
+psi) and the magnitude of force was recorded. The experiment was
+repeated three times and their average is shown in Fig. 8B. Both
+multi-segment soft actuators for the index finger and thumb were
+found to generate at the constrained condition a maximum force
+at the distal end of approximately 8 N, which we estimate is sufficient to grasp and manipulate most objects of daily living. In addition, forces generated from the soft actuators are distributed along
+the entire length of the actuator, thus providing good grasping performance during ADL. It is also noted that at higher pressures the
+multi-segment actuator for the thumb demonstrated some deviation in measurements, largely believed to be due to some twisting
+of the actuator.
+4. Development of portable system
+The soft wearable robotic glove features an open palm design
+and consists of a flexible support structure that couples the soft
+actuators with the user’s hand. The glove has two structural layers
+(the ‘‘first structural layer’’ and the ‘‘second structural layer’’, as
+shown in Fig. 9) that together anchor the device to the hand via
+the wrist and finger tips. The ‘‘first structural layer’’ is a neoprene
+material covering the dorsal surface of the hand and featuring a
+
+140
+
+P. Polygerinos et al. / Robotics and Autonomous Systems 73 (2015) 135–143
+
+Fig. 8. A. Schematic showing the soft actuator mounted at the force setup. B. Force
+generation of both segmented soft actuators fabricated for the biological thumb
+(red-dashed line) and index finger (blue-solid line) at a reference pressure of 345
+kPa (50 psi). Shaded areas represent the standard deviation (N = 3).
+
+Fig. 10. A. The portable and autonomous waist belt pack and the glove mounted
+on a mannequin for size comparison. B. The waist belt pack depicting the pouches
+with the electro-mechanical components.
+
+Fig. 11. Glove controller structure for a single soft actuator. The dashed area
+represents the controller closed-loop.
+
+Fig. 9. Exploded view of the soft robotic glove assembly depicting features of the
+first and second structural layers that support glove function.
+
+strap that wraps around the wrist to form an anchor. The ‘‘second
+structural layer’’ attaches to the first layer via hook and loops
+(Velcro) and has ‘‘fingertip pockets’’ and ‘‘actuator pockets’’ at the
+distal end (see Fig. 9). The hook and loop connection between
+the two structural layers enables adjustability to hand size, bulk
+placement and pretension on the finger actuators. The adjustable
+pretension utilizes the neoprene material of the ‘‘second structural
+layer’’ and the soft actuators as a rubber return spring which upon
+deactivation, return the fingers to the open hand state. The second
+structural layer also includes a hook and loop surface for mounting
+the proximal base of the actuators and strapping (‘‘actuator
+alignment loop’’, Fig. 9) maintains actuator alignment with the
+finger. The glove assembly with pressurized fluid weighs 285 g.
+To enable portability and minimize additional weight on the
+hand and arm, the device’s hydraulic power supply and supporting
+electro-mechanical components were integrated into four pouches
+mounted on a waist belt pack. The pouches house, as shown in
+Fig. 10: (i) the 5 Ah (14.8 V) lithium polymer battery and power
+regulators which can support continuous glove operation for approximately 3.8 h, (ii) the microcontroller (Arduino MEGA 2560
+R3, Arduino), the hydraulic pressure sensors, and the controller
+
+boards managing PWM signals for all valves, (iii) the 9.6 W hydraulic pump and water-reservoir with a volume of 250 ml, and
+(iv) the solenoid valves for activating actuators, mechanical
+switches for manual control, and a volt meter to measure battery levels. The weight of the belt pack assembly is approximately
+3.3 kg. Miniature (10 × 13.5 × 13.7 mm) silicone diaphragm pressure sensors (150PGAA5, Honeywell, Morristown, NJ) were used
+to monitor the hydraulic pressure of the soft actuators to facilitate
+regulation of pressure with a local feedback control loop.
+5. Robotic glove control
+A sliding-mode controller (SMC) was implemented (Fig. 11)
+that can regulate pressure at a frequency as low as 5 Hz without
+sacrificing stability [54]. A clear advantage of SMC is that an explicit
+model of the system is not required for controller synthesis, as long
+as the system’s behavior is continuous and sufficiently smooth. A
+general form of the SMC control input uin is given by:
+
+ t
+
+
+
+
+
+
+
+λ
++
+λ
+P
+−
+P
+−
+u
++
+λ
+P1 − Pref dt
+0
+1
+1
+ref
+s
+2
+
+
+
+0
+
+
+ if P1 − Pref ≥ us ,
+uin = 0 if P1 − Pref  < us ,
+ t
+
+
+
+
+
+
+
+λ0 + λ1 P1 − Pref + us + λ2
+P1 − Pref dt
+
+
+
+0
+
+if P1 − Pref ≤ −us ,
+
+(1)
+
+P. Polygerinos et al. / Robotics and Autonomous Systems 73 (2015) 135–143
+
+141
+
+Fig. 12. The soft robotic glove in: A. index finger–thumb opposition contact, B. small finger–thumb opposition contact, C. index finger flexion, D. grasping a bottle of water
+using all fingers, E. picking up a telephone using all fingers, except of the small, and F. grasping of a television remote control using a tripod pinch.
+
+where λ0 , λ1 , λ2 are empirically selected coefficients and us is the
+controller deadzone. Introducing us is an important step for the
+noise rejection of the SMC controller, in order to avoid signal fluctuations by creating boundaries around the signal that allow it to
+retain its value unless the input changes sufficiently. Determination of us value is based on the assumption that the system has
+higher noise for higher pressure than for lower pressure, such that
+us comprises of a static term and a proportional term to the reference pressure Pref , such that
+us = u0 + u1 P ref
+
+(2)
+
+where u0 , u1 are selected empirically. The SMC was implemented
+in the microcontroller with a sampling frequency of 30 Hz. During each controller cycle, the input values measured from the fluidic pressure sensors are used to calculate the controller’s input to
+drive the valves. In this SMC, the system status was divided into
+two regions by a sliding surface selected through calibration. Two
+different controller phases, one for each region, were used to drive
+the system toward the sliding surface. The controller switches between the two phases depending on the actual status of the system.
+The closed-loop diagram of Fig. 11 (dashed line frame) consists
+of the controller (C1), two solenoid valves that control the inlet
+and outlet flow, and a pressure sensor that monitors the water
+pressure. The controller regulates the measured water pressure
+(P1) to track the desired pressure (Pref).
+The controller (C1) has one input (the pressure difference
+between the reference and measured signals) and two outputs
+(the inlet and outlet valve command signals). A pair of miniature
+solenoid valves with nominated response time of 30 ms and a
+maximum PWM frequency of 30 Hz (MC202-VB30, Gems Sensor
+S& Controls, CT, USA) was used for each finger. Therefore, a
+controller frequency of 20 Hz was selected for the control system,
+which is below the valve PWM frequency, and well higher than the
+actuator mechanical frequency of 1–2 Hz.
+6. Experimental results
+6.1. Range of motion evaluation
+One of the most challenging rehabilitation exercises for individuals with hand disabilities is to perform opposition contact of
+the thumb with each fingertip. This task requires every DOF of
+the thumb and articulation of the opposing finger. In the past,
+
+wearable hand devices such as the IOTA from Aubin et al. [45],
+and the finger–thumb wearable hand exoskeleton from Cempini
+et al. [24] accomplished exoskeletal chains and have successfully
+demonstrated thumb opposition contact and grasping of objects.
+To evaluate the efficacy of the soft wearable robotic glove in providing assistance with gross and precise motions commonly found
+in ADL and rehabilitation exercises, various scenarios including opposition exercise were investigated (Fig. 12A–C). Additionally, a
+user wearing the soft robotic glove manipulated objects of different sizes and weights that a person may encounter during ADL
+(Fig. 12D–F). The internal pressure of the multi-segment soft actuators for a specific motion was determined empirically. Activation
+of groups of soft actuators to fulfill specific finger motion patterns
+(e.g. tripod pinch, full fist flexion) was selected through mechanical
+switches located on the waist belt pack.
+6.2. Controller evaluation
+In this experiment the multi-segment soft actuator for the index finger on the glove was pressurized from 0 kPa to 345 kPa
+(∼50 psi), while the reference pressure (Pref) and measured pressure (P1) were recorded. The 345 kPa was the pressure that corresponded to full finger flexion. Fig. 13, compares the two pressure
+signals, (Pref) and (P1), and also highlights the deadzone us of the
+switching controller (shaded red) as introduced in Eq. (1). With a
+controller frequency of 20 Hz, the system was able to respond to
+the step input within 0.2 s (65%), and reach steady state after 2.2 s
+(95%). The closed loop system bandwidth (i.e. actuation speed of
+the glove actuators) was measured with a sinusoidal tracking performance test and found to be 0.25 Hz. The observed time delay in
+reaching the set reference pressure is mainly a result of internal fluidic friction with the tubing. Larger diameter tubing or a higher fluidic flow capacity pump could improve response times, and hence
+the bandwidth of the robotic glove. Likewise, the delay in the discharging phase of the controller is a result of the fluidic outflow
+that takes place under natural flow. Additionally, the water pressure in the hydraulic loop was observed to produce a significant
+amount of oscillations as the valves switched from open to close.
+This was mainly due to the valve response times of 30 ms. The delay
+between the valve commands to actual valve action caused the water pressure in the loop to overshoot, causing the spikes in the pressure measurements in Fig. 13. The water inertia inside the tubing
+smoothed this effect, and overshooting could be further reduced
+using valves with faster response times.
+
+142
+
+P. Polygerinos et al. / Robotics and Autonomous Systems 73 (2015) 135–143
+
+Fig. 13. The step response of the switching controller implemented on the robotic
+glove.
+
+7. Conclusions
+In this paper, we presented a soft robotic glove that is intended
+to combine assistance with activities of daily living and at-home
+rehabilitation for individuals with hand disabilities. Hydraulically
+actuated multi-segment soft actuators were designed and fabricated using elastomers with fiber reinforcements. The soft actuators demonstrated the ability to replicate the finger and thumb
+motions suitable for many typical grasping motions. Furthermore,
+the actuators were mounted to the dorsal side of the hand, providing an open palm interface that does not impede object interaction.
+The entire system was packaged into a portable waist belt pack
+that offers several hours of operation on a single battery charge.
+Gross and fine functional grasping abilities of the robotic glove
+were qualitatively evaluated on healthy subjects through demonstrations in both free-space and by interaction with various objects
+that are encountered during activities of daily living.
+In the future, further work is planned to improve the performance, and decrease the size of the multi-segmented fiberreinforced actuators. This could result in an even thinner profile
+for the glove that can provide increased force generation that
+could not only assist in ADLs, but also be able to treat more hand
+pathologies in rehabilitation scenarios where fingers are demonstrating increased stiffness. Additionally, the robustness and life
+cycle of the multi-segment soft actuators will be investigated during fatigue tests. Furthermore, new sensing tools for improving human–machine interaction will be explored so that a pilot study can
+be performed to assess the device’s ability to assist hand-impaired
+individuals in performing ADL.
+Acknowledgments
+This work is partially supported by the National Science
+Foundation (grant #1317744), the Wyss Institute for Biologically
+Inspired Engineering and the School of Engineering and Applied
+Sciences at Harvard University. We would like to thank Mr. Daniel
+M. Vogt for his help with the sensing and controller experiments,
+and a team of students comprised of Mr. P. Maeder-york, Mr. T.
+Clites, Miss. E. Boggs and Mr. R. Neff, for their preliminary work on
+the soft thumb actuator as part of a Medical Design course (ES227)
+at the Harvard School of Engineering and Applied Sciences.
+References
+[1] V.L. Roger, A.S. Go, D.M. Lloyd-Jones, E.J. Benjamin, J.D. Berry, W.B. Borden,
+et al., Heart disease and stroke statistics—2012 update, a report from the
+American Heart Association, Circulation 125 (2012) e2–e220.
+[2] C.D. Takahashi, L. Der-Yeghiaian, V. Le, R.R. Motiwala, S.C. Cramer, Robot-based
+hand motor therapy after stroke, Brain 131 (2008) 425–437.
+[3] S. Ueki, H. Kawasaki, S. Ito, Y. Nishimoto, M. Abe, T. Aoki, et al., Development of
+a hand-assist robot with multi-degrees-of-freedom for rehabilitation therapy,
+IEEE/ASME Trans. Mechatronics 17 (2012) 136–146.
+
+[4] S.L. Wolf, C.J. Winstein, J.P. Miller, E. Taub, G. Uswatte, D. Morris, et al., Effect
+of constraint-induced movement therapy on upper extremity function 3 to 9
+months after stroke, J. Amer. Med. Assoc. 296 (2006) 2095–2104.
+[5] S. Ueki, Y. Nishimoto, M. Abe, H. Kawasaki, S. Ito, Y. Ishigure, et al. Development
+of virtual reality exercise of hand motion assist robot for rehabilitation therapy
+by patient self-motion control, in: 30th Annual International Conference of
+the IEEE Engineering in Medicine and Biology Society, 2008, EMBS 2008, 2008,
+pp. 4282–4285.
+[6] N.G. Kutner, R. Zhang, A.J. Butler, S.L. Wolf, J.L. Alberts, Quality-of-life change
+associated with robotic-assisted therapy to improve hand motor function
+in patients with subacute stroke: a randomized clinical trial, Phys. Ther. 90
+(2010) 493–504.
+[7] E. Carmeli, S. Peleg, G. Bartur, E. Elbo, J.J. Vatine, HandTutorTM enhanced
+hand rehabilitation after stroke—a pilot study, Physiother. Res. Int. 16 (2011)
+191–200.
+[8] A. Polotto, F. Modulo, F. Flumian, Z.G. Xiao, P. Boscariol, C. Menon, Index finger
+rehabilitation/assistive device, in: 2012 4th IEEE RAS & EMBS International
+Conference on Biomedical Robotics and Biomechatronics, BioRob, 2012,
+pp. 1518–1523.
+[9] M. Takagi, K. Iwata, Y. Takahashi, S.-i. Yamamoto, H. Koyama, T. Komeda,
+Development of a grip aid system using air cylinders, in: IEEE International
+Conference on Robotics and Automation, 2009, ICRA’09, 2009, pp. 2312-2317.
+[10] L. Dovat, O. Lambercy, R. Gassert, T. Maeder, T. Milner, T.C. Leong, et al.,
+HandCARE: a cable-actuated rehabilitation system to train hand function after
+stroke, IEEE Trans. Neural Syst. Rehabil. Eng. 16 (2008) 582–591.
+[11] H. Kawasaki, S. Ito, Y. Ishigure, Y. Nishimoto, T. Aoki, T. Mouri, et al.
+Development of a hand motion assist robot for rehabilitation therapy
+by patient self-motion control, in: IEEE 10th International Conference on
+Rehabilitation Robotics, 2007, ICORR 2007, 2007, pp. 234–240.
+[12] C.N. Schabowsky, S.B. Godfrey, R.J. Holley, P.S. Lum, Development and pilot
+testing of HEXORR: hand EXOskeleton rehabilitation robot, J. Neuroeng.
+Rehabil. 7 (2010) 36.
+[13] B.R. Brewer, S.K. McDowell, L.C. Worthen-Chaudhari, Poststroke upper
+extremity rehabilitation: a review of robotic systems and clinical results, Top.
+Stroke Rehabil. 14 (2007) 22–44.
+[14] P.S. Lum, S.B. Godfrey, E.B. Brokaw, R.J. Holley, D. Nichols, Robotic approaches
+for rehabilitation of hand function after stroke, Am. J. Phys. Med. Rehabil. 91
+(2012) S242–S254.
+[15] K. Tadano, M. Akai, K. Kadota, K. Kawashima, Development of grip amplified
+glove using bi-articular mechanism with pneumatic artificial rubber muscle,
+in: 2010 IEEE International Conference on Robotics and Automation, ICRA,
+2010, pp. 2363–2368.
+[16] A. Chiri, N. Vitiello, F. Giovacchini, S. Roccella, F. Vecchi, M.C. Carrozza,
+Mechatronic design and characterization of the index finger module of a hand
+exoskeleton for post-stroke rehabilitation, IEEE/ASME Trans. Mechatronics 17
+(2012) 884–894.
+[17] A. Wege, K. Kondak, G. Hommel, Force control strategy for a hand exoskeleton
+based on sliding mode position control, in: 2006 IEEE/RSJ International
+Conference on Intelligent Robots and Systems, 2006, pp. 4615–4620.
+[18] L. Lucas, M. DiCicco, Y. Matsuoka, An EMG-controlled hand exoskeleton for
+natural pinching, J. Robot. Mechatronics 16 (2004) 482–488.
+[19] Y. Hasegawa, Y. Mikami, K. Watanabe, Y. Sankai, Five-fingered assistive
+hand with mechanical compliance of human finger, in: IEEE International
+Conference on Robotics and Automation, 2008, ICRA 2008, 2008, pp. 718–724.
+[20] T. Worsnopp, M. Peshkin, J. Colgate, D. Kamper, An actuated finger exoskeleton for hand rehabilitation following stroke, in: IEEE 10th International Conference on Rehabilitation Robotics, 2007, ICORR 2007, 2007, pp. 896–901.
+[21] B.L. Shields, J.A. Main, S.W. Peterson, A.M. Strauss, An anthropomorphic hand
+exoskeleton to prevent astronaut hand fatigue during extravehicular activities,
+IEEE Trans. Syst. Man Cybern. A 27 (1997) 668–673.
+[22] C.L. Jones, F. Wang, R. Morrison, N. Sarkar, D.G. Kamper, Design and Development of the Cable Actuated Finger Exoskeleton for Hand Rehabilitation Following Stroke, 2014.
+[23] E.B. Brokaw, R.J. Holley, P.S. Lum, Hand Spring Operated Movement Enhancer
+(HandSOME) device for hand rehabilitation after stroke, in: 2010 Annual
+International Conference of the IEEE Engineering in Medicine and Biology
+Society, EMBC, 2010, pp. 5867–5870.
+[24] M. Cempini, M. Cortese, N. Vitiello, A powered finger – thumb wearable hand
+exoskeleton with self-aligning joint axes, IEEE/ASME Trans. Mechatronics
+(2014).
+[25] P. Heo, G.M. Gu, S.-j. Lee, K. Rhee, J. Kim, Current hand exoskeleton
+technologies for rehabilitation and assistive engineering, Int. J. Precis. Eng.
+Manuf. 13 (2012) 807–824.
+[26] P. Maciejasz, J. Eschweiler, K. Gerlach-Hahn, A. Jansen-Toy, S. Leonhardt, A
+survey on robotic devices for upper limb rehabilitation, J. Neuroeng. Rehabil.
+11 (2014) 3.
+[27] U. Jeong, H.-K. In, K.-J. Cho, Implementation of various control algorithms for
+hand rehabilitation exercise using wearable robotic hand, Intell. Service Robot.
+6 (2013) 181–189.
+[28] F. Vanoglio, A. Luisa, F. Garofali, C. Mora, Evaluation of the effectiveness of
+Gloreha (Hand Rehabilitation Glove) on hemiplegic patients. Pilot study, in:
+XIII Congress of Italian Society of Neurorehabilitation, Bari, Italy, 2013.
+[29] M. Nilsson, J. Ingvast, J. Wikander, H. von Holst, The soft extra muscle system
+for improving the grasping capability in neurological rehabilitation, in: 2012
+IEEE EMBS Conference on Biomedical Engineering and Sciences, IECBES, 2012,
+pp. 412–417.
+
+P. Polygerinos et al. / Robotics and Autonomous Systems 73 (2015) 135–143
+[30] M.A. Delph II, S.A. Fischer, P.W. Gauthier, C.H.M. Luna, E.A. Clancy, G.S. Fischer,
+A soft robotic exomusculature glove with integrated sEMG sensing for hand
+rehabilitation, in: International Conference on Rehabilitation Robotics, ICORR,
+2013, p. 26.
+[31] D. Sasaki, T. Noritsugu, M. Takaiwa, H. Yamamoto, Wearable power
+assist device for hand grasping using pneumatic artificial rubber muscle,
+in: 13th IEEE International Workshop on Robot and Human Interactive
+Communication, 2004, ROMAN 2004, 2004, pp. 655–660.
+[32] T. Noritsugu, Pneumatic soft actuator for human assist technology, in:
+Symposium on Fluid Power, 2005.
+[33] L. Connelly, Y. Jia, M.L. Toro, M.E. Stoykov, R.V. Kenyon, D.G. Kamper,
+A pneumatic glove and immersive virtual reality environment for hand
+rehabilitative training after stroke, IEEE Trans. Neural Syst. Rehabil. Eng. 18
+(2010) 551–559.
+[34] T. Kline, D. Kamper, B. Schmit, Control system for pneumatically controlled
+glove to assist in grasp activities, in: 9th International Conference on
+Rehabilitation Robotics, 2005, ICORR 2005, 2005, pp. 78–81.
+[35] Y. Kadowaki, T. Noritsugu, M. Takaiwa, D. Sasaki, M. Kato, Development of soft
+power-assist glove and control based on human intent, J. Robot. Mechatronics
+23 (2011) 281.
+[36] P. Maeder-York, T. Clites, E. Boggs, R. Neff, P. Polygerinos, D. Holland, et al.,
+Biologically inspired soft robot for thumb rehabilitation, J. Med. Devices 8
+(2014) 020933.
+[37] F. Ilievski, A.D. Mazzeo, R.F. Shepherd, X. Chen, G.M. Whitesides, Soft robotics
+for chemists, Angew. Chem. 123 (2011) 1930–1935.
+[38] G.K. Klute, J.M. Czerniecki, B. Hannaford, McKibben artificial muscles: pneumatic actuators with biomechanical intelligence, in: 1999 IEEE/ASME International Conference on Advanced Intelligent Mechatronics, 1999, Proceedings,
+1999, pp. 221–226.
+[39] C. Majidi, Soft robotics: a perspective—current trends and prospects for the
+future, Soft Robot. 1 (2013) 5–11.
+[40] K. Suzumori, S. Endo, T. Kanda, N. Kato, H. Suzuki, A bending pneumatic
+rubber actuator realizing soft-bodied manta swimming robot, in: 2007 IEEE
+International Conference on Robotics and Automation, 2007, pp. 4975–4980.
+[41] C. Laschi, M. Cianchetti, B. Mazzolai, L. Margheri, M. Follador, P. Dario, Soft
+robot arm inspired by the octopus, Adv. Robot. 26 (2012) 709–727.
+[42] H.-T. Lin, G.G. Leisk, B. Trimmer, GoQBot: a caterpillar-inspired soft-bodied
+rolling robot, Bioinspiration & Biomimetics 6 (2011) 026007.
+[43] J. Bishop-Moser, G. Krishnan, C. Kim, S. Kota, Design of soft robotic
+actuators using fluid-filled fiber-reinforced elastomeric enclosures in parallel
+combinations, in: 2012 IEEE/RSJ International Conference on Intelligent
+Robots and Systems, IROS, 2012, pp. 4264–4269.
+[44] R. Deimel, O. Brock, A compliant hand based on a novel pneumatic actuator, in:
+2013 IEEE International Conference on Robotics and Automation, ICRA, 2013,
+pp. 2047–2053.
+[45] P. Aubin, H. Sallum, C. Walsh, A. Correia, L. Stirling, A pediatric robotic thumb
+exoskeleton for at-home rehabilitation, in: IEEE International Conference on
+Rehabilitation Robotics, ICORR, 2013.
+[46] R.C. Loureiro, W.S. Harwin, Reach & grasp therapy: design and control of
+a 9-DOF robotic neuro-rehabilitation system, in: IEEE 10th International
+Conference on Rehabilitation Robotics, 2007, ICORR 2007, 2007, pp. 757–763.
+[47] P.H. Seidenberg, A.I. Beutler, The Sports Medicine Resource Manual, Saunders/Elsevier, 2008.
+[48] V. Mathiowetz, N. Kashman, G. Volland, K. Weber, M. Dowe, S. Rogers, Grip and
+pinch strength: normative data for adults, Arch. Phys. Med. Rehabil. 66 (1985)
+69–74.
+[49] I.N. Gaiser, C. Pylatiuk, S. Schulz, A. Kargov, R. Oberle, T. Werner, The
+FLUIDHAND III: a multifunctional prosthetic hand, J. Prosthetics Orthotics 21
+(2009) 91–96.
+[50] K. Matheus, A.M. Dollar, Benchmarking grasping and manipulation: properties
+of the objects of daily living, in: 2010 IEEE/RSJ International Conference on
+Intelligent Robots and Systemsm, IROS, 2010, pp. 5020–5027.
+[51] K.C. Galloway, P. Polygerinos, C.J. Walsh, R.J. Wood, Mechanically programmable bend radius for fiber-reinforced soft actuators, in: IEEE International Conference on Advanced Robotics, Montevideo, Uruguay, 2013.
+[52] R. Deimel, O. Brock, A compliant hand based on a novel pneumatic actuator.
+[53] P. Polygerinos, Z. Wang, B. Overvelde, K. Galloway, R.J. Wood, K. Bertoldi, et al.,
+Soft fiber reinforced bending actuators, IEEE Trans. Robot. (2014) sumbitted
+for publication.
+[54] V.I. Utkin, Sliding mode control design principles and applications to electric
+drives, IEEE Trans. Ind. Electron. 40 (1993) 23–36.
+
+143
+
+Panagiotis Polygerinos received the B.Eng. degree (top
+of his class) in mechanical engineering from the Technological Educational Institute of Crete, Heraklion, Greece in
+2006, the M.Sc. (with distinction) degree in mechatronics and Ph.D. in mechanical engineering/medical robotics
+from King’s College London, London, UK, in 2007 and 2011,
+respectively. He is currently a Technology Development
+Fellow at the Wyss Institute and the School of Engineering
+and Applied Sciences at Harvard University, USA, where he
+specializes in soft robotic systems that find application in
+the medical and rehabilitation areas.
+
+Zheng Wang received the B.Sc. with merit from Tsinghua
+University (China), M.Sc. with distinction from Imperial College (UK), and Ph.D. with merit from Technische
+Universität München (Germany). He was a postdoctoral
+research fellow in Nanyang Tech. University (Singapore)
+between 2010 and 2013. Since early 2013 he has been
+a postdoctoral fellow with joint appointments in School
+of Engineering and Applied Sciences and the Wyss Institute of Bioinspired Engineering at Harvard University. His
+research interests include: haptics, human–robot interaction, teleoperation, cable-driven mechanisms and soft
+robotics.
+
+Kevin C. Galloway received his B.S.E. and Ph.D. in mechanical engineering from the University of Pennsylvania and
+is currently a research engineer on the Advanced Technology Team with the Wyss Institute at Harvard University.
+His research interests are in applying knowledge of materials and prototyping techniques toward the development
+of bioinspired robots and medical devices.
+
+Robert J. Wood received the Master’s and Ph.D. degrees
+in electrical engineering from the University of California,
+Berkeley, in 2001 and 2004, respectively. He is currently
+an Associate Professor in the School of Engineering and
+Applied Sciences and a Core Faculty Member at the Wyss
+Institute for Biologically Inspired Engineering at Harvard
+University, Cambridge, MA. His research interests include
+the areas of microrobotics and bioinspired robotics.
+
+Conor J. Walsh received his B.A.I and B.A. degrees in Mechanical and Manufacturing engineering from Trinity College Dublin, Ireland in 2003 and an M.S. degree and Ph.D.
+in Mechanical Engineering from the Massachusetts Institute of Technology in 2006 and 2010 with a minor in
+entrepreneurship through the Sloan School of Management and also a Certificate in Medical Science through the
+Harvard-MIT Division of Health Sciences and Technology.
+He is an Assistant Professor in the School of Engineering
+and Applied Sciences and a Core Faculty Member at the
+Wyss Institute for Biologically Inspired Engineering at Harvard University. His research efforts are at the intersection of science, engineering
+and medicine with a focus on developing robots and smart medical devices that are
+specifically intended for interacting and cooperating with humans.
+
+

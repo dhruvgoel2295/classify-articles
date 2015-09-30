@@ -1,0 +1,2547 @@
+Discrete Mathematics 311 (2011) 1892–1902
+
+Contents lists available at ScienceDirect
+
+Discrete Mathematics
+journal homepage: www.elsevier.com/locate/disc
+
+Congruences for generalized Frobenius partitions with 4 colors
+Nayandeep Deka Baruah a,∗ , Bipul Kumar Sarmah b
+a
+
+Department of Mathematical Sciences, Tezpur University, Napaam-784028, Sonitpur, Assam, India
+
+b
+
+Department of Mathematics, Darrang College, Tezpur-784001, Sonitpur, Assam, India
+
+article
+
+abstract
+
+info
+
+We present some congruences involving the functions c φ4 (n) and c φ 4 (n) which denote,
+respectively, the number of generalized Frobenius partitions of n with 4 colors and 4-order
+generalized Frobenius partitions of n with 4 colors.
+© 2011 Elsevier B.V. All rights reserved.
+
+Article history:
+Received 7 November 2010
+Received in revised form 9 May 2011
+Accepted 10 May 2011
+Available online 9 June 2011
+Keywords:
+Partitions
+Frobenius partitions
+Partition congruences
+Integer matrix exact covering system
+
+1. Introduction
+A partition λ = (λ1 , λ2 , . . . , λk ) of a natural number n is a finite sequence of non-increasing positive integer parts λi
+∑k
+such that n =
+i=1 λi . The Ferrers–Young diagram of the partition λ of n is formed by arranging n nodes in k rows so that
+the ith row has λi nodes. The conjugate of a partition λ, denoted by λ′ , is the partition whose Ferrers–Young diagram is the
+reflection along the main diagonal of the diagram of λ.
+Frobenius introduced an idea of representing the conjugate of a partition λ of n once λ was known. This was done by
+simply removing the dots (say r in numbers) on the main diagonal of the Ferrers–Young diagram of λ and then enumerating
+the dots above and below the main diagonal by rows and columns, respectively, to obtain two strictly decreasing finite
+sequences of non-negative integers a1 > a2 > · · · > ar ≥ 0, b1 > b2 > · · · > br ≥ 0. These two sequences are then
+presented in the Frobenius notation given by
+
+
+
+a1
+b1
+
+a2
+b2
+
+.
+.
+
+.
+.
+
+.
+.
+
+ar
+br
+
+
+
+.
+
+Clearly,
+n=r+
+
+r
+−
+i=1
+
+ai +
+
+r
+−
+
+bi .
+
+i =1
+
+For example, the Ferrers–Young diagram of the partition λ = (6, 4, 3, 1) of 14 is
+
+•
+•
+•
+•
+∗
+
+•
+•
+•
+
+•
+•
+•
+
+•
+•
+
+•
+
+•
+
+Corresponding author.
+E-mail addresses: nayan@tezu.ernet.in (N.D. Baruah), bipbip@tezu.ernet.in (B.K. Sarmah).
+
+0012-365X/$ – see front matter © 2011 Elsevier B.V. All rights reserved.
+doi:10.1016/j.disc.2011.05.010
+
+N.D. Baruah, B.K. Sarmah / Discrete Mathematics 311 (2011) 1892–1902
+
+1893
+
+Removing the dots on the main diagonal of the above Ferrers–Young diagram, we find that
+
+×
+•
+•
+•
+
+•
+×
+•
+
+•
+•
+×
+
+•
+•
+
+•
+
+•
+
+Enumerating the dots above and below the main diagonal by rows and columns, respectively, we easily see that λ can be
+presented in Frobenius notation as
+
+
+
+5
+3
+
+2
+1
+
+
+
+0
+.
+0
+
+Similarly, the conjugate λ′ = (4, 3, 3, 2, 1, 1) of λ in Frobenius notation is
+
+
+
+3
+5
+
+1
+2
+
+
+
+0
+.
+0
+
+G. E. Andrews [1] introduced the idea of generalized Frobenius partitions (or simply F-partitions) of n which is a notation
+of the form
+
+
+
+a1
+b1
+
+.
+.
+
+a2
+b2
+
+.
+.
+
+.
+.
+
+ar
+br
+
+
+
+of non-negative integers ai ’s, bi ’s with
+n=r+
+
+r
+−
+
+ai +
+
+i =1
+
+r
+−
+
+bi ,
+
+i=1
+
+where each row is of the same length and each is arranged in non-increasing order.
+Let c φk (n) represent the number of F-partitions of n with k-colors and strict decrease in each row. The generating function
+for c φk (n) is given by [1],
+∞
+−
+
+c φk (n)qn =
+
+n =0
+
+∞
+∏
+
+1
+
+∞
+−
+
+n =1
+
+(1 − qn )k
+
+m1 ,m2 ,...,mk−1 =−∞
+
+qQ (m1 ,m2 ,...,mk−1 ) ,
+
+(1.1)
+
+where
+Q (m1 , m2 , . . . , mk−1 ) =
+
+k−1
+−
+j =1
+
+−
+
+m2j +
+
+mi mj .
+
+1≤i<j≤k−1
+
+In particular [1],
+∞
+−
+
+c φ1 (n)qn =
+
+n =0
+
+∞
+−
+
+c φ2 (n)qn =
+
+n =0
+
+1
+
+(q; q)∞
+
+,
+
+(q2 ; q4 )∞
+,
+(q; q2 )4∞ (q4 ; q4 )∞
+
+(q12 ; q12 )∞ (q4 ; q4 )∞
+(q12 ; q12 )∞ (q6 ; q12 )3∞
++
+4q
+,
+(q; q6 )5∞ (q5 ; q6 )5∞ (q4 ; q4 )2∞ (q3 ; q6 )7∞
+(q6 ; q12 )∞ (q2 ; q4 )∞ (q; q)3∞
+n =0
+∏∞
+where, here and throughout the paper, for |q| < 1, (a; q)∞ := n=0 (1 − aqn ).
+∞
+−
+
+c φ3 (n)qn =
+
+(1.2)
+
+(1.3)
+
+(1.4)
+
+Andrews [1, p. 15] remarked that ‘‘after the above results, the expressions quickly become long and messy’’. In Section 2,
+we present expressions for the generating functions of c φ4 (n) and c φ5 (n) similar to (1.4) above. Andrews [1] also proved
+the congruences
+c φ2 (5n + 3) ≡ 0 (mod 5),
+
+(1.5)
+
+c φk (n) ≡ 0 (mod k ) if k is prime and does not divide n.
+
+(1.6)
+
+2
+
+For some other congruences and family of congruences involving c φ2 (n) and c φ3 (n), we refer to [4,9–11,15]. In Section 3 of
+this paper, we establish the congruences
+c φ4 (2n + 1) ≡ 0 (mod 42 ),
+c φ4 (4n + 3) ≡ 0 (mod 44 ),
+c φ4 (4n + 2) ≡ 0 (mod 4).
+
+1894
+
+N.D. Baruah, B.K. Sarmah / Discrete Mathematics 311 (2011) 1892–1902
+
+Next, Kolitsch [5,7] considered the function c φ k (n), which denotes the number of F-partitions of n with k colors
+ whose
+ 
+
+order is k under cyclic permutation of the k colors. For example, the F-partitions enumerated by c φ2 (2) are
+
+         
+1r
+0g
+
+,
+
+1g
+0g
+
+0r
+1r
+
+,
+
+,
+
+0r
+1g
+
+0g
+1r
+
+,
+
+, and
+
+ 
+0g
+1g
+
+1r
+0r
+
+,
+
+1g
+0r
+
+,
+
+, where the subscripts represent the two colors viz. red and green of the non-negative
+
+integers. The generating function for c φ k (n) is given by [7],
+∞
+−
+
+c φ k (n)q =
+n
+
+k
+
+∑
+
+qQ (m)
+
+(q; q)k∞
+
+n =0
+
+,
+
+(1.7)
+
+where the sum of the right extends over all vectors m = (m1 , m2 , . . . , mk ) with m.1 = 1 and Q (m) =
+wherein 1 = (1, 1, 1, . . . , 1) and mk+1 = m1 .
+In particular (see [13,8]),
+∞
+−
+
+c φ 2 (n)qn =
+
+n =0
+
+∞
+−
+
+c φ 3 (n)qn =
+
+n =0
+
+4q(q16 ; q16 )2∞
+
+(q; q)2∞ (q8 ; q8 )∞
+9q(q9 ; q9 )3∞
+
+(q; q)3∞ (q3 ; q3 )∞
+
+1
+2
+
+∑k
+
+i=1
+
+(mi − mi+1 )2
+
+,
+
+(1.8)
+
+.
+
+(1.9)
+
+In Section 4, we obtain the generating function for c φ 4 (n) in terms of q-products. Kolitsch [5] found for all integers k ≥ 2,
+that
+c φ k (n) ≡ 0 (mod k2 ).
+
+(1.10)
+
+More congruences, family of congruences, identities and recurrence relations involving c φ k (n) have been established in [6–
+8,12–15]. In particular, Sellers [12,13] established that
+c φ k (kn) ≡ 0 (mod k3 ) for k = 2, 3, 5, 7, and 11.
+
+(1.11)
+
+It was further remarked in [13, p. 372] that ‘‘one question that naturally arises is whether congruences of this form occur
+for larger primes such as k = 13 or 17, or for composite values of k’’. We give a partial answer to this question by proving,
+in Section 5, the following congruences for the composite value 4 of k.
+c φ 4 (2n) ≡ 0 (mod 43 ),
+c φ 4 (4n + 3) ≡ 0 (mod 44 ),
+c φ 4 (4n) ≡ 0 (mod 44 ).
+We conclude this introduction with a brief discussion on integer matrix exact covering system as described by Cao [3].
+An exact covering system is a partition of the integers into a finite set of arithmetic sequences. An integer matrix exact
+covering system is a partition of Zn into a lattice and a finite number of it’s translates without overlap.
+Let
+∞
+−
+
+S=
+
+f (x1 , x2 , . . . , xn ).
+
+(1.12)
+
+x1 ,x2 ,...,xn =−∞
+
+x 
+1
+
+x2 
+We change the variables from xi to yi by the transformation y = Ax where A is an integer matrix with det A ̸= 0, x =  .. ,
+.
+
+xn
+
+y 
+1
+
+y2 
+and y =  .. .
+.
+
+yn
+
+By the inverse formula, x = A−1 y =
+Let
+det A
+dn−1 (A)
+
+= sn (A)
+
+1
+A∗ y
+det A
+
+where A∗ is the adjoint of A.
+
+(1.13)
+
+where dn−1 (A) is the (n − 1)th determinantal divisor of A (the kth determinantal divisor of A is the g.c.d. of all k × k minors
+of A).
+
+N.D. Baruah, B.K. Sarmah / Discrete Mathematics 311 (2011) 1892–1902
+
+1895
+
+Therefore,
+x=
+
+A∗
+
+1
+
+sn (A) dn−1 (A)
+
+Setting sgn(sn (A)) d
+
+A∗
+
+n−1 (A)
+
+x=
+
+1
+d
+
+y.
+
+(1.14)
+
+= B, |sn (A)| = d, we can rewrite (1.14) as
+
+By.
+
+(1.15)
+
+Thus, we have
+By ≡ 0 (mod d).
+
+(1.16)
+
+If y ≡ cr (mod d)(r = 0, 1, 2, . . . , k − 1) is the solution set of (1.16) then we have x = By +
+k−1
+1
+Bcr r =0
+d
+
+
+
+
+
+1
+Bcr ,
+d
+
+(r = 0, 1, 2, . . . , k − 1),
+
+n
+
+covers Z and there is no overlap between the members thereby giving an integer matrix exact covering
+By +
+system. Corresponding to this integer matrix exact covering system we can write S as a linear combination of k parts.
+2. Generating functions for c φ4 (n) and c φ5 (n)
+In this section, we find expressions for the generating functions of c φ4 (n) and c φ5 (n).
+Theorem 2.1. If
+
+ϕ(q) :=
+
+∞
+−
+
+2
+
+qn
+
+and ψ(q) :=
+
+n=−∞
+
+∞
+−
+
+qn(n+1)/2 =
+
+n =0
+
+∞
+1 −
+
+2 n=−∞
+
+qn(n+1)/2
+
+(2.1)
+
+then
+∞
+−
+
+c φ4 (n)qn =
+
+n =0
+
+ϕ 3 (q2 ) + 12qϕ(q2 )ψ 2 (q4 )
+.
+(q; q)4∞
+
+(2.2)
+
+Proof. Setting k = 4 in (1.1) we have
+∞
+−
+
+c φ4 (n)qn =
+
+n =0
+
+∞
+−
+
+1
+
+(q; q)∞
+4
+
+2
+
+2
+
+2
+
+qm1 +m2 +m3 +m1 m2 +m2 m3 +m3 m1 .
+
+(2.3)
+
+m1 ,m2 ,m3 =−∞
+
+Let
+S=
+
+∞
+−
+
+2
+
+2
+
+2
+
+qm1 +m2 +m3 +m1 m2 +m2 m3 +m3 m1 .
+
+(2.4)
+
+m1 ,m2 ,m3 =−∞
+
+−1
+We change the variables from m1 , m2 , m3 to n1 , n2 , n3 by an integer matrix exact covering system {Bn + 1d Bcr }rk=
+0 , where
+
+B = (bij )3×3 is an integer matrix, n =
+
+n 
+1
+
+n2
+n3
+
+and c0 , c1 , . . . , ck−1 are the solutions of the congruences Bn ≡ 0 (mod d). We
+
+shall further require that the coefficients of n1 n2 , n2 n3 , n3 n1 in
+
+(b11 n1 + b12 n2 + b13 n3 )2 + (b21 n1 + b22 n2 + b23 n3 )2 + (b31 n1 + b32 n2 + b33 n3 )2
++ (b11 n1 + b12 n2 + b13 n3 )(b21 n1 + b22 n2 + b23 n3 )
++ (b21 n1 + b22 n2 + b23 n3 )(b31 n1 + b32 n2 + b33 n3 )
++ (b31 n1 + b32 n2 + b33 n3 )(b11 n1 + b12 n2 + b13 n3 )
+to be zero in order to separate ni ’s. Thus, we have the conditions that
+2b11 b12 + 2b21 b22 + 2b31 b32 + b11 b22 + b12 b21 + b21 b32 + b22 b31 + b31 b12 + b32 b11 = 0,
+
+(2.5)
+
+2b12 b13 + 2b22 b23 + 2b32 b33 + b12 b23 + b13 b22 + b22 b33 + b23 b32 + b32 b13 + b33 b12 = 0,
+
+(2.6)
+
+2b11 b13 + 2b21 b23 + 2b31 b33 + b11 b23 + b13 b21 + b21 b33 + b23 b31 + b31 b13 + b33 b11 = 0.
+
+(2.7)
+
+The integer matrix exact covering system
+is obtained
+
+ by following the general procedure for obtaining series-product
+identities developed in [3]. Let B′ = 4
+
+−1
+
+1
+
+1
+1
+
+−1
+1
+
+1
+1
+−1
+
+.
+
+1896
+
+N.D. Baruah, B.K. Sarmah / Discrete Mathematics 311 (2011) 1892–1902
+
+′
+4
+3−1
+Clearly, B′ satisfies
+ (2.5)–(2.7)
+ and det B = 4 = 16 .
+
+Also 16B′
+
+−1
+
+0
+2
+2
+
+=
+
+2
+0
+2
+
+2
+2
+0
+
+is an integer matrix.
+
+Now, the system of congruences B′ n ≡ 0 (mod 16) is equivalent to Bn ≡ 0 (mod 4), where B =
+
+−1
+
+1
+
+1
+1
+
+−1
+1
+
+
+
+1
+1
+−1
+
+.
+
+That is,
+
+−n1 + n2 + n3 ≡ 0 (mod 4),
+n1 − n2 + n3 ≡ 0 (mod 4),
+n1 + n2 − n3 ≡ 0 (mod 4).
+
+(2.8)
+(2.9)
+(2.10)
+
+0 0 2
+2
+The above system of congruences has four solutions 0 , 2 , 0 , and 2 modulo 4. Hence we have the integer matrix
+0
+
+2
+
+2
+
+0
+
+exact covering system
+
+
+
+
+
+
+
+
+
+m1
+m2
+m3
+
+
+
+1
+1
+−1
+
+n1
+n2
+n3
+
+1
+−1
+1
+
+1
+1
+−1
+
+n1
+n2
+n3
+
+1
+1
+
+1
+−1
+1
+
+1
+1
+−1
+
+n1
+n2
+n3
+
+−1
+
+1
+
+1
+1
+
+−1
+
+1
+1
+−1
+
+n1
+n2
+n3
+
+1
+1
+
+=
+
+m1
+m2
+m3
+
+
+
+m1
+m2
+m3
+
+
+
+m1
+m2
+m3
+
+−1
+
+1
+−1
+1
+
+
+
+
+
+−1
+1
+1
+
+=
+
+
+−1
+
+=
+
+
+
+
+=
+
+ 
+,
+1
+
+ 
+
+ 
++ 0 ,
+0
+0
+
+ 
+
+ 
++ 1 ,
+0
+0
+
+ 
+
+1
+
+ 
++ 0 .
+
+(2.11)
+
+1
+
+Corresponding to this integer matrix exact covering system, we can write S as a linear combination of four parts as
+∞
+−
+
+S =
+
+∞
+−
+
+1
+2
+2
+2
+q 2 {(2n3 ) +(2n1 ) +(2n2 ) } + 3
+
+n1 ,n2 ,n3 =−∞
+
+∞
+−
+
+=
+
+n1 ,n2 ,n3 =−∞
+2
+
+2
+
+=
+
+∞
+−
+
+∞
+−
+
+2
+
+q2n1 +2n2 +2n3 + 3
+
+n1 ,n2 ,n3 =−∞
+
+
+
+1
+2
+2
+2
+q 2 {(2n3 +1) +(2n1 ) +(2n2 +1) }
+
+2
+
+2
+
+2
+
+q2n1 +2n2 +2n3 +2n2 +2n3 +1
+
+n1 ,n2 ,n3 =−∞
+
+3
+2n21
+
+
++ 3q
+
+q
+
+n1 =−∞
+
+
+
+∞
+−
+
+q
+
+2n21
+
+n1 =−∞
+
+∞
+−
+
+2
+2n22 +2n2
+
+q
+
+n2 =−∞
+
+= ϕ 3 (q2 ) + 12qϕ(q2 )ψ 2 (q4 ),
+
+(2.12)
+
+where we have used (2.1) to arrive at the last equality. Employing (2.12) and (2.4) in (2.3), we complete the proof.
+In the next theorem, we find an expression for the generating function of c φ5 (n).
+Theorem 2.2. We have
+∞
+−
+
+c φ5 (n)qn =
+
+n =0
+
+1
+
+(q; q)∞
+
+
+
+5
+
+ϕ(q10 )ϕ 3 (q2 ) + 12qϕ(q10 )ϕ(q2 )ψ 2 (q4 ) + 8qψ(q5 )ψ 3 (q)
+
+
++ 12q3 ψ(q20 )ψ(q4 )ϕ 2 (q) + 16q4 ψ(q20 )ψ 3 (q4 ) .
+
+(2.13)
+
+Proof. The proof involves expressing the sum
+S=
+
+∞
+−
+
+2
+
+2
+
+2
+
+2
+
+qm1 +m2 +m3 +m4 +m1 m2 +m1 m3 +m1 m4 +m2 m3 +m2 m4 +m3 m4
+
+m1 ,m2 ,m3 ,m4 =−∞
+
+as a linear combination of theta functions which can be achieved as in Theorem 2.1 by considering the integer matrix exact
+
+1
+
+
+covering system Bn +
+
+15
+1
+Bcr r =0
+16
+
+
+
+where B is the integer matrix
+
+1
+1
+1
+
+1
+1
+−1
+−1
+
+1
+
+1
+
+−1
+−1
+
+−1
+
+1
+
+−1
+
+
+
+1
+
+,n =
+
+solutions modulo 16 of the system of congruences Bn ≡ 0 (mod 16). We omit the details.
+
+n 
+1
+
+n2
+n3
+n4
+
+, and c0 , c1 , . . . , c15 are the
+
+N.D. Baruah, B.K. Sarmah / Discrete Mathematics 311 (2011) 1892–1902
+
+1897
+
+3. Congruences involving c φ4 (n)
+In this section, we find some congruences involving c φ4 (n) arising from the expression of the generating function for
+c φ4 (n) obtained in the previous section.
+Theorem 3.1. We have
+c φ4 (2n + 1) ≡ 0 (mod 42 ),
+
+(3.1)
+
+c φ4 (4n + 3) ≡ 0 (mod 4 ),
+
+(3.2)
+
+c φ4 (4n + 2) ≡ 0 (mod 4).
+
+(3.3)
+
+4
+
+Proof. From Theorem 2.1, we note that
+∞
+−
+
+c φ4 (n)qn =
+
+n =0
+
+=
+
+ϕ(q2 )ψ 2 (q4 )
+ϕ 3 (q2 )
++ 12q
+4
+(q; q)∞
+(q; q)4∞
+ϕ 3 (q2 )
+ϕ(q2 )ψ 2 (q4 )
++ 12q 2 2 4
+.
+2
+4
+( ; )∞ (q; q )∞
+(q ; q )∞ (q; q2 )4∞
+q2
+
+(3.4)
+
+q2 4
+
+Replacing q by −q in (3.4) and then subtracting the resulting identity from (3.4), we find that
+∞
+−
+
+c φ4 (n)qn −
+
+n =0
+
+∞
+−
+
+c φ4 (n)(−1)n qn =
+
+ϕ 3 (q2 )
+(q2 ; q2 )4∞
+
+
+
+1
+
+−
+
+1
+
+
+
+(q; q2 )4∞
+(−q; q2 )4∞
+
+
+1
+1
+ϕ(q2 )ψ 2 (q4 )
++
++ 12q
+(q2 ; q2 )4∞
+(q; q2 )4∞
+(−q; q2 )4∞
+
+
+ϕ 3 (q2 )
+= 2 2 4 2 4 4 (−q; q2 )4∞ − (q; q2 )4∞
+(q ; q )∞ (q ; q )∞
+
+n =0
+
++ 12q
+
+
+
+ϕ(q2 )ψ 2 (q4 )
+(−q; q2 )4∞ + (q; q2 )4∞ .
+2
+2
+4
+2
+4
+4
+(q ; q )∞ (q ; q )∞
+
+(3.5)
+
+Employing Jacobi’s famous triple product identity [2, Entry 19, p. 35] in (2.1), we find that
+
+ϕ(q) = (−q; q2 )2∞ (q2 ; q2 )∞ =
+
+(q2 ; q2 )5∞
+,
+(q; q)2∞ (q4 ; q4 )2∞
+
+(3.6)
+
+ψ(q) = (−q; q2 )∞ (q4 ; q4 )∞ =
+
+(q2 ; q2 )2∞
+.
+(q; q)∞
+
+(3.7)
+
+and
+
+Again, from Entry 25 [2, p. 40], we have
+
+ϕ 2 (q) − ϕ 2 (−q) = 8qψ 2 (q4 ),
+
+(3.8)
+
+ϕ (q) + ϕ (−q) = 2ϕ (q ),
+
+(3.9)
+
+2
+
+2
+
+2
+
+2
+
+ϕ (q) − ϕ (−q) = 16qψ (q ).
+4
+
+4
+
+4
+
+2
+
+(3.10)
+
+Using (3.6) on the left hand sides of (3.8)–(3.10), we obtain
+
+(−q; q2 )4∞ − (q; q2 )4∞ = 8q
+(−q; q2 )4∞ + (q; q2 )4∞ = 2
+
+ψ 2 (q4 )
+,
+(q2 ; q2 )2∞
+
+(3.11)
+
+ϕ 2 (q2 )
+,
+(q2 ; q2 )2∞
+
+(−q; q2 )8∞ − (q; q2 )8∞ = 16q
+
+(3.12)
+
+ψ 4 (q2 )
+.
+(q2 ; q2 )4∞
+
+(3.13)
+
+Employing (3.11) and (3.12) in (3.5), we deduce that
+∞
+−
+n =0
+
+c φ4 (n)qn −
+
+∞
+−
+n =0
+
+c φ4 (n)(−1)n qn = 32q
+
+ϕ 3 (q2 )ψ 2 (q4 )(q4 ; q4 )4∞
+.
+(q2 ; q2 )10
+∞
+
+(3.14)
+
+1898
+
+N.D. Baruah, B.K. Sarmah / Discrete Mathematics 311 (2011) 1892–1902
+
+Comparing the terms involving q2n+1 on both sides of (3.14), and then replacing q2 by q, we find that
+∞
+−
+
+c φ4 (2n + 1)qn = 16
+
+n =0
+
+ϕ 3 (q)ψ 2 (q2 )(q2 ; q2 )4∞
+,
+(q; q)10
+∞
+
+(3.15)
+
+from which we readily deduce the congruence (3.1).
+Now, employing (3.6) and (3.7) in (3.15) and then simplifying, we have
+∞
+−
+
+c φ4 (2n + 1)qn = 16
+
+n =0
+
+(q2 ; q2 )∞
+.
+( ; q4 )2∞ (q; q2 )16
+∞
+
+(3.16)
+
+q4
+
+Replacing q by −q in (3.16) and then subtracting the resulting identity from (3.16), we find that
+∞
+−
+
+c φ4 (2n + 1)qn −
+
+n =0
+
+∞
+−
+
+c φ4 (2n + 1)(−1)n qn = 16
+
+n =0
+
+(q2 ; q2 )∞
+(q4 ; q4 )2∞
+
+
+
+1
+
+(q; q2 )16
+∞
+
+−
+
+1
+
+
+
+(−q; q2 )16
+∞
+
+
+
+(q2 ; q2 )∞
+2 16
+(−q; q2 )16
+∞ − (q; q )∞
+(q4 ; q4 )2∞ (q2 ; q4 )16
+∞
+
+
+ 
+
+(q4 ; q4 )14
+2 8
+2 8
+2 4
+2 4 2
+2
+4 4
+= 16 2 2 ∞
+(−
+q
+;
+q
+)
+−
+(
+q
+;
+q
+)
+(−
+q
+;
+q
+)
+−
+(
+q
+;
+q
+)
++
+2
+(
+q
+;
+q
+)
+∞
+∞
+∞
+∞
+∞ .
+(q ; q )15
+∞
+= 16
+
+(3.17)
+
+Using (3.11), (3.13) and (3.7) in (3.17), we deduce that
+∞
+−
+
+c φ4 (2n + 1)qn −
+
+n =0
+
+∞
+−
+
+c φ4 (2n + 1)(−1)n qn = 256q
+
+n =0
+
+ 2 4 4
+
+(q4 ; q4 )22
+∞
+64q ψ (q ) + 2(q2 ; q2 )4∞ (q2 ; q4 )4∞ .
+(q2 ; q2 )27
+∞
+
+(3.18)
+
+Equating the terms involving q2n+1 on both sides of (3.18), and then replacing q2 by q, we find that
+∞
+−
+
+c φ4 (4n + 3)qn = 256
+
+n =0
+
+
+
+(q2 ; q2 )22
+∞
+32qψ 4 (q2 ) + (q; q)4∞ (q; q2 )4∞ .
+27
+(q; q)∞
+
+(3.19)
+
+Now (3.2) easily follows from (3.19).
+Again, replacing q by −q in (3.4) and then adding the resulting identity with (3.4), we obtain
+∞
+−
+n =0
+
+c φ4 (n)qn +
+
+∞
+−
+n =0
+
+c φ4 (n)(−1)n qn =
+
+ϕ 3 (q2 )
+(q2 ; q2 )4∞
+
+
+
+1
+
++
+
+1
+
+
+
+(q; q2 )4∞
+(−q; q2 )4∞
+
+
+1
+1
+ϕ(q2 )ψ 2 (q4 )
+−
++ 12q
+(q2 ; q2 )4∞
+(q; q2 )4∞
+(−q; q2 )4∞
+3 2
+
+
+ϕ (q )
+= 2 2 4 2 4 4 (−q; q2 )4∞ + (q; q2 )4∞
+(q ; q )∞ (q ; q )∞
+
+
+ϕ(q2 )ψ 2 (q4 )
++ 12q 2 2 4 2 4 4 (−q; q2 )4∞ − (q; q2 )4∞
+(q ; q )∞ (q ; q )∞
+=2
+
+ϕ 5 (q2 )(q4 ; q4 )4∞
+ϕ(q2 )ψ 4 (q4 )(q4 ; q4 )4∞
++ 96q2
+,
+2
+2
+10
+(q ; q )∞
+(q2 ; q2 )10
+∞
+
+(3.20)
+
+where we have used (3.11) and (3.12) in the last equality.
+Comparing the terms involving q2n on both sides of (3.20), and then replacing q2 by q, we find that
+∞
+−
+
+c φ4 (2n)qn =
+
+n =0
+
+ϕ(q)ψ 4 (q2 )(q2 ; q2 )4∞
+ϕ 5 (q)(q2 ; q2 )4∞
++ 48q
+.
+10
+(q; q)∞
+(q; q)10
+∞
+
+(3.21)
+
+Employing (3.6) and (3.7) in (3.21), we deduce that
+∞
+−
+
+c φ4 (2n)qn =
+
+n =0
+
+=
+
+(q2 ; q2 )29
+(q2 ; q2 )5∞ (q4 ; q4 )6∞
+∞
++
+48q
+4
+4 10
+(q; q)20
+(q; q)12
+∞ (q ; q )∞
+∞
+(q2 ; q2 )9∞
+(q4 ; q4 )6∞
++
+48q
+.
+4
+4 10
+(q; q2 )20
+(q2 ; q2 )7∞ (q; q2 )12
+∞ (q ; q )∞
+∞
+
+(3.22)
+
+N.D. Baruah, B.K. Sarmah / Discrete Mathematics 311 (2011) 1892–1902
+
+1899
+
+Replacing q by −q in (3.22) and then subtracting the resulting identity from (3.22), we obtain
+∞
+−
+
+c φ4 (2n)qn −
+
+n =0
+
+∞
+−
+
+c φ4 (2n)(−1)n qn =
+
+(q2 ; q2 )9∞
+(q4 ; q4 )10
+∞
+
+
+
+1
+
+−
+
+1
+
+
+
+(q; q2 )20
+(−q; q2 )20
+∞
+∞
+
+
+4
+4 6
+(q ; q )∞
+1
+1
++ 48q 2 2 7
++
+(q ; q )∞ (q; q2 )12
+(−q; q2 )12
+∞
+∞
+2
+2 9
+
+
+(q ; q )∞
+2 20
+= 4 4 10 2 4 20 (−q; q2 )20
+∞ − (q; q )∞
+(q ; q )∞ (q ; q )∞
+
+
+(q4 ; q4 )6
+2 12
++ 48q 2 2 7 2∞ 4 12 (−q; q2 )12
+∞ + (q; q )∞
+(q ; q )∞ (q ; q )∞
+
+n =0
+
+=
+
+ 5
+
+
+(q4 ; q4 )10
+(q4 ; q4 )18  3
+∞
+A − B5 + 48q 2 2 ∞
+A + B3 ,
+2
+2
+11
+19
+(q ; q )∞
+(q ; q )∞
+
+(3.23)
+
+where A = (−q; q2 )4∞ and B = (q; q2 )4∞ .
+Now, by the binomial theorem, we have
+
+(A − B)5 = A5 − B5 − 5AB(A3 − B3 ) + 10A2 B2 (A − B).
+
+(3.24)
+
+Therefore,
+A5 − B5 = (A − B)5 + 5AB(A3 − B3 ) − 10A2 B2 (A − B)
+
+
+
+= (A − B) (A − B)4 + 5AB(A2 + AB + B2 ) − 10A2 B2
+
+
+= (A − B) (A − B)4 + 5AB(A − B)2 + 5A2 B2 .
+
+(3.25)
+
+Also,
+A3 + B3 = (A + B) (A + B)2 − 3AB .
+
+
+
+
+
+(3.26)
+
+Employing (3.11) and (3.12) in (3.25) and (3.26), we find that
+
+
+
+8 4
+4 4
+ψ 2 (q4 )
+4 ψ (q )
+2 ψ (q )
+2
+4 8
+4096q
++
+320q
++
+5
+(
+q
+;
+q
+)
+∞ ,
+(q2 ; q2 )2∞
+(q2 ; q2 )8∞
+(q4 ; q4 )4∞
+
+
+ϕ 4 (q2 )
+ϕ 2 (q2 )
+2
+4 4
+3
+3
+4 2 2 4 − 3(q ; q )∞ .
+A +B =2 2 2 2
+(q ; q )∞
+(q ; q )∞
+A5 − B5 = 8q
+
+(3.27)
+
+(3.28)
+
+Using (3.27) and (3.28) in (3.23), we deduce that
+∞
+−
+
+c φ4 (2n)qn −
+
+n =0
+
+∞
+−
+
+
+
+8 4
+4 4
+2 4
+(q4 ; q4 )10
+∞ ψ (q )
+4 ψ (q )
+2 ψ (q )
+2
+4 8
+4096q
++
+320q
++
+5
+(
+q
+;
+q
+)
+∞
+(q2 ; q2 )13
+(q2 ; q2 )8∞
+(q4 ; q4 )4∞
+∞
+
+
+2 2
+(q4 ; q4 )18
+ϕ 4 (q2 )
+∞ ϕ (q )
+2
+4 4
+4 2 2 4 − 3(q ; q )∞ .
+(3.29)
++ 96q
+(q2 ; q2 )21
+(q ; q )∞
+∞
+
+c φ4 (2n)(−1)n qn = 8q
+
+n =0
+
+Equating the coefficients of the terms involving q2n+1 in (3.29), we readily arrive at (3.3) to finish the proof.
+4. Generating function for c φ4 (n)
+In this section, we find expression for the generating function of c φ 4 (n).
+Theorem 4.1. We have
+∞
+−
+
+c φ 4 (n)qn = 16q
+
+n =0
+
+ψ 2 (q2 )ψ(q4 )
+.
+(q; q)4∞
+
+(4.1)
+
+Proof. Setting k = 4 in (1.7) and utilizing the subsequent conditions, we have
+∞
+−
+n =0
+
+c φ 4 (n)qn =
+
+4
+
+∞
+−
+
+(q; q)4∞
+
+m1 ,m2 ,m3 =−∞
+
+2
+
+2
+
+2
+
+q3m1 +2m2 +3m3 +2m1 m2 +2m2 m3 +4m3 m1 −3m1 −2m2 −3m3 +1 .
+
+(4.2)
+
+1900
+
+N.D. Baruah, B.K. Sarmah / Discrete Mathematics 311 (2011) 1892–1902
+
+Let
+∞
+−
+
+S′ =
+
+2
+
+2
+
+2
+
+q3m1 +2m2 +3m3 +2m1 m2 +2m2 m3 +4m3 m1 −3m1 −2m2 −3m3 +1 .
+
+(4.3)
+
+m1 ,m2 ,m3 =−∞
+
+−1
+We change the variables from m1 , m2 , m3 to n1 , n2 , n3 by the integer matrix exact covering system {Bn + 1d Bcr }kr =
+0 , where
+
+B = (bij )3×3 is an integer matrix, n =
+
+n 
+1
+
+n2
+n3
+
+and c0 , c1 , . . . , ck−1 are the solutions of the congruences Bn ≡ 0 (mod d). We
+
+further require that the coefficients of n1 n2 , n2 n3 , n3 n1 in
+3(b11 n1 + b12 n2 + b13 n3 )2 + 2(b21 n1 + b22 n2 + b23 n3 )2 + 3(b31 n1 + b32 n2 + b33 n3 )2
+
++ 2(b11 n1 + b12 n2 + b13 n3 )(b21 n1 + b22 n2 + b23 n3 )
++ 2(b21 n1 + b22 n2 + b23 n3 )(b31 n1 + b32 n2 + b33 n3 )
++ 4(b31 n1 + b32 n2 + b33 n3 )(b11 n1 + b12 n2 + b13 n3 )
+
+(4.4)
+
+to be zero in order to separate ni ’s. Thus we have the conditions that
+3b11 b12 + 2b21 b22 + 3b31 b32 + b11 b22 + b12 b21 + b21 b32 + b22 b31 + 2b31 b12 + 2b32 b11 = 0,
+
+(4.5)
+
+3b12 b13 + 2b22 b23 + 3b32 b33 + b12 b23 + b13 b22 + b22 b33 + b23 b32 + 2b32 b13 + 2b33 b12 = 0,
+
+(4.6)
+
+3b11 b13 + 2b21 b23 + 3b31 b33 + b11 b23 + b13 b21 + b21 b33 + b23 b31 + 2b31 b13 + 2b33 b11 = 0.
+
+(4.7)
+
+we consider
+the same integer matrix exact covering system (2.11) as in Theorem 2.1 because the matrix B =
+−Now
+
+1
+1
+1
+1
+1
+
+−1
+
+1
+
+1
+
+−1
+
+also satisfies the conditions (4.5)–(4.7). Corresponding to the integer matrix exact covering system (2.11)
+′
+
+we can write S as a linear combination of 4 parts as follows
+∞
+−
+
+S′ =
+
+2
+
+2
+
+n1 ,n2 ,n3 =−∞
+
++
+
+∞
+−
+
+2
+
+q4n1 +8n2 +4n3 −2n1 −4n2 −2n3 +1 +
+
+2
+
+2
+
+2
+
+q4n1 +8n2 +4n3 −2n1 +4n2 +2n3 +1
+
+n1 ,n2 ,n3 =−∞
+
+∞
+−
+
+2
+
+2
+
+2
+
+q4n1 +8n2 +4n3 +2n1 −4n2 +2n3 +1 +
+
+n1 ,n2 ,n3 =−∞
+
+∞
+−
+
+2
+
+2
+
+2
+
+q4n1 +8n2 +4n3 +2n1 +4n2 −2n3 +1 .
+
+n1 ,n2 ,n3 =−∞
+
+It is now easy to see that each part of the above sum is equal to qψ 2 (q2 )ψ(q4 ). Therefore, we have
+S ′ = 4qψ 2 (q2 )ψ(q4 ).
+
+(4.8)
+
+From (4.8), (4.3), and (4.2), we readily arrive at (4.1).
+5. Congruences involving c φ4 (n)
+In this section, we find some interesting congruences involving c φ 4 (n).
+Theorem 5.1. We have
+c φ 4 (2n) ≡ 0 (mod 43 ),
+
+(5.1)
+
+c φ 4 (4n + 3) ≡ 0 (mod 4 ),
+
+(5.2)
+
+c φ 4 (4n) ≡ 0 (mod 44 ).
+
+(5.3)
+
+4
+
+Proof. From Theorem 4.1, we have
+∞
+−
+
+c φ 4 (n)qn = 16q
+
+n =0
+
+ψ 2 (q2 )ψ(q4 )
+ψ 2 (q2 )ψ(q4 )
+=
+16q
+.
+(q; q)4∞
+(q2 ; q2 )4∞ (q; q2 )4∞
+
+(5.4)
+
+Replacing q by −q in (5.4) and then adding the resulting identity with (5.4), we deduce that
+∞
+−
+n =0
+
+c φ 4 (n)qn +
+
+∞
+−
+
+c φ 4 (n)(−1)n qn = 16q
+
+n =0
+
+= 16q
+
+ψ 2 (q2 )ψ(q4 )
+(q2 ; q2 )4∞
+
+
+
+1
+
+(q; q2 )4∞
+
+−
+
+1
+
+
+
+(−q; q2 )4∞
+
+
+ψ 2 (q2 )ψ(q4 ) 
+(−q; q2 )4∞ − (q; q2 )4∞ .
+2
+2
+4
+2
+4
+4
+(q ; q )∞ (q ; q )∞
+
+(5.5)
+
+N.D. Baruah, B.K. Sarmah / Discrete Mathematics 311 (2011) 1892–1902
+
+1901
+
+Employing (3.11) in (5.5), we obtain
+∞
+−
+
+c φ 4 (n)qn +
+
+n =0
+
+∞
+−
+
+c φ 4 (n)(−1)n qn = 128q2
+
+n =0
+
+ψ 2 (q2 )ψ 3 (q4 )
+.
+(q2 ; q2 )6∞ (q2 ; q4 )4∞
+
+(5.6)
+
+Extracting those terms on both sides of (5.6) that involve q2n only, and then replacing q2 by q, we find that
+∞
+−
+
+c φ 4 (2n)qn = 64q
+
+n =0
+
+ψ 2 (q)ψ 3 (q2 )
+.
+(q; q)6∞ (q; q2 )4∞
+
+(5.7)
+
+Now congruence (5.1) readily follows from (5.7).
+Next, with the help of (3.7), we can rewrite (5.7) as
+∞
+−
+
+c φ 4 (2n)qn = 64q
+
+n =0
+
+(q4 ; q4 )6∞
+(q2 ; q2 )∞ (q4 ; q4 )6∞
+=
+64q
+.
+(q; q)8∞ (q; q2 )4∞
+(q2 ; q2 )7∞ (q; q2 )12
+∞
+
+(5.8)
+
+Replacing q by −q in (5.8) and then adding the resulting identity with (5.8), we find that
+∞
+−
+
+c φ 4 (2n)qn +
+
+∞
+−
+
+c φ 4 (2n)(−1)n qn = 64q
+
+n=0
+
+n =0
+
+(q4 ; q4 )6∞
+(q2 ; q2 )7∞
+
+
+
+1
+
+(q; q2 )12
+∞
+
+−
+
+
+
+1
+
+(−q; q2 )12
+∞
+
+
+
+(q4 ; q4 )6∞
+2 12
+(−q; q2 )12
+∞ − (q; q )∞
+(q2 ; q2 )7∞ (q2 ; q4 )12
+∞
+
+
+
+(q4 ; q4 )6∞
+= 64q 2 2 7 2 4 12 (−q; q2 )4∞ − (q; q2 )4∞ (−q; q2 )8∞ + (q2 ; q4 )4∞ + (q; q2 )8∞
+(q ; q )∞ (q ; q )∞
+= 64q
+
+= 64q
+
+
+
+
+(q4 ; q4 )6∞
+(−q; q2 )4∞ − (q; q2 )4∞ {(−q; q2 )4∞ − (q; q2 )4∞ }2 + 3(q2 ; q4 )4∞ .
+2
+7
+2
+4
+12
+( ; q )∞ (q ; q )∞
+q2
+
+(5.9)
+
+Employing (3.11) and (3.7) in (5.9), we deduce that
+∞
+−
+
+c φ 4 (2n)qn +
+
+n =0
+
+∞
+−
+
+c φ 4 (2n)(−1)n qn = 512q2
+
+n=0
+
+
+
+(q4 ; q4 )4∞ (q8 ; q8 )4∞
+(q8 ; q8 )8∞
+2
+2
+4 4
+64q
++
+3
+(
+q
+;
+q
+)
+∞ . (5.10)
+(q2 ; q2 )9∞ (q2 ; q4 )12
+(q2 ; q2 )4∞ (q4 ; q4 )4∞
+∞
+
+Equating the terms involving q2n on both sides of (5.10), and then replacing q2 by q, we find that
+∞
+−
+
+c φ 4 (4n)qn = 256q
+
+n =0
+
+
+
+(q2 ; q2 )4∞ (q4 ; q4 )4∞
+(q4 ; q4 )8∞
+2 4
+64q
++
+3
+(
+q
+;
+q
+)
+∞ ,
+(q; q)9∞ (q; q2 )12
+(q; q)4∞ (q2 ; q2 )4∞
+∞
+
+from which we easily arrive at (5.3).
+Finally, replacing q by −q in (5.4) and then subtracting the resulting identity from (5.4), we obtain
+∞
+−
+
+c φ 4 (n)qn −
+
+n =0
+
+∞
+−
+
+c φ 4 (n)(−1)n qn = 16q
+
+n =0
+
+ψ 2 (q2 )ψ(q4 )
+(q2 ; q2 )4∞
+
+
+
+1
+
+(q; q2 )4∞
+
++
+
+1
+
+
+
+(−q; q2 )4∞
+
+
+ψ 2 (q2 )ψ(q4 ) 
+(q; q2 )4∞ + (−q; q2 )4∞ .
+2
+4
+2
+4
+4
+( ; q )∞ (q ; q )∞
+
+(5.11)
+
+(q4 ; q4 )∞
+.
+( ; q8 )2∞ (q2 ; q4 )16
+∞
+
+(5.12)
+
+= 16q
+
+q2
+
+Using (3.12), (3.6) and (3.7), we deduce that
+∞
+−
+n =0
+
+c φ 4 (n)qn −
+
+∞
+−
+
+c φ 4 (n)(−1)n qn = 32q
+
+n =0
+
+q8
+
+Extracting from both sides of (5.12) those terms involving only q2n+1 , and then dividing both sides by q and replacing q2 by
+q, we have
+∞
+−
+n =0
+
+c φ 4 (2n + 1)qn = 16
+
+(q2 ; q2 )∞
+.
+( ; q4 )2∞ (q; q2 )16
+∞
+q4
+
+(5.13)
+
+1902
+
+N.D. Baruah, B.K. Sarmah / Discrete Mathematics 311 (2011) 1892–1902
+
+Replacing q by −q in (5.13) and then subtracting the resulting identity from (5.13), we obtain
+∞
+−
+
+c φ 4 (2n + 1)qn −
+
+n =0
+
+∞
+−
+
+c φ 4 (2n + 1)(−1)n qn = 16
+
+n =0
+
+(q2 ; q2 )∞
+(q4 ; q4 )2∞
+
+
+
+1
+
+(q; q2 )16
+∞
+
+−
+
+1
+
+
+
+(−q; q2 )16
+∞
+
+
+
+(q2 ; q2 )∞
+2 16
+(−q; q2 )16
+∞ − (q; q )∞
+(q4 ; q4 )2∞ (q2 ; q4 )16
+∞
+
+ 
+
+
+(q4 ; q4 )14
+2 4
+2 4 2
+2
+4 4
+2 8
+2 8
+(−
+q
+;
+q
+)
++
+(
+q
+;
+q
+)
+−
+2
+(
+q
+;
+q
+)
+(−
+q
+;
+q
+)
+−
+(
+q
+;
+q
+)
+= 16 2 2 ∞
+∞
+∞
+∞ .
+∞
+∞
+(q ; q )15
+∞
+= 16
+
+(5.14)
+
+Employing (3.12) and (3.13) in (5.14), we find that
+∞
+−
+
+c φ 4 (2n + 1)qn −
+
+n =0
+
+∞
+−
+n =0
+
+c φ 4 (2n + 1)(−1)n qn = 256q
+
+
+ 4 2
+(q4 ; q4 )22
+∞
+4ϕ (q ) − 2(q2 ; q2 )4∞ (q2 ; q4 )4∞ .
+2
+2
+27
+(q ; q )∞
+
+(5.15)
+
+Equating the coefficients of q2n+1 on both sides of (5.15), we readily arrive at (5.2) to complete the proof.
+Acknowledgments
+The authors are grateful to Dr. Zhu Cao and the anonymous referees for their helpful comments.
+References
+[1]
+[2]
+[3]
+[4]
+[5]
+[6]
+[7]
+[8]
+[9]
+[10]
+[11]
+[12]
+[13]
+[14]
+[15]
+
+G.E. Andrews, Generalized Frobenius partitions, Mem. Amer. Math. Soc. 49 (301) (1984).
+B.C. Berndt, Ramanujan’s Notebooks, Part III, Springer-Verlag, New York, 1991.
+Z. Cao, Integer matrix exact covering systems and product identities for theta functions, Int. Math. Res. Not., (in press).
+D. Eichhorn, J. Sellers, Computational proofs of congruences for 2-colored Frobenius partitions, Int. J. Math. Math. Sci. 29 (2002) 333–340.
+L.W. Kolitsch, An extension of a congruence by Andrews for generalised Frobenius partitions, J. Combin. Theory Ser. A 45 (1987) 31–39.
+L.W. Kolitsch, A relationship between certain colored generalised Frobenius partitions and ordinary partitions, J. Number Theory 33 (1989) 220–223.
+L.W. Kolitsch, M-order generalised Frobenius partitions with M-colors, J. Number Theory 39 (1990) 279–284.
+L.W. Kolitsch, A congruence for generalized Frobenius partitions with 3-colors modulo powers of 3, in: Proceedings of a conference in Honor of Paul
+T. Bateman, in: B.C. Berndt, et al. (Eds.), Analytic Number Theory, Birkhauser, Boston, Boston MA, 1990, pp. 343–348.
+J. Lovejoy, Ramanujan like congruences for three colored Frobenius partitions, J. Number Theory 85 (2000) 283–290.
+K. Ono, Congruences for Frobenius partitions, J. Number Theory 57 (1996) 170–180.
+P. Paule, S. Radu, A proof of Sellers conjecture, RISC, Technical report no. 09-17, 2009.
+J. Sellers, Congruences involving generalised Frobenius partitions, Int. J. Math. Math. Sci. 16 (1993) 413–415.
+J. Sellers, New congruences for generalised Frobenius partitions with 2 or 3 colors, Discrete Math. 131 (1994) 367–374.
+J. Sellers, Recurrences for 2 and 3 colored F-partitions, Discrete Math. 156 (1996) 303–310.
+X. Xiong, Congruences modulo powers of 5 for three colored Frobenius partitions, arXiv:1003.0072v3 [math NT], 27 Apr. 2010.
+
+

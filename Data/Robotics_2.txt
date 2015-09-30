@@ -1,0 +1,1088 @@
+Robotics and Autonomous Systems 73 (2015) 144–154
+
+Contents lists available at ScienceDirect
+
+Robotics and Autonomous Systems
+journal homepage: www.elsevier.com/locate/robot
+
+Lag–lead based assessment and adaptation of exercise speed for
+stroke survivors
+Angelo Basteris a,∗ , Sharon M. Nijenhuis b , Jaap H. Buurke b,c , Gerdienke B. Prange b,d ,
+Farshid Amirabdollahian a
+a
+
+Adaptive Systems Research Group, University of Hertfordshire, College Lane, AL95HX Hatfield, United Kingdom
+
+b
+
+Roessingh Research and Development, Roessinghsbleekweg 33b, 7522 AH Enschede, The Netherlands
+
+c
+
+Department of Biomedical Signals and Systems, University of Twente, Drienerlolaan 5, 7522 NB Enschede, The Netherlands
+
+d
+
+Department of Biomechanical Engineering, University of Twente, Drienerlolaan 5, 7522 NB Enschede, The Netherlands
+
+highlights
+•
+•
+•
+•
+•
+
+Our system enabled people with stroke to exercise at home by playing videogames.
+Movement speed was adapted to performance, based on the Optimal Challenge Framework.
+The mechanism of adaptation has been effective in 195 of 248 (78.6%) sessions.
+The efficacy of the adaptation mechanism led subjects to train more intensively.
+Lag–lead based adaptation is a suitable auto-tuning tool for robot therapy.
+
+article
+
+info
+
+Article history:
+Available online 8 September 2014
+Keywords:
+Rehabilitation robotics
+Stroke
+Difficulty
+Exercise
+Engagement
+Exergames
+Wrist
+Hand
+
+abstract
+The SCRIPT project aims at delivering machine-mediated hand and wrist exercises to people with stroke in
+their homes. In this context, adapting the exercise to the individual needs potentially enhances recovery.
+We designed a system composed of a passive-actuated wearable device, a personal computer and an
+arm support. The system enables users to exercise their hand and wrist movements by playing interactive
+games which were developed as part of the project. Movements and their required speed are tailored on
+the individual’s capabilities. During the exercise the system assesses whether the subject is in advance
+(leading) or in delay (lagging) with respect to a reference trajectory. This information provides input to an
+adaptive mechanism which changes the required movement speed in order to make the exercise neither
+too easy nor too challenging.
+In this paper, we show results of the adaptation process in a study involving seven persons with
+chronic stroke who completed a six weeks training in their homes. Based on the patterns observed
+in difficulty and lag–lead score, we defined five session types (challenging, challenging–then supporting,
+supporting, under-supporting and under-challenging). We show that the mechanism of adaptation has been
+effective in 195 of 248 (78.6%) sessions.
+Based on our results, we propose the lag–lead based assessment and adaptation as an auto-tuning
+tool for machine based exercise, with particular focus on rehabilitation robotics. Also, the classification
+of sessions among different types can be applied to other studies in order to better understanding the
+progression of therapy in order to maximize its outcome.
+© 2014 Elsevier B.V. All rights reserved.
+
+1. Introduction
+
+∗
+
+Corresponding author. Tel.: +44 1707284630.
+E-mail addresses: angelobasteris@gmail.com (A. Basteris), s.nijenhuis@rrd.nl
+(S.M. Nijenhuis), j.buurke@rrd.nl (J.H. Buurke), g.prange@rrd.nl (G.B. Prange),
+f.amirabdollahian2@herts.ac.uk (F. Amirabdollahian).
+http://dx.doi.org/10.1016/j.robot.2014.08.013
+0921-8890/© 2014 Elsevier B.V. All rights reserved.
+
+Due to an ageing society, the number of people suffering a
+stroke is expected to increase, leading to increased demands for
+healthcare, while the availability of healthcare professionals is decreasing [1]. Overall, this will have a strong impact on healthcare services and related costs. Therefore, new ways of providing
+
+A. Basteris et al. / Robotics and Autonomous Systems 73 (2015) 144–154
+
+healthcare services, such as remotely supervised intensive treatment and self-administered exercises (e.g. in the patient’s home),
+address a major issue for future healthcare organization [2].
+1.1. Rehabilitation robotics for stroke
+Functional recovery from stroke demands a long period of physical rehabilitation. Research into motor relearning and cortical reorganization after stroke has provided a neurophysiological basis
+for restoration of arm function: high training intensity, active participation and execution of movements, feedback and application
+of functional exercises are key aspects [3,4]. Technological innovations as those introduced in the gaming industry (e.g. Nintendo
+Wii, Microsoft Kinect) provided an opportunity to design interventions that combine many of such aspects. Several of such devices
+can be integrated within one system for home-based rehabilitation [5]. In addition to motion tracking systems, robotic devices can
+provide a support towards the completion of a motor task, thereby
+allowing physically assisted practice when this is not possible otherwise. This facilitates intensive training, while the patient is actively contributing to the movement. Robotic systems have an
+additional advantage in that they potentially allow independent/
+self-administered training. Once set-up, a therapist can supervise
+several patients at the same time. This enables the patient to train
+frequently without a therapist’s presence, in his/her own home
+environment while remotely supervised by a therapist, off-line. If
+training time is not limited by therapist availability, this may potentially enable a higher dosage of training, which may stimulate
+gains in arm/hand function [6]. The remote supervision of the therapist can also be considered as a mean to target the therapy so
+that best outcomes are possible, while also ensuring patient safety
+(e.g. preventing over-exercising.
+With a robotic device, haptic guidance can be used to stimulate
+motor relearning. Different types of haptic guidance have been
+implemented in robotic devices, ranging from passive guidance
+(no active contribution of the patient needed to soft or hard
+guidance, guiding a patient along a pre-defined trajectory where
+deviations are resisted to a larger or smaller extent [7,8]. There is
+evidence that guidance modalities which do not restrict movement
+errors and require the largest effort active movement without
+interference from the robot or error augmentation lead to larger
+and faster adaptation during reaching movements [9].
+Therapy with robotic device has proven effectiveness for recovery of the motor functions of the hemiparetic arm, but the transfer
+of these effects to activities of daily living is less pronounced [10].
+The main focus of robot-aided therapy has been on the proximal arm, resulting in limited recovery of wrist and hand functions
+[11–13]. Without additional involvement of the distal arm in exercises, the functional nature of the training is not optimally employed. Moreover, the wrist and hand play a major role in a
+person’s functional independence. In order to maximize independent use of the upper extremity in daily life, it is important to involve functional practice of the wrist and hand in an intensive way
+in treatment [14].
+1.2. The SCRIPT project1
+To accommodate treatment incorporating the abovementioned
+key aspects for motor relearning, the SCRIPT (Supervised Care
+and Rehabilitation Involving Personal Telerobotics) project aims to
+apply robot-aided therapy focusing on hand and wrist exercises
+
+1 Videos demonstrating the SCRIPT system are available on the project Youtube
+channel http://goo.gl/fpaZUD.
+
+145
+
+at home. This would enable self-administration of more intense
+and more frequent exercises compared to conventional therapy
+in a clinical setting, which is often limited by the availability of
+therapists. An important issue that has specific attention within
+this SCRIPT project is related to whether patients actually improve
+their amount of practice when provided with the opportunity of
+self-administered training at home. These aspects are combined in
+the first prototype system (SCRIPT1), which is based on a passiveactuated orthosis which provides an off-set force towards extension of fingers and wrist using elastic cords and leaf springs [15].
+It is noteworthy that, in the domain of rehabilitation robotics, this
+device is classifiable as a passive dynamics machine, rather than
+a robot. It features sensors for measuring joint angles at the wrist
+and fingers and an inertial measurement unit to detect gross movements of the hand. These data are fused and used to control interactive games that require hand opening/closing and/or wrist
+movements. These are installed on a dedicated personal computer,
+installed at a patient’s home for independent training with off-line
+remote supervision by a healthcare professional [16]. We deliberately chose of having only off-line supervision so that subjects
+could exercise any time they wanted, without having to plan their
+activity or having to rely on the availability of therapists. However, a patient’s exercise plan was programmed by the therapist.
+The complexity and level of challenge were based on a predefined
+exercise scheme, and more difficult exercises were presented to
+patients as they got better in their scheduled tasks.
+1.3. The need for adaptive exercises
+Besides optimization of the treatment intensity, active contribution of a person to such treatment should be emphasized
+as well. Self-initiated and self-generated activity stimulates brain
+plasticity underlying functional reorganization of the cortex after
+a stroke [17]. The importance of self-generated activity was emphasized in a study on healthy subjects, where training of voluntary induced wrist movements resulted in larger increase in performance and cortical reorganization compared to passively induced movements [18]. Along the same lines, repeatedly completing reaching movements of stroke patients by a robotic device
+when they could not reach the target (with the patient being passive) was inferior to making active reaching movements without
+robotic assistance [19].
+An adaptive training environment can optimally encourage active contribution of the patients, based on their abilities and needs.
+It is increasingly recognized that patients respond differently to a
+certain treatment for the upper extremity, e.g. in the field of robotaided therapy [8]. The current challenge is to understand how to
+customize arm training programmes to each patient’s needs and
+abilities.
+Stimulating improvement of arm/hand function via optimal engagement and active contribution requires that the exercises are
+challenging; neither too difficult nor too easy, at all times. According to the Challenge Point framework, this is expected to improve
+motor learning and neuromotor recovery [20]. This implies that,
+ideally, the training environment adapts to the performance of the
+patient. This must also take into account that the stroke population is highly heterogeneous in terms of limitations caused by
+the stroke and the time course of functional improvement. Given
+the element of relearning involved in rehabilitation, we used taxonomies from the learning theory towards setting the challenge
+level to maximize adherence to therapy. In the domain of learning
+and education, balancing between supporting and challenging allows the trainee to achieve optimal learning [21], as shown in Fig. 1.
+When applying support from technology to the upper extremity in order to improve arm/hand function, according to the
+abovementioned considerations it is important to promote active
+
+146
+
+A. Basteris et al. / Robotics and Autonomous Systems 73 (2015) 144–154
+
+Fig. 1. Sanford’s theory of challenge and support: balance between support and
+challenge promotes a student’s growth and personal development.
+
+movement, allow errors and variability, and continuously adapt
+the amount of support to the varying performance of movements.
+In robotic gait training, these issues have been incorporated into an
+‘assist-as-needed’ guidance algorithm that optimizes movement
+error and robotic support, including a forgetting factor to reduce
+the robotic support when error is small, while at the same time
+allowing the variability of movements that are natural to human
+movement [22].
+1.4. Adaptive exercises
+Besides providing assist-as-needed support by a device, tailoring exercise to the individual’s performance can be done by considering a wide variety of inputs and outputs. The simplest step in this
+sense is to evaluate subject’s active range of motion (ROM) prior to
+each session and scale the training environment accordingly. Typically such scaling is maintained constant during the session, also
+for safety reasons.
+Another possibility is to evaluate a subject’s motor improvement for a session, based on a statistical model, and increase the
+exercise difficulty if the subject has overcome a predefined target [23]. Again, this mechanism operates at a session level, and in
+this case it also requires the final decision of a healthcare professional prior to changes to the exercise difficulty.
+When considering an online adaptation instead, a possibility is
+to adapt the robot dynamics based on subjects’ performance [24].
+An alternative output for the online adaptation process is the exercise difficulty. A computation mechanism based on Fitts’ Law
+has been validated on reaching movements in a single study session [25]. In this case, the system switched among three levels of
+difficulty. The task difficulty and the related cognitive workload
+can also be adjusted by combining performance data with psychophysiological measurements [26].
+Regarding wrist movements, an adaptive procedure based on
+the number of successful (i.e. those with limited contribution by
+the robot) movements was used to introduce an offset in terms of
+joint angle by shifting from a pathologic posture towards a natural
+posture [27].
+1.5. Lag–lead based mechanism of adaptation
+The SCRIPT1 system assessed the active ROM and movement
+duration during a calibration phase prior to each session, and then
+adapted the task difficulty by altering the exercise speed online
+
+within a training session [28]. The system could assess whether
+the subject was in advance (leading) or in delay (lagging) with respect to a desired trajectory for each articulation, i.e. hand flexion
+or wrist extension. Using the lagging or leading status, a score was
+calculated that provided input to an adaptive mechanism aimed at
+making the exercise sufficiently challenging. We previously tested
+this approach on healthy subjects by regulating the movement
+time, based on a lag–lead indicator, in a reaching task [29]. That
+study provided first evidence for feasibility. In current study, we
+tested the feasibility of our approach to adapt a training environment to varying performance across stroke subjects. If successful, this would present a way to provide independent training for
+stroke subjects at a proper challenge level within each training session, motivating them to practise more.
+With this work we investigated the feasibility and effect of
+the lag–lead approach for adaptation of the exercise environment
+to personal performance. We considered that by observing the
+progression of task difficulty within a training session it is possible
+to determine whether the subject was challenged or supported by
+the system. Hence, we defined types of sessions based on patterns
+in the adaptation behaviour, and verified whether our approach
+effectively challenged and motivated subjects without making the
+exercise neither too easy nor too difficult.
+2. Methods
+2.1. Experimental setup
+The SCRIPT system is a machine designed for home based
+rehabilitation. It consists of several components, as shown in Fig. 2.
+A wearable device is used to assist the wrist and hand during
+training [15]. The device is a passive-actuated orthosis composed
+mainly of a forearm shell, a plate which fits on the back of the
+hand, and finger caps. These components, linked by mechanical
+parts, interact physically with the user by providing forces to
+the wrist and hand through use of elastic cords and leaf springs.
+Such elastic cords are pulling wrist and fingers towards extension,
+which is impaired by stroke, and resist to the involuntary fingers
+and wrist flexion, which are consequence of stroke. The choice
+of a passive actuation makes the device inherently safe, a feature
+particularly desirable in the context of home-based rehabilitation
+(i.e. when no therapists or technician would be available to assist
+in case of failure). The orthosis is equipped with resistive sensors
+(Flex Sensor 2.2’’, SpectraSymbol, Salt Lake City, USA) to measure
+flexion of the fingers, a potentiometer to measure the wrist angle
+and a 6-axis accelerometer (UM6LT, CH Robotics, Payson, USA).
+The major limitation of resistive sensors is their time-varying
+response, with transients which can take some hundredths of
+seconds, which limited the identification of grasped objects to only
+four different sizes [15]. The data from these sensors are acquired
+via an Arduino 2560 microcontroller. This is connected via USB port
+to a Windows based personal computer which contains all customdeveloped software components needed to complete a training
+session, including data acquisition and processing, a patient user
+interface and interactive games. Data was sampled at 60 Hz. Five
+resistive sensors measured the flexion of each finger. This data was
+applied as input to a 22DOF kinematic model of the hand which
+also estimated the 3D position of the fingertips. We considered
+that when the hand was fully open the fingertips were more sparse
+than when the hand was closed. We hence measured the hand
+opening as the standard deviation of the positions of the five finger
+tips at each sample. The wrist angle was measured in a range of
+approximately 45 degrees of extension to 90 degrees of flexion by
+a potentiometer, with a resolution of 1 degree. For each session,
+these signals were normalized with respect to the maximum and
+minimum measured values during a preliminary calibration phase.
+
+A. Basteris et al. / Robotics and Autonomous Systems 73 (2015) 144–154
+
+147
+
+thus varying in the range [0, 1]. The worst case, 0 means that
+the subject was in systematic delay with respect to the reference
+(lagging). Because of the greater or equal than sign in (3), the best
+score, 1, was given when one was in perfect sync with the reference
+trajectory or eventually anticipating (leading).
+2.3. Adaptive behaviour of the system
+
+Fig. 2. The SCRIPT1 system—composed of passive-actuated device (1), touchscreen
+display (2), personal computer (3) and arm support (4).
+
+An arm support (SaeboMAS, Saebo Inc, Charlotte NC, USA)
+provided gravity compensation of the proximal arm. A dedicated
+telesupervision platform, developed as part of the project, enabled
+the healthcare professional to remotely monitor the progress of the
+therapy by accessing a secure dedicated web user interface.
+2.2. Lag–lead based assessment of performance
+In order to achieve the adaptive behaviour of the game, it was
+needed to assess subject’s movement on the fly (i.e. as practice
+progressed). During the exercise, the target onset triggered the
+acquisition of the movement excursion signal, either hand opening
+or wrist angle. The acquisition finished when the current target
+passed the cursor. Then, the movement profile was considered only
+within the interval corresponding to a minimum and maximum
+value, respectively m and M. The time interval between these
+two points was considered as movement duration, T , and NQ is
+the number of samples within this time frame. We considered
+and computed a score only for movements lasting more than
+0.5 s—in order to ensure that these reflected subjects’ intentional
+movement. We set this condition after preliminary testing which
+showed artefacts due to subject not reacting to a target, resulting
+in very short movements (with minima and maxima very close
+to each other). For computing the lag–lead score LL, the system
+generated a reference trajectory xR , of the same size matching NQ .
+For the time profile of finger movement (hand opening), we used
+a model validated for healthy subjects and stroke survivors [30]:
+
+
+
+xR (t ) = m + M − c1 + c2 · tanh
+
+t − c3 · T
+
+(1)
+
+c4 · T
+
+where c1 = (m + M )/2, c2 = (M − m)/2, c3 = T /2 and c4 = T /6,
+while for the wrist excursion we used a minimum jerk profile [31,
+20]:
+
+xR (t ) = m + (M − m) · 6 ·
+
+
++ 10 ·
+
+t
+
+T
+
+.
+
+t
+
+T
+
+t
+
+T
+(2)
+
+Each sample xN was then compared with the corresponding sample
+of the reference trajectory xRN , and the lag–lead score LL was
+defined as the fraction of samples in which the signal was higher
+(for an increasing signal) or lower (for a decreasing one) than the
+reference trajectory:
+NQ
+
+
+LL =
+
+(xN ≥ xRN )
+
+N =1
+
+NQ
+
+,
+
+2.4. Classification of session type based on pattern of adaptation
+Based on the observed patterns in exercise difficulty and
+lag–lead score LL, we defined five types of sessions, namely challenging, challenging–then supporting, supporting, under-challenging
+and under-supporting (summarized in Table 1). The former three
+are those in which the adaptation mechanism was effective in
+holding LL within the target region. Ideally, this happened with a
+progressive increase in speed (challenging session). If such increase
+was followed by a decrease in speed prior to session’s end, the session was classified as challenging–then supporting. In a supporting
+session, the success was achieved by progressively decreasing the
+speed of the exercise. The adaptation mechanism could eventually fail and lead to sessions with LL respectively higher (underchallenging) or lower (under-supporting) than the target region.
+Consider each training session as including NMOV movement repetitions. This results in having two arrays of size NMOV , which contain respectively the difficulty scaling factor λ and the value of LL
+for each movement repetition. The abovementioned classification
+relies on imposing the conditions specified in Table 1 over these
+two vectors, where LL is the average value within a session.
+2.5. Subjects
+
+ 4
+− 15 ·
+
+The lag–lead score LL was used to adapt the exercise, in order
+to make it easier for subjects who were often in delay with respect
+to the reference trajectory (failure), and harder for those able to
+anticipate it (success).
+This was achieved by multiplying the speed of the game by a
+factor λ which was the outcome of an adaptive process. Let th+
+and th− be the thresholds for LL which determined success and
+failure, respectively. If amongst the last N trials there was a number
+of successes (or failures) higher than N + (or N −), the current value
+of the multiplier factor λ was divided (or multiplied) by 0.9.
+In our case, λ started at 1 and we used N = 20, N + = N − =
+10, th+ = 0.8 and th− = 0.4. This implied that a subject was
+considered failing when lagging for 40% of the time within one
+movement repetition (LL < 0.4), and successful when leading for
+at least 80% of the time (LL > 0.8). If a subject was failing in at least
+10 of the last 20 movement repetitions (more than 10 of the 20
+trials), the game speed was multiplied by 0.9 providing more time
+to perform in the next execution, while it was divided by 0.9 if one
+was leading in 10 or more of the last 20 trials.
+
+(3)
+
+Data of seven chronic stroke patients were used in this study.
+These subjects are a subset (the first seven who completed the
+training cycle) participating in an ongoing clinical evaluation [32].
+Their demographic characteristics and results about training duration are shown in Table 2. The study protocol was approved
+by local medical ethics committees in two sites (Enschede, the
+Netherlands—patient code nl and Rome, Italy—patient code it) and
+all participants provided informed consent. For participation in the
+study, subjects had to meet the following inclusion criteria: (1) between 6 months and 5 years after stroke; (2) age between 18 and
+80 years; (3) clinically diagnosed with partial central paresis of the
+arm and hand because of a stroke, but with 15° active elbow flexion
+and a quarter range of active finger flexion; (4) living at home and
+having Internet access; (5) having a carer who is a co-resident or
+
+148
+
+A. Basteris et al. / Robotics and Autonomous Systems 73 (2015) 144–154
+Table 1
+Definition and conditions specifying five adaptation types—categories (shaded) represent effective adaptation.
+
+Table 2
+Characteristics of the subjects in this study.
+Subject ID
+
+Sex
+
+Age (years)
+
+Time post stroke (months)
+
+FM score at inclusion
+
+ARAT score at inclusion
+
+nl01
+nl02
+nl03
+nl04
+nl05
+it02
+it04
+
+M
+M
+M
+M
+F
+M
+F
+
+34
+52
+43
+58
+61
+62
+66
+
+11
+10.5
+26
+10.5
+10
+8
+11
+
+56
+17
+11
+44
+9
+16
+46
+
+47
+5
+4
+31
+3
+3
+54
+
+Abbreviations: FM score = Fugl-Meyer test score; ARAT score = Action Research Arm Test score.
+
+closely involved in their care; (6) able to understand and follow instructions; (7) no additional orthopaedic, neurological, or rheumatologic disease of the upper extremity; and (8) no severe neglect or
+uncorrected visual impairments.
+2.6. Experimental protocol
+Subjects received six weeks of arm and hand training at home
+using the SCRIPT system. Trained healthcare professionals (HCP)
+installed the system in the first training week in the subjects’
+homes, and instructed them how to operate it towards performing
+daily exercises mediated via interactive games. From the games
+made available by the therapist, subjects could choose which
+game to perform. There were three different games, some of
+which featured several variants based on the number and type of
+movements required. The seashell game required subjects to open
+and close their hand in a grasp to operate a seashell on the screen to
+catch fishes swimming towards it. The crocco game was available
+in four variants. In all of these, the subjects moved a crocodile on
+the screen. In the simplest case, subjects were required to flex and
+extend their wrist to avoid obstacles. In the second case, lateral
+movements of the arm were added, in order to move the crocodile
+laterally on the screen. The third category required instead the
+grasping movement to let the crocodile eat some fruits, whereas
+the fourth category included all these movements. Finally, the
+labyrinth game, where subjects moved a cursor through a labyrinth,
+was available in three variants. In the simplest case, subjects
+could move the cursor upwards–downwards by anteroposterior
+movements of the hand, and leftwards–rightwards by flexion or
+extension of the wrist. In the second variant, movements of hand
+pronation–supination were required to open doors. Finally, in the
+last variant subjects had to grasp a key by a grasping gesture before
+opening the door.
+
+All subjects trained independently, and were remotely supervised, off-line, by a HCP. Subjects were recommended to train
+180 min per week (equalling a schedule of 6 days per week, 30 min
+per day), but they were free to choose their own preferred training
+duration, and were allowed to practise whenever desired. These
+choices, although not ideal from the researchers’ point of view because of the high variability introduced in the study, has been done
+in order to improve patients’ motivation and adherence and let
+them be in control of the therapy.
+During the first training week, the HCP contacted each subject
+three times, in order to ensure competence with the SCRIPT
+system. During the other training weeks, the HCP visited each
+subject once per week to check on the subject’s performance.
+2.7. Data analysis
+In order to evaluate the performance of the lag–lead based
+assessment and adaptation, we considered for each session the
+array of lag–lead scores and the corresponding array of game
+difficulty (scaling factors λ). These values were computed on-thefly during subjects’ exercise. For each session, we considered as
+indicators of the amount of usage, the time spent playing and the
+number of movement repetitions.
+The primary indicator of the performance for the adaptation
+mechanism was the percentage of sessions in which this was
+effective (types challenging, challenging–then supporting and supporting). We considered its overall efficacy, differences between
+movements and subjects.
+We hypothesized that the success of the adaptation effectively
+motivated subjects to train more. Hence, we tested whether the
+duration of a session (measured either by number of repetitions
+or session duration) was higher in sessions where the adaptation
+was effective. We tested our hypotheses with a one-way ANOVA
+
+A. Basteris et al. / Robotics and Autonomous Systems 73 (2015) 144–154
+
+149
+
+Fig. 3. Time progression of score and difficulty (game speed) for sessions of different categories: (a) challenging, (b) challenging–then supporting, (c) supporting, (d) underchallenging, (e) under-supporting. Solid line for score represents filtered signal (moving average, N = 5, used only for visualization), dashed line represents raw values. The
+green area represents the interval defined as successful by setting the regulator parameters th+ = 0.8 and th− = 0.4. (For interpretation of the references to colour in this
+figure legend, the reader is referred to the web version of this article.)
+
+(factor: session type) and contrast analysis separately for hand
+and wrist movements, using SPSS version 21 (IBM). We considered
+p-values below 0.05 as statistically significant.
+
+duration, the number of game instances for which the adaptation
+process has been analysed and the partitioning among hand and
+wrist movements for each subject.
+
+3. Results
+
+3.2. Game difficulty and evolution of score in different types of
+sessions
+
+3.1. Amount of exercise
+Overall, subjects performed a total of 248 training sessions
+(35 ± 11 sessions per subject). This led to a gross total of 63 h of
+practice (9 ± 4 h per subject). Table 3 shows the overall exercise
+
+Fig. 3 shows examples of the five types of sessions for several
+subjects, including both hand and wrist movements. Each of these
+figures shows time progression of score and game speed. Fig. 3(a)
+shows a challenging session in which subject nl03 performed 165
+
+150
+
+A. Basteris et al. / Robotics and Autonomous Systems 73 (2015) 144–154
+Table 3
+Amount of exercise, sessions and partitioning among wrist and hand movements.
+Subject ID
+
+Total exercise duration [h]
+
+Sessions [#]
+
+Average session duration [min]
+
+Hand movements [#]
+
+extbfWrist movements [#]
+
+nl01
+nl02
+nl03
+nl04
+nl05
+it02
+it04
+
+4.14
+13.03
+9.91
+9.36
+2.87
+10.65
+12.88
+
+40
+30
+58
+25
+39
+30
+26
+
+6.2
+26.1
+10.3
+22.5
+4.4
+21.3
+29.7
+
+2525
+1871
+1975
+1003
+350
+7645
+1028
+
+574
+1130
+5621
+783
+4177
+99
+1137
+
+challenging (94), supporting (10) and challenging–then supporting
+(1) sessions. Failures resulted exclusively in under-challenging
+(18 sessions). Also, no episodes of under-supporting adaptation
+(i.e., subjects scoring consistently below the target score) have
+occurred.
+The number of sessions including exercise of hand movements
+was similar (125). In this case, the adaptation was effective in 90
+sessions. These include challenging (67), supporting (12) and challenging–then supporting (11) sessions. Overall, the success rate resulted lower in comparison with the wrist movements (72%). In
+this case, failures consisted mainly in under-supportive sessions
+(34), while we observed only one under-challenging session.
+Fig. 5(a) shows the number of sessions for each of the five
+categories, for each subject, for wrist movements. It is noteworthy
+that under-challenging sessions happened for three out of seven
+subjects (nl01, nl04 and it04). Fig. 5(b) shows the session types
+for hand movement. In this case, the under-supporting sessions
+involved five subjects, including the same subjects who produced
+under-challenging sessions for the wrist (nl01, nl04 and it04).
+Fig. 4. Partitioning among the different session types with respect to the challenge
+and support theory. The numbers represent the frequency of each type.
+
+movements of wrist flexion, and the game speed progressively
+increased to about twice (2.05) the initial value. This happened
+in about 25 min. Fig. 3(b) shows a challenging–then supporting
+session performed by subject it02. In this case, the difficulty did
+not exclusively increase (since after about 2, 10 and 17 min it
+was decreased by the adaptation rules). However, there was an
+overall increase up to 2.6 times the initial speed, after 22 min.
+After that, the speed was then decreased until 2.05 times the initial
+value. Then the subject decided to stop after 25 min of exercise.
+Fig. 3(c) shows a supporting session performed by nl02. In this case,
+during 5 min of practice the difficulty was reduced to 0.81 times
+the initial value and the observed average lag–lead score was 0.46,
+thus within the target region. Fig. 3(d) shows an under-challenging
+session performed by nl04. In this case, the difficulty progressively
+increased to 1.37 times the initial value. This value was still too
+low, provided that the average score for 5 min of the session (0.89)
+remained above the target value. Finally, Fig. 3(e) shows an undersupporting session performed by nl01. In this case, despite the fact
+that the difficulty decreased to 0.65 times the initial value within
+15 min of duration, the average score (0.2) was below the target
+value.
+
+3.4. Effect of adaptation on training duration
+We hypothesized that the successful adaptation results in better subject motivation and consequently in longer—more intense
+sessions. An ANOVA test confirmed significantly larger number of
+movement repetitions performed by subjects when the adaptation
+was effective (p = 0.001). Subjects performed a larger number of
+repetitions in session with effective adaptation also when considering the wrist (p = 0.025) and the hand (p = 0.01) separately,
+as shown in Fig. 6. Although Pearson’s correlation test shows that
+number of movements and session duration are significantly correlated (R = 0.377, p < 0.001), efficacy of the adaptation does
+not have a significant effect on training duration (p = 0.066).
+When considering the breakdown of number of movements per
+session category, as depicted in Fig. 7, we can see a distinct difference between session types which is reported as significant by
+ANOVA results when considering wrist (p = 0.04) and hand only
+(p < 0.001). Contrast analysis reveals that challenging–then supporting and challenging sessions led to higher number of movement repetitions with respect to other types of session (p < 0.05
+in all cases). Moreover, no statistically significant difference in session duration was found among categories.
+4. Discussion
+
+3.3. Performance of the adaptation algorithm
+
+4.1. Amount of exercise
+
+The adaptation process ran for 123 sessions of wrist exercise
+and for 125 hand exercise sessions. Out of these 248 sessions, there
+have been 195 cases (combining hand and wrist frequencies) of
+effective adaptation. The frequency of each of the session types is
+shown in Fig. 4. Table 4 shows how the number of observations
+differ between wrist and hand exercises. Regarding the wrist, the
+adaptation has been effective in 105 episodes (85%). This includes
+
+In this study, we considered data from a subset of subjects
+who participated in an ongoing SCRIPT study [33]. The participants
+(seven subjects with chronic stroke) covered a wide range of
+impairment (Fugl-Meyer [34] score ranging from 9 to 56, Action
+Research Arm Test [35] ranging from 3 to 54). During training,
+participants were remotely supervised, offline, so they had to
+choose their own training moment and duration during the day.
+
+A. Basteris et al. / Robotics and Autonomous Systems 73 (2015) 144–154
+
+151
+
+Table 4
+Number of observations of different session types for hand and wrist exercises.
+Effective
+
+Wrist
+Hand
+Total
+
+Ineffective
+
+Challenging–then supporting
+
+Challenging
+
+Supporting
+
+Under-challenging
+
+Under-supporting
+
+1
+11
+12
+
+94
+67
+161
+
+10
+12
+22
+
+18
+1
+19
+
+0
+34
+34
+
+123
+125
+248
+
+Fig. 5. Number of training sessions for each of the five types, for each subject, for wrist (a) and hand (b) exercises.
+
+Fig. 6. Efficacy of adaptation in making subjects perform higher number of
+movement repetitions per session.
+
+Overall, they did not practise as much as advised (6 sessions of
+30 min each per week). However, the amount of exercise was solely
+their choice and this led to high variability in session durations,
+ranging from 4.4 to 29.7 min per day across subjects.
+It is also noteworthy that, even in this small sample, there
+were strong differences in training—arising again from individual
+choices. By observing the number of hand and wrist movements,
+one can notice that some subjects trained primarily on either hand
+(nl01, it02) or wrist movement (nl03, nl05) while the remaining
+subjects (nl02, nl04, it04) tended to practise both hand and wrist
+movements.
+
+Fig. 7. Role of challenge in increasing the number of movement repetitions per session. Note the higher number of repetitions for challenging and challenging–then
+supporting categories in comparison to all others.
+
+4.2. Game difficulty and change of score in different types of sessions
+Based on the existing literature in learning theory and the
+challenge point framework [20], we proposed a framework for
+the classification of the session types based on the pattern of
+the task difficulty obtained by an adaptive mechanism. These
+types are challenging, challenging–then supporting, supporting,
+under-supportingand under-challenging. This categorization can be
+applied to any context in which there is an automatic adaptation of
+
+152
+
+A. Basteris et al. / Robotics and Autonomous Systems 73 (2015) 144–154
+
+the task difficulty. We showed that regardless of duration, number
+and type of movements, each session can be classified as one of
+these types. Although there is a strong variation among movement
+repetitions reflected by the lag–lead score, its average value across
+one session can be used as an indicator for the performance of
+the subject. In particular, by considering its value and the pattern
+visible in game difficulty changes, one can assess whether the
+assigned task has been of adequate difficulty for a subject.
+4.3. Performance of the adaptation algorithm
+We proposed a mechanism of adaptation based on a spatiotemporal kinematic parameter, a lag–lead index, in order to adapt
+the task speed in a robot-assisted exercise. In this domain, one
+typical approach is that of using speed, time or the EMG signal
+to modulate the impedance of a robot [24]. This differs from our
+case, in which given the passive nature of our device, changing
+system impedance during interaction was not possible. Instead,
+our proposed approach used the audio–visual channel and speed
+of the stimuli presentation to provide a varying level of challenge
+during the interaction based on user’s performance.
+Overall, our algorithm was effective in 79% of the sessions.
+Considering only the wrist movement, its effectiveness was higher
+(85%). In this case, ineffective cases consisted only in underchallenging sessions. Such case has only the minor disadvantage
+of a too easy exercise, thus possibly boring the subject. It is also
+remarkable that such condition occurred only for those patients
+mildly impaired (nl01, nl04, it04). Instead, those patients who
+practised mostly the wrist movements (nl03, nl05) experienced
+mostly challenging sessions, and eventually supporting exercises.
+Regarding hand movements, the adaptive system was less
+effective (72%) when compared to the wrist, yet still presenting
+a substantial number of cases where our algorithm was effective.
+In particular, opposite to the case of the wrist, failures consisted
+nearly exclusively of under-supporting sessions. This occurred for
+five subjects out of seven. These included those mildly impaired
+for whom the wrist exercise was too easy. Another aspect which
+suggests the higher difficulty of the hand exercise is the larger
+number of challenging—then supporting sessions for the hand,
+compared to wrist movements.
+4.4. Relation between categories and number of movement repetitions
+The adaptation mechanism enhanced subjects’ engagement, as
+proven by the increased number of repetitions in case of effective
+adaptation. Although the average number of movement repetitions
+resulted higher for challenging–then supporting sessions, there are
+a large number of outliers for the challenging type. In many cases,
+subjects performed within a challenging session more repetitions
+than in a challenging–then supporting one, i.e. they performed better for a longer time. This confirms the effect of challenge on subjects’ motivation, i.e. by challenging the subject it is possible to
+extend the training intensity without affecting his/her performance. As a confirmation of the role of challenge in motivation we
+also observed that subjects tended to perform more repetitions of
+either wrist or hand movement when under-supported (i.e. overchallenged) rather than under-challenged.
+5. Conclusions and future work
+In this feasibility study, we used a lag–lead score to evaluate the
+performance of stroke survivors during robot-assisted wrist and
+
+hand movements. This was calculated as the fraction of movement
+in which one is moving in advance of a reference trajectory. An
+adaptive controller based on the history of such score, assigning
+faster tasks if one was performing above the desired level and
+slower if below this level, successfully maintained the average
+lag–lead score within a target range. We proposed a framework for
+the classification of session types based on patterns in the process
+of adaptation. These types were challenging, fatiguing, supporting,
+under-supportingand under-challenging. Overall, the adaptation
+was successful in maintaining the score within the target range in
+79% of cases.
+We observed different behaviours amongst hand and wrist
+movements, representing a relative easiness in wrist movement
+compared to hand movement. These observations can be used towards further tuning of the lag–lead reference trajectory models
+as well as defining interactive games where difficulty in individual
+movement components, i.e. wrist flexion and extension or hand
+opening and closing, can be separately tuned. In this study, wrist
+actions occurred mostly during the crocco game where subjects’
+wrist flexion and extension resulted in diving under or jumping
+over approaching obstacles. We used the minimum jerk trajectory
+model for wrist flexion and extension. Based on our observations, it
+appears that our chosen model provided a challenging interaction,
+while having only one occurrence of challenging–then supporting.
+This was different for the hand, as more occurrence of challenging–then supporting was observed. In our future studies, we intend
+to identify whether this observation was due to the use of different reference trajectory models used, or if it occurred due to the
+way games reacted to these gestures differently, or whether this
+was linked to the state of wrist and hand in individual’s recovery
+from stroke. Also, another point for future assessment is with regards to use of different sensors for measurement of wrist flexion
+and extension, versus using bending sensors to infer position of the
+finger tips.
+It is remarkable that our system, as many of those in the field
+of rehabilitation robotics, does not necessarily comply with all the
+several definitions of robot, although consisting of sensors, actuators and a decision making component. Our research is hence applicable in the field of robot-assisted training and rehabilitation
+robotics, providing a mechanism of adaptation based on subjects’
+motor performance. The classification of sessions among different
+categories based on the difficulty patterns and the subjects’ performance can be used in the domain of rehabilitation engineering to
+ensure the optimal progression of the therapeutic exercise.
+One of the limitations of this study is the small sample size,
+also taking into account the high-variability of factors introduced
+by the protocol design. In current study, it is not possible to draw
+inference from patient’s level of impairment in conjunction with
+the observed categories in their sessions. The same adaptation
+mechanism is hence currently being tested on a larger number of
+subjects thus to see if patient’s impairment is a likely contributor
+to the type of challenge mostly overcome.
+Also, a further limitation arises from the small number of games
+available. In a planned future study, we will increase the number
+of available games, thus to provide chances to provide a more
+appealing context for practice, hoping to retain patients in an
+exercise session for a longer duration. Presence of cases where
+under-challenging or under-supporting category is observed can
+be indicative of apparent ease or overwhelming task difficulty as
+possible by one game. Having a larger subset of games would allow
+us to compare and contrast between presence of these categories
+and patient’s choice of preferred games and will enable us to
+control for presence of fatigue. Also, these new games will be
+tested with an active device which will allow control of assistive
+or resistive forces to, respectively, severely or mildly impaired
+subjects.
+
+A. Basteris et al. / Robotics and Autonomous Systems 73 (2015) 144–154
+
+In summary, the findings from the present study indicate that
+the lag–lead model is promising to use as an adaptation regulator
+to adapt exercise difficulty within a game to the current performance of a subject.
+Acknowledgements
+This work has been partially funded under Grant FP7-ICT288698(SCRIPT) of the European Community Seventh Framework
+Programme. We are grateful to SCRIPT consortium for their ongoing commitment and dedication to the project and to a large number of stroke patients, their families and healthcare professionals
+who have provided us with formative and summative feedback
+during the development of this project.
+References
+[1] C.J. Vugts, L.F.J. Van der Velden, L. Hingstman (NIVEL), F. Van der Velde, W. Van
+der Windt (Prismant), Behoefteraming fysiotherapeuten 2002-2015. Rapport
+NIVEL, 2003: www.nivel.nl.
+[2] N.M. Hjelm, Benefits and drawbacks of telemedicine, J. Telemedicine and
+Telecare 11 (2005) 60–70.
+[3] J.W. Krakauer, Arm function after stroke: from physiology to recovery, Semin.
+Neurol. 25 (4) (2005) 384–395.
+[4] J.D. Schaechter, Motor rehabilitation and brain plasticity after hemiparetic
+stroke, Prog. Neurobiol. 73 (1) (2004) 61–72.
+[5] N.A. Borghese, M. Pirovano, P.L. Lanzi, S. Wuest, E.D. de Bruin, Computational
+intelligence and game design for effective at-home stroke rehabilitation,
+Games Health J. 2 (2) (2013) 81–88.
+[6] G. Kwakkel, R. van Peppen, R.C. Wagenaar, S. Wood Dauphinee, C. Richards,
+A. Ashburn, K. Miller, N. Lincoln, C. Partridge, I. Wellwood, P. Langhorne, Effects
+of augmented exercise therapy time after stroke: a meta-analysis, Stroke 35
+(11) (2004) 2529–2539.
+[7] D.J. Reinkensmeyer, J.L. Emken, S.C. Cramer, Robotics, motor learning, and
+neurologic recovery, Annu. Rev. Biomed. Eng. 6 (2004) 497–525.
+[8] V.S. Huang, J.W. Krakauer, Robotic neurorehabilitation: a computational motor
+learning perspective, J. Neuroeng. Rehabil. 6 (2009) 5.
+[9] E.H. van Asseldonk, M. Wessels, A.H. Stienen, F.C. van der Helm, H. van der
+Kooij, Influence of haptic guidance in learning a novel visuomotor task,
+J. Physiol. (Paris) 103 (3–5) (2009) 276–285.
+[10] J. Mehrholz, A. Hädrich, T. Platz, J. Kugler, M. Pohl, Electromechanical and
+robot-assisted arm training for improving generic activities of daily living, arm
+function, and arm muscle strength after stroke, Cochrane Database Syst. Rev.
+6 (2012) CD006876.
+[11] G.B. Prange, M.J.A. Jannink, C.G.M. Groothuis, H.J. Hermens, I.J. MJ, Systematic
+review of the effect of robot-aided therapy on recovery of the hemiparetic arm
+after stroke, J. Rehabil. Res. Dev. 43 (2) (2006) 171–184.
+[12] G. Kwakkel, B.J. Kollen, H.I. Krebs, Effects of robot-assisted therapy on upper
+limb recovery after stroke: a systematic review, Neurorehabil. Neural Repair
+22 (2) (2008) 111–121.
+[13] J. Mehrholz, A. Hädrich, T. Platz, J. Kugler, M. Pohl, Electromechanical and
+robot-assisted arm training for improving generic activities of daily living, arm
+function, and arm muscle strength after stroke, Cochrane Database Syst. Rev.
+6 (2012).
+[14] L. Oujamaa, I. Relave, J. Froger, D. Mottet, J.-Y. Pelissier, Rehabilitation of arm
+function after stroke. literature review, Ann. Phys. Rehabil. Med. 52 (2009)
+269–293.
+[15] S.L.P. Ates, H. van der Kooij, A.H. Stienen, SCRIPT passive orthosis: design and
+technical evaluation of the wrist and hand orthosis for rehabilitation training
+at home, in International Conference on Rehabilitation Robotics (ICORR), 2013,
+Seattle, USA.
+[16] G.B. Prange, H.J. Hermens, J. Schäfer, N. Nasr, G. Mountain, A.H.A. Stienen,
+F. Amirabdollahian, SCRIPT: tele-robotics at home—functional architecture
+and clinical application, in: Proceedings of the 6th International Symposium
+on E-Health Services and Technologies (EHST) and the 3rd International
+Conference on Green IT Solutions, SciTePress, Geneva, Switzerland, 2012.
+[17] B.E. Fisher, K.J. Sullivan, Activity-dependent factors affecting poststroke
+functional outcomes, Top Stroke Rehabil. 8 (3) (2001) 31–44.
+[18] M. Lotze, C. Braun, N. Birbaumer, S. Anders, L.G. Cohen, Motor learning elicited
+by voluntary drive, Brain 126 (Pt 4) (2003) 866–872.
+[19] L.E. Kahn, M. Averbuch, W.Z. Rymer, D.J. Reinkensmeyer, Comparison of Robotassisted Reaching to Free Reaching in Promoting Recovery From Chronic
+Stroke, IOS Press, Amsterdam, the Netherlands, 2001.
+[20] M.A. Guadagnoli, T.D. Lee, Challenge point: a framework for conceptualizing
+the effects of various practice conditions in motor learning, J. Mot. Behav. 36
+(2) (2004) 212–224.
+[21] N. Sanford, Self and Society: Social Change and Individual Development,
+Transaction Books, 2006.
+[22] J.L. Emken, R. Benitez, D.J. Reinkensmeyer, Human–robot cooperative
+movement training: learning a novel sensory motor transformation during
+walking with robotic assistance-as-needed, J. Neuroeng. Rehabil. 4 (2007) 8.
+
+153
+
+[23] A. Panarese, R. Colombo, I. Sterpi, F. Pisano, S. Micera, Tracking motor
+improvement at the subtask level during robot-aided neurorehabilitation of
+stroke patients, Neurorehabil. Neural Repair 26 (7) (2012) 822–833.
+[24] H.I. Krebs, J.J. Palazzolo, L. Dipietro, M. Ferraro, J. Krol, K. Rannekleiv, B.T. Volpe,
+N. Hogan, Rehabilitation robotics: Performance-based progressive robotassisted therapy, Auton. Robots 15 (1) (2003) 7–20.
+[25] L. Zimmerli, C. Krewer, R. Gassert, F. Muller, R. Riener, L. Lunenburger,
+Validation of a mechanism to balance exercise difficulty in robot-assisted
+upper-extremity rehabilitation after stroke, J. Neuroeng. Rehabil. 9 (2012) 6.
+[26] A. Koenig, D. Novak, X. Omlin, M. Pulfer, E. Perreault, L. Zimmerli, M. Mihelj, R.
+Riener, Real-time closed-loop control of cognitive load in neurological patients
+during robot-assisted gait training, IEEE Trans. Neural Syst. Rehabil. Eng. 19 (4)
+(2011) 453–464.
+[27] V. Squeri, L. Masia, P. Giannoni, G. Sandini, P. Morasso, Wrist rehabilitation in
+chronic stroke patients by means of adaptive, progressive robot aided therapy,
+IEEE Trans. Neural. Syst. Rehabil. Eng. (2013).
+[28] A. Basteris, F. Amirabdollahian, Adaptive human–robot interaction based on
+lag-lead modelling for home-based stroke rehabilitation, in IEEE Systems, Man
+and Cybernetics, 2013, Manchester (UK).
+[29] R. Chemuturi, F. Amirabdollahian, K. Dautenhahn, Adaptive training algorithm
+for robot-assisted upper-arm rehabilitation, applicable to individualised and
+therapeutic human–robot interaction, J. Neuroeng. Rehabil. 10 (2013) 102.
+[30] I. Carpinella, J. Jonsdottir, M. Ferrarin, Multi-finger coordination in healthy
+subjects and stroke patients: a mathematical modelling approach, J. Neuroeng.
+Rehabil. 8 (2011) 19.
+[31] T. Flash, N. Hogan, The coordination of arm movements: an experimentally
+confirmed mathematical model, J. Neurosci. 5 (7) (1985) 1688–1703.
+[32] S.M. Nijenhuis, G.B. Prange, J. Schäfer, J.S. Rietman, J.H. Buurke, Feasibility of
+a personalized arm/hand training system for use at home after stroke: results
+so far, in: International NeuroRehabilitation Symposium (INRS), 2013, Zürich,
+Switzerland.
+[33] G.B. Prange, M. N S, P. Sale, A. Cesario, N. Nasr, G. Mountain, F. Amirabdollahian,
+J.H. Buurke, Preliminary findings of feasibility and compliance of technologysupported distal arm training at home after stroke, in: International Congress
+on Neurorehabilitation—ICNR 2014, 2014. Aalborg (DK).
+[34] A. Fugl-Meyer, L. Jääskö, I. Leyman, S. Olsson, S. Steglind, The post-stroke
+hemiplegic patient. 1. a method for evaluation of physical performance, Scand.
+J. Rehabil. Med. 7 (1) (1974) 13–31.
+[35] R.C. Lyle, A performance test for assessment of upper limb function in physical
+rehabilitation treatment and research, Int. J. Rehab. Res. 4 (4) (1981) 483–492.
+
+Angelo Basteris is a Postdoctoral Researcher at the School
+of Computer Science, University of Hertfordshire, working
+on the SCRIPT project. He was graduated with a Master’s
+degree in Bioengineering from the University in Genoa
+in 2007. There, he completed his Ph.D. in Bioengineering
+during 2011, studying interactive technologies to facilitate
+motor skill learning and neuromotor recovery.
+His major interest is the application of robots and
+motion analysis systems in rehabilitation. He is also interested in the understanding of motor skill learning in
+healthy subjects.
+His research activity includes movement analysis of wheelchair propulsion,
+robotic assistance for development of novel motor skills and for intermanual transfer of handwriting, robot-therapy for persons with multiple sclerosis and Parkinson’s disease.
+
+Sharon Nijenhuis is a Human Movement Scientist, Junior
+Researcher at Roessingh Research and Development (in
+Enschede, The Netherlands). Her previous activity includes
+research on the direct effects of providing ankle-foot
+orthosis in (sub)acute stroke rehabilitation and a measure
+of the construct validity of the VOAA module DDD-R to
+assess the spontaneous arm and hand use in typically
+developing children.
+
+Jaap Buurke is a Senior Researcher working at Roessingh
+Research & Development (in Enschede, The Netherlands),
+the largest Dutch scientific research centre in rehabilitation technology. Since 2009 he is also a Scientific Track Coordinator at the same institute, where he started working
+as a Physiotherapist in 1985.
+
+154
+
+A. Basteris et al. / Robotics and Autonomous Systems 73 (2015) 144–154
+
+Gerdienke Prange is a Human Movement Scientist working at Roessingh Research & Development (in Enschede,
+The Netherlands), the largest Dutch scientific research
+centre in rehabilitation technology. She received her Ph.D.
+at the University of Twente (in Enschede, The Netherlands) for her research on the application of robotic devices for rehabilitation of the arm after stroke. Currently
+she is involved in several national and international
+research projects concerning stimulation of motor relearning in neurological disorders using rehabilitation
+technology (including robotics and virtual reality), mainly
+for the upper extremity. As a Senior Researcher, she develops and leads the research
+line on Active Therapeutic Devices, focusing on the application of technology to support rehabilitation of people with neurological disorders. Her main research interests lie in evaluating the impact of rehabilitation technology on neurophysiological,
+biomechanical and clinical levels.
+
+Farshid Amirabdollahian is a Reader in Adaptive Systems
+at the School of Computer Science, University of Hertfordshire. He currently leads the adaptive systems’ assistive and rehabilitation robotics laboratory. He received his
+Ph.D. in 2004 from Reading University School of Cybernetics, focusing on robot-mediated therapy for stroke rehabilitation. He has undertaken research in assistive and
+rehabilitation robotics since 1999, by involvement in
+FP5/6/7 projects such as GENTLE/S, i-Match, LIREC and ROBOSKIN. His research has a specific focus on adaptive and
+personalized training. He is a member of the IEEE Engineering in Medicine & Biology, Robotics & Automation, and Systems, Man & Cybernetics societies. He is currently coordinating the ACCOMPANY (FP7 STREP) and
+SCRIPT (FP7 STREP) projects while contributing to CORBYS (FP7 IP).
+
+

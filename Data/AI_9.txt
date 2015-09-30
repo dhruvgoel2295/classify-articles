@@ -1,0 +1,969 @@
+Artiﬁcial Intelligence 175 (2011) 1555–1569
+
+Contents lists available at ScienceDirect
+
+Artiﬁcial Intelligence
+www.elsevier.com/locate/artint
+
+Hybrid tractability of valued constraint problems ✩
+Martin C. Cooper a , Stanislav Živný b,c,∗
+a
+b
+c
+
+IRIT, University of Toulouse III, 31062 Toulouse, France
+University College, University of Oxford, Oxford OX1 4BH, UK
+Computing Laboratory, University of Oxford, Oxford OX1 3QD, UK
+
+a r t i c l e
+
+i n f o
+
+a b s t r a c t
+
+Article history:
+Received 24 August 2010
+Received in revised form 6 December 2010
+Accepted 19 February 2011
+Available online 24 February 2011
+Keywords:
+Constraint optimisation
+Computational complexity
+Tractability
+Soft constraints
+Valued constraint satisfaction problems
+Graphical models
+Forbidden substructures
+
+The constraint satisfaction problem (CSP) is a central generic problem in computer science
+and artiﬁcial intelligence: it provides a common framework for many theoretical problems
+as well as for many real-life applications. Valued constraint problems are a generalisation of
+the CSP which allow the user to model optimisation problems. Considerable effort has been
+made in identifying properties which ensure tractability in such problems. In this work, we
+initiate the study of hybrid tractability of valued constraint problems; that is, properties
+which guarantee tractability of the given valued constraint problem, but which do not
+depend only on the underlying structure of the instance (such as being tree-structured) or
+only on the types of valued constraints in the instance (such as submodularity). We present
+several novel hybrid classes of valued constraint problems in which all unary constraints
+are allowed, which include a machine scheduling problem, constraint problems of arbitrary
+arities with no overlapping nogoods, and the SoftAllDiff constraint with arbitrary unary
+valued constraints. An important tool in our investigation will be the notion of forbidden
+substructures.
+© 2011 Elsevier B.V. All rights reserved.
+
+1. Introduction
+An instance of the constraint satisfaction problem (CSP) consists of a collection of variables which must be assigned
+values subject to speciﬁed constraints. Each CSP instance has an underlying hypergraph, known as its constraint hypergraph,
+whose vertices are the variables of the instance and whose hyperedges are the scopes of the constraints. Such a hypergraph
+is also known as the structure of the instance.
+An important line of research on the CSP is to identify all tractable cases which are recognisable in polynomial time.
+Most of this work has been focused on one of the two general approaches: either identifying forms of constraint which are
+suﬃciently restrictive to ensure tractability no matter how they are combined [1,2], or else identifying structural properties
+of constraint networks which ensure tractability no matter what forms of constraint are imposed [3].
+The ﬁrst approach has led to identifying certain algebraic properties known as polymorphisms [4] which are necessary
+for a set of constraint types to ensure tractability. A set of constraint types which ensures tractability is called a tractable
+constraint language. The second approach has been used to characterise all tractable cases of bounded-arity CSPs (such as
+binary CSPs): the only class of structures which ensures tractability (subject to certain complexity theory assumptions) are
+essentially structures of bounded tree-width [5,6].
+✩
+A preliminary version of part of this work appeared in Proceedings of the 16th International Conference on Principles and Practice of Constraint Programming
+(CP), LNCS, vol. 6308, 2010, pp. 152–166. This work was supported by EPSRC grant EP/F01161X/1. Stanislav Živný was supported by Junior Research
+Fellowship at University College, Oxford.
+Corresponding author at: Computing Laboratory, University of Oxford, Wolfson Building, Parks Road, Oxford OX1 3QD, UK. Tel: +44 (0)1865 273884.
+E-mail addresses: cooper@irit.fr (M.C. Cooper), standa.zivny@comlab.ox.ac.uk (S. Živný).
+
+*
+
+0004-3702/$ – see front matter
+doi:10.1016/j.artint.2011.02.003
+
+© 2011
+
+Elsevier B.V. All rights reserved.
+
+1556
+
+M.C. Cooper, S. Živný / Artiﬁcial Intelligence 175 (2011) 1555–1569
+
+In practice, constraint satisfaction problems usually do not possess a suﬃciently restricted structure or use a suﬃciently
+restricted constraint language to fall into any of these tractable classes. Nevertheless, they may still have properties which
+ensure they can be solved eﬃciently, but these properties concern both the structure and the form of the constraints. Such
+properties have sometimes been called hybrid reasons for tractability [7–11].
+Since in practice many constraint satisfaction problems are over-constrained, and hence have no solution, or are underconstrained, and hence have many solutions, soft constraint satisfaction problems have been studied [7]. Several very general
+soft CSP frameworks have been proposed in the literature [12,13]. In this paper we focus on one of the very general
+frameworks, the valued constraint satisfaction problem (VCSP) [12]. In an instance of the valued CSP, every constraint is
+associated with a cost function (rather than a relation as in the CSP) which allows the user to express preferences among
+different partial assignments, and the goal is to ﬁnd an optimal assignment (i.e. an assignment of smallest total cost).
+Similarly to the CSP, an important line of research on the VCSP is to identify tractable cases which are recognisable in
+polynomial time. It is well known that structural reasons for tractability generalise to the VCSP [7]. In the case of language
+restrictions, only a few conditions are known to guarantee tractability of a given set of valued constraints [14–16,22].
+Up until now there have been very few results on hybrid tractability for the VCSP, that is, tractability of subproblems of
+the VCSP deﬁned by properties which are not exclusively language-based or structure-based. For instance, Kumar deﬁnes an
+interesting framework for hybrid tractability for the Boolean weighted CSP [10]. However, to the best of our knowledge, this
+framework has so far not provided any new hybrid classes. In fact, all tractable classes presented in [10] are not hybrid and
+are already known.
+Contributions. The main contribution of the paper is the study of hybrid tractability of VCSPs and the introduction of novel
+hybrid tractable classes of VCSPs. As a ﬁrst step, we start with binary VCSPs.
+We introduce the class deﬁned by the joint-winner property (JWP). This class generalises the SoftAllDiff constraint with
+arbitrary unary valued constraints. Moreover, we generalise this class to a larger class of non-binary VCSPs including CSP
+and MAX-CSP instances with no overlapping nogoods.
+The rest of the paper is organised as follows. In Section 2, we deﬁne binary constraint satisfaction problems (CSPs),
+valued constraint satisfaction problems (VCSPs) and other necessary deﬁnitions needed throughout the paper. In Section 3,
+we study binary VCSPs whose only soft constraints are unary. A connection between these VCSPs and the maximum weight
+independent set problem in certain graph classes leads in a straightforward manner to corresponding hybrid tractable classes
+of VCSPs. In Section 4, we deﬁne the joint-winner property and give several examples of studied problems that satisfy the
+joint-winner property. In Section 5, we study important properties of VCSP instances satisfying the joint-winner property,
+which allow us, in Section 6, to present a polynomial-time algorithm for solving binary VCSPs satisfying the joint-winner
+property. In Section 7, we prove that this new tractable class is maximal. In Section 8, we extend the class of tractable VCSPs
+deﬁned by the joint-winner property. Finally, in Section 9, we summarise our work and ﬁnish with some open problems.
+We remark that even though our results are formulated as valued constraint satisfaction problems, it is clear that these
+results apply to various other optimisation frameworks that are equivalent to valued constraint problems such as Gibbs
+energy minimisation, Markov Random Fields and other graphical models [17,18].
+2. Preliminaries
+In this paper we ﬁrstly focus on binary valued constraint satisfaction problems before generalising to problems with cost
+functions of arbitrary arity. We denote by Q+ the set of all non-negative rational numbers. We denote Q+ = Q+ ∪ {∞} with
+the standard addition operation extended so that for all a ∈ Q+ , a + ∞ = ∞. Members of Q+ are called costs.
+A unary cost function over domain D i is a mapping c i : D i → Q+ . A binary cost function over domains D i and D j is a
+mapping c i j : D i × D j → Q+ . If the range of c i (c i j respectively) lies entirely within Q+ , then c i (c i j respectively) is called a
+ﬁnite-valued cost function.
+If the range of c i (c i j respectively) is {α , ∞}, for some α ∈ Q+ , then c i (c i j respectively) is called a crisp cost function.
+Note that crisp cost functions are just relations; that is, subsets of D i (in the unary case) or D i × D j (in the binary case)
+corresponding to the set of ﬁnite-cost tuples. If c i (c i j respectively) is not a crisp cost function, it is called soft.
+A binary VCSP instance [12] consists of a set of variables (denoted as v i , where i ∈ {1, . . . , n}); for each variable v i a
+domain D i containing possible values for variable v i ; and a set of valued constraints. Each valued constraint is either of the
+form v i , c i , where v i is a variable and c i is a unary cost function (constraints of this form are called unary constraints),
+or of the form v i , v j , c i j , where v i and v j are variables with i < j, the pair v i , v j is called the scope of the constraint,
+and c i j is a binary cost function (constraints of this form are called binary constraints). A constraint is called crisp if its
+associated cost function is crisp, and similarly a constraint is called soft if its associated cost function is soft. For notational
+convenience, throughout this paper we assume that there is a unique valued constraint on any given scope. In particular, in
+the absence of an explicit constraint between two variables v i , v j (i < j), we assume that the corresponding cost function
+is the constant function c i j = 0.
+A solution to a VCSP instance is an assignment of values from the domains to the variables with the minimum total cost
+given by
+n
+
+ci (v i ) +
+i =1
+
+c i j ( v i , v j ).
+1 i< j
+
+n
+
+M.C. Cooper, S. Živný / Artiﬁcial Intelligence 175 (2011) 1555–1569
+
+1557
+
+A VCSP instance with only crisp constraints is called a CSP instance. In the CSP, the task of ﬁnding an optimal assignment
+amounts to deciding whether there is a consistent assignment (in which all constraints are satisﬁed), i.e. an assignment with
+ﬁnite cost. Hence, each CSP instance is equivalent to a normalised version in which all ﬁnite costs are replaced by 0.
+The micro-structure of a binary CSP instance P is a graph where the set of vertices corresponds to the set of possible
+assignments of values to variables: a vertex v i , a represents the assignment of value a to variable v i [19]. The edges of the
+micro-structure connect all pairs of variable-value assignments { v i , a , v j , b } such that i < j and c i j (a, b) < ∞. The microstructure of a binary VCSP instance is deﬁned similarly. In the weighted micro-structure of a binary VCSP instance, edges
+and vertices are assigned the corresponding binary and unary costs. For CSPs (and VCSPs), the micro-structure complement
+is the complement of the micro-structure: its edges represent pairs of variable-value assignments that are incompatible
+according to the constraints. The micro-structure complement thus contains all edges { v i , a , v j , b } such that i < j and
+c i j (a, b) = ∞, but also, for every variable v i , all edges of the form { v i , a , v i , b } for a = b ∈ D i as every variable can be
+assigned only one value.
+A clique in a graph is a set of vertices which are pairwise adjacent. An independent set in a graph is a set of vertices
+which are pairwise non-adjacent. It is well known that solving an n-variable CSP instance P is equivalent to ﬁnding a
+clique of size n in the micro-structure of P , and to ﬁnding an independent set of size n in the micro-structure complement
+of P [19]. Therefore, tractability results on the maximum independent set problem for various classes of graphs can be
+straightforwardly used to obtain tractable CSP classes [8,20].
+Given a graph G, we denote by V (G ) the set of vertices of G and by E (G ) the set of edges of G. A coloured graph G =
+G , c G is a graph G and a colouring c G : V (G ) → {1, . . . , n} of the vertices of G. The coloured micro-structure (complement)
+of an n-variable binary CSP or VCSP instance P is G = G , c G where G is the micro-structure (complement) of P and c G is
+a colouring c G : V (G ) → {1, . . . , n} of the vertices of G, such that the colour of vertex v i , a is i. Unlike the micro-structure,
+the coloured micro-structure contains all the information necessary to reconstruct a CSP instance P . Similarly, the weighted
+version of the coloured micro-structure of a VCSP instance, in which edges and vertices are assigned costs, contains enough
+information to reconstruct a VCSP instance.
+A graph H is an induced subgraph of G if there is an injective mapping f : V ( H ) → V (G ) such that {u , v } ∈ E ( H ) if, and
+only if, { f (u ), f ( v )} ∈ E (G ). We now extend the notion of induced subgraphs to that of induced and forbidden substructures
+of the coloured micro-structure and coloured micro-structure complement. Let G = G , c G be the coloured micro-structure
+or coloured micro-structure complement of a CSP instance P . Now let H = H , c H be a coloured graph. We say that H
+is an induced substructure of G if H is an induced subgraph of G and vertices of the same colour are mapped to vertices
+of the same colour; that is, if there is an injective mapping f : V ( H ) → V (G ) such that (1) {u , v } ∈ E ( H ) if, and only if,
+{ f (u ), f ( v )} ∈ E (G ); and (2) c H (u ) = c H ( v ) if, and only if, c G ( f (u )) = c G ( f ( v )). In this paper we will present classes of
+VCSPs that will be deﬁned by forbidding a certain substructure (called a pattern) in the coloured micro-structure or the
+coloured micro-structure complement of the VCSP instance. In ﬁgures, we will often draw ovals around vertices that are
+assigned the same colour (corresponding to the assignments to the same variable).
+3. Conservative VCSPs with crisp binary constraints
+In this section we restrict our attention to binary VCSP instances with crisp binary constraints. There are no restrictions
+on unary constraints; hence both crisp and soft unary constraints are allowed.
+Deﬁnition 1. A class of VCSP instances is conservative if it is closed under the addition of arbitrary unary valued constraints.
+It follows from a result of Takhanov [21] that there is a P/NP-hard dichotomy for conservative binary VCSPs in which all
+binary constraints are crisp and belong to a particular language. Furthermore, it follows from a recent result of Kolmogorov
+and Živný [22] that there is a P/NP-hard dichotomy for all conservative binary VCSPs in which all binary (not necessarily
+crisp) constraints belong to a particular language.1 It is an open question whether a similar dichotomy exists for hybrid
+classes.
+3.1. Maximum weight independent set
+We show how tractability results on the maximum weight independent set in perfect, fork-free and apple-free graphs
+can be used to obtain hybrid tractable classes of conservative VCSPs.
+Let G be a graph G = V , E with weights w : V → Q+ on the vertices of G. The weight of an independent set S in G,
+denoted w ( S ), is the sum of weights of the vertices in S: w ( S ) = v ∈ S w ( v ). It is easy to show that given a binary VCSP
+instance P where only unary constraints can be soft, P can be solved by ﬁnding a maximum weight independent set in
+the micro-structure complement of P with weights given by w ( v i , a ) = Mn − c i (a), where M is strictly greater than the
+maximum ﬁnite unary cost c i (a). Indeed, independent sets of weight strictly greater than Mn(n − 1) are in one-to-one
+correspondence with consistent assignments to n variables in P (since ∀i , ∀a, 0 c i (a) < M implies that the weight of an
+1
+
+We remark that both dichotomy results [21,22] hold for non-binary VCSPs, and thus are not restricted to only binary VCSPs.
+
+1558
+
+M.C. Cooper, S. Živný / Artiﬁcial Intelligence 175 (2011) 1555–1569
+
+Fig. 1. Forbidden pattern deﬁning the broken-triangle property.
+
+independent set of size n is strictly greater than n( Mn − M ) = Mn(n − 1) and the weight of an independent set of size n − 1
+is at most Mn(n − 1)).
+Several well-studied classes of graphs admit a polynomial-time algorithm for the maximum weight independent set
+problem (MWIS). For example, it is known that MWIS in perfect graphs is solvable in polynomial time [23]. Moreover,
+perfect graphs can be recognised in polynomial time [24]. Similar results hold for fork-free [25] and apple-free graphs [26].
+The combination of these results gives:
+Theorem 2. The class of VCSP instances with crisp binary and arbitrary unary constraints whose micro-structure complement is either
+perfect, fork-free or apple-free is tractable.
+The tractability of VCSPs with perfect micro-structure and soft unary constraints was also independently pointed out by
+Takhanov [21] and Jebara [27].
+It is not possible to express all properties of VCSP or CSP instances uniquely in terms of properties of the micro-structure,
+since the micro-structure is a graph which does not contain the important information telling us which of its vertices
+correspond to assignments to the same variables. This information is, however, contained in the coloured micro-structure.
+This is why in the rest of the paper we consider properties of the (weighted) coloured micro-structure in order to deﬁne
+novel tractable hybrid classes.
+3.2. Broken-triangle property
+We have seen that forbidding certain patterns in the micro-structure guarantees the tractability of certain classes of
+VCSPs. The recently discovered broken-triangle property (BTP) [11], which is equivalent to forbidding a pattern in the
+coloured micro-structure of a CSP, guarantees that a feasible solution can be found in polynomial time. In this section,
+we show that the hybrid tractable class of CSPs deﬁned by the broken-triangle property is not extendible to VCSPs with
+arbitrary soft unary constraints. A binary CSP instance P satisﬁes the broken-triangle property with respect to the variable ordering < if, and only if, for all triples of variables v i , v j , v k such that i < j < k, if c i j (u , v ) < ∞, c ik (u , a) < ∞ and
+c jk ( v , b) < ∞, then either c ik (u , b) < ∞ or c jk ( v , a) < ∞. (In other words, every “broken” triangle a – u – v – b can be
+closed.) This is equivalent to forbidding the pattern from Fig. 1 as an induced substructure in the coloured micro-structure
+of P .
+Theorem 3. Assuming P = N P , there is no tractable conservative class of VCSP instances which includes all CSP instances satisfying
+the broken-triangle property.
+Proof. Let G , k be an instance of the decision version of the maximum independent set problem which consists in deciding
+whether there is an independent set of size at least k in graph G. This problem is known to be NP-complete [28]. We now
+transform this instance into a binary VCSP instance with soft unary constraints that satisﬁes the broken-triangle property.
+Every vertex of G is represented by a Boolean variable v i where D i = {0, 1}. We impose the constraint v i , v j , { 0, 0 ,
+0, 1 , 1, 0 } if the vertices corresponding to v i and v j are adjacent in G. Now the assignments satisfying all constraints are
+in one-to-one correspondence with independent sets I in G, where vertex i ∈ I if, and only if, v i = 1. We also impose the
+soft unary constraints v i , c i , where c i (x) = 1 − x for x ∈ {0, 1}. The unary constraints ensure that the goal is to minimise
+the number of variables assigned value 0, which is the same as maximising the number of variables assigned value 1.
+Therefore, the constructed VCSP instance is equivalent to the given maximum independent set problem. It remains to show
+that the resulting VCSP instance satisﬁes the broken-triangle property with respect to some ordering. In fact, we show that
+it is satisﬁed with respect to any ordering. Take any three variables v i , v j , v k such that i < j < k. If either of the pairs of
+variables v i , v k , v j , v k are not constrained, then the broken-triangle property is trivially satisﬁed. Assume therefore that
+these two constraints are present. The situation is illustrated in Fig. 2. It can be easily checked that the broken-triangle
+property is indeed satisﬁed whether the constraint on v i , v j is { 0, 0 , 0, 1 , 1, 0 } (as shown in Fig. 2) or the complete
+constraint. ✷
+
+M.C. Cooper, S. Živný / Artiﬁcial Intelligence 175 (2011) 1555–1569
+
+1559
+
+Fig. 2. VCSP encoding maximum independent set.
+
+Fig. 3. The joint-winner property: c i j (a, b)
+
+min(c ik (a, c ), c jk (b, c )).
+
+Fig. 4. The crisp variant of the joint-winner property from Example 5.
+
+4. Joint-winner property
+In this section we deﬁne the joint-winner property (see Fig. 3), which is the key concept in this paper. We present
+several examples of known tractable problems that are generalised by the joint-winner property. In Section 5 we study
+basic properties of VCSPs satisfying the joint-winner property as these will be important in designing a polynomial-time
+algorithm in Section 6.
+Recall that we assume that in a binary VCSP there is a unique cost function on all unordered pairs of distinct variables
+{ v i , v j }. For simplicity of presentation, we can therefore write c i j (a, b), even if the order of i and j is unknown, to represent
+the unique binary cost of assigning (a, b) to ( v i , v j ).
+Deﬁnition 4 (Joint-winner property). A triple of variables v i , v j , v k satisﬁes the joint-winner property (JWP) if c i j (a, b)
+min(c ik (a, c ), c jk (b, c )) for all domain values a ∈ D i , b ∈ D j , c ∈ D k .
+A binary VCSP instance satisﬁes the joint-winner property if every triple of distinct variables of the instance satisﬁes the
+joint-winner property.
+Note that the joint-winner property places no restrictions on the unary constraints c i and is hence conservative.
+Example 5. The joint-winner property in a normalised binary CSP instance amounts to forbidding the multiset of binary
+costs {0, ∞, ∞} in any triangle formed by three assignments to distinct variables. Recall that a normalised CSP is a VCSP
+with only zero or inﬁnite costs. Equivalently (given that the cost 0 corresponds to compatible assignments and thus nonedges in the micro-structure complement), a CSP instance P satisﬁes the joint-winner property if, and only if, the coloured
+micro-structure complement of P forbids the structure in Fig. 4 as an induced substructure. Since this combination can
+never occur on triples of variables v i , v j , v k constrained by the three binary constraints v i = v j = v k = v i , the class of
+CSPs satisfying the joint-winner property generalises the AllDifferent constraint with arbitrary unary valued constraints.
+This generalisation is equivalent to allowing at most one assignment from each of a set of disjoint sets of (variable,value)
+assignments.
+
+1560
+
+M.C. Cooper, S. Živný / Artiﬁcial Intelligence 175 (2011) 1555–1569
+
+Example 6. Consider the (unweighted) MAX-2SAT problem with no repeated clauses, which is a well-known NP-complete
+problem [28,29]. An instance φ of MAX-2SAT, where φ is a 2-CNF formula, can be seen as a Boolean binary {0, 1}-valued
+VCSP instance. The joint-winner property is equivalent to the following condition on φ : if (l ∨ l1 ) ∈ φ and (l ∨ l2 ) ∈ φ , then
+(l1 ∨ l2 ) ∈ φ , where l, l1 , l2 are three literals of distinct variables.
+It is well known that the set of VCSP instances comprising a single SoftAllDiff constraint and arbitrary unary valued
+constraints is tractable. Furthermore, this class of instances is hybrid in that tractability does not follow uniquely from the
+language of cost functions nor uniquely from the structure of the instance. As the next example shows, this class satisﬁes the
+JWP, thus showing that the JWP deﬁnes a hybrid tractable class (the tractability of the JWP being shown later in Section 6).
+Example 7. One of the most commonly used global constraints is the AllDifferent constraint [30]. Petit et al. introduced a
+soft version of the AllDifferent constraint, SoftAllDiff [31]. They proposed two types of costs to be minimised: graph- and
+variable-based costs. The former counts the number of equalities, whilst the latter counts the minimum number of variables
+that need to change value in order to satisfy the AllDifferent constraint. The algorithms for ﬁltering these constraints,
+introduced in the same paper, were then improved by van Hoeve et al. [32].
+It is easy to check that the graph-based variant of the SoftAllDiff constraint satisﬁes the joint-winner property. In this
+case for every i and j, the cost function c i j is deﬁned as c i j (a, b) = 1 if a = b, and c i j (a, b) = 0 otherwise. Take any three
+variables v i , v j , v k and a ∈ D i , b ∈ D j , c ∈ D k . If c i j (a, b) = c jk (b, c ) = c ik (a, c ) (which means that the domain values a, b, c
+are all equal or all different), then the joint-winner property is satisﬁed trivially. If only one of the costs is 1, then the
+joint-winner property is satisﬁed as well. Observe that due to the transitivity of equality it cannot happen that only one of
+the costs is 0.
+In order to code the variable-based SoftAllDiff constraint as a binary VCSP P , we can create n variables v i with domains
+D i × {1, 2}. The assignment v i = (a, 1) means that v i is the ﬁrst variable of the original VCSP to be assigned the value a,
+whereas v i = (a, 2) means that v i is assigned a but it is not the ﬁrst such variable. In P there is a crisp constraint which
+disallows v i = v j = (a, 1) (for any value a ∈ D i ∩ D j ) for each pair of variables i < j together with a soft unary constraint
+c i (a, k) = k − 1 (for k = 1, 2) for each i ∈ {1, . . . , n}. Hence at most one variable can be the ﬁrst to be assigned a, and each
+assignment of the value a to a variable (apart from the ﬁrst) incurs a cost of 1. Again due to the transitivity of equality, it
+cannot happen that only one of the binary costs shown in the triangle of Fig. 3 is zero, from which it follows immediately
+that the joint-winner property is satisﬁed in P .
+We remark that the class deﬁned by the JWP is strictly bigger than SoftAllDiff, and hence our generic algorithm is not
+as eﬃcient as tailor-made algorithms for SoftAllDiff [32,33]. Several generalisations of the AllDifferent constraints have
+been studied [34,35], but these do not satisfy the JWP property.
+Example 8. Suppose that n jobs must be assigned to d machines. Let l i (m) be the length of time required for machine m to
+complete job i. If machine m cannot perform job i, then li (m) = ∞. We use variable v i to represent the machine to which
+job i is assigned. The set of jobs (which we denote by S m ) assigned to the same machine m are performed in series in
+increasing order of their length li (m). The aim is to minimise T the sum, over all jobs, of their time until completion. If
+jobs i and j are assigned to the same machine, and li (m) < l j (m), then job j will have to wait during the execution of job i,
+contributing a time of li (m) to the sum T . This means that
+d
+
+T=
+
+li (m) +
+m =1
+
+i∈ Sm
+
+min li (m), l j (m)
+
+.
+
+i, j∈ Sm
+i< j
+
+In other words, optimal assignments of jobs to machines are given by solutions to the binary VCSP with unary constraints
+c i (m) = li (m) (representing the execution times of jobs) and binary constraints
+
+c i j m, m =
+
+min(li (m), l j (m))
+
+if m = m ,
+
+0
+
+otherwise
+
+(representing the waiting times of jobs).
+The joint-winner property c i j (a, b) min(c ik (a, c ), c jk (b, c )) is trivially satisﬁed in this VCSP instance if a, b, c are not all
+equal, since in this case one of c ik (a, c ), c jk (b, c ) is zero. It is also satisﬁed when a = b = c = m since min(li (m), l j (m))
+min(min(li (m), lk (m)), min(l j (m), lk (m))).
+This problem has been shown solvable in polynomial time in [36,37].
+5. Structure of problems satisfying the JWP
+The next lemma explains the reason for the name of the joint-winner property: in every triangle there is no unique
+smallest cost.
+
+M.C. Cooper, S. Živný / Artiﬁcial Intelligence 175 (2011) 1555–1569
+
+1561
+
+Lemma 9. A binary VCSP instance satisﬁes the joint-winner property if, and only if, for all triples of distinct variables v i , v j , v k and
+for all a ∈ D i , b ∈ D j , c ∈ D k , two of the costs c i j (a, b), c ik (a, c ), c jk (b, c ) are equal and less than or equal to the third.
+Proof. Assume that the joint-winner property is satisﬁed on the triples of variables v i , v j , v k , v j , v k , v i and v k , v i , v j ,
+and write α = c i j (a, b), β = c ik (a, c ) and γ = c jk (b, c ). Without loss of generality, let α = min(α , β, γ ). From α min(β, γ ),
+we can deduce that α = min(β, γ ) and hence that two of α , β, γ are equal and less than or equal to the third.
+On the other hand, if two of α , β, γ are equal and less than or equal to the third, then min(β, γ ) = min(α , β, γ )
+α
+and the JWP is satisﬁed. ✷
+We say that the binary constraint on variables v i , v j has a Z-conﬁguration on sub-domains {a, b} ⊆ D i , {c , d} ⊆ D j
+if min(c i j (a, c ), c i j (b, c ), c i j (b, d)) > c i j (a, d). Since the JWP imposes a condition on exactly three variables, it imposes no
+condition on individual binary constraints. In particular, Z-conﬁgurations may occur. However, we will show that all Zconﬁgurations can be eliminated by a simple pre-processing step. This will greatly simplify the structure of the instance
+allowing us to apply a min-cost max-ﬂow algorithm to solve JWP instances.
+We say that the pair of sub-domains ( S i , S j ) (where S i ⊆ D i , S j ⊆ D j ) is independent of the other variables if ∀a, b ∈ S i ,
+∀c , d ∈ S j , ∀k ∈
+/ {i , j }, ∀e ∈ D k , c ik (a, e ) = c ik (b, e ) = c jk (c , e ) = c jk (d, e ).
+Lemma 10. If a binary VCSP instance satisfying the JWP has a Z-conﬁguration on sub-domains {a, b} ⊆ D i , {c , d} ⊆ D j , then
+({a, b}, {c , d}) is independent of the other variables.
+Proof. Without loss of generality, the presence of a Z-conﬁguration means that min(c i j (a, c ), c i j (b, c ), c i j (b, d)) > β where
+c i j (a, d) = β . Consider some k ∈
+/ {i , j } and some e ∈ D k . By the JWP on the triple of assignments { v i , a , v j , d , v k , e },
+we have either (1) c ik (a, e ) β or (2) c jk (d, e ) β . In case (1), by repeated application of the JWP on the triples of assignments { v i , a , v j , c , v k , e }, { v i , b , v j , c , v k , e }, and { v i , b , v j , d , v k , e }, we can deduce that c ik (a, e ) = c jk (c , e ) =
+c ik (b, e ) = c j ,k (d, e ). In case (2), applying the JWP on the same triples, but in the reverse order, again allows us to deduce
+that c ik (a, e ) = c jk (c , e ) = c ik (b, e ) = c jk (d, e ). ✷
+Lemma 11. In a binary VCSP instance satisfying the JWP, if ( S i , S j ) (where S i ⊆ D i , S j ⊆ D j ) is independent of the other variables,
+and f ∈ D i − S i is such that ∃c , d ∈ S j such that c i j ( f , c ) = c i j ( f , d), then ( S i ∪ { f }, S j ) is independent of the other variables.
+
+/ {i , j } and any e ∈ D k . Since ( S i , S j ) is independent of the other variables, c jk (c , e ) =
+Proof. Consider any variable k ∈
+c jk (d, e ). By applying the JWP on the two triples of assignments { v i , f , v j , c , v k , e } and { v i , f , v j , d , v k , e }, we
+can deduce that either c ik ( f , e ) is equal to c jk (c , e ) = c jk (d, e ) or c ik ( f , e ) is equal to both of c i j ( f , c ) and c i j ( f , d) (which
+is impossible since c i j ( f , c ) = c i j ( f , d)). This shows that ( S i ∪ { f }, S j ) is independent of the other variables. ✷
+We say that ( S i , S j ) is independent of other domain-values if ∀c , d ∈ S j , ∀ f ∈ D i − S i , c i j ( f , c ) = c i j ( f , d) and ∀a, b ∈ S i ,
+∀ g ∈ D j − S j , c i j (a, g ) = c i j (b, g ).
+Given a Z-conﬁguration on {a, b} ⊆ D i , {c , d} ⊆ D j , under the JWP assumption we can use a simple algorithm to build
+a maximal pair of sub-domains ( S i , S j ) which is independent of the other variables (and such that {a, b} ⊆ S i , {c , d} ⊆ S j ).
+From Lemma 10, we can initialise ( S i , S j ) to ({a, b}, {c , d}). Then, by Lemma 11 we can simply keep adding f ∈ D i − S i
+to S i if ∃c , d ∈ S j such that c i j ( f , c ) = c i j ( f , d ), and, by symmetry, we can keep adding g ∈ D j − S j to S j if ∃a , b ∈ S j
+such that c i j (a , g ) = c i j (b , g ). When this process converges, ( S i , S j ) is not only independent of the other variables but also
+independent of other domain-values.
+Now let p 0 ∈ S i minimise c i (a), where a ∈ S i . Similarly, let q0 ∈ S j minimise c j (a), where a ∈ S j . Furthermore, let p 1 ∈ S i
+and q1 ∈ S j be the pair that minimises c i (a)+ c j (b)+ c i j (a, b) for a ∈ S i and b ∈ S j . We replace the sub-domains S i , S j by the
+single domain values p , q where c i ( p ) = c i ( p 0 ), c j (q) = c j (q0 ), and c i j ( p , q) = c i j ( p 1 , q1 ) + (c i ( p 1 ) − c i ( p 0 )) + (c j (q1 ) − c j (q0 ))
+so that c i ( p ) + c i j ( p , q) + c j (q) = c i j ( p 1 , q1 ) + c i ( p 1 ) + c j (q1 ). For all f ∈ D i − S i , we set c i j ( f , q) = c i j ( f , q0 ) and for
+all g ∈ D j − S j , we set c i j ( p , g ) = c i j ( p 0 , g ). Also ∀k ∈
+/ {i , j }, ∀u ∈ D k , c ik ( p , u ) = c ik ( p 0 , u ) = c ik ( p 1 , u ) and c jk (q, u ) =
+c jk (q0 , u ) = c jk (q1 , u ). The pair of domain values p , q simulate either p 0 or q0 if only one of the values p , q is used but
+simulates p 1 , q1 if both values are used. We observe that this substitution preserves the JWP property. This is trivially
+true in all triangles involving only one of the assignments p , q, since the binary costs are identical to those for p 0 , q0 .
+Since ( S i , S j ) is independent of the other variables, any triangle of costs involving both assignments p 1 , q1 is isosceles.
+In particular, for any u ∈ D k , where k = i and k = j, c ik ( p 1 , u ) = c jk (q1 , u ) = α and c i j ( p 1 , q1 ) α (by the JWP). Since
+c ik ( p , u ) = c ik ( p 1 , u ) = c jk (q1 , u ) = c jk (q, u ) and c i j ( p , q) c i j ( p 1 , q1 ), the JWP property is preserved.
+This substitution operation is guaranteed to preserve at least one optimal solution. This is because, by our choice of
+p 0 , q0 , p 1 , q1 , (1) in any assignment x (to all n variables) in which xi ∈ S i , x j ∈
+/ S j , replacing xi by p 0 (or by p which is
+equivalent) cannot increase its cost, (2) in any assignment x in which xi ∈
+/ S i , x j ∈ S j , replacing x j by q0 (or by q) cannot
+increase its cost, and (3) in any assignment x in which xi ∈ S i , x j ∈ S j , simultaneously replacing xi by p 1 and x j by q1 (or
+replacing xi by p and x j by q) cannot increase its cost.
+
+1562
+
+M.C. Cooper, S. Živný / Artiﬁcial Intelligence 175 (2011) 1555–1569
+
+We say that a VCSP instance satisfying the JWP is Z-free it contains no Z-conﬁgurations. We know that a VCSP satisfying
+the JWP can be made Z-free by applying the above pre-processing step to eliminate all Z-conﬁgurations. This pre-processing
+takes polynomial time. A naive algorithm requires O (n2 d4 ) time to detect all Z-conﬁgurations. For a given pair ( S i , S j ), when
+a new domain value g is added to S j we have to test for all f ∈ D i − S i whether ∃c ∈ S j such that c i j ( f , c ) = c i j ( f , g ). This
+is an O (d2 ) operation. By a simple counting argument, we can see that the total number of times some domain value is
+added to some set S i is less than the total number of (variable,value) assignments which are eliminated by the substitution
+operation described above, which, in turn, is bounded above by nd. Thus the total complexity of the pre-processing operation
+is O (n2 d4 + nd3 ) and hence O (n2 d4 ).
+The assignment graph of a binary VCSP instance P is the graph V P , E P with vertices V P = { v i , a : 1 i n, a ∈ D i }
+and edges E P = {{ v i , a , v j , b }: i = j }. The complete assignment graph is simply the complete graph with vertices V P .
+Deﬁnition 12. Let P be a binary VCSP instance. A subgraph C = V C , E C of the assignment graph of P is an assignmentclique if C forms a clique in the complete assignment graph of P when all edges between assignments to the same variable
+are added to E C , i.e. V C , E C ∪ S C is a clique, where S C = {{ v i , a , v i , b }: v i , a , v i , b ∈ V C and a = b}.
+Lemma 13. Let P be a Z-free binary VCSP instance satisfying the JWP. Then, for a ﬁxed α , the edges of the assignment graph of P
+corresponding to binary costs of at least α , together with the corresponding vertices, form non-intersecting assignment-cliques.
+Proof. We ﬁrst show that if P is Z-free then within a single binary valued constraint any connected set E of edges of
+the assignment graph of P corresponding to binary costs of at least α form an assignment-clique. This follows from a
+simple inductive argument on the number mi of assignments to v i , where v i , v j are the two variables in the scope of the
+constraint. It is trivially true for mi = 1. Let A j denote the assignments to variable v j covered by E. Consider what happens
+when a new edge is added to E, corresponding to a new assignment to v i , to produce a new connected set of edges E
+covering mi + 1 2 assignments to v i . Since E is connected, the new assignment v i , a is connected by an edge in E to
+some assignment v j , c ∈ A j . By the inductive hypothesis, all assignments v j , d ∈ A j (including v j , c ) are connected by
+edges in E ⊆ E to all other assignments v i , b (b = a). Since P is Z-free, this implies that v i , a is also connected in E to
+all assignments v j , d = v j , c ∈ A j .
+For a contradiction let us assume that the edges of the assignment graph of P corresponding to binary costs of at least
+α do not form non-intersecting assignment-cliques. Hence there are three vertices v i , a , v j , b , v k , c (where i , j , k are
+distinct) of the assignment graph such that c i j (a, b) α , c ik (a, c ) α , and c jk (b, c ) < α . But this is in contradiction with
+Lemma 9. ✷
+In the rest of the paper, when we refer to an assignment-clique C α in the assignment graph corresponding to binary
+costs of at least α , we implicitly assume that C α is maximal. Since an assignment-clique C α is uniquely deﬁned by its set
+of vertices, we can identify C α with its set of vertices.
+Lemma 14. Let P be a Z-free binary VCSP instance satisfying the JWP. Let C α be an assignment-clique in the assignment graph of P
+corresponding to binary costs of at least α , and C β an assignment-clique in the assignment graph of P corresponding to binary costs
+of at least β . If C α intersects C β and α β , then C α ⊇ C β .
+Proof. Suppose that C α and C β intersect and α
+β . If α = β , the claim is satisﬁed trivially by Lemma 13, so we can
+suppose that α < β . For a contradiction, assume that C α C β . By our assumptions, ∃ v i , a ∈ C α ∩ C β and ∃ v j , b ∈ C β \ C α .
+Since C β is an assignment-clique, we must have c i j (a, b) β > α . Thus, by Lemma 13, the edge { v j , b , v i , a } is part of
+an assignment-clique C α of edges of cost at least α (but not C α since v j , b ∈
+/ C α ). But then C α and C α intersect at v i , a
+which contradicts Lemma 13. ✷
+6. Algorithm for JWP
+In this section we present a polynomial-time algorithm for solving Z-free binary VCSPs satisfying the joint-winner property. The algorithm is an extension of a reduction to the standard max-ﬂow/min-cut problem that has been used for
+ﬂow-based soft global constraints [38,32,39].
+First we review some basics on ﬂows in graphs. We refer the reader to the standard textbook [40] for more details. Here
+we present only the notions and results needed for our purposes. In particular, we deal with only integral ﬂows. We denote
+by N the set of positive integers with zero. Let G = ( V , A ) be a directed graph with vertex set V and arc set A. To each arc
+a ∈ A we assign a demand/capacity function [d(a), c (a)] and a weight function w (a), where d(a), c (a) ∈ N and w (a) ∈ Q+ .
+Let s, t ∈ V . A function f : A → N is called an s − t ﬂow (or just a ﬂow) if for all v ∈ V \ {s, t },
+
+f (a) =
+a=(u , v )∈ A
+
+f (a) (ﬂow conservation).
+a=( v ,u )∈ A
+
+M.C. Cooper, S. Živný / Artiﬁcial Intelligence 175 (2011) 1555–1569
+
+1563
+
+Fig. 5. Micro-structure of P described in Example 15. (For interpretation of the references to colour in this ﬁgure, the reader is referred to the web version
+of this article.)
+
+We say that a ﬂow is feasible if d(a)
+f (a) c (a) for each a ∈ A. We deﬁne the value of ﬂow f as val( f ) = a=(s, v )∈ A f (a)−
+a=( v ,s)∈ A f (a). We deﬁne the cost of ﬂow f as
+a∈ A w (a) f (a). A minimum-cost ﬂow is a feasible ﬂow with minimum cost.
+Algorithms for ﬁnding the minimum-cost ﬂow of a given value are well known [41,40]. Given a network G with integer
+demand and capacity functions, the successive shortest path algorithm [41] can be used to ﬁnd a feasible s − t ﬂow with value
+α ∈ N (if such a ﬂow exists) and minimum cost in time O (α · SP(n, m)), where SP(n, m) is the time to compute a shortest
+directed path in G with n vertices and m edges. If there is no feasible ﬂow with value α , then the successive shortest path
+algorithm outputs “no ﬂow” in time O (α · SP (n, m)).
+Given a Z-free binary VCSP instance P satisfying the JWP, we construct a directed graph G P whose minimum-cost ﬂows
+of value n are in one-to-one correspondence with the solutions to P . Apart from the source node s, G P has three types of
+node:
+1. A variable node v i (i = 1, . . . , n) for each variable of P ;
+2. An assignment node v i , a (a ∈ D i , i = 1, . . . , n) for each possible variable-value assignment in P ;
+3. An assignment-clique node C α for each maximal assignment-clique of edges in the assignment graph of P corresponding to binary costs of at least α . (The subscript α is equal to the minimum cost of edges in the assignment-clique and,
+where necessary, we use C α , C α , . . . to denote the distinct non-intersecting assignment-cliques corresponding to the
+same value of α .)
+In G P there is an arc (s, v i ) for each variable v i of P . For all variables v i and for each a ∈ D i , there is an arc ( v i , v i , a ) and
+also an arc from v i , a to the assignment-clique C α containing v i , a such that α is maximal (C α is unique by Lemma 14).
+We say that assignment-clique C β is the father of assignment-clique C α if it is the minimal assignment-clique which
+properly contains C α , i.e. C α ⊂ C β (and hence α > β ) and C γ such that C α ⊂ C γ ⊂ C β (C β is unique by Lemma 14). In G P ,
+for each assignment-clique C α with father C β , there is a bundle of arcs from C α to C β consisting of r arcs e i (i = 1, . . . , r),
+where r is the number of vertices in the assignment-clique C α . The weight of arc e i from C α to C β is w (e i ) = (i − 1)(α − β).
+(We use the convention 0∞ = 0, so that if α = ∞ then there is a single arc of weight 0; the arcs of weight ∞ can simply
+be omitted.) We identify the sink node t with the assignment-clique C 0 consisting of all edges in the assignment graph
+(since all binary costs are at least 0).
+Each arc has demand 0 and capacity 1 except for arcs (s, v i ) which have both demand 1 and capacity 1 (this forces a
+ﬂow of exactly 1 through each variable node v i ). Weights of all arcs are 0 except for arcs going from an assignment-clique
+node to its father assignment-clique node, as described above, and arcs from a variable node v i to an assignment node
+v i , a which have a weight of c i (a).
+We show below that ﬂows in the constructed network are in one-to-one correspondence with assignments in P , but
+ﬁrst we give an example.
+Example 15. We show the general construction on a simple example. Let P be a VCSP instance with variables v 1 , v 2 , v 3
+and D 1 = D 2 = {a, b}, D 3 = {a}. The weighted coloured micro-structure of P is illustrated in Fig. 5. Missing edges have
+cost 0. There are two assignment-cliques corresponding to cost at least 1: C 1 = { v 1 , a , v 2 , a , v 3 , a } (in solid red in
+Fig. 5) and C 1 = { v 1 , b , v 2 , b } (in dotted blue in Fig. 5); and one assignment-clique corresponding to cost at least 2:
+C 2 = { v 1 , a , v 2 , a } (in dashed green in Fig. 5). The network corresponding to instance P is shown in Fig. 6: demands
+and capacities are in square brackets, and weights of arcs without numbers are 0. The bold red edges represent ﬂow f
+corresponding to the assignment v 1 = v 2 = v 3 = a with total cost 4, which is the same as the cost of f .
+We now prove that ﬂows f in G P are in one-to-one correspondence with assignments in the VCSP P and, furthermore,
+that the cost of f is equal to the cost in P of the corresponding assignment.
+All feasible ﬂows have value n since all n arcs (s, v i ) leaving the source have both demand and capacity equal to 1.
+Flows in G P necessarily correspond to the assignment of a unique value ai to each variable v i since the ﬂow of 1 through
+node v i must traverse a node v i , ai for some unique ai ∈ D i . It remains to show that for every assignment a1 , . . . , an to
+
+1564
+
+M.C. Cooper, S. Živný / Artiﬁcial Intelligence 175 (2011) 1555–1569
+
+Fig. 6. Network G P corresponding to the VCSP P of Example 15. (For interpretation of the references to colour in this ﬁgure, the reader is referred to the
+web version of this article.)
+
+v 1 , . . . , v n which is feasible (i.e. whose cost in P is ﬁnite), there is a corresponding minimum-cost feasible ﬂow f in G P
+of cost
+i c i (ai ) +
+i < j c i j (ai , a j ).
+For each arc a which is incoming to or outgoing from v i , u in G P , let f (a) = 1 if u = ai and 0 otherwise. We denote
+the number of assignments v i , ai in assignment-clique C α by N (C α ) = |{ v i , ai ∈ C α : 1 i n}|. By construction, each
+assignment-clique node C α in G P only has outgoing arcs to its father assignment-clique. For the outgoing arc a of weight i
+from C α to its father assignment-clique, let f (a) = 1 if N (C α ) > i and 0 otherwise. This simply means that the outgoing arcs
+(each of capacity 1) from C α are used in increasing order of their weight, one per assignment v i , ai ∈ C α . This is clearly a
+minimum-cost ﬂow corresponding to the assignment a1 , . . . , an .
+Let c f (C α ) denote the cost β of the father assignment-clique C β of C α . The cost of ﬂow f is given by
+N (C α )
+
+n
+
+c i (ai ) +
+i =1
+
+Cα
+
+N (C α )−1
+
+n
+
+( i − 1) α − c f ( C α ) =
+i =1
+
+c i (ai ) +
+i =1
+
+i
+Cα
+
+n
+
+=
+
+( N ( C α ) − 1) N ( C α )
+
+c i (ai ) +
+i =1
+
+α − c f (C α )
+
+i =1
+
+Cα
+
+2
+
+α − c f (C α ) .
+
+This corresponds precisely to the cost of the assignment a1 , . . . , an in P , since in an assignment-clique C α with father
+assignment-clique C β , each of the ( N (C α ) − 1) N (C α )/2 binary constraints contributes a cost of α − β over and above the
+cost of β for each of the edges in C β .
+For the rest of this section, let d = max1 i n | D i | be the size of the largest domain. Given a VCSP instance satisfying the
+joint-winner property, there are clearly at most | D i | × | D j | different costs in the cost function c i j . Hence in total there are
+at most O (n2 d2 ) different maximal assignment-cliques C α . We now improve this upper bound to O (nd).
+Lemma 16. A Z-free binary VCSP instance P satisfying the joint-winner property has at most 2nd − 1 different maximal assignmentcliques C α .
+Proof. Consider Z-free binary VCSP instances P satisfying the joint-winner property and whose assignment graph has
+N = nd vertices. Let A N be the maximum number of assignment-cliques C α in such instances P . We prove by induction
+that A N
+2N − 1. Clearly, A 1 = 1. Consider an assignment graph of with N vertices. Consider any assignment-clique C α
+of P which does not include all (variable,value) assignments of P but which is maximal in the sense that there is no
+other such assignment-clique C β ⊃ C α . Let r = |C α |. By Lemma 14 and by maximality of C α , no other assignment-clique C β
+can intersect both C α and its complement except an assignment-clique containing all the vertices of the assignment graph
+of P . Hence we can partition the set of variable-value assignments of P (creating two VCSP instances whose assignment
+graphs have r and N − r vertices) and obtain the following recurrence: A N 1 + A r + A N −r . From the inductive hypothesis,
+A r 2r − 1 and A N −r 2( N − r ) − 1. Since 1 + 2r − 1 + 2( N − r ) − 1 = 2N − 1, it follows that A N 2N − 1. ✷
+We show that n-variable instances satisfying the joint-winner property can be recognised and solved in time which is
+cubic in n.
+Theorem 17. A binary VCSP satisfying the joint-winner property is solvable in O (n2 d3 (n + d)) time.
+Proof. From Deﬁnition 4, recognition can be achieved in O (n3 d3 ) time. We have seen that a VCSP satisfying the JWP can
+be made Z-free in O (n2 d4 ) time.
+
+M.C. Cooper, S. Živný / Artiﬁcial Intelligence 175 (2011) 1555–1569
+
+1565
+
+To solve a Z-free VCSP instance satisfying the JWP, we create a vertex for each of the assignment-cliques corresponding
+to binary costs of at least α . By Lemma 16, there are at most O (nd) different assignment-cliques. So our network has
+n = O (nd + nd + n + 2) = O (nd) vertices and m = O (n2 d2 ) edges. The network can be built in O (n3 d3 ) time by O (nd)times invoking depth-ﬁrst search on the assignment graph of the instance, which is of size O (n2 d2 ).
+The successive shortest path algorithm can be used to ﬁnd a feasible ﬂow with value n and minimum cost in a network
+with n vertices and m edges in time O (n · SP (n , m )), where SP (n , m ) is the time to compute a shortest directed path in the
+network with n vertices and m edges [41,40]. Using Fibonacci heaps, this is O (n(m + n log n )) = O (n(n2 d2 + nd log(nd))) =
+O (n3 d2 ). Hence, the complexity to solve a Z-free JWP instance is O (n3 d3 ). The total complexity, including pre-processing is
+thus O (n2 d3 (n + d)). ✷
+7. Maximality of JWP
+Tractable classes deﬁned by structural or language restrictions are often shown to be maximal. That is, any extension of
+the class is NP-hard. We consider that a hybrid tractable class deﬁned by a set S of possible combinations of k costs within
+a subproblem is k-maximal if extending S to include any other single combination of costs renders the problem NP-hard.
+In particular, a tractable class such as JWP, deﬁned by a rule on the three costs in a 3-variable subproblem, is 3-maximal
+if extending it to include any other single combination of costs on 3 variables renders the problem NP-hard. The main
+result of this section is that the joint-winner property deﬁnes a 3-maximal tractable class when there is no bound on the
+number of possible distinct cost values. This result holds for any domain size d 2. But we also show that the JWP deﬁnes
+a 3-maximal tractable class in almost all cases when we impose a bound of two on the number of possible distinct cost
+values (which corresponds to interesting subproblems of the VCSP such as CSP or MAX-CSP).
+We ﬁrst consider the special case in which all costs belong to {α , β} (for some ﬁxed distinct costs α < β ). If β = ∞ this
+corresponds to CSP, and if β < ∞ this corresponds to MAX-CSP. When all costs belong to {α , β}, the joint-winner property
+deﬁnes a maximal tractable class, except for the case when the domain size is 2 and all costs belong to {α , ∞}, where
+α < ∞. This latter case is just the well-known tractable class of Boolean binary CSPs [42].
+Theorem 18. If all costs belong to {α , β} (for some ﬁxed distinct costs α < β ), then the joint-winner property deﬁnes a maximal
+tractable class provided d > 2 or (d 2) ∧ (β < ∞), where d is the maximum domain size.
+Proof. To prove maximality we have to show the NP-hardness of the set of instances deﬁned by the fact that in each
+triangle the triple of costs either satisﬁes the joint-winner property or is just one other ﬁxed combination. Since all costs
+belong to {α , β} where α < β , from Deﬁnition 4, the only situation forbidden by the JWP is that there are 3 variables
+v i , v j , v k and domain values a ∈ D i , b ∈ D j , c ∈ D k such that c i j (a, b) = α and c ik (a, c ) = c jk (b, c ) = β . Hence extending the
+JWP means allowing all combinations of costs from {α , β} in all triangles.
+If β = ∞, allowing all combinations of costs means that our instance allows all binary relations (corresponding to the
+set of ﬁnite-cost tuples) and hence we can encode any binary CSP. This is NP-complete if d > 2 [29].
+If β < ∞, allowing all combinations of costs in {α , β} is equivalent to the set of instances of binary MAX-CSP in which
+no two constraints can have the same scope. The NP-hardness of this latter problem for d 2 follows from the following
+reduction from binary MAX-CSP, which is a well-known NP-complete problem [28,29]. A polynomial-time reduction of an
+instance I of binary MAX-CSP into an equivalent instance I in which no two constraints have the same scope can be
+j
+achieved by replacing each variable v i in I by M variables v i ( j = 1, . . . , M) in I constrained by a clique of equality
+constraints, where M is greater than the total number of constraints in I . If the jth constraint in I has scope v i , v j , then
+j
+
+j
+
+j
+
+it is replaced in I by the same constraint on scope v i , v j . In the optimal solution to I , variables v i ( j = 1, . . . , M) are
+necessarily assigned the same value (otherwise a cost of at least M would be incurred). ✷
+We now prove our main theorem concerning 3-maximality of the joint-winner property in the general case in which
+costs are not restricted to just two values α , β . The essential differences compared to the proof of Theorem 18 are that (1)
+we now also have to prove maximality relative to the addition of any combination of costs involving three distinct values
+α , β, γ , and (2) even when |{α , β, γ }| = 2 the JWP allows triangles involving three distinct costs.
+Theorem 19. The joint-winner property deﬁnes a 3-maximal tractable class for any domain size d
+
+2.
+
+Proof. Let α < β γ be any combination of costs which does not satisfy the JWP. To prove 3-maximality we have to show
+the NP-hardness of the set of instances deﬁned by the fact that in each triangle the triple of costs either satisﬁes the
+joint-winner property or is {α , β, γ }. We ﬁrstly consider the case γ < ∞.
+It is well known that MAX-CSP is NP-hard [29]. Firstly, we show that binary MAX-CSP (coded as a binary VCSP with
+{0, 1}-valued cost functions) is NP-hard even on bipartite graphs. This follows from the fact that we can easily convert any
+instance of binary MAX-CSP into an instance of binary MAX-CSP on a bipartite graph, as follows. For each c i j (a, b) = 1,
+introduce an extra Boolean variable w i jab , and replace the cost of 1 for (a, b) in c i j by costs of 1 for (xi , w i jab ) = (a, 0) and
+
+1566
+
+M.C. Cooper, S. Živný / Artiﬁcial Intelligence 175 (2011) 1555–1569
+
+( w i jab , x j ) = (1, b) (all other costs being 0). In the resulting problem there is an obvious partition: (the original xi variables,
+the new w i jab variables).
+Since 0 α < β < ∞, any {0, 1}-valued VCSP instance is equivalent to the {α , β}-valued instance obtained by applying
+the following operation to all cost functions: multiply by β − α and add α . Now, given any instance of binary MAX-CSP on
+a bipartite graph (in the form of a {α , β}-valued binary VCSP), we can add a constant cost function (c i j (x, y ) = γ for all
+x, y) between any pair of variables within the same part without changing the problem. This just adds a constant cost to all
+solutions. In the resulting VCSP, all triangles of costs are {γ , γ , γ }, {α , α γ }, {β, β γ } or {α , β, γ }. Thus they either satisfy
+the JWP or are {α , β, γ }. This polynomial reduction from binary MAX-CSP on bipartite graphs demonstrates NP-hardness in
+the case α < β < ∞.
+We now consider the case α < β < γ = ∞. We demonstrate the NP-hardness of the set of VCSP instances such that
+in each triangle the triple of costs either satisﬁes the JWP or is {α , β, ∞}. A VCSP remains invariant under addition of a
+constant ﬁnite cost and under scaling by a non-zero ﬁnite constant factor. Thus, for α < β < ∞, a VCSP such that in each
+triangle the triple of costs either satisﬁes the JWP or is {α , β, ∞} is equivalent to a VCSP such that in each triangle the triple
+of costs either satisﬁes the JWP or is {0, 1, ∞}. We demonstrate NP-hardness of such VCSPs by the following polynomialtime reduction from MAX-2SAT. Let I be an instance of MAX-2SAT with variables v i (i = 1, . . . , n) and let mi be the number
+j
+of clauses in which variable v i occurs. We construct a VCSP instance P containing mi copies v i ( j = 0, . . . , mi − 1) of each
+j
+
+variable v i . For each i = 1, . . . , n, the mi variables v i ( j = 0, . . . , mi − 1) are joined together by a cycle of {0, ∞}-valued
+crisp constraints coding the inequalities
+
+j
+vi
+
+j +1
+vi
+
+(where the addition in the superscript is modulo mi ). Since these crisp
+m −1
+
+constraints form a cycle, they are equivalent to
+= · · · = v i i . It is easy to verify that this cycle of crisp constraints
+satisﬁes the JWP since no triangle of binary costs contains two inﬁnite costs.
+The 2SAT clauses of I are replaced by corresponding {0, 1}-valued constraints in P such that the jth occurrence of v i in I
+j
+is replaced by v i in P . By this construction, every triangle of variables in P involves at most one {0, 1}-valued constraint
+corresponding to a clause of I . It follows that the triple of costs {0, 1, 1} does not occur in any triangle in P . Since inﬁnite
+cost can only occur in the non-intersecting cycles of crisp constraints, the triples of costs {0, ∞, ∞} and {1, ∞, ∞} also do
+not occur in any triangle in P . Thus, in each triangle in P the triple of costs either satisﬁes the JWP or is {0, 1, ∞}. Since P
+is equivalent to I , and the reduction is clearly polynomial, this completes the proof of NP-hardness.
+It remains to consider the case α < β = γ = ∞. Analogously to the case α < β < γ = ∞, it suﬃces to give a polynomialtime reduction from MAX-2SAT to the set of VCSP instances such that the costs in each triangle either satisfy the JWP or
+are {0, ∞, ∞}. Let I be an instance of MAX-2SAT. We now build a VCSP instance P from I by adding two new variables xi j ,
+y i j for each clause l1 ∨ l2 of I (where l1 , l2 are literals). The clause l1 ∨ l2 of I is replaced in P by a {0, 1}-valued constraint
+on variables xi j , y i j encoding the clause ¬xi j ∨ ¬ y i j together with two crisp (i.e. {0, ∞}-valued constraints) encoding the
+clauses l1 ∨ xi j and y i j ∨ l2 . It is easy to verify that P is equivalent to I and that the costs in each triangle in P either satisfy
+the JWP or are {0, ∞, ∞}. This polynomial reduction from MAX-2SAT completes the proof of NP-hardness for the ﬁnal case
+α < β = γ = ∞. ✷
+v 0i
+
+8. Non-overlapping convexity property
+Having studied in detail the joint-winner property on triangles of binary costs, a natural question is whether it can be
+generalised to more than three variables. By analysing our algorithm for Z-free binary VCSPs satisfying the joint-winner
+property (Section 6), we can extend the class of problems solvable in polynomial time using the same approach. This
+generalisation is no longer restricted to binary VCSPs. In a VCSP with constraints of arbitrary arity, the objective function
+to be minimised is the sum of cost functions whose arguments are subsets of arbitrary size of the variables v 1 , . . . , v n . For
+notational convenience, in this section we interpret a solution x (i.e. an assignment to the variables v 1 , . . . , v n ) as the set of
+(variable,value) assignments {( v i , xi ): i = 1, . . . , n}.
+For the following deﬁnition, we require the notion of a non-decreasing derivative of a discrete function. The derivative
+f (m + 1) − f (m) for all m ∈ {0, . . . , s − 2}
+of the function f : {0, . . . , s} → Q+ is non-decreasing if f (m + 2) − f (m + 1)
+(where subtraction is extended to Q+ by deﬁning ∞ − α = ∞ for all α ∈ Q+ ). Two sets S , T are said to be non-overlapping
+if they are either disjoint or one is a subset of the other (i.e. S ∩ T = ∅, S ⊆ T or T ⊆ S).
+Deﬁnition 20. Let P be a VCSP instance. Let C 1 , . . . , C r be sets of (variable,value) assignments of P such that for all i , j,
+C i and C j are non-overlapping. Instance P satisﬁes the non-overlapping convexity property if the objective function of P can
+be written as f 1 ( N (x, C 1 )) + · · · + f r ( N (x, C r )) such that each f i : {0, . . . , si } → Q+ (i = 1, . . . , r) is a non-decreasing function
+with non-decreasing derivative, where N (x, C i ) = |x ∩ C i | is the number of (variable,value) assignments in the solution x
+which lie in C i and si is the number of distinct variables occurring in the set of (variable,value) assignments C i .
+Observe that this deﬁnition allows any unary valued constraints, since for each (variable,value) assignment ( v j , a) we
+can add the singleton C i = {( v j , a)} which is necessarily either disjoint or a subset of any other set C k (and furthermore the
+corresponding function f i : {0, 1} → Q+ is trivially non-decreasing with a non-decreasing derivative).
+
+M.C. Cooper, S. Živný / Artiﬁcial Intelligence 175 (2011) 1555–1569
+
+1567
+
+Remark 21. To express a binary Z-free VCSP satisfying the JWP in the more general form given in Deﬁnition 20, we add a
+set of (variable,value) assignments C i corresponding to each assignment-clique C α in the assignment graph, with f i (m) =
+m
+(α − β) for m 0, where C β is the father assignment-clique of C α . It is easy to check that f i is non-decreasing and
+2
+has a non-decreasing derivative. To solve a VCSP instance satisfying the non-overlapping convexity property, we will build
+a network (described, below, in the proof of Theorem 22) in which the weight of the mth arc leaving the C i node is
+m
+m−1
+f i (m) − f i (m − 1). Since 2 (α − β) − 2 (α − β) = (m − 1)(α − β), this means that, in the case of a binary VCSP satisfying
+the JWP, we will build the same network as described in Section 6.
+Note that in this case, to avoid counting binary costs more than once, the functions f i are proportional to the marginal
+costs α − β . When solving a VCSP instance satisfying the non-overlapping convexity property in which the functions f i are
+given as input, no management of marginal costs is required.
+Theorem 22. Any VCSP instance P satisfying the non-overlapping convexity property can be solved in polynomial time.
+Proof. We can consider each set of (variable,value) assignments C i as an assignment-clique: since C i is a subset of the
+vertices of the assignment graph of P , we just need to add all edges between those vertices v j , a , v k , b of C i representing
+assignments to distinct variables ( j = k).
+We build the same network as described in Section 6, but have to adjust the weights on edges between the assignmentcliques C i . Recall that si represents the number of distinct variables in C i . Without loss of generality, we can assume that
+f i (0) = 0. (If this is not the case, we can replace f i by f i where f i (m) = f i (m) − f i (0) to produce an equivalent problem
+with f i (0) = 0 and in which f i is non-decreasing and with a non-decreasing derivative.) Let i (m) = f i (m) − f i (m − 1)
+for m = 1, . . . , si . Since the f i (1 ≤ i ≤ r) are non-decreasing functions with a non-decreasing derivative, i is non-negative
+and non-decreasing. In the network, there are si arcs eki (k = 1, . . . , si ) from C i to its (unique) father assignment-clique. The
+weight (cost) of arc eki is i (k).
+Similarly to the construction in Section 6, arcs of weight ∞ can be omitted. The same argument and calculation as in
+Section 6 proves that the algorithm is correct. In particular, we need to show that given any feasible assignment x (that is, of
+ﬁnite cost) to a VCSP instance P that satisﬁes the non-overlapping convexity property, there is a corresponding minimumcost feasible ﬂow f in G P of cost f 1 ( N (x, C 1 )) + · · · + f r ( N (x, C r )). The same construction of f as in Section 6 gives us a
+ﬂow f of the following cost:
+N (C i )
+i (m)
+i
+
+f i (1) + f i (2) − f i (1) + · · · + f i N (C i ) − 1 − f i N (C i ) − 2
+
+=
+
+m =1
+
+i
+
++ f i N (C i ) − f i N (C i ) − 1
+=
+
+f i N (C i ) ,
+i
+
+which corresponds precisely to the cost f 1 ( N (x, C 1 )) + · · · + f r ( N (x, C r )) of the assignment x. To see that this ﬂow is a of
+minimum cost, among ﬂows corresponding to the assignment x, observe that the only choices to be made concern the arcs
+eki . Since the weights i (k) of these arcs are non-decreasing, a ﬂow of value v which takes the ﬁrst v arcs eki (k = 1, . . . , v)
+is necessarily of minimum cost. ✷
+Example 23. An example of the non-overlapping convexity property is the set of non-binary (i.e. arbitrary but ﬁxed maximum arity) MAX-CSP instances with no overlapping nogoods, which we will now describe. A CSP is traditionally deﬁned by
+a set of constraints each of which is given in the form of a scope and a relation containing the set of possible assignments
+to the variables in the scope of the constraint. Another way of specifying a CSP instance is by listing its nogoods, where a
+nogood is a set of (variable,value) assignments which cannot simultaneously be made. The nogoods are easily obtained from
+the complement of each constraint relation. A MAX-CSP instance with no overlapping nogoods is such that for all nogoods
+N i , N j in the corresponding CSP instance, either N i ∩ N j = ∅, N i ⊂ N j or N j ⊂ N i .
+To see that any MAX-CSP instance I with non-overlapping nogoods N 1 , . . . , N r satisﬁes the non-overlapping convexity
+property, for i = 1, . . . , r, deﬁne f i by f i (| N i |) = 1 and f i (m) = 0 for m < | N i |. Clearly each f i is a non-decreasing function
+with a non-decreasing derivative and the MAX-CSP instance I is equivalent to the VCSP instance with objective function
+f 1 (|x ∩ N 1 |) + · · · + f r (|x ∩ N r |).
+Example 24. By an entirely similar argument, it follows that another example of the non-overlapping convexity property is
+the set of non-binary CSP instances with non-overlapping nogoods N 1 , . . . , N r . It suﬃces to deﬁne f i by f i (| N i |) = ∞ and
+f i (m) = 0 for m < | N i | (for each i = 1, . . . , r).
+This class can be extended to include all CSP instances with a set of nogoods S k1 ( N 1 ) ∪ · · · ∪ S kr ( N r ), with S ki ( N i )
+the set of all cardinality-ki subsets of N i , where the sets of (variable,value) assignments N i (i = 1, . . . , r) are pairwise
+non-overlapping. Each ki is any integer in {1, . . . , | N i |}. To express such a CSP instance as a VCSP instance satisfying the
+non-overlapping convexity property, it suﬃces to deﬁne f i by f i (m) = ∞ if m ki and f i (m) = 0 for m < ki (i = 1, . . . , r).
+
+1568
+
+M.C. Cooper, S. Živný / Artiﬁcial Intelligence 175 (2011) 1555–1569
+
+Clearly each f i is a non-decreasing function with a non-decreasing derivative and the CSP instance I is equivalent to the
+VCSP instance with objective function f 1 (|x ∩ N 1 |) + · · · + f r (|x ∩ N r |).
+Example 25. An example of an optimisation problem satisfying the non-overlapping convexity property is the following
+oﬃce assignment problem. Each of n staff members, represented by n variables, must be assigned an oﬃce. There are m
+oﬃces. At most u j people can be assigned oﬃce j. Unary cost functions can be used to express personal preferences of each
+staff member for each oﬃce. There are also non-overlapping groups of people G 1 , . . . , G g who we would prefer to assign to
+different oﬃces (such as married couples, for example).
+For each oﬃce there is a set of (variable,value) assignments C j consisting of all possible assignments of value j to
+any variable. For each group G i and for each oﬃce j, there is a set of assignments C i j ⊆ C j of members of this group to
+oﬃce j. Clearly, the sets of assignments C j ( j ∈ {1, . . . , m}) and C i j (i ∈ {1, . . . , g }, j ∈ {1, . . . , m}) are all non-overlapping.
+The function f j which imposes the capacity constraint for oﬃce j, given by f j (k) = ∞ if k > u j (and f j (k) = 0 otherwise),
+is non-decreasing and has a non-decreasing derivative. A cost function f i j such as f i j (t ) = t − 1 (which is non-decreasing
+and has a non-decreasing derivative) can be used to code the fact that we prefer that staff members from group G i do not
+share the same oﬃce.
+Example 26. A commonly occurring problem in academia is the allocation of courses to teachers subject to timetabling
+constraints and the personal preferences of the teachers along with a criterion to avoid allocating too many hours to any of
+the teachers. In a simple version of this problem, the weekly timetable has been divided up into non-intersecting time-slots,
+each course involves giving only one lecture a week and one-hour time-slots have already been allocated to each course.
+The courses, numbered from 1 to n, correspond to the variables of the problem and must be assigned one of the m teachers.
+For each teacher j ∈ {1, . . . , m}, let C j represent all assignments of teacher j to any course. For each time-slot s ∈
+{1, . . . , t } and each teacher j ∈ {1, . . . , m}, let C js represent the set of assignments of teacher j to courses allocated the timeslot s. Clearly, the sets of assignments C j ( j ∈ {1, . . . , m}) and C js ( j ∈ {1, . . . , m} and s ∈ {1, . . . , t }) are all non-overlapping.
+For each teacher j, the function f j corresponding to the set of assignments C j and given by f j (k) = max(0, p j (k − u j ))
+(where u j is the maximum number of courses teacher j can give before they have to be paid overtime and p j is the
+amount teacher j earns per hour of overtime) represents the total cost in overtime payments of teacher j. The function
+f js , which codes the incompatibility of allocating teacher j to two different courses during the same time-slot s, is given
+by f sj (0) = f sj (1) = 0 and f js (k) = ∞ if k > 1. The functions f j and f i j are non-decreasing and have a non-decreasing
+derivative. Thus this simple course-allocation problem can be expressed as a VCSP with the non-overlapping convexity
+property.
+9. Conclusions
+We have studied hybrid tractability of valued CSPs. In particular, we have studied the tractability of sets of instances
+deﬁned by properties of subproblems of size k. For k = 2, such properties can only deﬁne language classes. We have shown
+in this paper that it is possible to deﬁne a non-trivial tractable hybrid class by a property on subproblems of size k = 3. We
+have studied the tractable class of VCSPs deﬁned by this property, known as the joint-winner property (JWP), as a necessary
+ﬁrst step towards a general theory of tractability of optimisation problems which will eventually cover structural, language
+and hybrid reasons for tractability. Moreover, we have also presented other novel hybrid tractable classes of VCSPs.
+The JWP is interesting in its own right since it is a proper extension to known tractable classes (such as VCSPs consisting of arbitrary unary constraints and non-intersecting SoftAllDiff constraints of arbitrary arity, as well as a machine
+scheduling problem).
+We have demonstrated 3-maximality of the tractable class deﬁned by the JWP. However, the existence of a larger
+tractable class subsuming JWP and deﬁned by a rule on k-variable subproblems (for k > 3) is an interesting open question. Indeed, we have introduced a generalisation of the JWP which is solved by a similar algorithm but which allows soft
+constraints of arbitrary arity.
+The most interesting open question brought out by this work is whether other tractable hybrid classes can be deﬁned
+by properties of k-variable subproblems for k 3.
+References
+[1] A. Bulatov, A. Krokhin, P. Jeavons, Classifying the complexity of constraints using ﬁnite algebras, SIAM Journal on Computing 34 (3) (2005) 720–742,
+doi:10.1137/S0097539700376676.
+[2] T. Feder, M. Vardi, The computational structure of monotone monadic SNP and constraint satisfaction: A study through datalog and group theory, SIAM
+Journal on Computing 28 (1) (1998) 57–104, doi:10.1137/S0097539794266766.
+[3] R. Dechter, J. Pearl, Network-based heuristics for constraint satisfaction problems, Artiﬁcial Intelligence 34 (1) (1988) 1–38, doi:10.1016/00043702(87)90002-6.
+[4] P. Jeavons, On the algebraic structure of combinatorial problems, Theoretical Computer Science 200 (1–2) (1998) 185–204, doi:10.1016/S03043975(97)00230-2.
+[5] V. Dalmau, P.G. Kolaitis, M.Y. Vardi, Constraint satisfaction, bounded treewidth, and ﬁnite-variable logics, in: Proceedings of the 8th International
+Conference on Principles and Practice of Constraint Programming (CP’02), in: Lecture Notes in Computer Science, vol. 2470, Springer, 2002, pp. 310–
+326.
+
+M.C. Cooper, S. Živný / Artiﬁcial Intelligence 175 (2011) 1555–1569
+
+1569
+
+[6] M. Grohe, The complexity of homomorphism and constraint satisfaction problems seen from the other side, Journal of the ACM 54 (1) (2007) 1–24,
+doi:10.1145/1206035.1206036.
+[7] R. Dechter, Constraint Processing, Morgan Kaufmann, 2003.
+[8] D.A. Cohen, A new class of binary CSPs for which arc-constistency is a decision procedure, in: Proceedings of the 9th International Conference on
+Principles and Practice of Constraint Programming (CP’03), in: Lecture Notes in Computer Science, vol. 2833, Springer, 2003, pp. 807–811.
+[9] D. Cohen, P. Jeavons, The complexity of constraint languages, in: F. Rossi, P. van Beek, T. Walshi (Eds.), The Handbook of Constraint Programming,
+Elsevier, 2006.
+[10] T.K.S. Kumar, A framework for hybrid tractability results in boolean weighted constraint satisfaction problems, in: Proceedings of the 14th International
+Conference on Principles and Practice of Constraint Programming (CP’08), in: Lecture Notes in Computer Science, vol. 5202, Springer, 2008, pp. 282–
+297.
+[11] M.C. Cooper, P.G. Jeavons, A.Z. Salamon, Generalizing constraint satisfaction on trees: Hybrid tractability and variable elimination, Artiﬁcial Intelligence 174 (9–10) (2010) 570–584, doi:10.1016/j.artint.2010.03.002.
+[12] T. Schiex, H. Fargier, G. Verfaillie, Valued constraint satisfaction problems: Hard and easy problems, in: Proceedings of the 14th International Joint
+Conference on Artiﬁcial Intelligence (IJCAI’95), 1995. Available from: http://dli.iiit.ac.in/ijcai/IJCAI-95-VOL1/pdf/083.pdf.
+[13] S. Bistarelli, U. Montanari, F. Rossi, Semiring-based constraint satisfaction and optimisation, Journal of the ACM 44 (2) (1997) 201–236,
+doi:10.1145/256303.256306.
+[14] D.A. Cohen, M.C. Cooper, P.G. Jeavons, A.A. Krokhin, The complexity of soft constraint satisfaction, Artiﬁcial Intelligence 170 (11) (2006) 983–1016,
+doi:10.1016/j.artint.2006.04.002.
+[15] D.A. Cohen, M.C. Cooper, P.G. Jeavons, Generalising submodularity and Horn clauses: Tractable optimization problems deﬁned by tournament pair
+multimorphisms, Theoretical Computer Science 401 (1–3) (2008) 36–51, doi:10.1016/j.tcs.2008.03.015.
+[16] V. Kolmogorov, S. Živný, Generalising tractable VCSPs deﬁned by symmetric tournament pair multimorphisms, Tech. rep., arXiv:1008.3104, August
+2010. Available from: http://arxiv.org/abs/1008.3104.
+[17] S.L. Lauritzen, Graphical Models, Oxford University Press, 1996.
+[18] M.J. Wainwright, M.I. Jordan, Graphical models, exponential families, and variational inference, Foundations and Trends in Machine Learning 1 (1–2)
+(2008) 1–305, doi:10.1561/2200000001.
+[19] P. Jégou, Decomposition of domains based on the micro-structure of ﬁnite constraint-satisfaction problems, in: Proceedings of the 11th National
+Conference on Artiﬁcial Intelligence (AAAI’93), 1993, pp. 731–736. Available from: http://www.aaai.org/Papers/AAAI/1993/AAAI93-109.pdf.
+[20] A.Z. Salamon, P.G. Jeavons, Perfect constraints are tractable, in: Proceedings of the 14th International Conference on Principles and Practice of Constraint
+Programming (CP’08), in: Lecture Notes in Computer Science, vol. 5202, Springer, 2008, pp. 524–528.
+[21] R. Takhanov, A dichotomy theorem for the general minimum cost homomorphism problem, in: Proceedings of the 27th International Symposium on
+Theoretical Aspects of Computer Science (STACS’10), 2010, pp. 657–668.
+[22] V. Kolmogorov, S. Živný, The complexity of conservative valued CSPs, 2011, submitted for publication.
+[23] M. Grötschel, L. Lovasz, A. Schrijver, The ellipsoid method and its consequences in combinatorial optimization, Combinatorica 1 (2) (1981) 169–198,
+doi:10.1007/BF02579273.
+´ Recognizing Berge graphs, Combinatorica 25 (2) (2005) 143–186, doi:10.1007/s00493[24] M. Chudnovsky, G. Cornuéjols, X. Liu, P.D. Seymour, K. Vuškovic,
+005-0012-8.
+[25] V.V. Lozin, M. Milaniˇc, A polynomial algorithm to ﬁnd an independent set of maximum weight in a fork-free graph, Journal of Discrete Algorithms 6 (4)
+(2008) 595–604, doi:10.1016/j.jda.2008.04.001.
+[26] A. Brandstädt, V.V. Lozin, R. Mosca, Independent sets of maximum weight in apple-free graphs, SIAM Journal on Discrete Mathematics 24 (1) (2010)
+239–254, doi:10.1137/090750822.
+[27] T. Jebara, M.A.P. Estimation, Message passing, and perfect graphs, in: Proceedings of the Twenty-Fifth International Conference on Uncertainty in
+Artiﬁcial Intelligence (UAI), 2009, pp. 258–267. Available from: http://www.cs.mcgill.ca/~uai2009/papers/UAI2009_0098_c9e0cfea5b7aad26ceef02e3cef
+44909.pdf.
+[28] M. Garey, D. Johnson, Computers and Intractability: A Guide to the Theory of NP-Completeness, W.H. Freeman, 1979.
+[29] C. Papadimitriou, Computational Complexity, Addison–Wesley, 1994.
+[30] J.-C. Régin, A ﬁltering algorithm for constraints of difference in CSPs, in: Proceedings of the 12th National Conference on AI (AAAI’94), vol. 1, 1994,
+pp. 362–367. Available from: http://www.aaai.org/Papers/AAAI/1994/AAAI94-055.pdf.
+[31] T. Petit, J.-C. Régin, C. Bessière, Speciﬁc ﬁltering algorithms for over-constrained problems, in: Principles and Practice of Constraint Programming
+(CP’01), in: Lecture Notes in Computer Science, vol. 2239, Springer, 2001, pp. 451–463.
+[32] W.J. van Hoeve, G. Pesant, L.-M. Rousseau, On global warming: Flow-based soft global constraints, Journal of Heuristics 12 (4–5) (2006) 347–373,
+doi:10.1007/s10732-006-6550-4.
+[33] J.-P. Métivier, P. Boizumault, S. Loudni, All different: Softening AllDifferent in weighted CSPs, in: Proceedings of the 19th IEEE International Conference
+on Tools with Artiﬁcial Intelligence (ICTAI’07), IEEE Computer Society, 2007, pp. 223–230.
+[34] Y. Richter, A. Freund, Y. Naveh, Generalizing AllDifferent: The SomeDifferent constraint, in: Proceedings of the 12th International Conference on Principles and Practice of Constraint Programming (CP’06), 2006, pp. 468–483.
+[35] C. Jefferson, S. Kadioglu, K.E. Petrie, M. Sellmann, S. Živný, Same-relation constraints, in: Proceedings of the 15th International Conference on Principles
+and Practice of Constraint Programming (CP’09), in: Lecture Notes in Computer Science, vol. 5732, Springer, 2009, pp. 470–485.
+[36] W. Horn, Minimizing average ﬂow time with parallel machines, Operations Research 21 (3) (1973) 846–847. Available from: http://www.jstor.org/
+stable/169392.
+[37] J.L. Bruno, E.G. Coffman Jr., R. Sethi, Scheduling independent tasks to reduce mean ﬁnishing time, Communications of the ACM 17 (7) (1974) 382–387,
+doi:10.1145/361011.361064.
+[38] J.-C. Régin, Cost-based arc consistency for global cardinality constraints, Constraints 7 (3–4) (2002) 387–405, doi:10.1023/A:1020506526052.
+[39] J.H.-M. Lee, K.L. Leung, Towards eﬃcient consistency enforcement for global constraints in weighted constraint satisfaction, in: Proceedings of the 21st
+International Joint Conference on Artiﬁcial Intelligence (IJCAI’09), 2009, pp. 559–565. Available from: http://ijcai.org/papers09/Papers/IJCAI09-099.pdf.
+[40] R. Ahuja, T. Magnanti, J. Orlin, Network Flows: Theory, Algorithms, and Applications, Prentice Hall/Pearson, 2005.
+[41] A. Schrijver, Combinatorial Optimization: Polyhedra and Eﬃciency, Algorithms and Combinatorics, vol. 24, Springer, 2003.
+[42] T. Schaefer, The complexity of satisﬁability problems, in: Proceedings of the 10th Annual ACM Symposium on Theory of Computing (STOC’78), 1978,
+pp. 216–226.
+
+

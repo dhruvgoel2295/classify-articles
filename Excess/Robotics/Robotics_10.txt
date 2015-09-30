@@ -1,0 +1,895 @@
+Robotics and Autonomous Systems 73 (2015) 59–67
+
+Contents lists available at ScienceDirect
+
+Robotics and Autonomous Systems
+journal homepage: www.elsevier.com/locate/robot
+
+Mechanisms for actuated assistive hip orthoses
+Jeremy Olivier ∗ , Amalric Ortlieb, Mohamed Bouri, Hannes Bleuler
+Laboratory of Robotic Systems (LSRO), EPFL, Lausanne, Switzerland
+
+highlights
+• We presented two different hip orthoses with novel types of actuation.
+• The two orthoses are optimized for assistance in various situations.
+• Different characteristics are assessed in order to objectively compare our orthoses.
+
+article
+
+info
+
+Article history:
+Available online 13 October 2014
+Keywords:
+Actuated orthosis
+Assistive technology
+Lower limb
+Hip joint
+Variable transmission ratio
+Double-differential actuation
+
+abstract
+Mobility is often a central problem for people having muscle weaknesses. The need for new devices to
+assist walking and walk related activities is therefore growing. Lower limb actuated orthoses have already
+proven their positive impact with paraplegic patients and are potentially promising for assisting people
+with weak muscles. However, the transfer from the existing systems of mobilization towards assistance
+implies several technical challenges as the seamless integration and the reduction of power consumption.
+In this paper two assistive orthoses which use different types of actuation mechanisms are presented and
+discussed. The first one is based on a ball screw and an excavator-like mechanism while the second one is
+based on a double differential actuation. Their technical capabilities are compared and contextualized for
+diverse activities. Objective characteristics such as the range of motion of the devices, the transparency,
+the maximal torque that they can provide or the RMS torque during cyclic trajectories are compared to
+point out which device is better adapted for specific situations.
+© 2014 Elsevier B.V. All rights reserved.
+
+1. Introduction
+Mobility is often a central problem for quality of life of people
+having muscle weaknesses. The causes of these weaknesses are diverse but lead to similar inconveniences. Difficulties to walk have
+consequences on physical as well as on psychological health [1].
+In many cases they lead to loss of independence. With the population aging [2], the need for new technologies to assist walking and
+walking related activities becomes relevant.
+In the last decades robots have proven their efficiency as mobilization devices [3,4]. They are able to perform repetitive tasks
+which are tiring for the therapists and they enable very precise
+control and monitoring. Motorized orthoses have even confirmed
+their effectiveness as mobilization devices in standing position
+with [5] or without [6] bodyweight support and products are currently available on the market [7]. Most of these devices were developed for spinal cord injury patients. Among other reasons, this
+
+∗
+
+Corresponding author. Tel.: +41 795403514.
+E-mail address: jeremy.olivier@epfl.ch (J. Olivier).
+
+http://dx.doi.org/10.1016/j.robot.2014.10.002
+0921-8890/© 2014 Elsevier B.V. All rights reserved.
+
+is because such devices can successfully operate on simple position
+control (i.e. the device follows a predefined trajectory and imposes
+its motion to the user) [8].
+Walking assistive devices have quite different demands on control strategies than pure mobilization robots. They need to work
+in interaction with their user as intuitively as possible. The person wearing an assistive orthosis decides what the movements are
+and when they are to be performed. The wearable robot can therefore no longer act as a mechanical admittance and impose a predefined trajectory. It must be transparent (zero impedance) when
+the user does not need any assistance and apply forces only when
+required [9]. Moreover, the mechanism should adapt to dynamic
+movements if the user wants to move fast. While lower limb mobilization devices often act only in the sagittal plane, the workspace
+of assistive device may be larger and of higher dimensionality.
+Thus, assistive devices are in between pure mobilization devices
+and exoskeletons for human augmentation.
+Actuation technologies used in wearable robots are very diverse. Hydraulic, pneumatic and electrical motors have all been
+tested in various devices [10]. Non-standard types of actuators
+such as artificial muscles also seem to be promising [11]. Nevertheless, the commercial availability of all kinds of electric motors make
+
+60
+
+J. Olivier et al. / Robotics and Autonomous Systems 73 (2015) 59–67
+
+them the first choice for most applications. Compared to human
+joints, electrical motors (with a decent size) rotate fast and have a
+limited torque. A reduction gear train (e.g. harmonic drive) is therefore frequently used to get a significant torque [12]. Due to the
+relatively high transmission ratio, the low impedance required for
+assistive devices is difficult to achieve [9]. Some groups have therefore proposed solutions based on Series Elastic Actuators (SEA)
+which introduce substantial compliance between the output and
+the actuator [9,13]. The second drawback of a high transmission ratio is that the dynamics of the actuator is affected. The cyclic nature
+of walking requires that the actuator reverses direction frequently.
+This implies that a significant amount of torque is used to accelerate and decelerate the actuators own inertia. A possible solution
+to address this problem was proposed by Ryder and Sup [14] who
+developed a hip orthosis using a Scotch-Yoke mechanism which
+creates a variable transmission ratio and thus reverses automatically the direction of the actuator during walking trajectories. The
+electrical motors combined with well adapted transmission mechanisms seem therefore to be effective for assistive devices.
+In this paper we present two distinct assistive devices which act
+on a single articulation: the hip. The contribution of the hip joint
+during walking is known to increase when people get older [15].
+The hip needs to compensate for reduced strength at the knee and
+ankle level. The presented devices are intended to be used to study
+the influence of partial assistance on walking and related activities such as standing up from a sitting position or climbing and
+descending stairs. They are based on two different actuation mechanisms which were purposely developed for assistance and not for
+mobilization. The benefits and drawbacks of each solution are detailed and discussed.
+2. Design specifications
+To design an assistive device intended to be worn, biomechanical considerations need to be taken into account. In humans, some
+articulations are better approximated by ideal joints than others.
+The ideal model of the hip is very close to a spherical joint. We
+therefore consider 3 rotations around the head of the femur. The
+ranges of motion of these rotations are commonly assumed to
+be [16]:
+
+• Extension (−)/flexion (+): −10°–120°
+• Adduction (−)/abduction (+): −30°–40°
+• Internal (−)/external rotation (+): −35°–35°.
+As these ranges are the maximum which can be reached, they can
+be moderated especially when considering that the target population is people with reduced mobility. Moreover, during walking
+the angles are much more limited, as presented in [17].
+Another important point to consider is the fact that the orthosis is placed in parallel with the joint it assists. In the case of the
+hip joint, the device is attached to the pelvis and to the thigh consequently creating a loop in the kinematic chain. Such loops may
+induce additional constraints which lock degrees of freedom (DOF).
+Two options are therefore conceivable to avoid reducing the mobility. Either the axes of rotation of the mechanism need to pass
+through the head of the femur (center of the assumed spherical
+joint), or additional DOF are required in order to satisfy the Chebychev–Grübler–Kutzbach criterion, which states that each loop in
+the kinematic chain locks 6 DOF [18]. The first solution requires
+precise adjustments [19] and relies on skin deformations to compensate for possible misalignments. Large misalignments lead to
+important skin deformations and therefore to increased discomfort. The second one, while more complex (in total 6 DOF are required), guarantees that the number of DOF stays sufficient [20,21].
+In order to efficiently assist the wearer, the orthotic device
+needs to be able to follow the wearer and to provide extra torque
+
+when required. Therefore the dynamic capabilities must at least
+equal the fastest movements that the wearer may perform. The
+maximum acceleration and velocity are estimated from typical
+walking trajectories and consider that the stride cadence is usually lower than 120 steps/min [22]. The peak torque a person is developing with the hip during walking is also available in [22] and
+is typically around 0.8 N m/kg (normalized with bodyweight). For
+activities such as standing up from a sitting position, a larger torque
+is required, especially during the initiation of the movement [23].
+This torque can go up to 1 N m/kg. Even though these torques do
+not need to be provided entirely (especially when the movements
+are performed fast), their orders of magnitude are a valuable indication for the design of assistive devices. In order not to disturb the
+user when no assistance is required, the system must also be able
+to be transparent and therefore present a maximal parasitic torque
+of 1 N m (in zero assistance mode).
+3. Presentation of the two orthoses
+This section presents two distinct designs of assistive hip orthoses developed by the authors (see Fig. 1). Both devices use a
+60 W motor from Maxon as their main source of power. The main
+difference between these two designs comes from the actuation
+mechanism which leads to other minor differences. Both devices
+have 6 DOF, one of which being actuated in order to assist the
+movement in the sagittal plane. This high level of mobility enables
+the mechanisms to preserve high ranges of motion in the three
+DOF of the hip. In both designs, two pivot joints are located at the
+pelvis level while the other four DOF are located at the joining with
+the thigh. The latters are composed by one prismatic joint and one
+spherical joint.
+3.1. Ball screw driven orthosis
+The ball screw driven orthosis (BSO) is based on a spindle drive
+mechanism (ball screw) to amplify the torque of the motor [24].
+Fig. 1(a) represents the device, its kinematics and its amplification
+mechanism.
+3.1.1. Kinematics
+The first joint in the kinematic chain has its axis of rotation orthogonal to the frontal plane (see Fig. 1(a) axis number 1). The second joint is actuated and it is perpendicular to the first joint (see
+Fig. 1(a) axis number 2). Being second in the kinematic chain, it rotates with the first joint. This joint enables the flexion/extension
+movement. Due to the size of the actuation mechanism, it had to
+be placed second in the kinematic chain. The internal/external rotation of the leg is achievable as the last joint in the orthosis kinematic chain is a spherical joint (see Fig. 1(a)). With this kinematics,
+the actuation mechanism remains parallel with the leg and does
+not need to move to enable this movement (at least in first approximation and in the considered range of motion). However,
+as the hip and the spherical joint are not perfectly aligned with
+the leg, the first pivot joint also needs to marginally rotate. The
+adduction/abduction movement is more problematic. When the
+flexion angle equals zero, the first joint corresponds to adduction/abduction and this movement is therefore unrestricted. Conversely, when the flexion angle is 90°, the first joint is aligned with
+the internal/external axis of rotation of the leg thus creating a singularity. Indeed two joints enable the same movement which leads
+to a possible undesired rotation of the mechanism around the leg.
+Moreover, with this flexion configuration the adduction/abduction
+is hindered as no axis in the mechanism is positioned properly to
+enable it. A combination of large flexion and adduction/abduction
+is consequently impossible with this kinematics. In order to avoid
+
+J. Olivier et al. / Robotics and Autonomous Systems 73 (2015) 59–67
+
+a
+
+61
+
+b
+
+Fig. 1. Hip orthoses, kinematics and actuation mechanisms. (a) Ball-screw driven orthosis. (b) Double-differential orthosis.
+
+the above-mentioned parasitic rotation, a cam mechanism is implemented so as to progressively lock the rotation of the first pivot
+joint. If this pivot angle goes out of the allowed range, a force
+is transferred from the flexion/extension axis to the first axis by
+means of the cam [25].
+3.1.2. Amplification mechanism
+As the assistive device is intended to be used by people being
+able to move by themselves, the mechanism must be able to act
+transparently. A back-drivable actuation mechanism is therefore
+appropriate. In the meantime, as important torques need to be provided to the wearer, a large transmission ratio is required between
+the actuator and the output. Indeed, the electric motors usually
+provide small torques which need to be amplified by a transmission. The combination of back-drivability and large transmission
+ratio necessitates a very efficient transmission with low friction.
+Hence a ball screw transmission appears as a valid choice. With
+the ball screw, the rotational action of the motor is converted into
+a linear motion. This linear motion is then utilized to create the
+flexion/extension angle. As stated in Section 2, flexion/extension
+has a range of motion of approximately 130°. A mechanism inspired by excavator is employed to be able to cover this fairly wide
+workspace. This particular mechanism implies a variable transmission ratio which is optimally shaped so as to provide more torque
+in the range where the user needs it the most. On one hand, the sitto-stand transitions require large torque when the flexion angle is
+around 70°, while on the other hand, less torque is required during
+walking but high velocity and acceleration need to be reachable.
+A lower reduction ratio is therefore better adapted in the walking
+range of motion while a bigger one is preferable at higher positions. Simulations were performed to adapt the dimensions of the
+mechanism and therefore find this optimal.
+3.2. Double differential driven orthosis
+3.2.1. Kinematics
+The double differential driven orthosis (DDO) has a kinematics
+which is very similar to the BSO. The only difference is that the
+two joints located close to the pelvis are inverted (see Fig. 1(b)
+axes 1 and 2). The second joint therefore corresponds to the adduction/abduction angle. When this angle equals zero, the first joint
+corresponds to flexion/extension. In an extreme case, if the adduction angle reached 90°, the first joint would link to internal/
+external rotation. In that case, a singularity similar to the one
+encountered with the BSO would occur. With the adduction/
+abduction angle being relatively limited (typically smaller than
+30°), the actual workspace does not contain any singularity.
+3.2.2. Transmission mechanism
+Conventional high reduction gear-trains present sub-optimal
+transparency. The first reason is that the friction of the actuator is
+amplified linearly with the reduction ratio. The second cause of this
+
+poor transparency is that the inertia is increased with the square of
+this reduction. Another negative aspect when using high reduction
+ratios comes from the fact that energy is consumed to accelerate
+and decelerate both the actuator and its transmission.
+Clutch. In order to address the inertial and frictional effect problems, a motor combined with a clutch mechanism can be used [26]
+(see Fig. 2). If the motor is controlled as a velocity source, the output torque can be controlled solely with a clutch (see Fig. 2(a)). This
+assumption is valid only if the motor acts as an admittance and
+the clutch is never completely locked. The direction of this torque
+yet depends on the difference between the velocity of the motor
+and the output velocity. If the motors velocity is greater than the
+outputs, the torque is transmitted in the direction of the motor
+velocity. If it is smaller, the torque is in the other direction. The
+transparency which can be achieved with such a mechanism is
+greatly increased as the inertial and frictional effects, due to the
+actuator and its transmission, are almost completely avoided. The
+friction and inertia are therefore only caused by the components
+present between the clutch and the output.
+Double clutch with inversion mechanism. The question regarding the
+energy consumed by the actuator itself may be circumvented using
+a double clutch with an inversion mechanism (see Fig. 2(b)). Such
+a mechanism works similarly to the single clutch mechanism with
+the difference that the output torque is the sum of the torques
+coming from the two clutches [27]. Ideally the clutches never act
+at the same moment so as to avoid useless dissipation. With such
+a mechanism, no energy is consumed to accelerate/decelerate the
+actuator as it is used as a velocity source. Torques in both directions
+can be generated by using one clutch or the other, provided that the
+motor rated velocities are greater than the output one.
+Implementation with double differential. A differential combined
+with a brake is a possible way to implement a clutch [28,29]. The
+inversion of the movement can be realized at the same time (see
+Fig. 2(c)). Indeed when designing a differential, its transmission ratio can be defined negative thus creating the desired inversion of
+the movement. The proposed design uses two differentials based
+on planetary reduction gear (see Fig. 3) combined with disk brakes
+(which have a high torque density). The transmission ratio of such
+a reduction gear is given by:
+i=
+
+ω0
+θ˙0
+Γ4
+r2 · r4
+=
+=
+=
+˙
+ω4
+Γ0
+(r1 + r2 ) · (r2 − r3 )
+θ4
+
+(1)
+
+where θ0 and θ4 are respectively the angles of the input and the
+output, ω0 and ω4 are the corresponding angular velocities, Γ0 and
+Γ0 are the associated torques, and r1 , r2 , r3 , r4 are the radii of the
+different gears as presented on Fig. 3(a). This equation shows that
+a design without additional inversion mechanism can be achieved
+easily if the radius r3 is greater than the radius r2 in one of the two
+differentials. In order to create a differential mechanism from the
+planetary reduction gear train, the wheel number 1 needs to be
+able to move. In that case, the relations between the torques are
+
+62
+
+J. Olivier et al. / Robotics and Autonomous Systems 73 (2015) 59–67
+
+a
+
+b
+
+c
+
+Fig. 2. Clutch mechanisms. (a) Standard clutch. (b) Double clutch with inversion mechanism. (c) Double differential clutch.
+
+a
+
+b
+
+Fig. 4. BSO and DDO theoretical torques. (For interpretation of the references to
+color in this figure legend, the reader is referred to the web version of this article.)
+
+Fig. 3. (a) Planetary gear train. (b) Implementation of a double differential
+mechanism based on a planetary reduction. (For interpretation of the references to
+color in this figure legend, the reader is referred to the web version of this article.)
+
+expressed by:
+
+Γ4 =
+
+r4
+r3
+
+
+
+r2
+· Γ1 ·
+.
+r1
+
+(2)
+
+As with the clutch, the only constrain to be able to provide torque
+in both directions is that the rated velocity of the motor is greater
+than the outputs. Fig. 3(b) shows how this concept is implemented
+in our prototype. The angular velocities of the two brakes ω1_1 and
+ω1_2 are influenced by the output velocity ω4 . With a sufficient input velocity ω0 , it is guaranteed that the brakes always rotate in
+opposite directions; a torque in both direction can therefore be
+transferred to the output by activating one brake or the other. Another constrain for our design is that the input motor must be powerful enough to ensure a constant velocity. These conditions ensure
+that the brakes are never completely locked.
+4. Models of the two orthoses and theoretical capabilities
+The first step to compare our two orthoses is based on their
+theoretical capabilities. Modeled peak torques as well as inertias
+are compared in this section.
+
+almost exclusively on the friction in the motor and on the ball
+screw. The latter is estimated from the manufacturer datasheet
+at 94%. The transmission ratio of the DDO is constant with the
+position but depends on the direction in which the torque is applied. Due to a worm gear in the transmission of our prototype (see
+Fig. 3(b)), the efficiency is relatively low and estimated at about 50%
+(based on the different datasheets of the manufacturers). Moreover, this efficiency may depend on the torque direction as two different sets of gear trains and dry bearings are used for the flexion
+and the extension torques.
+Fig. 4 shows the theoretical torques of the two orthoses. The
+solid lines represent the theoretical torques without losses and the
+dashed lines represent the diminished torques due to efficiencies
+smaller than 100%. The peak torque of the BSO reaches its maximum when the flexion angle is around 70° (blue line). This particular characteristic is adapted to the higher torque requirements
+of the sit-to-stand transition. Indeed, during the first phase when
+the angle is close to 70°, the hip needs to develop a torque corresponding to 1 N m/kg. With the DDO, the maximal torque in the
+extension direction (red line) is greater than in the flexion direction (black line). This comes from the fact that the transmission ratio is greater in this direction. Indeed, the diameter ratio between
+the satellite gear and the brake gear (r1 /r2 on Fig. 3(a)) of the first
+differential were chosen differently than the one of the second differential. This choice in the design is motivated by the fact that the
+angular velocity of the hip is usually greater in flexion than in extension while the required torque is superior in extension [22].
+4.2. Inertia model
+
+4.1. Peak torque model
+The peak torque which can be provided to the output depends
+on the transmission ratio as well as on the efficiency of the mechanism. While the first is perfectly defined, the second can only be
+estimated. As presented in Section 3.1.2, the transmission ratio of
+the BSO depends on the output position. Its efficiency depends
+
+Without active compensation, the transparency is largely affected by the inertia perceived at the output level. In the case of
+the BSO, several parts are moving with the flexion/extension angle. These moving parts have their own trajectories and therefore
+contribute to the inertia in a non-linear way. The different moving parts of the actuation mechanism are represented on Fig. 1(a).
+
+J. Olivier et al. / Robotics and Autonomous Systems 73 (2015) 59–67
+
+63
+
+Fig. 5. Torques required to move the orthoses without active compensation.
+
+The parts moving together are associated with the same shade.
+The assembly of parts attached to the leg (lightest gray part) has
+a constant contribution to the inertia as it rotates with it. Note
+that the position of the prismatic joint is supposed to be fixed in
+that case. All the other parts (darker gray parts) see their center of
+mass moving relatively to the center of rotation thus influencing
+their contribution to inertia. Moreover, their rotational velocity is
+non-linearly linked with the flexion/extension angular velocity. As
+a consequence, the torque that needs to be provided by a user to
+make the orthosis move (without active compensation) depends
+on the flexion/extension angle but also on its angular velocity and
+acceleration.
+With a constant transmission ratio mechanism as is the case
+with the DDO, this torque depends linearly and exclusively on the
+acceleration. As explained in Section 3.2.2, the inertia is only due to
+the components present between the clutches and the output. In
+our case, only the brakes, the gears attached to them, the satellite
+gears and the part attached to the leg contribute to inertia.
+Fig. 5 shows the torque that is required to move the orthoses
+as a function of position and velocity. The first graph shows the
+torque at constant speed while the second is with an acceleration
+of 2000°/s2 , which corresponds approximately to the maximum
+angular acceleration expected during standard walking. In the first
+graph, only the torque for the BSO is displayed as the torque for the
+DDO is null for any position/velocity pairs.
+5. Testing protocol
+In order to compare objectively the two orthoses, experiments
+are conducted to measure the transparency (undesired resisting
+torque), the torque which can be used to assist the wearer and the
+power consumption. The first two are assessed by performing measurements on the flexion/extension torque. To do so, the orthoses
+are placed with their sagittal plane positioned horizontally in order to avoid any gravitational effects (see Fig. 6). During the experiments, all the other joints of the mechanism are locked and no
+extra load is applied on the mechanism. A uniaxial force sensor is
+placed on the part which moves along the leg while the other side
+of the joint is rigidly fixed. By measuring the force applied orthogonally to the leg part and by multiplying it by the distance to the
+joint, the torque is calculated. The torque consumption is measured
+directly from the motor command.
+5.1. Transparency
+The transparency of a device is affected mainly by two effects:
+the friction and the inertia. The differences concerning the latter
+
+a
+
+b
+
+Fig. 6. Experimental setup. The orthoses are placed with their sagittal plane
+positioned horizontally in order to avoid any gravitational effects. The torque is
+measured by means of a force sensor positioned at the output. (a) BSO in the
+experimental setup. (b) DDO in the experimental setup.
+
+can be modeled fairly well as presented in Section 4.2 while the
+friction requires deeper analysis. The dry friction can be estimated
+by measuring the torque when the joint is displaced at low velocity and low acceleration. The friction is tested under various
+conditions. First, the resisting torque is measured when no compensating command is applied to the actuator. Therefore, for both
+orthoses, two measurements are done. With the BSO, dry friction
+is compensated by providing torque in the direction of the movement. The simple Coulomb model is used for this compensation:
+
+Γfriction = Γc · sgn(ω)
+
+(3)
+
+where Γfriction is the torque due to friction, Γc is the Coulomb friction and ω is the rotational velocity of the mechanism. The applied
+friction compensation torque Γfriction_compensation is therefore:
+
+
+Γfriction_compensation =
+
+−Γc
+0
+
+Γc
+
+if ω < − ω
+if ω ∈ [− ω;
+if ω > ω
+
+ω]
+
+(4)
+
+where ω is a defined threshold to avoid compensation when the
+velocity is close to zero. The compensation is tuned empirically so
+
+64
+
+J. Olivier et al. / Robotics and Autonomous Systems 73 (2015) 59–67
+
+as to limit the friction to its minimum while keeping the system
+stable. For the DDO, the first measurement is done when the velocity source is off and the second when it is on and with an active compensation to reduce the undesired frictional effects. In that
+case, the compensation is constant and does not depend on the direction of the movement.
+5.2. Available output torque
+The static torque which is available to assist the wearer depends
+on the transmission ratio and on the mechanisms efficiency. In the
+BSO, the transmission ratio depends on the position whereas in
+the DDO it depends on the direction of the torque. The actuators
+are the same in both orthoses (Maxon RE 30 60 W), thus enabling
+us to compare them directly and objectively. Current is therefore
+applied successively to the two orthoses actuators and the output
+torques are measured. For the aforementioned reasons, the rated
+torque is measured at various positions and in both directions.
+5.3. Energy balance during a defined trajectory
+In order to make a mechanism follow a trajectory, energy is
+required even if no additional torque is provided. The torque that
+the motor needs to provide depends on the accelerations during
+this movement. As assistive orthotic devices are essentially used
+for cyclic movements such as walking, periodic trajectories (with
+amplitude and frequency comparable to gait trajectories) are used
+to compare our two actuation mechanisms. The DDO is designed
+to provide torque and therefore precise position control is more
+delicate to perform. To compare our two orthoses, a trajectory is
+realized and recorded with the DDO and then reproduced with
+the BSO (since position control is easily achieved with it). This
+trajectory is performed by activating the two brakes alternatively.
+The output is therefore connected to the actuator sequentially in
+one direction and in the other thus moving at a constant speed
+in both directions (see Fig. 10(a)). As changes in direction may be
+very abrupt with the DDO, smoothed versions of the trajectories
+are used as reference for the BSO. The smoothed trajectories are the
+7th order Fourier series estimations of the trajectories performed
+with the DDO. Different cadences are evaluated so as to analyze the
+respective dynamic capabilities.
+
+Fig. 7. BSO and DDO friction torques with and without compensation. (For
+interpretation of the references to color in this figure legend, the reader is referred
+to the web version of this article.)
+
+improved. The green line on Fig. 7 shows the residual torque using
+this method. In that case, it is very low and comparable to friction
+obtained with the DDO. A force sensor or a torque sensor would
+surely give similar results.
+The friction when no compensation is provided is an important
+characteristics as it represents the extra torque that the user would
+have to provide in case of power failure. With the presented
+devices being intended to demonstrate the capabilities of devices
+supposedly worn outside of a controlled environment, the safety
+in case of power failure is a crucial feature.
+6.2. Efficiency and output torque
+When a movement is transferred from one side of a transmission to the other, the torque transmission efficiency is expressed
+by:
+
+η=
+
+Γmovement_output
+Γmovement_input
+
+(5)
+
+6. Data analysis and results
+
+where η is the efficiency of the transmission, Γmovement_input is the
+torque at the input level, and Γmovement_output is the torque transferred to the output through the transmission. If the movement is
+initiated by the actuator, the torque transmission efficiency is expressed by:
+
+6.1. Friction
+
+η=
+
+The friction measurements on both orthoses with and without friction compensation are compiled in Fig. 7. The red and
+blue curves show respectively the dry dynamic friction of the BSO
+and the DDO as a function of the position. As expected, the DDO
+presents a constant friction over the whole workspace. Moreover,
+this friction torque does not exceed 200 mN m. The influence of
+the variable transmission ratio of the BSO is clearly noticeable on
+its friction torque. As a consequence, the friction torque varies between 0.6 N m and almost 2 N m. It is also noticeable that the
+frictional torque is slightly different depending on the direction.
+When compensation is provided by the actuators, the friction may
+be greatly decreased. Nevertheless, initiation of movement is problematic with the ball screw driven orthosis if the direction is not
+detected properly. As a matter of fact, with the encoder placed on
+the actuator being unable to detect any position changes when the
+orthosis does not move, no compensation is provided. The effect of
+dry static friction is therefore persistent as the intention of the user
+cannot always be anticipated. To overcome this issue, an additional
+sensor is required. Tests with an extra encoder positioned directly
+at the output level show that the intention detection can be greatly
+
+Γuser (α)
+
+(6)
+
+n(α) · Γmotor
+
+where Γuser is the output torque at the leg level, α is the flexion
+angle, n is the transmission ratio and Γmotor is the motor torque.
+Conversely, if the user initiates the movement, the torque transmission efficiency is calculated with:
+
+η=
+
+n(α) · Γmotor
+
+Γuser (α)
+
+.
+
+(7)
+
+The motor torque is composed by the electromechanical torque
+and the reduced friction torque (at the motor level):
+
+Γmotor = Γelectromechanical − Γfriction .
+
+(8)
+
+The measured output torque confirms the models predictions. The
+efficiency of the BSO is around 89% when the movement and
+the torque provided by the motor are in the same direction and
+around 80% when the motor torque is used to dissipate energy.
+This validates the hypothesis that the transmission is very efficient.
+Fig. 8 shows the torque transmitted to the output when generating
+(Fig. 8(a)) and when dissipating torque (Fig. 8(b)). The data are fitted with Eqs. (6) and (7) so as to be able to estimate the efficiency.
+The red curves show the recorded torques at the output while the
+
+J. Olivier et al. / Robotics and Autonomous Systems 73 (2015) 59–67
+
+a
+
+65
+
+b
+
+Fig. 8. BSO output torque as a function of flexion angle and motor torque. The red curves are measurements on the device and the surfaces are the fits based on the model
+presented. (a) Output torque when generating torque. (b) Output torque when dissipating torque. (For interpretation of the references to color in this figure legend, the
+reader is referred to the web version of this article.)
+
+6.3. Torque and power consumption
+
+Fig. 9. DDO theoretical and measured flexion and extension torques. (For
+interpretation of the references to color in this figure legend, the reader is referred
+to the web version of this article.)
+
+surfaces show the fitted model which estimate the efficiency and
+the dry friction at the motor level. The difference in efficiency when
+generating or dissipating energy (almost 10%) suggests that friction
+in the transmission mechanism is increasing when dissipating energy. This comes from the fact that the balls in the spindle drive
+undergo a higher pressure and therefore generate more friction.
+Dissipating energy may therefore have a negative impact on the
+actuation mechanism lifetime.
+The measurements on the DDO confirms the relatively poor efficiency of the mechanism which is around 62% in one direction and
+only 24% in the other one. Fig. 9 shows the flexion (red lines) and
+extension (blue lines) torques as a function of the motor torque.
+The measured torques (solid lines) can be compared with the theoretical torques (dashed lines) and the efficiency can be deduced.
+The dissimilarity in efficiency (greater in one direction than in the
+other) is explained by the fact that there is more dissipation when
+using one of the two differential mechanism. This is due to the design itself which creates an undesired torque which is detrimental
+in one direction. Indeed, when using the brake to produce a flexion
+torque, friction is generated on the bearing of the extension brake
+thus creating an undesired torque in the opposite direction. A ball
+bearing would therefore be essential at this location.
+
+Three different trajectories corresponding to three different
+cadences are used to compare the two transmission mechanisms.
+Fig. 10(a) shows these trajectories. As explained in Section 5.3,
+the trajectories are slightly different for the two mechanisms as
+the double differential is able to change direction in a very abrupt
+manner.
+The torques provided by the actuators are shown on Fig. 10(b).
+When the cadence is low the two mechanisms consume very little
+current and the torques are therefore limited. However, when the
+cadence increases the two mechanism react differently. On one
+hand, the BSO utilizes a lot of current to accelerate and decelerate
+its own inertia. In the case of the third trajectory, the RMS torque
+measured at the motor level is around 37% of its nominal torque.
+On the other hand, the torque consumed by the DDO remains very
+low even at high cadences (10% of the nominal torque). Moreover,
+the cadence has a very limited influence on the RMS torque. Even
+though the efficiency of this mechanism is very low compare
+to the other one, its ability to provide torque during fast cyclic
+movements is superior.
+7. Discussion and conclusion
+Wearable assistive devices have specific requirements which
+differ from mobilization devices. The most important difference is
+that the movements of the user must remain unhindered and force
+should be provided only when required. Nevertheless some specifications are shared (e.g. low weight, ease of don and doff). Optimizing the actuation is therefore a key challenge. In this paper we
+have presented two variants for actuated hip orthoses using different transmission mechanisms. These two devices use the same
+DC motor (Maxon RE 30 60 W) and their interface with the body is
+identical. The current weight is quite similar for the two prototypes
+(around 4.5 kg including the interface with the body). New variants
+are under construction to reach the weight of 3 kg/joint for each
+of the two mechanisms. This will indeed improve the ease of use,
+the portability and the power consumption of the devices. Despite
+these similarities, the power transmission to the users leg is very
+different. Table 1 summarizes the targeted specifications and the
+performances of the two devices.
+The ball screw driven orthosis (BSO) is very versatile as the
+transmission ratio adapts over a wide range of activities requirements. The kinematic design of this mechanism is inspired by an
+excavator and benefits from the high efficiency of a ball screw. It
+
+66
+
+J. Olivier et al. / Robotics and Autonomous Systems 73 (2015) 59–67
+
+a
+
+b
+
+Fig. 10. (a) Cyclic trajectories used to compare the two orthoses. The black curve is the trajectory performed with the DDO and the blue one is a similar trajectory executed
+with the BSO. As the BSO cannot achieve very abrupt changes in direction, a 7th order Fourier series approximation of the trajectory was used as reference. (b) Associated
+required motor torques. (For interpretation of the references to color in this figure legend, the reader is referred to the web version of this article.)
+Table 1
+Summary of specifications and devices performances.
+Orthosis
+
+Maximal velocity
+Specification
+
+BSO
+
+DDO
+
+140°/s
+
+Device performance
+
+≥140°/s (in the
+walking range of
+motion)
+
+RMS torque for assisting walking trajectories
+
+Peak torque
+
+Specification
+
+Specification
+
+Device performance
+
+∼1 Nm/kg
+
+∼70 Nm (with a flexion angle
+
+∼0.3 Nm/kg
+
+Device performance
+
+∼10 Nm/kg at a
+
+∼6 Nm/kg at a
+
+pace of
+90 steps/min
+
+pace of
+110 steps/min
+
+around 70°)
+
+≥150°/s (or
+
+∼10 Nm/kg (does not depend on the
+
+∼16 Nm in
+
+∼25 Nm in
+
+unlimited if no
+assistance is to be
+provided)
+
+pace)
+
+flexion
+
+extension
+
+provides a maximal torque when the flexion angle of the hip is in
+the range where it is the most needed, i.e. when standing up from a
+sitting position or climbing stairs (see Table 1). For normal walking,
+the reduction ratio is smaller, so as to be able to move fast enough
+to follow a typical stride pace. However, when the pace of the stride
+gets faster the BSO tends to be less efficient due to the actuator inertia (see Table 1). Note that this would be identical with a conventional reduction gear train or even worse if its static transmission
+ratio was adapted to sit-to-stand transitions. The transparency that
+can be achieved with the BSO is acceptable as friction can be reduced dramatically with active compensation. The inertia can be
+compensated as well but only partially (system stability is limiting
+this compensation).
+The double differential driven orthosis (DDO) offers an alternative to conventional actuation by simply decoupling the actuator
+from the output when no torque is required. The system becomes
+then naturally transparent. Without any active compensation, the
+DDO has a better transparency than the best results obtained with
+the BSO. With such a system, power failure would result in a switch
+to the transparent mode. As the target users are people able to
+move by themselves, this type of mode switching is less risky than
+an abrupt stop as would be the case with a non-back drivable actuation mechanism. Indeed, a locking of the mechanism does not
+guarantee balance and the user may fall without being able to move
+the assisted articulations. This feature therefore naturally increases
+the safety of such a system for the targeted users. A very high stiffness can as well be obtained in the extreme case when the clutch
+is fully engaged. The actuator and its reduction gear train are then
+
+directly coupled to the output. Such high stiffness would not be
+possible with a series elastic actuator. Moreover, the double differential mechanism enables an optimal utilization of the actuator by limiting its accelerations thus reducing losses due to inertia.
+The RMS torque available for assistance is therefore higher than the
+BSO especially at high walking cadences (see Table 1). The difference with the Scotch-Yoke based design [14] is that the movements
+are not constrained by mechanical end-stops and the system is
+therefore more versatile. The double-differential mechanism also
+enables to have a higher transmission ratio in extension than in
+flexion which optimally fits assistance requirements.
+Future work will focus on combining the benefits of each of the
+proposed solutions. Tests with healthy subjects and with people
+having muscle weaknesses (e.g. after hip replacement surgery) are
+planned.
+Acknowledgments
+This research was supported by the National Center of Competence in Research Robotics (51AU40_125773). The authors also
+would like to thank Prof. Michel Lauria for the fruitful discussions
+about clutches and differential mechanisms.
+References
+[1] D.H. Paterson, D. Govindasamy, M. Vidmar, D.A. Cunningham, J.J. Koval,
+Longitudinal study of determinants of dependence in an elderly population,
+J. Am. Geriatr. Soc. 52 (2004) 1632–1638.
+[2] J.E. Cohen, Human population: the next half century, Science 302 (2003)
+1172–1175.
+
+J. Olivier et al. / Robotics and Autonomous Systems 73 (2015) 59–67
+[3] B. Husemann, F. Müller, C. Krewer, S. Heller, E. Koenig, Effects of locomotion
+training with assistance of a robot-driven gait orthosis in hemiparetic patients
+after stroke a randomized controlled pilot study, Stroke 38 (2007) 349–354.
+[4] A. Esquenazi, M. Talaty, A. Packel, M. Saulino, The rewalk powered exoskeleton
+to restore ambulatory function to individuals with thoracic-level motorcomplete spinal cord injury, Am. J. Phys. Med. Rehabil. 91 (11) (2012) 911–921.
+Association of Academic Physiatrists.
+[5] Y. Stauffer, Y. Allemand, M. Bouri, J. Fournier, R. Clavel, P. Metrailler, R. Brodard,
+F. Reynard, The walktrainer—a new generation of walking reeducation device
+combining orthoses and muscle stimulation, IEEE Trans. Neural Syst. Rehabil.
+Eng. 17 (2009) 38–45.
+[6] R. Farris, H. Quintero, M. Goldfarb, Preliminary evaluation of a powered lower
+limb orthosis to aid walking in paraplegic individuals, IEEE Trans. Neural Syst.
+Rehabil. Eng. (2011) 652–659.
+[7] P. Gwynne, Mobility machines, Nature 503 (2013).
+[8] H. Vallery, J. Veneman, E. van Asseldonk, R. Ekkelenkamp, M. Buss, H. van der
+Kooij, Compliant actuation of rehabilitation robots, IEEE Robot. Autom. Mag.
+15 (2008) 60–69.
+[9] J.E. Pratt, B.T. Krupp, C.J. Morse, S.H. Collins, The roboknee: an exoskeleton
+for enhancing strength and endurance during walking, in: Robotics and
+Automation, 2004. Proceedings. ICRA’04. 2004 IEEE International Conference
+on.
+[10] H. Herr, Exoskeletons and orthoses: classification, design challenges and
+future directions, J. Neuroeng. Rehabil. 6 (2009).
+[11] H. Herr, R. Kornbluh, New horizons for orthotic and prosthetic technology:
+artificial muscle for ambulation, Smart Struct. Mater. (2004) 1–9.
+[12] H. Kawamoto, Y. Sankai, Power assist system hal-3 for gait disorder person, in:
+Computers Helping People with Special Needs, 2002, pp. 19–29.
+[13] J.A. Blaya, H. Herr, Adaptive control of a variable-impedance ankle-foot
+orthosis to assist drop-foot gait, IEEE Trans. Neural Syst. Rehabil. Eng. 12 (2004)
+24–31.
+[14] M.C. Ryder, F. Sup, Leveraging gait dynamics to improve efficiency and
+performance of powered hip exoskeletons, in: 2013 IEEE 13th International
+Conference on Rehabilitation Robotics, ICORR.
+[15] P. DeVita, T. Hortobagyi, Age causes a redistribution of joint torques and
+powers during gait, J. Appl. Physiol. 88 (2000) 1804–1811.
+[16] A. Roaas, G.B. Andersson, Normal range of motion of the hip, knee and ankle
+joints in male subjects, 30–40 years of age, Acta Orthop. 53 (1982) 205–208.
+[17] F.C. Anderson, M.G. Pandy, Dynamic optimization of human walking,
+J. Biomech. Eng. 123 (2001) 381.
+[18] K. Waldron, The constraint analysis of mechanisms, J. Mech. 1 (2) (1966)
+101–114.
+[19] F. Giovacchini, M. Fantozzi, M. Peroni, M. Moisé, M. Cempini, M. Cortese,
+D. Lefeber, M.C. Carrozza, N. Vitiello, A light-weight exoskeleton for hip
+flexion-extension assistance.
+[20] M. Cempini, S.M. de Rossi, T. Lenzi, N. Vitiello, M.C. Carrozza, Self-alignment
+mechanisms for assistive wearable robots: A kinetostatic compatibility
+method, IEEE Trans. Robot. 29 (1) (2013) 236–250.
+[21] N. Jarrasse, G. Morel, A methodology to design kinematics of fixations between
+an orthosis and a human member, in: Advanced Intelligent Mechatronics.
+[22] D.A. Winter, Kinematic and kinetic patterns in human gait: variability and
+compensating effects, Hum. Mov. Sci. 3 (1984) 51–76.
+[23] M.K. Mak, O. Levin, J. Mizrahi, C.W. Hui-Chan, Joint torques during sit-tostand in healthy subjects and people with Parkinson’s disease, Clin. Biomech.
+(Bristol, Avon) 18 (2003) 197–206.
+[24] J. Olivier, M. Bouri, H. Bleuler, A double-differential actuation for an assistive
+hip orthosis, Neurotechnixc (2013).
+[25] J. Olivier, M. Bouri, A. Ortlieb, H. Bleuler, R. Clavel, Development of an assistive
+motorized hip orthosis: Kinematics analysis and mechanical design, in: 2013
+IEEE 13th International Conference on Rehabilitation Robotics, ICORR, 2013,
+pp. 1–5.
+[26] M.R. Tucker, R. Gassert, Differential-damper topologies for actuators in
+rehabilitation robotics, in: 2012 Annual International Conference of the IEEE
+Engineering in Medicine and Biology Society, 2012, pp. 3081–3085.
+
+67
+
+[27] D. Chapuis, X. Michel, R. Gassert, C.-M. Chew, E. Burdet, H. Bleuler, A
+haptic knob with a hybrid ultrasonic motor and powder clutch actuator,
+in: EuroHaptics Conference and Symposium on Haptic Interfaces for Virtual
+Environment and Teleoperator Systems, WHC’07, 2007, pp. 200–205.
+[28] P. Fauteux, M. Lauria, B. Heintz, F. Michaud, Dual-differential rheological
+actuator for high-performance physical robotic interaction, IEEE Trans. Robot.
+26 (2010) 607–618.
+[29] P. Fauteux, M. Lauria, M. Legault, F. Michaud, Dual differential semi-active
+actuator fit for interaction tasks and fast motion, US Patent.
+
+Jeremy Olivier studied Microengineering at EPFL and received a M.S. degree in 2008. He then worked as a hardware engineer for VirtaMed (a start-up company from
+Zurich, Switzerland) until 2011. The same year, he joined
+the LSRO as a Ph.D. candidate and started working on walking assistive devices for the elderly. His interests are in mechanical design and in mechatronics in general.
+
+Amalric Ortlieb fulfilled his Bachelor and Master studies
+in Mechanical Engineering at the ‘Swiss Federal Institute of Technology’ (EPFL, Switzerland) which he finished
+in 2013. His domains of specialization are control and
+mechatronics with applications in biomedical technologies. Since 2014, he joined the ‘Laboratory of Robotic Systems’ at EPFL as a Ph.D. student to work on lower limb
+motorized orthoses for assistance of patients suffering
+from myopathy.
+
+Mohamed Bouri obtained his Ph.D. degree in Industrial
+Automation in 1997 from the National Institute of Applied
+Sciences of Lyon (INSA LYON France). Since 1997, he is
+at the Swiss Federal Institute of Technology (EPFL). He is
+mainly active in the field of robot control and robotics design for medical and industrial applications. Since 2002, he
+is the head of medical and rehabilitation robotics group
+at the Laboratory of Robotic Systems (LSRO). His current
+works concern the development of a walking assistive orthoses for elderly and people suffering from muscular dystrophy as well as light rehabilitation devices for the lower
+limbs.
+
+Hannes Bleuler obtained his Ph.D. in Mechatronics (Active
+Magnetic Bearings AMB) at ETHZ in 1984. He subsequently
+worked at Hitachi in Japan (Mechanical Engineering Research Lab MERL in Tsuchiura), then four months at Tokyo
+Institute of Technology (Ono-ken) and again (1987–1991)
+at ETHZ as lecturer. In 1991 he became ‘‘Toshiba Professor for Intelligent Mechatronics’’ at the Institute of Industrial Science of The University of Tokyo and in 1994 he
+became associate professor at the Precision Engineering
+Department of The University of Tokyo. Since 1995 he is
+full professor of Microengineering at the Swiss Federal Institute of Technology (EPFL), with biomedical robotics as main activity.
+
+

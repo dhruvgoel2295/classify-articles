@@ -1,0 +1,1038 @@
+Computational Geometry 48 (2015) 718–731
+
+Contents lists available at ScienceDirect
+
+Computational Geometry: Theory and
+Applications
+www.elsevier.com/locate/comgeo
+
+Approximating the bottleneck plane perfect matching
+of a point set
+A. Karim Abu-Affash a , Ahmad Biniaz b,∗,1 , Paz Carmi c,2 , Anil Maheshwari b,1 ,
+Michiel Smid b,1
+a
+b
+c
+
+Software Engineering Department, Shamoon College of Engineering, Beer-Sheva 84100, Israel
+School of Computer Science, Carleton University, Ottawa, Canada
+Department of Computer Science, Ben-Gurion University of the Negev, Beer-Sheva 84105, Israel
+
+a r t i c l e
+
+i n f o
+
+Article history:
+Received 13 May 2014
+Accepted 19 June 2015
+Available online 25 June 2015
+Keywords:
+Plane matching
+Bottleneck matching
+Geometric graph
+Unit disk graph
+Approximation algorithm
+
+a b s t r a c t
+A bottleneck plane perfect matching of a set of n points in R2 is deﬁned to be a perfect
+non-crossing matching that minimizes the length of the longest edge; the length of this
+longest edge is known as bottleneck. The problem of computing a bottleneck plane perfect
+matching has been proved to be NP-hard. We present an algorithm that computes a
+bottleneck plane matching of size at least n5 in O (n log2 n)-time. Then we extend our idea
+toward an O (n log n)-time approximation algorithm
+√ which
+√ computes a plane matching of
+size at least 2n
+whose edges have length at most 2 + 3 times the bottleneck.
+5
+© 2015 Elsevier B.V. All rights reserved.
+
+1. Introduction
+We study the problem of computing a bottleneck non-crossing matching of points in the plane. For a given set P of n
+points in the plane, where n is even, let K ( P ) denote the complete Euclidean graph with vertex set P . The bottleneck plane
+matching problem is to ﬁnd a perfect non-crossing matching of K ( P ) that minimizes the length of the longest edge. We
+denote such a matching by M ∗ . The bottleneck, λ∗ , is the length of the longest edge in M ∗ . The problem of computing M ∗
+has been proved to be NP-hard [1]. Fig. 1 in [1] and [3] shows that the longest edge in the minimum weight matching
+(which is planar) can be unbounded with respect to λ∗ . On the other hand the weight of the bottleneck matching can be
+unbounded with respect to the weight of the minimum weight matching, see Fig. 1.
+Matching and bottleneck matching problems play an important role in graph theory, and thus, they have been studied
+extensively, e.g., [1,2,4,7,8,11,12]. Self-crossing conﬁgurations are often undesirable and may even imply an error condition;
+for example, a potential collision between moving objects, or inconsistency in a layout of a circuit. In particular, non-crossing
+matchings are especially important in the context of VLSI circuit layouts [9] and operations research.
+
+*
+
+Corresponding author.
+E-mail addresses: abuaa1@sce.ac.il (A.K. Abu-Affash), ahmad.biniaz@gmail.com (A. Biniaz), carmip@cs.bgu.ac.il (P. Carmi), anil@scs.carleton.ca
+(A. Maheshwari), michiel@scs.carleton.ca (M. Smid).
+1
+Research supported by NSERC.
+2
+The research is partially supported by the Lynn and William Frankel Center for Computer Science and by grant 680/11 from the Israel Science
+Foundation (ISF).
+http://dx.doi.org/10.1016/j.comgeo.2015.06.005
+0925-7721/© 2015 Elsevier B.V. All rights reserved.
+
+A.K. Abu-Affash et al. / Computational Geometry 48 (2015) 718–731
+
+719
+
+Fig. 1. (a) Bottleneck matching, (b) minimum weight matching.
+
+Table 1
+Summary of results.
+Algorithm
+
+Time complexity
+
+Bottleneck (λ)
+
+Size of matching
+
+Abu-Affash et al. [1]
+Section 4.1
+Section 4.2
+
+O (n1.5 log n)
+O (n log2 n)
+O (n log n)
+
+2 10λ∗
+
+n/2
+n/5
+2n/5
+
+√
+
+∗
+λ√
+√
+( 2 + 3)λ∗
+
+1.1. Previous work
+It is desirable to compute a perfect matching of a point set in the plane, which is optimal with respect to some criterion
+such as: (a) minimum-cost matching which minimizes the sum of the lengths of all edges; also known as minimum-weight
+matching or min-sum matching, and (b) bottleneck matching which minimizes the length of the longest edge; also known
+as min–max matching [8]. For the minimum-cost matching, Vaidya [11] presented an O (n2.5 log4 n) time algorithm, which
+was improved to O (n1.5 log5 n) by Varadarajan [12]. As for bottleneck matching, Chang et al. [4] proved that such kind of
+matching is a subset of 17-RNG (relative neighborhood graph). They presented an algorithm, running in O (n1.5 log n)-time
+to compute a bottleneck matching of maximum cardinality. The matching computed by their algorithm may be crossing.
+Efrat and Katz [8] extended the result of Chang et al. [4] to higher dimensions. They proved that a bottleneck matching in
+any constant dimension can be computed in O (n1.5 log n)-time under the L ∞ -norm.
+Note that a plane perfect matching of a point set can be computed in O (n log n)-time, e.g., by matching the two leftmost
+points recursively.
+Abu-Affash et al. [1] showed that the bottleneck plane perfect matching problem
+is NP-hard and presented √
+an algorithm
+√
+that computes a plane perfect matching whose edges have length at most 2 10 times the bottleneck, i.e., 2 10λ∗ . They
+also showed that this problem does not admit a PTAS (Polynomial Time Approximation Scheme), unless P = NP. Carlsson
+et al. [3] showed that the bottleneck plane perfect matching problem for a Euclidean bipartite complete graph is also
+NP-hard.
+1.2. Our results
+The main results of this paper are summarized in Table 1. We use the unit disk graph as a tool for our approximations.
+1
+First, we present an O (n log n)-time algorithm in Section 3, that computes a plane matching of size at least n−
+in a
+5
+connected unit disk graph. Then in Section 4.1 we describe how one can use this algorithm to obtain a bottleneck plane
+matching of size at least n5 with edges of length at most λ∗ in O (n log2 n)-time. In Section 4.2 we present an O (n log n)-time
+approximation algorithm that computes a plane matching of size at least
+Finally we conclude this paper in Section 5.
+
+2n
+5
+
+√
+
+whose edges have length at most ( 2 +
+
+√
+
+3)λ∗ .
+
+2. Preliminaries
+Let P denote a set of n points in the plane, where n is even, and let K ( P ) denote the complete Euclidean graph over P .
+A matching, M, is a subset of edges of K ( P ) without common vertices. Let | M | denote the cardinality of M, which is the
+number of edges in M. M is a perfect matching if it covers all the vertices of P , i.e., | M | = n2 . The bottleneck of M is deﬁned
+as the longest edge in M. We denote its length by λ M . A bottleneck perfect matching is a perfect matching that minimizes
+the bottleneck length. A plane matching is a matching with non-crossing edges. We denote a plane matching by M = and
+a crossing matching by M × . The bottleneck plane perfect matching, M ∗ , is a perfect plane matching which minimizes the
+length of the longest edge. Let λ∗ denote the length of the bottleneck edge in M ∗ . In this paper we consider the problem
+of computing a bottleneck plane matching of P .
+The Unit Disk Graph, UDG( P ), is deﬁned to have the points of P as its vertices and two vertices p and q are connected
+by an edge if their Euclidean distance | pq| is at most 1. The maximum plane matching of UDG( P ) is the maximum cardinality
+matching of UDG( P ), which has no pair of crossing edges.
+Lemma 1. If the maximum plane matching in unit disk graphs can be computed in polynomial time, then the bottleneck plane perfect
+matching problem for point sets can also be solved in polynomial time.
+
+720
+
+A.K. Abu-Affash et al. / Computational Geometry 48 (2015) 718–731
+
+Fig. 2. In MST ( P ), the triangle
+
+uv w formed by two adjacent edges (u , v ) and (u , w ), is empty.
+
+Proof. Let D = {| pq| : p , q ∈ P } be the set of all distances determined by pairs of points in P . Note that λ∗ ∈ D. For each
+λ ∈ D, deﬁne the “unit” disk graph DG(λ, P ), in which two points p and q are connected by an edge if and only if | pq| ≤ λ.
+Then λ∗ is the minimum λ in D such that DG(λ, P ) has a plane matching of size n2 . ✷
+The Gabriel Graph, GG( P ), is deﬁned to have the points of P as its vertices and two vertices p and q are connected by
+an edge if the disk with diameter pq does not contain any point of P \ { p , q} in its interior and on its boundary.
+Lemma 2. If the unit disk graph UDG( P ) of a point set P is connected, then UDG( P ) and K ( P ) have the same minimum spanning tree.
+Proof. By running Kruskal’s algorithm on UDG( P ), we get a minimum spanning tree, say T . All the edges of T have length
+at most one, and the edges of K ( P ) which do not belong to UDG( P ) all have length greater than one. Hence, T is also a
+minimum spanning tree of K ( P ). ✷
+As a direct consequence of Lemma 2 we have the following corollary:
+Corollary 1. Consider the unit disk graph UDG( P ) of a point set P . We can compute the minimum spanning forest of UDG( P ), by ﬁrst
+computing the minimum spanning tree of P and then removing the edges whose length is more than one.
+Lemma 3. For each pair of crossing edges (u , v ) and (x, y ) in UDG( P ), the four endpoints u, v, x, and y are in the same component of
+UDG( P ).
+Proof. Note that the quadrilateral Q formed by the end points u, v, x, and y is convex. W.l.o.g. assume that the angle
+xu y is the largest angle in Q . Clearly xu y ≥ π /2, and hence, in triangle xu y, the angles yxu and u yx are both less
+than π /2. Thus, the edges (u , x) and (u , y ) are both less than (x, y ). This means that (u , x) and (u , y ) are also edges of
+UDG( P ), thus, their four endpoints belong to the same component. ✷
+As a direct consequence of Lemma 3 we have the following corollary:
+Corollary 2. Any two edges that belong to different components of UDG( P ) do not cross.
+Let MST ( P ) denote the Euclidean minimum spanning tree of P .
+Lemma 4. If (u , v ) and (u , w ) are two adjacent edges in MST ( P ), then the triangle
+its boundary.
+
+uv w has no point of P \ {u , v , w } inside or on
+
+Proof. If the angle between the line segments uv and u w is equal to π then clearly there is no other point of P on uv and
+u w. So assume that vu w < π . Refer to Fig. 2. Since MST ( P ) is a subgraph of the Gabriel graph, the circles C 1 and C 2 with
+diameters uv and u w are empty. Since vu w < π , C 1 and C 2 intersect each other at two points, say u and p. Connect u,
+v and w to p. Since uv and u w are the diameters of C 1 and C 2 , upv = wpu = π /2. This means that v w is a straight
+line segment. Since C 1 and C 2 are empty and uv w ⊂ C 1 ∪ C 2 , it follows that uv w ∩ P = {u , v , w }. ✷
+Corollary 3. Consider MST ( P ) and let N v be the set of neighbors of a vertex v in MST ( P ). Then the convex hull of N v contains no point
+of P except v and the set N v .
+The shaded area in Fig. 3 shows the union of all these convex hulls.
+
+A.K. Abu-Affash et al. / Computational Geometry 48 (2015) 718–731
+
+721
+
+Fig. 3. Minimum spanning tree T with union of empty convex hulls. The skeleton tree T is surrounded by dashed line, and v is a leaf in T .
+
+3. Plane matching in unit disk graphs
+In this section we present two approximation algorithms for computing a maximum plane matching in a unit disk graph
+UDG( P ). In Section 3.1 we present a straight-forward 13 -approximation algorithm; it is unclear whether this algorithm runs
+in polynomial time. For the case when UDG( P ) is connected, we present a
+3.1.
+
+1
+-Approximation
+3
+
+2
+-approximation
+5
+
+algorithm in Section 3.2.
+
+algorithm
+
+Given a possibly disconnected unit disk graph UDG( P ), we start by computing a (possibly crossing) maximum matching
+M × of UDG( P ) using Edmonds algorithm [6]. Then we transform M × to another (possibly crossing) matching M × with
+some properties, and then pick at least one-third of its edges which satisfy the non-crossing property. Consider a pair of
+crossing edges ( p , q) and (r , s) in M × , and let c denote the intersection point. If their smallest intersection angle is at
+most π /3, we replace these two edges with new ones. For example if pcr ≤ π /3, we replace ( p , q) and (r , s) with new
+edges ( p , r ) and (q, s). Since the angle between them is at most π /3, the new edges are not longer than the older ones,
+i.e. max{| pr |, |qs|} ≤ max{| pq|, |rs|}, and hence the new edges belong to the unit disk graph. On the other hand the total
+length of the new edges is strictly less than the older ones; i.e. | pr | + |qs| < | pq| + |rs|. For each pair of intersecting edges
+in M × , with angle at most π /3, we apply this replacement. We continue this process until we have a matching M × with
+the property that if two matched edges intersect, each of the angles incident on c is larger than π /3.
+For each edge in M × , consider the counter clockwise angle it makes with the positive x-axis; this angle is in the range
+[0, π ). Using these angles, we partition the edges of M × into three subsets, one subset for the angles [0, π /3), one subset
+for the angles [π /3, 2π /3), and one subset for the angles [2π /3, π ). Observe that edges within one subset are non-crossing.
+Therefore, if we output the largest subset, we obtain a non-crossing matching of size at least | M × |/3 = | M × |/3.
+Since in each step (each replacement) the total length of the matched edges decreases, the replacement process converges and the algorithm will stop. We do not know whether this process converges in a polynomial number of steps in the
+size of UDG( P ).
+3.2.
+
+2
+-Approximation
+5
+
+algorithm for connected unit disk graphs
+
+In this section we assume that the unit disk graph UDG( P ) is connected. Monma et al. [10] proved that every set of
+points in the plane admits a minimum spanning tree of degree at most ﬁve which can be computed in O (n log n) time.
+By Lemma 2, the same claim holds for UDG( P ). Here we present an algorithm which extracts a plane matching M from
+MST ( P ). Consider a minimum spanning tree T of UDG( P ) with vertices of degree at most ﬁve. We deﬁne the skeleton tree,
+T , as the tree obtained from T by removing all its leaves; see Fig. 3. Clearly T ⊆ T ⊆ UDG( P ). For clarity we use u and v to
+refer to the leaves of T and T respectively. In addition, let v and v , respectively, refer to the copies of a vertex v in T and
+T . In each step, pick an arbitrary leaf v ∈ T . By the deﬁnition of T , it is clear that the copy of v in T , i.e. v, is connected
+to vertices u 1 , . . . , uk , for some 1 ≤ k ≤ 4, which are leaves of T (if T has one vertex then k ≤ 5). Pick an arbitrary leaf u i
+and add ( v , u i ) as a matched pair to M. For the next step we update T by removing v and all its adjacent leaves. We also
+compute the new skeleton tree and repeat this process. In the last iteration, T is empty and we may be left with a tree T
+consisting of one single vertex or one single edge. If T consists of one single vertex, we disregard it, otherwise we add its
+only edge to M.
+The formal algorithm is given as PlaneMatching (Algorithm 1), which receives a point set P —whose unit disk graph is
+connected—as input and returns a matching M as output. The function MST5( P ) returns a Euclidean minimum spanning
+tree of P with degree at most ﬁve, and the function Neighbor( v , T ) returns the only neighbor of leaf v in T .
+Lemma 5. Given a set P of n points in the plane such that UDG( P ) is connected, algorithm PlaneMatching returns a plane matching
+1
+M of MST ( P ) of size | M | ≥ n−
+. Furthermore, M can be computed in O (n log n) time.
+5
+
+722
+
+A.K. Abu-Affash et al. / Computational Geometry 48 (2015) 718–731
+
+Algorithm 1 PlaneMatching( P ).
+Input: set P of n points in the plane, such that UDG( P ) is connected.
+1
+Output: plane matching M of MST ( P ) with | M | ≥ n−
+.
+5
+1:
+2:
+3:
+4:
+5:
+6:
+7:
+8:
+9:
+10:
+11:
+12:
+13:
+14:
+15:
+16:
+17:
+18:
+19:
+
+M←∅
+T ← MST5( P )
+T ← SkeletonTree( T )
+while T = ∅ do
+v ← a leaf of T
+L v ← set of leaves connected to v in T
+u ← an element of L v
+M ← M ∪ {( v , u )}
+T ← T \ ({ v } ∪ L v )
+if deg (Neighbor( v , T )) = 2 then
+T ← T \ { v , Neighbor( v , T )}
+else
+T ← T \ {v }
+end if
+end while
+if T consists of one single edge then
+M←M∪T
+end if
+return M
+
+Fig. 4. Unit disk graph with all edges of unit length, and maximum matching of size
+
+n−1
+.
+5
+
+Proof. In each iteration an edge ( v , u i ) ∈ T is added to M. Since T is plane, M is also plane and M is a matching of MST ( P ).
+Line 5 picks v ∈ T which is a leaf, so its analogous vertex v ∈ T is connected to at least one leaf. In each iteration we
+select an edge incident to one of the leaves and add it to M, then disregard all other edges connected to v (line 9). So for
+the next iteration T looses at most ﬁve edges. Since T has n − 1 edges initially and we add one edge to M out of each ﬁve
+1
+edges of T , we have | M | ≥ n−
+.
+5
+According to Corollary 1 and by [10], line 2 takes O (n log n) time. The while-loop is iterated O (n) times and in each
+iteration, lines 5–13 take constant time. So, the total running time of algorithm PlaneMatching is O (n log n). ✷
+The size of a maximum matching can be at most
+least
+
+2(n−1)
+5n
+
+n
+.
+2
+
+Therefore, algorithm PlaneMatching computes a matching of size at
+
+times the size of a perfect matching, and hence, when n is large enough, PlaneMatching is a
+
+2
+-approximation
+5
+
+1
+algorithm. On the other hand there are unit disk graphs whose maximum matchings have size n−
+; see Fig. 4. In this case
+5
+PlaneMatching returns a maximum matching. In addition, when UDG( P ) is a tree or a cycle, PlaneMatching returns a
+maximum matching.
+In Section 4.1 we will show how one can use a modiﬁed version of algorithm PlaneMatching to compute a bottleneck
+plane matching of size at least n5 with bottleneck length at most λ∗ . Recall that λ∗ is the length of the bottleneck edge in
+the bottleneck plane perfect matching M ∗ . Section
+this idea to an algorithm which computes a plane matching
+√ 4.2 extends
+√
+of size at least 2n
+with edges of length at most ( 2 + 3)λ∗ .
+5
+
+4. Approximating bottleneck plane perfect matching
+The general approach of our algorithms is to ﬁrst compute a (possibly crossing) bottleneck perfect matching M × of K ( P )
+using the algorithm in [4]. Let λ M × denote the length of the bottleneck edge in M × . It is obvious that the bottleneck length
+of any plane perfect matching is not less than λ M × . Therefore, λ∗ ≥ λ M × . We consider a “unit” disk graph DG(λ M × , P ) over
+P , in which there is an edge between two vertices p and q if | pq| ≤ λ M × . Note that DG(λ M × , P ) is not necessarily connected.
+Let G 1 , . . . , G k be the connected components of DG(λ M × , P ). For each component G i , consider a minimum spanning tree T i
+of degree at most ﬁve. We show how to extract from T i a plane matching M i of proper size and appropriate edge lengths.
+Lemma 6. Each component of DG(λ M × , P ) has an even number of vertices.
+
+A.K. Abu-Affash et al. / Computational Geometry 48 (2015) 718–731
+
+723
+
+Fig. 5. Resulted matching M i by modiﬁed PlaneMatching. The numbers show the order in which the edges (bold edges) are added to M i .
+
+Proof. This follows from the facts that M × is a perfect matching and both end points of each edge in M × belong to the
+same component of DG(λ M × , P ). ✷
+4.1. First approximation algorithm
+In this section we describe the process of computing a plane matching M of size | M | ≥ 15 n with bottleneck length at
+most λ∗ . Consider the minimum spanning trees T 1 , . . . , T k of the k components of DG(λ M × , P ). For 1 ≤ i ≤ k, let P i denote
+the set of vertices in T i and ni denote the number of vertices of P i . Our approximation algorithm runs in two steps:
+Step 1: We start by running algorithm PlaneMatching on each of the point sets P i . Let M i be the output. Recall that
+algorithm PlaneMatching, from Section 3.2, picks a leaf v ∈ T i , corresponding to a vertex v ∈ T i , matches it to one of
+its neighboring leaves in T i and disregards the other edges connected to v. According to Lemma 5, this gives us a plane
+n −1
+n
+matching M i of size at least i 5 . However, we are looking for a matching of size at least 5i .
+The total number of edges of T i is ni − 1 and in each of the iterations, the algorithm picks one edge out of at most ﬁve
+candidates. If in at least one of the iterations of the while-loop, v has degree at most four (in T i ), then in that iteration
+algorithm PlaneMatching picks one edge out of at most four candidates. Therefore, the size of M i satisﬁes
+
+|M i | ≥ 1 +
+
+(ni − 1) − 4
+5
+
+=
+
+ni
+5
+
+.
+
+If in all the iterations of the while-loop, v has degree ﬁve, we look at the angles between the consecutive leaves connected
+to v. Recall that in MST ( P ) all the angles are greater than or equal to π /3. If in at least one of the iterations, v is connected
+to two consecutive leaves u j and u j +1 for 1 ≤ j ≤ 3, such that u j vu j +1 = π /3, we change M i as follow. Remove from
+M i the edge incident to v and add to M i the edges (u j , u j +1 ) and ( v , u s ), where u s , s ∈
+/ { j , j + 1}, is one of the leaves
+connected to v. Clearly vu j u j +1 is equilateral and |u j u j +1 | = |u j v | = |u j +1 v | ≤ λ M × , and by Lemma 4, (u j , u j +1 ) does not
+cross other edges. In this case, the size of M i satisﬁes
+
+|M i | = 2 +
+
+(ni − 1) − 5
+5
+
+=
+
+ni + 4
+5
+
+≥
+
+ni
+5
+
+.
+
+Step 2: In this step we deal with the case that in all the iterations of the while-loop, v has degree ﬁve and the angle
+between any pair of consecutive leaves connected to v is greater than π /3. Recall that M × is a perfect matching and both
+end points of each edge in M × belong to the same T i .
+Lemma 7. In Step 2, at least two leaves of T i are matched in M × .
+Proof. Let mi and mi denote the number of external (leaves) and internal nodes of T i , respectively. Clearly mi is equal to
+the number of vertices of T i and mi + mi = ni . Consider the reverse process in PlaneMatching. Start with a 5-star tree t i ,
+i.e. t i = K 1,5 , and in each iteration append a new K 1,5 to t i until t i = T i . In the ﬁrst step mi = 5 and mi = 1. In each iteration
+a leaf of the appended K 1,5 is identiﬁed with a leaf of t i ; the resulting vertex becomes an internal node. On the other hand,
+the “center” of the new K 1,5 becomes an internal node of t i and its other four neighbors become leaves of t i . So in each
+iteration, the number of leaves mi increases by three, and the number of internal nodes mi increases by two. Hence, in all
+iterations (including the ﬁrst step) we have mi ≥ mi + 4.
+Again consider M × . In the worst case if all mi internal vertices of T i are matched to leaves, we still have four leaves
+which have to be matched together. ✷
+According to Lemma 7 there is an edge ( p , p ) ∈ M × where p and p are leaves in T i . We can ﬁnd p and p for all T i ’s
+by checking all the edges of M × once. We remove all the edges of M i and initialize M = {( p , p )}. Again we run a modiﬁed
+version of PlaneMatching in such a way that in each iteration, in line 7 it selects the leaf u i adjacent to v such that ( v , u i )
+is not intersected by ( p , p ). In each iteration v has degree ﬁve and is connected to at least four leaf edges with angles
+greater than π /3. Thus, ( p , p ) can intersect at most three of the leaf edges and such kind of ( v , u i ) exists. See Fig. 5. In
+this case, M i has size
+
+724
+
+A.K. Abu-Affash et al. / Computational Geometry 48 (2015) 718–731
+
+|M i | = 1 +
+
+ni − 1
+5
+
+=
+
+ni + 4
+5
+
+≥
+
+ni
+5
+
+.
+
+We run the above algorithm on each T i and for each of them we compute a plane matching M i . The ﬁnal matching of
+k
+point set P will be M = i =1 M i .
+Theorem 1. Let P be a set of n points in the plane, where n is even, and let λ∗ be the minimum bottleneck length of any plane perfect
+matching of P . In O (n1.5 log n) time, a plane matching of P of size at least n5 can be computed, whose bottleneck length is at most λ∗ .
+Proof.
+Proof of edge length: Let λ M × be the length of the longest edge in M × and consider a component G i of DG(λ M × , P ). All the
+selected edges in Steps 1 and 2 belong to T i except (u j , u j +1 ) and ( p , p ). T i is a subgraph of G i , and the edge (u j , u j +1 )
+belongs to G i , and the edge ( p , p ) belongs to M × (which belongs to G i as well). So all the selected edges belong to G i ,
+and λ M i ≤ λ M × . Since λ M × ≤ λ∗ , we have λ M i ≤ λ M × ≤ λ∗ for all i, 1 ≤ i ≤ k.
+Proof of planarity: The edges of M i belong to the minimum spanning forest of DG(λ M × , P ) which is plane, except
+(u j , u j +1 ) and ( p , p ). According to Corollary 2 and Lemma 4 the edge (u j , u j +1 ) does not cross the edges of the minimum spanning forest. In Step 2 we select edges of T i in such a way that avoid ( p , p ). Note that ( p , p ) belongs to the
+component G i and by Corollary 2 it does not cross any edge of the other components of DG(λ M × , P ). So M is plane.
+n
+Proof of matching size: Since M = M 1 ∪ · · · ∪ M k , and for each 1 ≤ i ≤ k, | M i | ≥ 5i , hence
+k
+
+|M | ≥
+
+k
+
+|M i | ≥
+i =1
+
+i =1
+
+ni
+5
+
+n
+
+= .
+5
+
+Proof of complexity: The initial matching M × can be computed in time O (n1.5 log n) by using the algorithm of Chang
+et al. [4]. By Lemma 5 algorithm PlaneMatching runs in O (n log n) time. In Step 1 we spend constant time for checking
+the angles and the number of leaves connected to v during the while-loop. In Step 2, the matched leaves p and p can be
+computed in O (n) time for all T i ’s by checking all the edges of M × before running the algorithm again. So the modiﬁed
+PlaneMatching still runs in O (n log n) time, and the total running time of our method is O (n1.5 log n). ✷
+Since the running time of the algorithm is bounded by the time of computing the initial bottleneck matching M × , any
+improvement in computing M × leads to a faster algorithm for computing a plane matching M. In the next section we
+improve the running time.
+4.1.1. Improving the running time
+In this section we present an algorithm that improves the running time to O (n log2 n). We ﬁrst compute a forest F , such
+that each edge in F is of length at most λ∗ and, for each tree T ∈ F , we have a leaf p ∈ T and a point p ∈ T such that
+| pp | ≤ λ∗ . Once we have this forest F , we apply Step 1 and Step 2 on F to obtain the matching M as in the previous
+section.
+Let MST ( P ) be a (ﬁve-degree) minimum spanning tree of P . Let F λ = { T 1 , T 2 , . . . , T k } be the forest obtained from MST ( P )
+by removing all the edges whose length is greater than λ, i.e., F λ = {e ∈ MST ( P ) : |e | ≤ λ}. For a point p ∈ P , let cl( p , P ) be
+the point in P that is closest to p.
+Lemma 8. For all T ∈ F λ∗ , it holds that
+(i) the number of points in T is even, and
+(ii) for each two leaves p , q ∈ T that are incident to the same node v in T , let p = cl( p , P \ { v }), let q = cl(q, P \ { v }), and assume
+that | pp | ≤ |qq |. Then, λ∗ ≥ | pp | and p belongs to T .
+Proof. (i) Suppose that T has odd number of points. Thus in M ∗ one of the points in T should be matched to a point in a
+tree T = T by an edge e. Since e ∈
+/ F λ∗ , we have |e | > λ∗ , which contradicts that λ∗ is the minimum bottleneck. (ii) Note
+that v is the closest point to both p and q. In M ∗ , at most one of p and q can be matched to v, and the other one must be
+matched to a point which is at least as far as its second closest point. Thus, λ∗ is at least | pp |. The distance between any
+two trees in F λ∗ is greater than λ∗ . Now if p is not in T , then in any bottleneck perfect matching, either p or q is matched
+to a point of distance greater than λ∗ , which contradicts that λ∗ is the minimum bottleneck. ✷
+Let E = (e 1 , e 2 , . . . , en−1 ) be the edges of MST ( P ) in sorted order of their lengths. Our algorithm performs a binary
+search on E, and for each considered edge e i , it uses Algorithm 2 to decide whether λ < λ∗ , where λ = |e i |. The algorithm
+constructs the forest F λ , and for each tree T in F λ , it picks two leaves p and q from T and ﬁnds their second closest points
+p and q . Assume w.l.o.g. that | pp | ≤ |qq |. Then, the algorithm returns FALSE if p does not belong to T . By Lemma 8, if
+the algorithm returns FALSE, then we know that λ < λ∗ .
+
+A.K. Abu-Affash et al. / Computational Geometry 48 (2015) 718–731
+
+725
+
+Algorithm 2 CompareToOpt(λ).
+1:
+2:
+3:
+4:
+5:
+6:
+7:
+8:
+9:
+10:
+11:
+12:
+13:
+14:
+15:
+16:
+17:
+18:
+19:
+20:
+21:
+22:
+23:
+24:
+25:
+
+compute F λ
+L ← empty list
+for each T ∈ F λ do
+if T has an odd number of points then
+return FALSE
+end if
+if there exist two leaves p and q incident to a node v ∈ T then
+p ← cl( p , P \ { v })
+q ← cl(q, P \ { v })
+if | pp | ≤ |qq | then
+if p does not belong to T then
+return FALSE
+else
+add the triple ( p , p , T ) to L
+end if
+else
+if q does not belong to T then
+return FALSE
+else
+add the triple (q, q , T ) to L
+end if
+end if
+end if
+end for
+return L
+
+Let e j be the shortest edge in MST ( P ), for which Algorithm 2 does not return FALSE. This means that Algorithm 2 returns
+FALSE for e j −1 , and there is a tree T in F |e j−1 | and a leaf p in T , such that | pp | ≥ |e j |. Thus |e j | ≤ λ∗ and for each tree T
+in the forest F |e j | , we stored a leaf p of T and a point p ∈ T , such that | pp | ≤ λ∗ . Since each tree in F |e j | is a subtree of
+MST ( P ), F |e j | is planar and each tree in F |e j | is of degree at most ﬁve.
+Now we can apply Step 1 and Step 2 on F |e j | as in the previous section. Note that in Step 2, for each tree T i we have
+a pair ( p , p ) (or (q, q )) in the list L which can be matched. In Step 2, in each iteration v has degree ﬁve, thus, p should
+be a vertex of degree two or a leaf in T i . If p is a leaf we run the modiﬁed version of PlaneMatching as in the previous
+section. If p has degree two, we remove all the edges of M i and initialize M i = ( p , p ). Then remove p from T i and run
+k
+PlaneMatching on the resulted subtrees. Finally, set M = i =1 M i .
+Lemma 9. The matching M is planar.
+Proof. Consider two edges e = ( p , p ) and e = (q, q ) in M. We distinguish between four cases:
+1. e ∈ F |e j | and e ∈ F |e j | . In this case, both e and e belong to MST ( P ) and hence they do not cross each other.
+/ F |e j | and e ∈ F |e j | . If e and e cross each other, then this contradicts the selection of (q, q ) in Step 2 (which prevents
+2. e ∈
+( p , p )).
+3. e ∈ F |e j | and e ∈
+/ F |e j | . It leads to a contradiction as in the previous case.
+4. e ∈
+/ F |e j | and e ∈
+/ F |e j | . If e and e cross each other, then either min{| pq|, | pq |} < | pp | or min{|qp |, |qp |} < |qq |, which
+contradicts the selection of p or q . Note that p cannot be the second closest point to q, because p and q are in
+different trees. ✷
+Lemma 10. The matching M can be computed in O (n log2 n) time.
+Proof. Computing MST ( P ) and sorting its edges take O (n log n) [5]. Since we performed a binary search on the edges of
+MST ( P ), we need log n iterations. In each iteration, for an edge e i , we compute the forest F |e i | in O (n) and the number of
+the trees in the forest can be O (n) in the worst case. We compute in advance the second order Voronoi diagram of the
+points together with a corresponding point location data structure, in O (n log n) [5]. For each tree in the forest, we perform
+a point location query to ﬁnd the closest points p and q , which takes O (log n) for each query. Therefore the total running
+time is O (n log2 n). ✷
+Theorem 2. Let P be a set of n points in the plane, where n is even, and let λ∗ be the minimum bottleneck length of any plane perfect
+matching of P . In O (n log2 n) time, a plane matching of P of size at least n5 can be computed, whose bottleneck length is at most λ∗ .
+
+726
+
+A.K. Abu-Affash et al. / Computational Geometry 48 (2015) 718–731
+
+Fig. 6. The vertices around v are sorted clockwise, and v i is an anchor vertex.
+
+4.2. Second approximation algorithm
+In this section we present another approximation algorithm which gives a plane matching M of size | M | ≥
+
+2
+
+n with
+
+5
+√
+√
+bottleneck length λ M ≤ ( 2 + 3)λ∗ . Let DT ( P ) denote the Delaunay triangulation of P . Let the edges of DT ( P ) be, in
+sorted order of their lengths, e 1 , e 2 , . . .. Initialize a forest F consisting of n tress, each one being a single node for one point
+of P . Run Kruskal’s algorithm on the edges of DT ( P ) and terminate as soon as every tree in F has an even number of nodes.
+
+Let el be the last edge that is added by Kruskal’s algorithm. Observe that el is the longest edge in F . Denote the trees in F
+by T 1 , . . . , T k and for 1 ≤ i ≤ k, let P i be the vertex set of T i and let ni = | P i |.
+Lemma 11. λ∗ ≥ |el |.
+Proof. Let i be such that el is an edge in T i . Let T i and T i be the trees obtained by removing el from T i . Let P i be the
+vertex set of T i . Then |el | = min{| pq| : p ∈ P i , q ∈ P \ P i }. Consider the optimal matching M ∗ with bottleneck length λ∗ .
+Since el is the last edge added, P i has odd size. The matching M ∗ contains an edge joining a point in P i with a point in
+P \ P i . This edge has length at least |el |. ✷
+By Lemma 11 the length of the longest edge in F is at most λ∗ . For each T i ∈ F , where 1 ≤ i ≤ k, our algorithm will
+√
+√
+2n
+k
+compute a plane matching M i of P i of size at least 5 i with edges of length at most ( 2 + 3)λ∗ and returns i =1 M i . To
+describe the algorithm for tree T i on vertex set P i , we will write P , T , n, M instead of P i , T i , ni , M i , respectively. Thus, P
+is a set of n points, where n is even, and T is a minimum spanning tree of P i .
+Consider the minimum spanning tree T of P having degree at most ﬁve, and let T be the skeleton tree of T . Suppose
+that T has at least two vertices. We will use the following notation. Let v be a leaf in T , and let w be the neighbor of v .
+Recall that v and w are copies of vertices v and w in T . In T , we consider the clockwise ordering of the neighbors of v.
+Let this ordering be w , u 1 , u 2 , . . . , uk for some 1 ≤ k ≤ 4. Clearly u 1 , . . . , uk are leaves in T . Consider two leaves u i and u j
+where i < j. We deﬁne c w (u i vu j ) as the clockwise angle from vu i to vu j . We say that the leaf v (or its copy v) is an
+anchor if k = 2 and c w (u 1 vu 2 ) ≥ π . See Fig. 6.
+Now we describe how one can iteratively compute a plane matching of proper size with bounded-length edges from T .
+We start with an empty matching M. Each iteration consists of two steps, during which
+√ we√add edges to M. As we prove
+later, the output is a plane matching of P of size at least 25 n with bottleneck at most ( 2 + 3)λ∗ .
+4.2.1. Step 1
+We keep applying the following process as long as T has more than six vertices and T has some non-anchor leaf. Note
+that T has at least two vertices.
+Take a non-anchor leaf v in T and according to the number k of leaves connected to v in T do the following:
+k=1
+k=2
+k=3
+k=4
+
+Add ( v , u 1 ) to M, and set T = T \ { v , u 1 }.
+Since v is not an anchor, c w (u 1 vu 2 ) < π . By Lemma 4 the triangle u 1 vu 2 is empty. We add (u 1 , u 2 ) to M, and
+set T = T \ {u 1 , u 2 }.
+In this case v has degree four and at least one of c w (u 1 vu 2 ) and c w (u 2 vu 3 ) is less than π . W.l.o.g. suppose that
+c w (u 1 vu 2 ) < π . By Lemma 4 the triangle u 1 vu 2 is empty. Add (u 1 , u 2 ) to M and set T = T \ {u 1 , u 2 }.
+This case is handled similarly as the case k = 3.
+
+At the end of Step 1, T has at most six vertices or all the leaves of T are anchors. In the former case, we add edges to
+M as will be described in Section 4.2.3 and after which the algorithm terminates. In the latter case we go to Step 2.
+4.2.2. Step 2
+In this step we deal with the case that T has more than six vertices and all the leaves of T are anchors. We deﬁne
+the second level skeleton tree T to be the skeleton tree of T . In other words, T is the tree which is obtained from T by
+removing all the leaves. For clarity we use w to refer to a leaf of T , and we use w, w , and w , respectively, to refer to the
+
+A.K. Abu-Affash et al. / Computational Geometry 48 (2015) 718–731
+
+Fig. 7. Second level skeleton tree T
+clockwise around v i .
+
+727
+
+is surrounded by dashed line. v i ’s are ordered clockwise around leaf vertex w , as well as xi ’s. ai and b i are ordered
+
+Fig. 8. Illustrating Lemma 12.
+
+copies of vertex w in T , T , and T . For now suppose that T has at least two vertices. Consider a leaf w and its neighbor
+y in T . Note that in T , w is connected to y, to at least one anchor, and possibly to some leaves of T . After Step 1, the
+copy of w in T , i.e. w , is connected to anchors v 1 , . . . , v k in T (or v 1 , . . . , v k in T ) for some 1 ≤ k ≤ 4, and connected
+to at most 4 − k leaves of T . In T , we consider the clockwise ordering of the non-leaf neighbors of w. Let this ordering be
+y , v 1 , v 2 , . . . , v k . We denote the pair of leaves connected to anchor v i by ai and b i in clockwise order around v i ; see Fig. 7.
+In this step we pick an arbitrary leaf w ∈ T and according to the number of anchors incident to w , i.e. k, we add
+edges to M. Since 1 ≤ k ≤ 4, four cases occur and we discuss each case separately. Before that, we state some lemmas.
+Lemma 12. Let w be a leaf in T . Consider an anchor v i which is adjacent to w in T . For any neighbor x of w for which x = v i , if
+c w ( v i wx) ≤ π /2 (resp. c w (xw v i ) ≤ π /2), the polygon P 1 = { v i , x, w , ai } (resp. P 2 = { v i , b i , w , x}) is convex and empty.
+Proof. We prove the case when c w ( v i wx) ≤ π /2; see Fig. 8. The proof for the second case is symmetric. To prove the
+convexity of P 1 we show that the diagonals v i w and ai x of P 1 intersect each other. To show the intersection we argue that
+−−→
+−−→
+ai lies to the left of xv i and to the right of xw.
+−−→
+−−→
+Consider xv i . According to Lemma 4, triangle v i xw is empty so b i lies to the right of xv i . On the other hand, v i is an
+−−→
+−−→
+anchor, so c w (ai v i b i ) ≥ π , and hence ai lies to the left of xv i . Now consider xw. For the sake of contradiction, suppose that
+−−→
+ai is to the left of xw. Since c w ( v i wx) ≤ π /2, the angle c w (ai w v i ) is greater than π /2. This means that v i ai is the largest
+−−→
+side of ai w v i , which contradicts that v i ai is an edge of MST ( P ). So ai lies to the right of xw. Therefore, v i w intersects
+ai x and P 1 is convex. P 1 is empty because by Lemma 4, the triangles v i wx and v i wai are empty. ✷
+Lemma 13. Let w be a leaf in T and consider the clockwise sequence v 1 , . . . , v k of anchors that are incident on w. The sequence of
+vertices a1 , v 1 , b1 , . . . , ak , v k , bk are angularly sorted in clockwise order around w.
+Proof. Using contradiction, consider two vertices v i and v j , and assume that v i comes before v j and a j comes before b i
+in the clockwise order; see Fig. 9. Either a j is in w v i b i or b i is in w v j a j . However, by Lemma 4, neither of these two
+cases can happen. ✷
+Lemma 14. Let w be a leaf in T and consider the clockwise sequence v 1 , . . . , v k of anchors that are adjacent to w. Let 1 ≤ i < j ≤ k
+and let x be a neighbor of w for which x = v i and x = v j .
+1. If x is between v i and v j in the clockwise order:
+−−→
+(a) if ai is to the right of xw, then P 1 = {x, w , ai , v i } is convex and empty.
+−−→
+(b) if ai is not to the right of xw, then P 2 = { w , x, v j , b j } is convex and empty.
+2. If v j is between v i and x, or v i is between x and v j in the clockwise order:
+−−→
+(a) if b i is to the left of xw, then P 3 = { w , x, v i , b i } is convex and empty.
+−−→
+(b) if b i is not to the left of xw, then P 4 = {x, w , a j , v j } is convex and empty.
+
+728
+
+A.K. Abu-Affash et al. / Computational Geometry 48 (2015) 718–731
+
+Fig. 9. Proof of Lemma 13.
+
+Fig. 10. Illustrating Lemma 14.
+
+Fig. 11. Illustrating Lemma 15.
+
+Proof. We only prove the ﬁrst case, the proof for the second case is symmetric. Thus, we assume that x is between v i and
+−−−→
+−−→
+v j in the clockwise order. First assume that ai is to the right of xw. See Fig. 10(a). Consider b i v i . Since v i is an anchor, ai
+−−−→
+−−−→
+cannot be to the right of b i v i , and according to Lemma 4, x cannot be to the right of b i v i . For the same reasons, both the
+−
+−−−
+→
+−−→
+−−→
+vertices b j and x cannot be to the left of a j v j . Now consider xw. By assumption, ai is to the right of xw. Therefore xai
+intersects w v i and hence P 1 is convex.
+−−→
+−−→
+Now assume that ai is not to the right of xw; see Fig. 10(b). By Lemma 13, b j is to the left of xw. Therefore, xb j
+intersects w v j and hence P 2 is convex. The emptiness of the polygons follows directly from Lemma 4. ✷
+Lemma 15. Let w be a leaf in T and consider the clockwise sequence v 1 , . . . , v k of anchors that are incident on w. If 4 ≤ k ≤ 5,
+then at least one of the pentagons P 1 = {a1 , v 1 , v 2 , b2 , w } and P 2 = {ak−1 , v k−1 , v k , bk , w } is convex and empty.
+Proof. We prove the case when k = 4; the proof for k = 5 is analogous. By Lemma 13, a1 comes before b4 in the clockwise
+−
+−−−
+→
+−
+−−−
+→
+order. Consider a1 w; see Fig. 11. Let l(a1 , b2 ) denote the line through a1 and b2 . If b2 is to the left of a1 w, then l(a1 , b2 )
+−
+−−−
+→
+−
+−−−
+→
+−
+−−−
+→
+separates w from v 1 and v 2 . Otherwise, b2 is to the right of a1 w. Now consider b4 w. If a3 is to the right of b4 w, then
+−
+−−−
+→
+l(a3 , b4 ) separates w from v 3 and v 4 . The remaining case, i.e., when a3 is to the left of b4 w, cannot happen by Lemma 13
+(because, otherwise, a3 would come before b2 in the clockwise order).
+
+A.K. Abu-Affash et al. / Computational Geometry 48 (2015) 718–731
+
+729
+
+Fig. 12. The vertex v 1 is shared between P 1 and P 3 .
+
+Thus, we have shown that (i) l(a1 , b2 ) separates w from v 1 and v 2 or (ii) l(a3 , b4 ) separates w from v 3 and v 4 . Assume
+w.l.o.g. that (i) holds. Now to prove the convexity of P 1 we show that all internal angles of P 1 are less than π . Since v 1 is
+−−−−→
+an anchor, c w (b1 v 1 a1 ) ≤ π . By Lemma 4, b1 is to the left of v 1 v 2 . Therefore, c w ( v 2 v 1 a1 ) < c w (b1 v 1 a1 ) ≤ π . On the other
+hand c w ( w v 1 a1 ) ≥ π /3, so in a1 v 1 w, c w ( v 1 a1 w ) ≤ 2π /3. By a similar analysis c w (b2 v 2 v 1 ) and c w ( wb2 v 2 ) are less
+than π . In addition, c w (a1 wb2 ) in a1 wb2 is less than π . Thus, P 1 is convex. Its emptiness is assured from the emptiness
+of the triangles v 2 wb2 , v 1 wa1 and v 1 w v 2 . ✷
+Now we are ready to present the details of Step 2. Recall that T has more than six vertices and all leaves of T are
+anchors. In this case T has at least one vertex. If T has exactly one vertex, we add edges to M as will be described in
+Section 4.2.3 and after which the algorithm terminates. Assume that T has at least two vertices. Pick a leaf w in T .
+As before, let v 1 , . . . , v k where 1 ≤ k ≤ 4 be the clockwise order of the anchors connected to w. Let x1 , . . . , x where
+≤ 4 − k ≤ 3 be the clockwise order of the leaves of T connected to w; see Fig. 7. This means that deg ( w ) = 1 + k + ,
+where k + ≤ 4. Now we describe different conﬁgurations that may appear at w, according to k and .
+Case 1:
+
+Case 2:
+
+Case 3:
+
+Case 4:
+
+assume k = 1. If = 0 or 1, add (a1 , v 1 ) and (b1 , w ) to M and set T = T \ {a1 , b1 , v 1 , w }. If = 1 remove x1 from T
+as well. If = 2, consider αi as the acute angle between segments w v 1 and wxi . W.l.o.g. assume α1 = min(α1 , α2 ).
+Two cases may arise: (i) α1 ≤ π /2, (ii) α1 > π /2. If (i) holds, w.l.o.g. assume that x1 comes before v 1 in clockwise
+order around w. According to Lemma 12 polygon P = { v 1 , b1 , w , x1 } is convex and empty. So we add ( v 1 , a1 ),
+(b1 , x1 ) and (x2 , w ) to M. Other cases are handled in a similar way. If (ii) holds, according to Lemma 4 triangle
+x1 wx2 is empty. So we add ( v 1 , a1 ), (b1 , w ) and (x1 , x2 ) to M. In both cases set T = T \ {a1 , b1 , v 1 , x1 , x2 , w }. If
+= 3, remove x3 from T and handle the rest as = 2.
+assume k = 2. If = 0, we add ( v 1 , a1 ), (b1 , w ), and ( v 2 , a2 ) to M. If = 1 suppose that x1 comes before v 1 in
+clockwise ordering. According to Lemma 14 one of polygons P 3 and P 4 is empty; suppose it be P 3 = { w , x1 , v 1 , b1 }
+(where i = 1 and j = 2 in Lemma 14). Thus we add ( v 1 , a1 ), (b1 , x1 ), ( v 2 , a2 ) and (b2 , w ) to M. In both cases set
+T = T \ {a1 , b1 , v 1 , a2 , b2 , v 2 , w } and if = 1 remove x1 from T as well. If = 2, remove x2 from T and handle the
+rest as = 1.
+assume k = 3. If = 0 then set M = M ∪ {( v 1 , a1 ), (b1 , w ), ( v 2 , a2 ), ( v 3 , a3 )}. If = 1, consider βi as the acute angle
+between segments wx1 and w v i . W.l.o.g. assume β2 has minimum value among all βi ’s and x1 comes after v 2 in
+clockwise order. According to Lemma 14 one of polygons P 1 and P 2 is empty; suppose it be P 1 = { w , x1 , v 2 , a2 }
+(where i = 2 and j = 3 in Lemma 14). Thus we set M = M ∪ {( v 2 , b2 ), (a2 , x1 ), ( v 1 , a1 ), (b1 , w ), ( v 3 , a3 )}. In both
+cases set T = T \ {a1 , b1 , v 1 , a2 , b2 , v 2 , a3 , b3 , v 3 , w } and if = 1 remove x1 from T as well. Other cases can be
+handled similarly.
+assume k = 4. According to Lemma 15 one of P 1 = {a1 , v 1 , v 2 , b2 , w } and P 2 = {a3 , v 3 , v 4 , b4 , w } is convex and
+empty. Again by Lemma 15 one of P 3 = {a4 , v 4 , v 1 , b1 , w } and P 4 = {a2 , v 2 , v 3 , b3 , w } is also convex and empty.
+Without loss of generality assume that P 1 and P 3 are empty. See Fig. 12. Clearly, these two polygons share a
+vertex (v 1 in Fig. 12). Let α1 = c w (b1 , v 1 , w ) which is contained in P 3 and α2 = c w ( w , v 1 , a1 ) which is contained
+in P 1 . We pick one of the polygons P 1 and P 3 which minimizes αi , i = 1, 2. Let P 1 be that polygon. So we set
+M = M ∪{( v 1 , b1 ), ( v 2 , a2 ), (a1 , b2 ), ( v 3 , a3 ), (b3 , w ), ( v 4 , a4 )} and set T = T \{a1 , b1 , v 1 , a2 , b2 , v 2 , a3 , b3 , v 3 , a4 , b4 ,
+v 4 , w }.
+
+This concludes Step 2. Go back to Step 1.
+4.2.3. Base cases
+In this section we describe the base cases of our algorithm. As mentioned in Steps 1 and 2, we may have two base cases:
+(a) T has at most t ≤ 6 vertices, (b) T has only one vertex.
+
+730
+
+A.K. Abu-Affash et al. / Computational Geometry 48 (2015) 718–731
+
+Fig. 13. The bold (solid and dashed) edges are added to M and all vertices are matched: (a) a star, (b) no anchor, (c) one anchor, and (d) two anchors.
+
+Fig. 14. Empty convex regions. Bold edges belong to MST ( P ).
+
+(a) t ≤ 6
+t=2
+t = 4, 5
+t=6
+
+t = 1, 3
+
+Suppose that T has at most six vertices.
+It can happen only if t = n = 2, and we add the only edge to M.
+In this case we match four vertices. If t = 4, T could be a star or a path of length three, and in both cases we
+match all the vertices. If t = 5, remove one of the leaves and match other four vertices.
+In this case we match all the vertices. If one of the leaves connected to a vertex of degree two, we match those
+two vertices and handle the rest as the case when t = 4, otherwise, each leaf of T is connected to a vertex of
+degree more than two, and hence T has at most two vertices. Fig. 13(a) shows the solution for the case when T
+has only one vertex and T is a star; note that at least two angles are less than π . Now consider the case when
+T has two vertices, v 1 and v 2 , which have degree three in T . Fig. 13(b) shows the solution for the case when
+neither v 1 nor v 2 is an anchor. Fig. 13(c) shows the solution for the case when v 1 is an anchor but v 2 is not.
+Fig. 13(d) shows the solution for the case when both v 1 and v 2 are anchors. Since v 2 is an anchor in Fig. 13(d),
+at least one of c w (b2 v 2 v 1 ) and c w ( v 1 v 2 a2 ) is less than or equal to π /2. W.l.o.g. assume c w ( v 1 v 2 a2 ) ≤ π /2. By
+Lemma 12 polygon P = { v 1 , a2 , v 2 , a1 } is convex and empty. We add ( v 1 , b1 ), ( v 2 , b2 ), and (a1 , a2 ) to M.
+This case could not happen. Initially t = n is even. Consider Step 1; before each iteration t is bigger than six and
+during the iteration two vertices are removed from T . So, at the end of Step 1, t is at least ﬁve. Now consider
+Step 2; before each iteration T has at least two vertices and during the iteration at most one vertex is removed
+from T . So, at the end of Step 2, T has at least one vertex that is connected to at least one anchor. This means
+that t is at least four. Thus, t could never be one or three before and during the execution of the algorithm.
+
+(b) T has one vertex In this case, the only vertex w ∈ T is connected to at least two anchors, otherwise w would have
+been matched in Step 1. So we consider different cases when w is connected to k, 2 ≤ k ≤ 5 anchors and ≤ 5 − k leaves
+of T :
+k=2
+k=3
+k=4
+k=5
+
+If = 0, 1, 2 we handle it as Case 2 in Step 2. If = 3, at least two leaves are consecutive, say x1 and x2 . Since
+c w (x1 wx2 ) < π we add (x1 , x2 ) to M and handle the rest like the case when = 1.
+If = 2 remove x2 from T . Handle the rest as Case 3 in Step 2.
+If = 1 remove x1 from T . Handle the rest as Case 4 in Step 2.
+Add ( v 5 , a5 ) to M, remove a5 , b5 , v 5 from T , and handle the rest as Case 4 in Step 2.
+
+This concludes the algorithm.
+Lemma 16. The convex empty regions that are considered in different iterations of the algorithm, do not overlap.
+Proof. In Step 1, Step 2 and the base cases, we used three types of convex empty regions; see Fig. 14. Using contradiction,
+suppose that two convex regions P 1 and P 2 overlap. Since the regions are empty, no vertex of P 1 is in the interior of P 2
+and vice versa. Then, one of the edges in MST ( P ) that is shared with P 1 intersects some edge in MST ( P ) that is shared with
+P 2 , which is a contradiction. ✷
+Theorem 3. Let P be a set of n points in the plane, where n is even, and let λ∗ be the minimum bottleneck length of any plane perfect
+matching of P . In O (n log n) time, a plane matching of P of size at least 2n
+can be computed, whose bottleneck length is at most
+5
+
+√
+√
+( 2 + 3)λ∗ .
+
+A.K. Abu-Affash et al. / Computational Geometry 48 (2015) 718–731
+
+731
+
+Fig. 15. Path δ (in bold) with four edges of length λ∗ between end points of edge (a1 , b2 ).
+
+Proof.
+Proof of planarity: In each iteration, in Step 1, Step 2, and in the base cases, the edges added to M are edges of MST ( P )
+or edges inside convex empty regions. By Lemma 16 the convex empty regions in each iteration will not be intersected by
+the convex empty regions in the next iterations. Therefore, the edges of M do not intersect each other and M is plane.
+Proof of matching size: In Step 1, in each iteration, all the vertices which are excluded from T are matched. In Step 2,
+when k = = 1 we match four vertices out of ﬁve, and when k = 3, = 0 we match eight vertices out of ten. In base case
+(a) when t = 5 we match four vertices out of ﬁve. In base case (b) when k = 3, = 0 we match eight vertices out of ten. In
+all other cases of Step 2 and the base cases, the ratio of matched vertices is more than 4/5. Thus, in each iteration at least
+2n
+4/5 of the vertices removed from T are matched and hence | M i | ≥ 5 i . Therefore,
+k
+
+|M | =
+
+k
+
+|M i | ≥
+i =1
+
+i =1
+
+2ni
+5
+
+=
+
+2n
+5
+
+.
+
+Proof of edge length: By Lemma 11 the length of edges of T is at most λ∗ . Consider an edge e ∈ M and the path δ
+between its end points in T . If e is added in Step 1, then |e | ≤ 2λ∗ because δ has at most two edges. If e is added in Step 2,
+δ has at most three edges (|e | ≤ 3λ∗ ) except in Case 4. In this case we look at δ in more detail. We consider the worst
+case when all the edges of δ have maximum possible length λ∗ and the angles between the edges are as big as possible;
+see Fig. 15. Consider the edge e = (a1 , b2 ) added to M in Case 4. Since v 2 is an anchor and c w ( w v 2 a2 ) ≥ π /3, the angle
+c w (b2√
+v2 w) √
+≤ 2π /3. As our choice between P 1 and P 3 in Case 4, c w ( w , v 1 , a1 ) ≤ π /2. Recall that e avoids w, and hence
+|e | ≤ ( 2 + 3)λ∗ . The analysis for the base cases is similar.
+Proof of complexity: The Delaunay triangulation of P can be computed in O (n log n) time. Using Kruskal’s algorithm, the
+forest F of even components can be computed in O (n log n) time. In Step 1 (resp. Step 2) in each iteration, we pick a leaf
+of T (resp. T ) and according to the number of leaves (resp. anchors) connected to it we add some edges to M. Note that
+in each iteration we can update T , T and T by only checking the two hop neighborhood of selected leaves. Since the two
+hop neighborhood is of constant size, we can update the trees in O (1) time in each iteration. Thus, the total running time
+of Step 1, Step 2, and the base cases is O (n) and the total running time of the algorithm is O (n log n). ✷
+5. Conclusion
+We considered
+√ the NP-hard problem of computing a bottleneck plane perfect matching of a point set. Abu-Affash et al. [1]
+presented a 2 10-approximation for this problem. We used the maximum plane matching problem in unit disk graphs
+(UDG) as a tool for approximating a bottleneck plane perfect matching. In Section 3.1 we presented an algorithm which
+computes a plane matching of size n6 in UDG, but it is still open to show if this algorithm terminates in polynomial number
+of steps or not. We also presented a 25 -approximation algorithm for computing a maximum matching in UDG. By extending
+this algorithm we showed how one can compute a bottleneck plane matching of size n5 with edges of optimum-length.
+A modiﬁcation of this algorithm gives us a plane matching of size at least
+the optimum.
+
+2n
+5
+
+with edges of length at most
+
+√
+
+2+
+
+√
+
+3 times
+
+References
+[1] A.K. Abu-Affash, P. Carmi, M.J. Katz, Y. Trabelsi, Bottleneck non-crossing matching in the plane, Comput. Geom. 47 (3) (2014) 447–457.
+[2] G. Aloupis, J. Cardinal, S. Collette, E.D. Demaine, M.L. Demaine, M. Dulieu, R.F. Monroy, V. Hart, F. Hurtado, S. Langerman, M. Saumell, C. Seara, P.
+Taslakian, Non-crossing matchings of points with geometric objects, Comput. Geom. 46 (1) (2013) 78–92.
+[3] J. Carlsson, B. Armbruster, A bottleneck matching problem with edge-crossing constraints, http://users.iems.northwestern.edu/~armbruster/
+2010matching.pdf.
+[4] M.-S. Chang, C.Y. Tang, R.C.T. Lee, Solving the Euclidean bottleneck matching problem by k-relative neighborhood graphs, Algorithmica 8 (3) (1992)
+177–194.
+[5] M. de Berg, O. Cheong, M. Kreveld, M. Overmars, Computational Geometry: Algorithms and Applications, Springer-Verlag, 2008.
+[6] J. Edmonds, Paths, trees, and ﬂowers, Can. J. Math. 17 (1965) 449–467.
+[7] A. Efrat, A. Itai, M.J. Katz, Geometry helps in bottleneck matching and related problems, Algorithmica 31 (1) (2001) 1–28.
+[8] A. Efrat, M.J. Katz, Computing Euclidean bottleneck matchings in higher dimensions, Inf. Process. Lett. 75 (4) (2000) 169–174.
+[9] T. Lengauer, Combinatorial Algorithms for Integrated Circuit Layout, John Wiley & Sons, New York, 1990.
+[10] C.L. Monma, S. Suri, Transitions in geometric minimum spanning trees, Discrete Comput. Geom. 8 (1992) 265–293.
+[11] P.M. Vaidya, Geometry helps in matching, SIAM J. Comput. 18 (6) (1989) 1201–1225.
+[12] K.R. Varadarajan, A divide-and-conquer algorithm for min-cost perfect matching in the plane, in: FOCS, 1998, pp. 320–331.
+
+

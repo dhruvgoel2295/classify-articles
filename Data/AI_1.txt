@@ -1,0 +1,3895 @@
+Artiﬁcial Intelligence 175 (2011) 1911–1950
+
+Contents lists available at ScienceDirect
+
+Artiﬁcial Intelligence
+www.elsevier.com/locate/artint
+
+Independent natural extension
+Gert de Cooman a , Enrique Miranda b , Marco Zaffalon c,∗
+a
+b
+c
+
+Ghent University, SYSTeMS Research Group, Technologiepark–Zwijnaarde 914, 9052 Zwijnaarde, Belgium
+University of Oviedo, Department of Statistics and Operations Research, C-Calvo Sotelo, s/n, 33007 Oviedo, Spain
+IDSIA, Galleria 2, CH-6928 Manno (Lugano), Switzerland
+
+a r t i c l e
+
+i n f o
+
+a b s t r a c t
+
+Article history:
+Received 1 October 2010
+Received in revised form 8 June 2011
+Accepted 11 June 2011
+Available online 15 June 2011
+Keywords:
+Epistemic irrelevance
+Epistemic independence
+Independent natural extension
+Strong product
+Factorisation
+Coherent lower previsions
+
+There is no unique extension of the standard notion of probabilistic independence to the
+case where probabilities are indeterminate or imprecisely speciﬁed. Epistemic independence
+is an extension that formalises the intuitive idea of mutual irrelevance between different
+sources of information. This gives epistemic independence very wide scope as well as
+appeal: this interpretation of independence is often taken as natural also in preciseprobabilistic contexts. Nevertheless, epistemic independence has received little attention
+so far. This paper develops the foundations of this notion for variables assuming values
+in ﬁnite spaces. We deﬁne (epistemically) independent products of marginals (or possibly
+conditionals) and show that there always is a unique least-committal such independent
+product, which we call the independent natural extension. We supply an explicit formula
+for it, and study some of its properties, such as associativity, marginalisation and
+external additivity, which are basic tools to work with the independent natural extension.
+Additionally, we consider a number of ways in which the standard factorisation formula
+for independence can be generalised to an imprecise-probabilistic context. We show,
+under some mild conditions, that when the focus is on least-committal models, using the
+independent natural extension is equivalent to imposing a so-called strong factorisation
+property. This is an important outcome for applications as it gives a simple tool to make
+sure that inferences are consistent with epistemic independence judgements. We discuss
+the potential of our results for applications in Artiﬁcial Intelligence by recalling recent work
+by some of us, where the independent natural extension was applied to graphical models.
+It has allowed, for the ﬁrst time, the development of an exact linear-time algorithm for the
+imprecise probability updating of credal trees.
+© 2011 Elsevier B.V. All rights reserved.
+
+1. Introduction
+1.1. Background and motivation
+This is a paper on the notion of independence in probability theory. Anyone interested in or familiar with uncertain
+reasoning or statistics knows how fundamental this notion is. But what is independence?
+Most of us have been taught that two variables X 1 and X 2 are independent when their joint probability distribution
+P {1,2} factorises as the product of its marginals P 1 and P 2 . This is the formalist route that deﬁnes independence through a
+mathematical property of the joint, and that has its roots in the Kolmogorovian, measure- and integral-theoretic formalisation of probability theory.
+
+*
+
+Corresponding author.
+E-mail addresses: gert.decooman@ugent.be (G. de Cooman), mirandaenrique@uniovi.es (E. Miranda), zaffalon@idsia.ch (M. Zaffalon).
+
+0004-3702/$ – see front matter
+doi:10.1016/j.artint.2011.06.001
+
+© 2011
+
+Elsevier B.V. All rights reserved.
+
+1912
+
+G. de Cooman et al. / Artiﬁcial Intelligence 175 (2011) 1911–1950
+
+In Artiﬁcial Intelligence (AI)—thanks to Judea Pearl in particular [27]—, but also in the tradition of subjective probability—
+due to a large extent to Bruno de Finetti [17]—, independence has much more often an epistemic ﬂavour: it is a subject who
+regards two variables as independent, because she judges that learning about the value of any one of them will not affect
+her beliefs about the other. This means that the subject assesses that her conditional beliefs equal her marginal ones:
+P 1 (·| X 2 ) = P 1 and P 2 (·| X 1 ) = P 2 , in more mathematical parlance.
+That the epistemic approach has become so popular, should not be all that surprising. The formalist approach comes
+with the idea that independence is something given, which might hold or not: it is just a property of the joint. On the
+epistemic view, however, independence is something we are (to some extent) in control of. And this control is essential in
+order to aggregate simple, independent components into complex multivariate models.
+It might be argued that the difference between the two approaches is mostly philosophical: in fact, the two routes are
+known to be formally equivalent.1 But it turns out that we lose this formal equivalence as soon as we consider probabilities
+that may be imprecisely speciﬁed, meaning that the available information is conveniently expressed through sets of probabilities (sets of mass functions). In this case the two routes diverge also mathematically, as we shall see further on. This is
+exempliﬁed by the existence of the different notions of strong and epistemic independence, respectively.2 Of these two, strong
+independence has been most thoroughly investigated in the literature. Studies of epistemic independence are conﬁned to
+a relatively small number of papers [6,10,26,29] inspired by Peter Walley’s [30, Section 9.3] seminal ideas. We mention in
+particular Paolo Vicig’s interesting study [29], for the case of coherent lower probabilities (which may be deﬁned on inﬁnite
+spaces), of some of the notions considered in this paper as well.
+This situation is somewhat unfortunate as the scope of strong independence is relatively narrow: in fact, its justiﬁcation
+seems to rely on a sensitivity analysis interpretation of imprecise probabilities. On this interpretation, one assumes that there
+exists some (kind of ‘ideal’ or ‘true’) precise probability P {T1,2} for the variables X 1 and X 2 that satisﬁes stochastic independence, and that, due to the lack of time or other resources, can only be partially speciﬁed or assessed. Then one considers
+all the precise-probabilistic models P {1,2} that are consistent with the partial assessments and that satisfy stochastic independence. Taken together, they constitute the set of probabilities for the problem under consideration. This set models a
+subject’s (partial) ignorance about the true model P {T1,2} .
+It is questionable that this sensitivity analysis interpretation is broadly applicable, for the simple reason that it hinges
+on the assumption of the existence of the underlying ‘true’ probability P {T1,2} . Consider the situation where we wish to
+model an expert’s beliefs: the expert usually does not know much about ideal probabilities, and what she tells us is simply
+that information about one variable does not inﬂuence her beliefs about the other. Moreover, we could well argue that
+expert knowledge is inherently imprecise to some extent, no matter the resources that we employ to capture it.3 Therefore,
+why not take the expert at her word and model only the information she provides us about the mutual irrelevance of
+the two variables under consideration? After all, forcing a sensitivity analysis interpretation here would amount to adding
+unwarranted assumptions, which may lead us to draw stronger conclusions than those the expert herself might be prepared
+to get to.
+In order to model such mutual irrelevance, we need a different understanding of imprecise probability models that
+does not (necessarily) rely on precise probability as a more primitive notion: Walley’s behavioural theory of imprecise
+probability [30], which models beliefs by looking at a subject’s buying and selling prices for gambles. The perceived mutual
+irrelevance of two sources of information can be formalised easily in this framework: we state that the subject is not going
+to change her prices for gambles that depend on one variable, when the other variable is observed. This turns out to be
+still equivalent to modelling the problem through a set of precise probabilities P {1,2} but, in contradistinction with the
+case of sensitivity analysis, not all those probabilities satisfy stochastic independence in general. The reason for this is that
+epistemic independence is a property of the set of probabilities that cannot be explained through the properties of the
+precise probabilities that make up the set. This point is not without importance, as it shows that buying and selling prices
+for gambles are actually a more primitive and fundamental notion in a theory of personal probability.
+This illustrates that a behavioural theory of probability and the notion of epistemic independence ﬁt nicely together.
+It also indicates that epistemic independence has a very wide scope, as it needs to meet fewer requirements than strong
+independence in order to be employed. That being so, why has strong independence been studied and applied much more
+extensively than its epistemic counterpart, even in work based on Walley’s approach? This is probably due to a number
+of concurring factors: (i) a tendency in the literature to extend stochastic independence, perhaps somewhat uncritically, in
+a straightforward way to imprecise probabilities; (ii) the fact that epistemic independence does not appear to be as wellbehaved as strong independence, for instance with respect to the graphoid axioms [6]4 ; and, perhaps more importantly,
+(iii) the lack of formal tools for handling epistemic independence assessments. To give a telling illustration of this last
+point: epistemically independent products have so far been given a formal deﬁnition [30, Section 9.3] only for the case of
+
+1
+There may be subtleties, however, related to events of probability zero. See Refs. [6, Notes 5 and 6 in Section 3], [30, Sections 6.5 and 6.10] and [1] for
+more information.
+2
+Other possible ways to deﬁne independence under imprecise probability are given in Ref. [2].
+3
+See [30, Chapter 5] for a detailed exposition of this view.
+4
+But also see Ref. [26] for a discussion with less negative conclusions.
+
+G. de Cooman et al. / Artiﬁcial Intelligence 175 (2011) 1911–1950
+
+1913
+
+two variables X 1 and X 2 . Finally, note that preliminary work on the subject of this paper has appeared in the conferences
+IPMU 2010 [15] and SMPS 2010 [14].
+1.2. Aims and contributions
+In the present paper, then, we intend to address and remedy this lack of formal tools by providing a ﬁrm foundation for,
+and a thorough mathematical discussion of, epistemic independence in the case of a ﬁnite number of variables X n taking
+values in ﬁnite sets Xn , n ∈ N. Perhaps surprisingly, this will also shed positive new light on the second of the abovementioned factors: it will allow us to show that, despite the apparently negative results in Ref. [6], epistemic independence
+can actually be used effectively in at least some types of graphical models. We will come back to this issue later in this
+Introduction.
+We ground our analysis in the conceptual and formal framework of coherent lower previsions, which are lower expectation
+functionals equivalent to closed convex sets of probability mass functions. In the case of precise probabilities, we refer to
+an expectation functional as a linear prevision. Section 2 gives a brief introduction to coherent lower previsions and reports
+basic results that will be used in the rest of the paper. It should make the paper as self-contained as is reasonably achievable
+within the scope of a research paper.
+The real work starts in Section 3, where we introduce and discuss several generalisations to coherent lower previsions
+of the standard notion of factorisation: productivity, which was used by some of us in Ref. [12] to derive a very general law
+of large numbers, factorisation and strong factorisation, which we needed in our research on credal networks (an impreciseprobabilistic graphical model) [11], the Kuznetsov and strong Kuznetsov properties, originating in the work of the Russian
+mathematician Vladimir Kuznetsov [19], and also studied by Fabio Cozman [3]. It is useful to keep in mind that the ‘strong’
+versions of these properties involve factorisations over any subsets of variables, while the ‘plain’ ones are the special case
+obtained when some of the subsets are singletons. For linear previsions—the precise-probability models—all these properties
+coincide with the classical notion of stochastic independence. For the more general lower previsions, we investigate how
+these notions are related, and we show that the strong product—the product that arises through strong independence—is
+strongly factorising.
+In Section 4, we go over to the epistemic side. We introduce two notions: many-to-many independence, where a subject
+judges that learning about the value that any subset of the variables { X n : n ∈ N } assumes will not affect her beliefs about
+the values of any other disjoint subset; and the weaker notion of many-to-one independence, where she judges that learning
+about the value that any subset of the variables assumes will not affect her beliefs about the value of any remaining single
+variable. This leads to the deﬁnition of two corresponding types of independent products. We prove some useful associativity
+and marginalisation properties for these, which form a basis for building them recursively, and prove a very useful theorem
+that immediately allows all these notions, as well as the results in the rest of the paper, to be extended to the case
+of conditional independence. Moreover, we show that the strong product is one particular many-to-many (and therefore
+many-to-one) independent product, and that it is the only such independent product when the given marginals are linear
+previsions.
+There is no such uniqueness in the more general case of marginal lower previsions: the strong product is only one of
+the generally inﬁnitely many possible independent products. In Section 5, we focus on the pointwise smallest of all these:
+the least-committal many-to-many, and the least-committal many-to-one, independent products of given marginals. It is
+an important, and quite involved, result of our analysis that these two smallest independent products turn out to always
+exist, and to coincide. We call this common smallest independent product the independent natural extension of the given
+marginals. It generalises, to any ﬁnite number of variables, a deﬁnition given by Walley for two variables [30, Section 9.3].5
+We then go on to derive an explicit and constructive formula for the independent natural extension, and we prove that it
+too satisﬁes useful associativity and marginalisation properties, and that it is externally additive. We work out interesting
+particular cases in some detail.
+The relation with the more formal factorisation properties considered in Section 3 comes to the fore in our important
+next result: that the independent natural extension is strongly factorising. We go somewhat further in Section 7, where
+we show that, quite naturally, any factorising lower prevision must be a many-to-one independent product. Under some
+mild conditions, we also show that any strongly factorising lower prevision must be a many-to-many independent product.
+And since we already know that the smallest many-to-one independent product is the independent natural extension, we
+deduce that when looking for least-committal models, it is immaterial whether we focus on factorisation or on being an
+independent product. This outcome might be very important in applications, as it allows one to work with the independent
+natural extension simply by imposing a (strong) factorisation property while searching for least-committal models. On the
+more theoretical side, it constitutes a solid bridge between the formalist and epistemic approaches to independence.
+We believe these results give epistemic independence an opportunity to become a competitive alternative to more
+consolidated notions of independence. But how can epistemic independence be used in speciﬁc examples, and are there
+advantages to doing so? We present an interesting case study in Section 8, where we survey and discuss some of our recent
+work on credal trees [11]. These constitute a special case of credal networks [4], which in turn extend Bayesian nets to
+
+5
+
+In the simple case of two variables, there is no need to distinguish between many-to-one and many-to-many independence.
+
+1914
+
+G. de Cooman et al. / Artiﬁcial Intelligence 175 (2011) 1911–1950
+
+deal with imprecise probabilities. Traditionally, the extension is achieved by replacing the precise-probabilistic parameters
+of a Bayesian net with imprecise ones, and by re-interpreting the Markov condition through strong rather than stochastic
+independence. But we have already argued that this might not be the best choice in all cases. For this reason, the work
+in Ref. [11] imposes an epistemic Markov condition on directed trees. We discuss this condition and provide some examples, showing that it makes certain variables in the tree become epistemically many-to-many independent. Moreover, we
+show how the independent natural extension, and its properties proved here, are crucial stepping stones that allow us to
+construct the least-committal joint model over the tree that arises out of the parameters through the epistemic Markov
+condition. This particular type of joint allows for the development of an exact linear-time message-passing algorithm that
+performs imprecise-probabilistic updating of the epistemic tree. That this is at all possible, is rather surprising because of
+the above-mentioned perceived incompatibilities between epistemic independence and the graphoid axioms. It shows that
+epistemic independence has a signiﬁcant role to play in probabilistic-graphical models.
+We summarise our views on the results of this paper in Section 9. Appendices A and B respectively collect the proofs of
+all results, and the counterexamples needed to explore the relations between the many notions we introduce and study.
+2. Coherent lower previsions
+Let us give a brief overview of the concepts and results from the theory of coherent lower previsions that we use in this
+paper. We refer to Ref. [30] for an in-depth study, and to Ref. [21] for a survey.
+2.1. Lower and upper previsions
+Consider a variable X taking values in some possibility space X , which we assume in this paper to be ﬁnite. The theory
+of coherent lower previsions aims to model uncertainty about the value of X by means of lower and upper previsions of
+gambles. A gamble is a real-valued function on X , and we denote by L (X) the set of all gambles on X . This set is
+a linear space under pointwise addition of gambles, and pointwise multiplication of gambles with real numbers. For any
+subset A of L (X), we denote by posi(A ) the set of all positive linear combinations of gambles in A :
+n
+
+posi(A ) :=
+
+λk f k : f k ∈ A , λk > 0, n > 0 .
+k =1
+
+We call A a convex cone if it is closed under positive linear combinations, meaning that posi(A ) = A .
+For any two gambles f and g on a set X , we write ‘ f
+g’ if (∀x ∈ X ) f (x ) g (x ), and ‘ f > g’ if f
+g and f = g.
+A gamble f > 0 is called positive. A gamble g 0 is called non-positive. L (X)=0 denotes the set of all non-zero gambles,
+L (X)>0 the convex cone of all positive gambles, and L (X) 0 the convex cone of all non-positive gambles on X .
+A lower prevision is a real-valued functional P deﬁned on L (X). The lower prevision P is said to be coherent when it
+satisﬁes the following three conditions:
+C1. P ( f ) min f for all f ∈ L (X);
+C2. P (λ f ) = λ P ( f ) for all f ∈ L (X) and real λ 0;
+C3. P ( f + g ) P ( f ) + P ( g ) for all f , g ∈ L (X).
+The conjugate of a lower prevision P is called an upper prevision. It is denoted by P , and deﬁned by P ( f ) := − P (− f ) for
+any gamble f on X .
+One interesting particular case of lower previsions are the vacuous ones. Given a non-empty subset A of X , the vacuous
+lower prevision P A relative to A is given by P A ( f ) = minx ∈ A f (x ). It serves as an appropriate model for those situations
+where the only information we have about X is that it takes a value in the set A.
+2.2. Linear previsions and envelope theorems
+A coherent lower prevision P on L (X) satisfying P ( f + g ) = P ( f ) + P ( g ) for all f , g ∈ L (X) is called a linear
+prevision, and is usually denoted by P . It corresponds to an expectation operator associated with the additive probability
+that is its restriction to events. We denote the set of all linear previsions on L (X) by P(X). For any linear prevision P
+on L (X), the corresponding mass function p is deﬁned by p (x ) := P (I{x } ), x ∈ X , where I{x } denotes the indicator of the
+singleton {x }. Then of course P ( f ) = x ∈X f (x ) p (x ).
+Linear previsions can also be used to characterise the notion of coherence for lower previsions: a lower prevision P is
+coherent if and only if it is the lower envelope of the closed convex set of dominating linear previsions
+
+M ( P ) := P ∈ P(X): ∀ f ∈ L (X) P ( f )
+so we have
+
+P ( f ) = min P ( f ): P ∈ M ( P ) .
+
+P(f) ,
+
+G. de Cooman et al. / Artiﬁcial Intelligence 175 (2011) 1911–1950
+
+1915
+
+This is also equivalent to requiring that P should be the lower envelope of the set of extreme points of M ( P ), which we
+denote by ext(M ( P )):
+
+P ( f ) = min P ( f ): P ∈ ext M ( P ) ,
+where P is an extreme point of M ( P ) when it cannot be written as a non-trivial convex combination of two different
+elements of M ( P ).
+2.3. Conditional lower previsions
+Next, consider a number of variables X n , n ∈ N, taking values in the respective ﬁnite sets Xn . Here N is some ﬁnite
+index set.
+For every subset R of N, we denote by X R the tuple of variables (with one component for each r ∈ R) that takes values
+in the Cartesian product X R := r ∈ R Xr . This Cartesian product is the set of all maps x R from R to r ∈ R Xr such that
+xr := x R (r ) ∈ Xr for all r ∈ R. The elements of X R are generically denoted by x R or z R , with corresponding components
+xr := x R (r ) or zr := z R (r ), r ∈ R. We will always assume that the variables X r are logically independent, which means that for
+each non-empty subset R of N, X R may assume all values in X R .
+We must pay particular attention to the case R = ∅. By deﬁnition, X∅ is the set of all maps from ∅ to r ∈∅ Xr = ∅. It
+contains only one element x∅ : the empty map. This means that there is no uncertainty about the value of the variable X ∅ :
+it can assume only one value (the empty map). Moreover I{x∅ } = 1.
+We also denote by L (X R ) the set of gambles deﬁned on X R . We will frequently use the simplifying device of identifying a gamble f R on X R with its cylindrical extension to X N , which is the gamble ˜f R deﬁned by ˜f R (x N ) := f R (x R ) for
+all x N ∈ X N , where x R is the restriction (i.e., the projection) of x N to X R . To give an example, if K ⊆ L (X N ), this trick
+allows us to consider K ∩ L (X R ) as the set of those gambles in K that depend only (at most) on the variable X R . As
+another example, this device allows us to identify the gambles I{x R } and I{x R }×XN \ R , and therefore also the events {x R } and
+{x R } × X N \ R . More generally, for any event A ⊆ X R , we can identify the gambles I A and I A ×XN \ R , and therefore also the
+events A and A × X N \ R . In the same spirit, a lower prevision on all gambles in L (X R ) can be identiﬁed with a lower
+prevision deﬁned on the set of corresponding gambles on X N , a subset of L (X N ). If in particular R is the empty set, then
+L (X∅ ) corresponds to the set of real numbers, which we can also identify with the set of constant gambles on X N .
+If P N is a coherent lower prevision on L (X N ), then for any non-empty subset R of N we can consider its X R -marginal
+P R as the coherent lower prevision on L (X R ) deﬁned by P R ( f ) := P N ( f ) for all gambles f on X R : the restriction of P N
+to gambles that depend only (at most) on X R .
+Given two disjoint subsets O and I of N, we deﬁne a conditional lower prevision P O ∪ I (·| X I ) as a special two-place
+function. For any x I ∈ X I , P O ∪ I (·|x I ) is a real functional on the set L (X O ∪ I ) of all gambles on X O ∪ I . For any gamble f
+on X O ∪ I , P O ∪ I ( f |x I ) is the lower prevision of f , conditional on X I = x I . Moreover, the object P O ∪ I ( f | X I ) is considered as the
+gamble on X I that assumes the value P O ∪ I ( f |x I ) in x I .
+We are allowing for I and O to be empty, mainly for the sake of generality and elegance in mathematical formulation
+and proofs. If I = ∅, then X I = X ∅ assumes its only possible value (the empty map x∅ ) with certainty, so conditioning on
+X ∅ = x∅ amounts to not conditioning at all, and P O ∪ I ( f | X I ) is then essentially the same thing as an unconditional lower
+prevision P O . We will come back to the other case O = ∅ shortly.
+We now turn to the most important rationality criteria for such conditional lower previsions. The conditional lower
+prevision P O ∪ I (·| X I ) is called separately coherent when it satisﬁes the following three conditions for all x I ∈ X I , nonnegative λ and gambles f , g ∈ L (X O ∪ I ):
+
+×
+
+SC1. P O ∪ I ( f |x I ) minx O ∈X O f (x O , x I );
+SC2. P O ∪ I (λ f |x I ) = λ P O ∪ I ( f |x I );
+SC3. P O ∪ I ( f + g |x I ) P O ∪ I ( f |x I ) + P O ∪ I ( g |x I ).
+When SC3 is satisﬁed with equality for all f , g ∈ L (X O ∪ I ), then P O ∪ I (·| X I ) is called a conditional linear prevision, and
+usually denoted by P O ∪ I (·| X I ). It is an expectation operator with respect to a conditional probability (or mass function).
+An important consequence of separate coherence is that
+
+P O ∪ I ( g |x I ) = P O ∪ I g (·, x I ) x I
+
+and
+
+P O ∪I ( f g | X I ) = f P O ∪I ( g | X I )
+
+(1)
+
+for all x I ∈ X I , all non-negative gambles f on X I and all gambles g on X O ∪ I [30, Theorems 6.2.4 and 6.2.6(l)]. The ﬁrst
+equality tells us that P O ∪ I (·|x I ) is completely determined by its behaviour on L (X O ), and we will therefore often identify
+P O ∪ I (·|x I ) with a lower prevision on L (X O ). To prove (1), observe that if h1 (·, x I ) = h2 (·, x I ) then it follows from SC1 that
+P O ∪ I (h1 − h2 |x I ) = P O ∪ I (h2 − h1 |x I ) = 0, and therefore from SC3 that P O ∪ I (h1 |x I ) = P O ∪ I (h2 |x I ). The ﬁrst equality then
+follows by letting h1 := g and h2 := g (·, x I ).
+It is clear from SC1–SC3 that P O ∪ I (·| X I ) is separately coherent if and only if for all x I ∈ X I , P O ∪ I (·|x I ) is a coherent
+lower prevision on L (X O ) and moreover condition (1) holds [this second condition turns out to be equivalent to requiring
+that P O ∪ I ({x I }|x I ) = 1 for every x I ∈ X I ].
+
+1916
+
+G. de Cooman et al. / Artiﬁcial Intelligence 175 (2011) 1911–1950
+
+In the degenerate case that O = ∅, separate coherence guarantees that P O ∪ I ( f |x I ) = f (x I ) and therefore P O ∪ I ( f | X I ) = f
+for all f ∈ L (X I ). When I = ∅, separate coherence of P O ∪ I (·| X I ) = P O reduces to coherence of the unconditional lower
+prevision P O .
+2.4. The behavioural interpretation
+The coherence concepts introduced above may be better understood in terms of the behavioural interpretation of (conditional) lower previsions.6 If we see a gamble f as an uncertain reward, then the lower prevision P ( f ) can be interpreted as
+a subject’s supremum acceptable price for buying the gamble f , in the sense that it is the supremum real μ such that she
+considers the transaction f − μ, which is equivalent to buying f for a price μ, to be desirable. It follows that she considers
+it desirable to buy f for any price P ( f ) − ε , ε > 0. Similarly, we can regard her upper prevision P ( f ) for f her inﬁmum
+acceptable selling price for f , in the sense that it is the inﬁmum real μ such that she considers the transaction μ − f ,
+which is equivalent to selling f for a price μ, to be desirable. In particular, she considers it desirable to sell f for any price
+P ( f ) + ε , ε > 0. And a linear prevision P ( f ) corresponds to the case where her supremum acceptable buying price for the
+gamble f coincides with her inﬁmum acceptable selling price, meaning that she expresses a preference between buying
+and selling the gamble f for a price μ for almost all prices μ.
+If we follow this interpretation, we can similarly interpret a subject’s conditional lower prevision for a gamble f conditional on a value x I as her current supremum acceptable buying price for f if she were to ﬁnd out (at some later point)
+that X I = x I .
+A coherent unconditional lower prevision P is one for which we cannot raise the supremum acceptable buying price
+P ( f ) for any gamble f by taking into account the implications of other desirable transactions. A separately coherent conditional lower prevision P O ∪ I (·| X I ) is one where a similar requirement holds for every conditioning event X I = x I , and where
+moreover our subject is currently disposed to betting at all odds on the event X I = x I if she were to observe it at some
+later point.
+2.5. Coherence and weak coherence
+We now turn from separate to joint coherence. For any gamble f on X O ∪ I and any x I ∈ X I , we deﬁne
+
+G O ∪ I ( f |x I ) := I{x I } f − P O ∪ I ( f | X I ) = I{x I } f (·, x I ) − P O ∪ I f (·, x I ) x I
+and
+
+G O ∪ I ( f | X I ) := f − P O ∪ I ( f | X I ) =
+
+G O ∪ I ( f |x I ) =
+x I ∈X I
+
+I{x I } f (·, x I ) − P O ∪ I f (·, x I ) x I .
+x I ∈X I
+
+Taking into account the behavioural interpretation of conditional lower previsions summarised in Section 2.4, we may regard
+G O ∪ I ( f |x I ) as an almost-desirable gamble, in the sense that for every ε > 0, the gamble G O ∪ I ( f |x I ) + ε I{x I } corresponds to
+buying f for a price P O ∪ I ( f |x I ) + ε , contingent on the event {x I }. And since taking ﬁnite sums of almost-desirable gambles
+produces almost-desirable gambles, so should G O ∪ I ( f | X I ) be.
+Observe that G O ∪ I ( f | X I ) is always equal to 0 when O = ∅. We also deﬁne, for any gamble f on X O ∪ I , the X I -support
+supp I ( f ) of f as the set of elements of X I where the partial gamble f (·, x I ) is non-zero:
+
+supp I ( f ) := x I ∈ X I : I{x I } f = 0 = x I ∈ X I : f (·, x I ) = 0 .
+This support supp I ( f ) is a subset of X I , but as we already mentioned before, it will be convenient to identify it with the
+subset supp I ( f ) × X N \ I of X N .
+Consider disjoint subsets O j and I j of N. A collection of (separately coherent) conditional linear previsions P O j ∪ I j (·| X I j )
+deﬁned on the sets of gambles L (X O j ∪ I j ), j ∈ {1, . . . , m}, is called (strongly) coherent if for all f j ∈ L (X O j ∪ I j ), j ∈
+{1, . . . , m}, there is some z N ∈ mj=1 supp I j ( f j ) such that:
+m
+
+G O j ∪ I j ( f j | X I j ) (z N )
+
+0.
+
+(2)
+
+j =1
+
+The (separately coherent) conditional lower previsions P O j ∪ I j (·| X I j ) deﬁned on the sets of gambles L (X O j ∪ I j ), j ∈
+
+{1, . . . , m}, are called coherent if and only if they are lower envelopes of a collection { P λO j ∪ I j (·| X I j ): λ ∈ Λ} of coherent conditional linear previsions. This is equivalent to requiring that for all f j ∈ L (X O j ∪ I j ) where j ∈ {1, . . . , m}, all k ∈ {1, . . . , m},
+m
+all x I k ∈ X I k and all g ∈ L (X O k ∪ I k ), there is some z N ∈ {x I k } ∪ j =1 supp I j ( f j ) such that:
+6
+
+See Refs. [30,32] for more details.
+
+G. de Cooman et al. / Artiﬁcial Intelligence 175 (2011) 1911–1950
+
+1917
+
+m
+
+G O j ∪ I j ( f j | X I j ) − G O k ∪ I k ( g |x I k ) ( z N )
+
+0.
+
+(3)
+
+j =1
+
+We say that the conditional lower previsions P O j ∪ I j (·| X I j ) are weakly coherent if for all f j ∈ L (X O j ∪ I j ) where j ∈
+{1, . . . , m}, all k ∈ {1, . . . , m}, all x I k ∈ X I k and all g ∈ L (X O k ∪ I k ), there is some z N ∈ XN such that:
+m
+
+G O j ∪ I j ( f j | X I j ) − G O k ∪ I k ( g |x I k ) ( z N )
+
+0.
+
+j =1
+
+This condition requires that our subject should not be able to raise her supremum acceptable buying price P O k ∪ I k ( g |x I k ) for
+a gamble g contingent on {x I k } by taking into account the implications of other conditional assessments. However, under
+the behavioural interpretation, a collection of weakly coherent conditional lower previsions can still present some forms of
+inconsistency with one another. See Refs. [30, Chapter 7], [22] and [31] for discussion. These inconsistencies are eliminated
+by the stronger notion of coherence given by Eq. (3), where we focus only on the elements in the supports of the gambles.
+If the conditional lower previsions P O j ∪ I j (·| X I j ) are coherent, then they are clearly also weakly coherent. The following
+characterisation of weak coherence will be useful. The equivalence between the ﬁrst two statements was proved in Ref. [24,
+Theorem 1], while the equivalence between the second and third statements is a consequence of Ref. [30, Section 6.5.4].
+Theorem 1. The conditional lower previsions P O j ∪ I j (·| X I j ), j = 1, . . . , m, are weakly coherent if and only if there is some coherent
+lower prevision P N on L (X N ) satisfying any (and hence all) of the following equivalent conditions:
+(a) P N and P O j ∪ I j (·| X I j ), j = 1, . . . , m, are weakly coherent;
+(b) For all j = 1, . . . , m, P N and P O j ∪ I j (·| X I j ) are pairwise coherent;
+(c) For all j = 1, . . . , m, all x I j ∈ X I j and all gambles f on X O j ∪ I j :
+
+P N G O j ∪ I j ( f | x I j ) = 0.
+
+(GBR)
+
+The last condition in this theorem is called the Generalised Bayes Rule, and reduces to Bayes’s rule in the case of linear
+conditional and unconditional previsions. A consequence of (GBR) in our context is that
+
+P N P O j ∪I j ( f | X I j )
+
+P N( f )
+
+P N P O j ∪I j ( f | X I j )
+
+for every gamble f on X O j ∪ I j .
+
+(4)
+
+We will also use the following result in our argumentation.
+Theorem 2. (See Reduction Theorem [30, Theorem 7.1.5].) Let P O j ∪ I j (·| X I j ) be separately coherent conditional lower previsions deﬁned on the sets of gambles L (X O j ∪ I j ) with I j = ∅ for all j = 1, . . . , m, and let P N be a coherent lower prevision on L (X N ). Then
+P N and P O j ∪ I j (·| X I j ), j = 1, . . . , m, are coherent if and only if the following two conditions hold:
+(a) P N and P O j ∪ I j (·| X I j ), j = 1, . . . , m, are weakly coherent;
+(b) P O j ∪ I j (·| X I j ), j = 1, . . . , m, are coherent.
+2.6. Natural and regular extension
+Let P O j ∪ I j (·| X I j ) be coherent conditional lower previsions deﬁned on the sets of gambles L (X O j ∪ I j ), j = 1, . . . , m. If
+we now consider any disjoint subsets O and I of N, the natural extension P O ∪ I (·| X I ) of these conditional lower previsions
+is deﬁned on L (X O ∪ I ) by
+m
+
+E O ∪ I ( f |x I ) := sup
+
+m
+
+G O j ∪ I j ( g j | X I j ) − I{x I } ( f − μ) < 0 on {x I } ∪
+
+μ:
+j =1
+
+supp I j ( g j ) for some g j ∈ L (X O j ∪ I j )
+j =1
+
+for all f ∈ L (X O ∪ I ) and all x I ∈ X I . E O ∪ I ( f |x I ) represents the supremum acceptable buying price for a gamble f contingent on {x I } that can be derived from the assessments in P O j ∪ I j (·| X I j ), j = 1, . . . , m, using arguments of coherence. See
+Refs. [30, Chapter 8], [22] and [31] for additional information.
+In particular, the unconditional natural extension of P O j ∪ I j (·| X I j ), j = 1, . . . , m, is given by
+m
+
+E N ( f ) := sup min f −
+
+G O j ∪ I j ( g j | X I j ) : g j ∈ L (X O j ∪ I j ) ,
+
+(5)
+
+j =1
+
+for all gambles f on X N , and it is the pointwise smallest coherent lower prevision that is coherent with the P O j ∪ I j (·| X I j ),
+j = 1, . . . , m.
+
+1918
+
+G. de Cooman et al. / Artiﬁcial Intelligence 175 (2011) 1911–1950
+
+Another particular case of interest is when we want to derive conditional lower previsions from unconditional ones.
+Consider a subset I of N, and a coherent lower prevision P N on X N . The natural extension E N (·| X I ) of P N to a lower
+prevision on L (X N ) conditional on X I is given by
+
+E N ( f |x I ) =
+
+max{μ ∈ R: P N (I{x I } [ f − μ])
+minz N \ I ∈XN \ I f ( z N \ I , x I )
+
+0} if P N ({x I }) > 0,
+if P N ({x I }) = 0.
+
+It deﬁnes a separately coherent conditional lower prevision that is also coherent with P N , and it is indeed the smallest such
+conditional lower prevision.
+On the other hand, the regular extension R (·| X I ) of P N to a lower prevision on L (X N ) conditional on X I is given by
+
+R N ( f |x I ) :=
+
+max{μ ∈ R: P N (I{x I } [ f − μ])
+minz N \ I ∈XN \ I f ( z N \ I , x I )
+
+0} if P N ({x I }) > 0,
+if P N ({x I }) = 0.
+
+The natural and regular extensions coincide unless P N ({x I }) > P N ({x I }) = 0, in which case we may have R N ( f |x I ) >
+E N ( f |x I ). In fact, when P N ({x I }) > 0 there is a unique value of P N ( f |x I ) satisfying (GBR) with respect to P N , but this
+is no longer true if P N ({x I }) = 0. See Refs. [22,25] for additional information.
+The regular extension deﬁnes a separately coherent conditional lower prevision that is also coherent with P N , and we
+will have occasion to use it as a tool for deriving conditional lower previsions from unconditional ones. The following result,
+which follows from Theorem 6 in Ref. [22], makes regular extension especially useful in this respect:
+Theorem 3. Let P N be a coherent lower prevision on L (X N ). Consider disjoint O j and I j for j = 1, . . . , m. Assume that P N ({x I j }) >
+0 for all x I j ∈ X I j , and deﬁne P O j ∪ I j (·| X I j ) using regular extension for j = 1, . . . , m. Then P N is coherent with the conditional lower
+previsions P O 1 ∪ I 1 (·| X I 1 ), . . . , P O m ∪ I m (·| X I m ).
+3. The formal approach to independence
+3.1. Basic deﬁnitions
+Consider a number of (logically independent) variables X n , n ∈ N, assuming values in the respective ﬁnite sets Xn . Here
+N is some ﬁnite index set. We assume that for each of these variables X n , we have an uncertainty model for the values that
+it assumes in Xn , in the form of a coherent lower prevision P n on the set L (Xn ) of all gambles (real-valued maps) on
+Xn .
+We begin our discussion of independence by following the formalist route: we introduce a number of interesting generalisations of the notion of an independent product of linear previsions.
+The ﬁrst is a stronger, symmetrised version of the notion of ‘forward factorisation’ that was introduced elsewhere [12].
+Deﬁnition 1 (Productivity). Consider a coherent lower prevision P N on L (X N ). We call this lower prevision productive if
+for all disjoint subsets7 I and O of N, all g ∈ L (X O ) and all non-negative f ∈ L (X I ), P N ( f [ g − P N ( g )]) 0.
+The intuition behind this deﬁnition is that a coherent lower prevision P N is productive if multiplying an almost-desirable
+gamble on X O (the gamble g − P N ( g ), which has lower prevision zero) with any non-negative gamble f that depends on a
+different variable X I , preserves its almost-desirability, in the sense that the lower prevision of the product is non-negative.
+In other words, if we construct a gamble on X O ∪ I by piecing together almost-desirable gambles from L (X O ), we obtain
+a gamble that is still almost-desirable.
+A lower envelope P N of productive coherent lower previsions P λ , λ ∈ Λ, is again productive: for all disjoint subsets I
+and O of N, all g ∈ L (X O ) and all non-negative f ∈ L (X I ), we have that P λ ( f [ g − P N ( g )]) P λ ( f [ g − P λ ( g )]) 0, and
+therefore indeed P N ( f [ g − P N ( g )]) 0.
+In the paper [12] on laws of large numbers for coherent lower previsions, which generalises and subsumes most known
+versions in the literature, we have proved that the condition for forward irrelevance8 (which is implied by the present
+productivity condition) is suﬃcient for a weak law of large numbers to hold. So we are led to the following immediate
+conclusion.
+Theorem 4 (Weak law of large numbers). (See [12, Theorem 2].) Let the coherent lower prevision P N on L (X N ) be productive. Let
+ε > 0 and consider arbitrary gambles hn on Xn , n ∈ N. Let B be a common bound for the ranges of these gambles and let min hn
+mn P N (hn ) P N (hn ) M n max hn for all n ∈ N. Then
+7
+
+The coherence of P N guarantees that for empty I or O the corresponding condition is trivially satisﬁed.
+This condition is a particular instance of the epistemic irrelevance we discuss in Section 4: if we consider n variables X 1 , . . . , X n , then for all k = 2, . . . , n
+the variables X 1 , . . . , X k−1 are epistemically irrelevant to X k . See Refs. [12,13] for more information.
+8
+
+G. de Cooman et al. / Artiﬁcial Intelligence 175 (2011) 1911–1950
+
+mn
+
+xN ∈ XN :
+
+PN
+
+n∈ N
+
+|N |
+
+hn (xn )
+
+−ε
+n∈ N
+
+Mn
+
+|N |
+
+n∈ N
+
+|N |
+
++ε
+
+1 − 2 exp −
+
+1919
+
+| N |ε 2
+4B 2
+
+.
+
+Next comes a version of a condition that has proved quite useful in the context of research on credal networks [11],
+which we shall discuss in Section 8.
+Deﬁnition 2 (Factorisation). Consider a coherent lower prevision P N on L (X N ). We call this lower prevision
+(i) factorising9 if for all o ∈ N and all I ⊆ N \ {o},10 all f o ∈ L (Xo ) and all non-negative f i ∈ L (Xi ), i ∈ I , P N ( f I f o ) =
+P N ( f I P N ( f o )), where f I := i ∈ I f i ;
+(ii) strongly factorising if P N ( f g ) = P N ( f P N ( g )) for all g ∈ L (X O ) and non-negative f ∈ L (X I ), where I and O are
+any11 disjoint subsets of N.
+It will at this point be useful to introduce the following notation. Consider a real interval a := [a, a] and a real number b,
+then
+
+a
+
+b :=
+
+ab
+ab
+
+if b
+if b
+
+0,
+0.
+
+Also, we denote by P ( f ) the interval [ P ( f ), P ( f )].
+It follows from the coherence of P N that given a factorising (respectively strongly factorising) coherent lower prevision
+we also get P N ( f I P N ( f o )) = P N ( f I ) P N ( f o ) (respectively P N ( f P N ( g )) = P N ( f ) P N ( g )) in Deﬁnition 2. We then have
+the following characterisations of factorising lower previsions, based on their coherence and conjugacy properties.
+Proposition 5. A coherent lower prevision P N on L (X N ) is factorising if and only if for all o ∈ N, all f o ∈ L (Xo ) and all nonnegative f i ∈ L (Xi ), i ∈ N \ {o}, any (and hence all) of the following equivalent conditions holds:
+(i) P N (
+
+n∈ N
+
+fn) = P N ( P N ( fo )
+
+(ii) P N (
+
+n∈ N
+
+fn) =
+
+i ∈ N \{o}
+
+fi) = P N (
+
+i ∈ N \{o}
+
+fi)
+
+P N ( fo)
+
+i ∈ N \{o}
+
+P N ( f i ) if P N ( f o )
+
+0,
+
+P N ( fo)
+
+i ∈ N \{o}
+
+P N ( f i ) if P N ( f o )
+
+0.
+
+P N ( f o );
+
+The difference between factorisation and strong factorisation lies in the types of products considered: in the ﬁrst case,
+we only consider gambles that are products of non-negative gambles each depending on a single variable, while in the
+second case the non-negative gamble considered need not be such a product.
+Finally, there is the property that the late Russian mathematician Vladimir Kuznetsov ﬁrst drew attention to [19]. In
+order to deﬁne it, we use
+to denote the (commutative and associative) interval product operator deﬁned by:
+
+[a, b]
+
+[c , d] := xy: x ∈ [a, b] and y ∈ [c , d]
+= min{ac , ad, bc , bd}, max{ac , ad, bc , bd}
+
+for all a
+
+b and c
+
+d in R.
+
+Deﬁnition 3 (Kuznetsov product). Consider a coherent lower prevision P N on L (X N ). We call this lower prevision
+(i) a Kuznetsov product, or simply, Kuznetsov, if P N (
+
+n∈ N
+
+fn) =
+
+n∈ N
+
+P N ( f n ) for all f n ∈ L (Xn ), n ∈ N;
+
+(ii) a strong Kuznetsov product, or simply, strongly Kuznetsov, if P N ( f g ) = P N ( f )
+L (X I ), where I and O are any disjoint subsets of N.11
+
+P N ( g ) for all g ∈ L (X O ) and all f ∈
+
+These two properties are based on the sensitivity analysis interpretation of coherent lower previsions: if we consider a
+product of gambles and for each of gamble we have an interval of possible values for its expectation, the Kuznetsov property
+implies that the interval of possible values for the expectation of the product coincides with the product of the intervals of
+the expectations of the different gambles. As before, the difference between being a Kuznetsov product and being a strong
+Kuznetsov product resides in whether the gambles we are multiplying depend on one variable only or on several variables
+at once.
+We will show later that all the properties introduced above generalise the factorisation property of precise probabilities
+to the imprecise case. Here are the general relationships between them:
+
+9
+10
+11
+
+The present notion of factorisation when restricted to lower probabilities and events, is called strict factorisation in Ref. [29].
+The coherence of P N guarantees that for empty I the corresponding condition is trivially satisﬁed.
+The coherence of P N guarantees that for empty I or O the corresponding condition is trivially satisﬁed.
+
+1920
+
+G. de Cooman et al. / Artiﬁcial Intelligence 175 (2011) 1911–1950
+
+Proposition 6. Consider a coherent lower prevision P N on L (X N ). Then
+
+P N is strongly Kuznetsov ⇒ P N is strongly factorising ⇒ P N is productive
+
+⇓
+
+⇓
+⇒
+
+P N is Kuznetsov
+
+P N is factorising.
+
+The intuition behind these implications is the following (see Appendix A for a detailed proof). On the one hand, being
+strongly Kuznetsov clearly implies being Kuznetsov, and strong factorisation implies factorisation, because we allow for more
+involved products of gambles in the deﬁnition of the former. On the other hand, the factorisation conditions focus on the
+lower prevision only, whereas the Kuznetsov ones involve both lower and the upper previsions, and therefore give rise to
+stronger conditions. And ﬁnally, it follows from its deﬁnition that a strongly factorising coherent lower prevision satisﬁes
+the condition of productivity with equality instead of with inequality.
+In Appendix B we present examples showing that the converses of the implications in this proposition do not hold in
+general. Speciﬁcally, in Example 3 we give a coherent lower prevision that satisﬁes productivity but none of the other properties; in Example 5 we give a coherent lower prevision that is strongly factorising (and as a consequence also factorising
+and productive) but not Kuznetsov (and therefore not strongly Kuznetsov); and in Example 6 we have a factorising coherent
+lower prevision that satisﬁes none of the other properties. The only related open problem at this point is whether being
+Kuznetsov is generally equivalent to being strongly Kuznetsov.
+We will show that the independent natural extension from Section 5 is strongly factorising but not Kuznetsov in general.
+In the rest of this section, we look at a number of special cases that will prove instrumental in what follows. In particular,
+the strong product we will study in Section 3.3 satisﬁes all the properties we have introduced here.
+3.2. The product of linear previsions
+If we have linear previsions P n on L (Xn ) with corresponding mass functions pn , then their product S N :=
+the linear prevision on L (X N ) deﬁned as
+
+SN( f ) =
+
+f (x N )
+
+pn (xn )
+
+for all f ∈ L (X N ).
+
+×n∈N P n is
+(6)
+
+n∈ N
+
+x N ∈X N
+
+×
+
+For any non-empty subset R of N, we also denote by S R := r ∈ R P r the product of the linear previsions P r , r ∈ R.
+Useful, and immediate, are the following marginalisation and associativity properties of the product of linear previsions.
+They imply that for linear previsions all the properties introduced in Section 3.1 coincide.
+Proposition 7. Consider arbitrary linear previsions P n on L (Xn ), n ∈ N.
+(i) For any non-empty subset R of N, S R is the X R -marginal of S N : S N ( g ) = S R ( g ) for all gambles g on X R ;
+(ii) For any partition N 1 and N 2 of N, n∈ N ∪ N P n = ( n∈ N P n ) × ( n∈ N P n ), or in other words, S N = S N 1 × S N 2 .
+
+×
+
+1
+
+2
+
+×
+
+1
+
+×
+
+2
+
+Moreover, for any linear prevision P N on L (X N ), the following statements are equivalent:
+(a)
+(b)
+(c)
+(d)
+(e)
+(f)
+(g)
+
+×
+
+P N = n∈ N P n is the product of its marginals P n ;
+P N ( n∈ N f n ) = n∈ N P n ( f n ) for all f n ∈ L (Xn ), n ∈ N;
+P N is strongly Kuznetsov;
+P N is Kuznetsov;
+P N is strongly factorising;
+P N is factorising;
+P N is productive.
+
+3.3. The strong product of coherent lower previsions
+In a similar vein, if we have coherent lower previsions P n on L (Xn ), then their so-called strong product [30, Section 9.3.5]12 S N := n∈ N P n is deﬁned as the coherent lower prevision on L (X N ) that is the lower envelope of the set of
+independent products { n∈ N P n : (∀n ∈ N ) P n ∈ M ( P n )}, or equivalently, of the set { n∈ N P n : (∀n ∈ N ) P n ∈ ext(M ( P n ))}.
+So for every f ∈ L (X N ):
+
+×
+
+12
+
+×
+
+×
+
+Walley [30, Section 9.3.5] calls this lower prevision the type-1 product. The term ‘strong product’ seems to go back to Cozman [3].
+
+G. de Cooman et al. / Artiﬁcial Intelligence 175 (2011) 1911–1950
+
+× P ( f ): (∀n ∈ N ) P
+= inf × P ( f ): (∀n ∈ N ) P
+
+S N ( f ) = inf
+
+1921
+
+n
+
+n
+
+∈ M ( P n)
+
+(7)
+
+n
+
+n
+
+∈ ext M ( P n ) .
+
+(8)
+
+n∈ N
+
+n∈ N
+
+×
+
+For any non-empty subset R of N, we also denote by S R := r ∈ R P r the strong product of the coherent lower previsions
+P r , r ∈ R. Like the product of linear previsions, the strong product of lower previsions satisﬁes the following marginalisation
+and associativity properties, and also all the properties deﬁned in Section 3.1:13
+Proposition 8. Consider arbitrary coherent lower previsions P n on L (Xn ), n ∈ N.
+(i)
+(ii)
+(iii)
+(iv)
+
+For any non-empty subset R of N, S R is the X R -marginal of S N : S N ( g ) = S R ( g ) for all gambles g on X R ;
+ext(M ( S N )) = { n∈ N P n : (∀n ∈ N ) P n ∈ ext(M ( P n ))};
+For any partition N 1 and N 2 of N, n∈ N ∪ N P n = ( n∈ N P n ) × ( n∈ N P n ), or in other words, S N = S N 1 × S N 2 ;
+1
+2
+1
+2
+The strong product S N is strongly Kuznetsov, and therefore also Kuznetsov, strongly factorising, factorising and productive.
+
+×
+
+×
+
+×
+
+×
+
+The nice characterisation of the set ext(M ( S N )) in the second statement guarantees that the inﬁma in Eqs. (7) and (8)
+are actually minima. This set of extreme points may be inﬁnite even when dealing with ﬁnite Xn , n ∈ N, and therefore
+hence the second statement is not immediate. In addition, this result guarantees, amongst other things, that the strong
+product satisﬁes the weak law of large numbers of Theorem 4.
+This marks a preliminary end to our formalist discussion of independence for coherent lower previsions. In the next
+section, we turn to the treatment of independence following an epistemic and coherentist approach, where independence is
+considered to be an assessment a subject makes. The more formalist thread will be taken up again in Section 6.
+4. Epistemic irrelevance and independence
+Consider two disjoint subsets I and O of N. We say that a subject judges that X I is epistemically irrelevant to X O when
+she assumes that learning which value X I assumes in X I will not affect her beliefs about X O . Taking into account the
+behavioural interpretation of coherent lower previsions summarised in Section 2.4, this means that the subject’s supremum
+acceptable buying price for a gamble f contingent on the event that X I = x I coincides with her supremum acceptable
+buying price for f , irrespective of the value x I ∈ X I that is observed.
+Now assume that our subject has a coherent lower prevision P N on L (X N ). If she assesses that X I is epistemically
+irrelevant to X O , this implies that she can infer from her joint model P N the following conditional model P O ∪ I (·| X I ) on
+the set L (X O ∪ I ):
+
+P O ∪ I (h|x I ) := P N h(·, x I )
+
+for all gambles h on X O ∪ I and all x I ∈ X I .
+
+So an assessment of epistemic irrelevance is useful because it allows us to derive conditional lower previsions from unconditional ones. It follows from the comments in Section 2 that such an assessment is trivial when either O or I is the empty
+set. Similarly, if the gamble h depends only on X O , then the conditional lower prevision for h conditional on some value
+x I ∈ X I coincides with the unconditional lower prevision of h.
+It should be clear from the previous discussion that epistemic irrelevance is an asymmetric notion: we only require that
+X I is epistemically irrelevant to X O ; and this does not necessarily imply that X O should be epistemically irrelevant to X I .
+Refs. [6,13] include thorough discussions of this point, along with examples illustrating how such asymmetries may appear
+in concrete cases. Because of this, it becomes necessary to pay special attention to the mutual irrelevance of two or more
+variables. We then talk about epistemic independence, a suitably symmetrised version of epistemic irrelevance.
+4.1. Epistemic many-to-many independence
+We say that a subject judges the variables X n , n ∈ N, to be epistemically many-to-many independent when she assumes
+that learning the value of any number of these variables will not affect her beliefs about the others. In other words, if she
+judges for any disjoint subsets I and O of N that X I is epistemically irrelevant to X O .
+Again, if our subject has a coherent lower prevision P N on L (X N ), and she assesses that the variables X n , n ∈ N, are
+epistemically many-to-many independent, then she can infer from her joint model P N a family of conditional models
+
+I ( P N ) := P O ∪ I (·| X I ): I and O disjoint subsets of N ,
+where P O ∪ I (·| X I ) is the coherent lower prevision on L (X O ∪ I ) given by:
+13
+
+For the case of two variables (N = {1, 2}), Cozman [3] was the ﬁrst to prove that the strong product is Kuznetsov.
+
+1922
+
+G. de Cooman et al. / Artiﬁcial Intelligence 175 (2011) 1911–1950
+
+P O ∪ I (h|x I ) := P N h(·, x I )
+
+for all gambles h on X O ∪ I and all x I ∈ X I .
+
+The crucial idea that the arguments in this paper hinge on, is that a coherent lower prevision P N expresses independence
+when it does not lead to incoherence when combined with an assessment of epistemic independence: the lower prevision
+P N and the conditional supremum acceptable buying prices derived from it using epistemic independence should not violate
+the consistency conditions introduced in Section 2.
+Deﬁnition 4 (Many-to-many independence). A coherent lower prevision P N on L (X N ) is called many-to-many independent
+if it is coherent with the family of conditional lower previsions I ( P N ). For a collection of coherent lower previsions P n
+on L (Xn ), n ∈ N, any many-to-many independent coherent lower prevision P N on L (X N ) that coincides with the P n on
+their domains L (Xn ), n ∈ N, is called a many-to-many independent product of these marginals.
+As we show in the following example, this requirement of coherence of the unconditional and resulting conditional
+models is by no means trivial: not all coherent lower previsions P N express—are compatible with an assessment of—
+epistemic independence.
+Example 1 (Independence is not trivial). Consider X1 = X2 = {0, 1}, and let P {1,2} be the linear prevision determined by
+P {1,2} ({(0, 0)}) = P {1,2} ({(1, 1)}) = 12 . Consider the gamble f := I{1} on X1 , so P {1,2} ( f ) = 12 . On the other hand, with x2 = 1,
+we get
+
+P {1,2} I{x2 } f − P {1,2} ( f )
+
+=
+
+1
+2
+
+−
+
+1
+2
+
+·
+
+1
+2
+
+=
+
+1
+4
+
+= 0.
+
+This shows that P {1,2} is not coherent with the conditional prevision P {1,2} (·| X 2 ), and as a consequence it is not many-tomany independent. ✷
+That a coherent lower prevision is not a many-to-many independent product need not mean that it cannot be coherently
+updated: in the case of Example 1, we can always do so by applying Bayes’s rule. What it does mean is that it cannot be
+coherently updated in such a way that at the same time the epistemic independence conditions are satisﬁed.
+We shall see examples further on that seem to suggest that being a many-to-many independent product might be too
+weak a requirement in certain situations: Example 3 in Appendix B establishes the existence of a non-vacuous many-tomany independent product with vacuous marginals, and intuition might suggest that an independent product of vacuous
+marginals should be vacuous. The reason why such examples exist, is that coherence with the conditional lower previsions
+induced by the marginals can sometimes be very easy to satisfy, as Proposition 26 further on will show. Because of this, it
+might be thought useful to require, in addition, some of the factorisation conditions from Section 3. We come back to this
+issue in the Conclusions.
+4.2. Epistemic many-to-one independence
+There is a weaker notion of independence that we will consider here, which is mainly useful as a kind of catalyst,
+facilitating our search for the many-to-many independent products we are really after. We will coin the term ‘epistemic
+many-to-one independence’ to identify it. We say that a subject judges the variables X n , n ∈ N, to be epistemically many-toone independent when she assumes that learning the value of any number of these variables will not affect her beliefs about
+any single other. In other words, if she judges for any o ∈ N and any subset I of N \ {o} that X I is epistemically irrelevant to
+Xo .
+Once again, if our subject has a coherent lower prevision P N on L (X N ), and she assesses that the variables X n , n ∈ N,
+are epistemically many-to-one independent, then she can infer from her joint model P N a family of conditional models
+
+N ( P n , n ∈ N ) := P {o}∪ I (·| X I ): o ∈ N and I ⊆ N \ {o} ,
+where P {o}∪ I (·| X I ) is the coherent lower prevision on L (X{o}∪ I ) given by:
+
+P {o}∪ I (h|x I ) := P N h(·, x I ) = P o h(·, x I )
+
+for all h ∈ L (X{o}∪ I ) and x I ∈ X I ,
+
+(9)
+
+where of course P o is the Xo -marginal lower prevision of P N . In the set N ( P n , n ∈ N ) we are also allowing for empty I , in
+which case the conditional lower prevision P {o}∪ I (·| X I ) reduces to the marginal P o . So we see that the family of conditional
+lower previsions N ( P n , n ∈ N ) only depends on the joint model P N through its Xn -marginals P n , n ∈ N (which, of course,
+explains our notation for it). This allows us, in particular, to deﬁne the family N ( P n , n ∈ N ) also starting from coherent
+lower previsions P n on L (Xn ), rather than from a joint P N . The distinction between the two cases will be clear from the
+context. We use this observation in the deﬁnition of the many-to-one independent product of given marginals:
+Deﬁnition 5. A coherent lower prevision P N on L (X N ) with marginals P n , n ∈ N, is called many-to-one independent if it is
+coherent with the family N ( P n , n ∈ N ). For a collection of coherent lower previsions P n on L (Xn ), n ∈ N, any coherent
+
+G. de Cooman et al. / Artiﬁcial Intelligence 175 (2011) 1911–1950
+
+1923
+
+lower prevision P N on L (X N ) that is coherent with the family N ( P n , n ∈ N ) is called a many-to-one independent product
+of these lower previsions P n .
+If a coherent lower prevision P N is many-to-many independent, then it is also many-to-one independent: if P N is
+coherent with the family I ( P N ), it is certainly also coherent with the subfamily N ( P n , n ∈ N ) of I ( P N ). Trivially, both
+conditions are equivalent when N = {1, 2}, and as a consequence we can also use Example 1 to conclude that also many-toone independence is not trivial. However, many-to-many and many-to-one independence are generally not equivalent when
+the set N has more than two elements: an explicit example is provided in Example 6 in Appendix B.
+Any many-to-one independent product of the coherent lower previsions P n , n ∈ N, must have these lower previsions as
+its marginals. This follows by applying the coherence condition in particular to the pairs P N and P {n}∪∅ (·| X ∅ ), as will be
+made explicit in Corollary 15.
+4.3. Useful basic properties
+A basic coherence result [30, Theorem 7.1.6] states that taking lower envelopes of a family of coherent conditional lower
+previsions produces coherent conditional lower previsions. As a consequence, if we consider a family P λN , λ ∈ Λ, of manyto-one independent products, then for each λ the lower prevision P λN is coherent with the family of conditional lower
+previsions N ( P nλ , n ∈ N ). By taking lower envelopes, we deduce that P N := infλ∈Λ P λN is coherent with the lower envelopes
+of N ( P nλ , n ∈ N ), which are precisely the family N ( P n , n ∈ N ) of conditional lower previsions that can be derived from P N
+using epistemic irrelevance: the marginal lower previsions of P N are the lower envelopes of the marginal lower previsions
+of P λN . Hence, P N is also a many-to-one independent product. A similar argument shows that many-to-many independence
+is preserved by taking lower envelopes.
+We also have the following marginalisation and associativity properties.
+Proposition 9. Consider arbitrary coherent lower previsions P n , n ∈ N. Let P N be any many-to-one independent product and Q N any
+many-to-many independent product of the marginals P n , n ∈ N. Let R and S be any subsets of N.
+(i) The X R -marginal P R of P N is a many-to-one independent product of its marginals P r , r ∈ R;
+(ii) The X R -marginal Q R of Q N is a many-to-many independent product of its marginals P r , r ∈ R;
+(iii) If R and S constitute a partition of N, then Q N is a many-to-many independent product of its X R -marginal Q R and its X S marginal Q S .
+The associativity property in (iii) follows immediately from the deﬁnition of a many-to-many independent product, and
+means that the joint model still satisﬁes many-to-many independence with respect to the marginals Q R and Q S ; we
+have established a similar property for strong independence in Proposition 8. To see that an analogous property does not
+generally hold for many-to-one products, consider the coherent lower prevision Q N in Example 6 in Appendix B.
+To conclude, we consider the case where all the lower previsions we want to combine into an independent joint model
+are actually linear previsions. The following result shows that our deﬁnitions of many-to-one and many-to-many independent products extend the existing ones for linear previsions. It will also provide the basis for Proposition 12, which will
+allow us to kick-start the discussion in Section 5.
+Proposition 10. Any linear previsions P n on L (Xn ), n ∈ N, have a unique many-to-many independent product and a unique manyto-one independent product, and both are equal to the (strong) product S N := n∈ N P n .
+
+×
+
+4.4. Conditional independence
+Besides the variables X n , n ∈ N, considered so far, we now consider another variable Y assuming values in a ﬁnite set Y .
+We assume the variables X N and Y to be logically independent: the variable ( X N , Y ) can assume all values in the Cartesian
+product X N × Y .
+We also consider separately coherent conditional lower previsions P O ∪ I (·| X I , Y ) on L (X O ∪ I × Y ) where I and O are
+disjoint subsets of N. It is important to realise that in all these conditional lower previsions, the variable Y consistently appears as a
+conditioning variable.
+We can use this set-up to generalise the notions of epistemic irrelevance and independence to those of conditional
+epistemic irrelevance and independence. As an example, consider two disjoint subsets I and O of N. We say that a subject
+judges that X I is epistemically irrelevant to X O , conditional on Y , when she assumes that when knowing the value of Y , learning
+in addition which value X I assumes in X I will not affect her beliefs about X O .
+Assume that our subject has a separately coherent conditional lower prevision P N (·|Y ) on L (X N × Y ). If she assesses that X I is epistemically irrelevant to X O conditional on Y , this implies that she can infer from her model P N (·|Y ) a
+conditional model P O ∪ I (·| X I , Y ) on the set L (X O ∪ I × Y ) given by
+
+P O ∪ I (h|x I , y ) := P N h(·, x I , y ) y
+
+for all h ∈ L (X O ∪ I × Y ) and all (x I , y ) ∈ X I × Y .
+
+1924
+
+G. de Cooman et al. / Artiﬁcial Intelligence 175 (2011) 1911–1950
+
+We can now extend the entire discussion in this and the next section to the conditional case. We will, however, refrain
+from doing so explicitly, or in any detail. Rather, we present a result that simply reduces problems of conditional epistemic
+irrelevance and independence, as formulated above, to a collection of problems of epistemic irrelevance and independence.
+This will allow us to immediately and automatically extend all the results in this and the next section from the case of
+independence to that of independence conditional on the additional variable Y .
+With any conditional lower prevision P O ∪ I (·| X I , Y ) on L (X O ∪ I × Y ), we associate a collection of (separately coherent)
+y
+conditional lower previsions Q O ∪ I (·| X I ) on L (X O ∪ I ), one for each y in Y , deﬁned by
+y
+
+Q O ∪ I ( f |x I ) := P O ∪ I ( f |x I , y ) = P O ∪ I f (·, x I ) x I , y
+
+for all f ∈ L (X O ∪ I ) and x I ∈ X I .
+
+(10)
+
+We can reduce the problem of checking the coherence of a collection of conditional lower previsions P O k ∪ I k (·| X I k , Y ),
+k = 1, . . . , m, to a number |Y | of coherence problems that are simpler, in the sense that the conditioning variable Y
+y
+disappears from them; we have, for each y ∈ Y , to check the coherence of the collection Q O ∪ I (·| X I k ), k = 1, . . . , m.
+k
+
+k
+
+Theorem 11 (Elimination of common conditioning variables). Consider m arbitrary but different pairs of disjoint subsets O k and I k of
+N, k = 1, . . . , m. Consider separately coherent conditional lower previsions P O k ∪ I k (·| X I k , Y ) on L (X O k ∪ I k × Y ), k = 1, . . . , m, and
+y
+for each y ∈ Y , the corresponding separately coherent Q O ∪ I (·| X I k ) on L (X O k ∪ I k ), k = 1, . . . , m. Then the following statements
+k
+k
+are equivalent:
+(i) The collection P O k ∪ I k (·| X I k , Y ), k = 1, . . . , m, is coherent;
+y
+(ii) For each y in Y , the collection Q O ∪ I (·| X I k ), k = 1, . . . , m, is coherent.
+k
+
+k
+
+5. Independent natural extension
+A number of examples in Appendix B show that, when we leave linear for lower previsions, many-to-one and many-tomany independent products are generally speaking not unique.
+What we want to do in this section, then, is to show that any collection of coherent marginals always has a pointwise
+smallest many-to-one, and a pointwise smallest many-to-many, independent product, and that these products coincide.
+We begin by observing that there always is at least one many-to-many (and therefore also many-to-one) independent
+product:
+Proposition 12. Consider coherent lower previsions P n on L (Xn ), n ∈ N. Then their strong product
+and many-to-one independent product of the marginals P n .
+
+×n∈N P n is a many-to-many
+
+5.1. Deﬁnition of the many-to-one independent natural extension
+Although the notion of epistemic many-to-many independence seems to be the more intuitively appealing and useful of
+the two, it turns out to be easier to approach the study with many-to-one independent products. So, for the time being, we
+concentrate on the latter notion of independence, which is related to the collection of conditional lower previsions:
+
+N ( P n , n ∈ N ) = P {o}∪ I (·| X I ): o ∈ N and I ⊆ N \ {o} ,
+where the conditional lower previsions are given by Eq. (9). Proposition 12 is instrumental in establishing the following
+crucial observation.
+Proposition 13. Consider arbitrary coherent lower previsions P n on L (Xn ), n ∈ N. Then the collection N ( P n , n ∈ N ) of conditional
+lower previsions P {o}∪ I (·| X I ) is coherent.
+As an immediate consequence, we see that checking whether a joint lower prevision is a many-to-one independent
+product is a fairly straightforward matter.
+Corollary 14. Consider a coherent lower prevision P N on L (X N ), and coherent lower previsions P n on L (Xn ), n ∈ N. Then P N is a
+many-to-one independent product of the P n , n ∈ N, if and only if any (and hence all) of the following equivalent conditions is satisﬁed:
+(i) P N is weakly coherent with the collection N ( P n , n ∈ N ) of conditional lower previsions P {o}∪ I (·| X I );
+(ii) P N (I{x I } [ g − P o ( g )]) = 0 for all o ∈ N, all I ⊆ N \ {o}, all gambles g on Xo and all x I ∈ X I .
+If we apply condition (ii) in this corollary to the special case where I is the empty set, we deduce immediately that any
+(many-to-one) independent product of a number of lower previsions must have these lower previsions as its marginals:
+
+G. de Cooman et al. / Artiﬁcial Intelligence 175 (2011) 1911–1950
+
+1925
+
+Corollary 15. Consider arbitrary coherent lower previsions P n on L (Xn ), n ∈ N. If the coherent lower prevision P N on L (X N ) is a
+many-to-one independent product of these lower previsions P n , then for all n ∈ N, P n is the Xn -marginal of P N : P N ( g ) = P n ( g ) for
+all gambles g on Xn .
+Because all the sets Xn are ﬁnite, we can invoke Walley’s Finite Extension Theorem [30, Theorem 8.1.9] to derive from
+Proposition 13 that there always is a pointwise smallest joint coherent lower prevision E N that is coherent with the coherent
+family N ( P n , n ∈ N ). This leads to the following deﬁnition.
+Deﬁnition 6 (Many-to-one independent natural extension). Consider arbitrary coherent lower previsions P n on L (Xn ), n ∈ N.
+We call the pointwise smallest coherent lower prevision that is coherent with the family of conditional lower previsions
+N ( P n , n ∈ N ) the many-to-one independent natural extension of the marginals P n , and we denote it by n∈ N P n , or alternatively by E N when it is clear from the context what the marginals are.
+Alternatively, and equivalently, the many-to-one independent natural extension of the marginals P n is the pointwise
+smallest many-to-one independent coherent lower prevision on L (X N ) whose marginals coincide with the given P n . We
+gather from Corollary 14 that
+n∈ N P n is also the smallest coherent lower prevision that is weakly coherent with the
+conditional lower previsions in N ( P n , n ∈ N ).
+Since the strong product n∈ N P n is a many-to-one independent product of the marginals P n , n ∈ N, by Proposition 12,
+P
+it has to dominate the many-to-one independent natural extension
+n∈ N P n :
+n∈ N P n . These products do not
+n∈ N n
+coincide in general: Walley [30, Section 9.3.4] discusses an example where the many-to-one independent natural extension
+is not a lower envelope of independent linear products, and as a consequence cannot coincide with the strong product.
+On the other hand, the strong product is not generally the greatest many-to-one independent product of given marginals,
+as we show in Example 3 in Appendix B.
+
+×
+
+×
+
+5.2. Immediate properties of the many-to-one independent natural extension
+It will pay to study this many-to-one independent natural extension in greater detail. We begin by deriving a workable
+expression for it. By deﬁnition, E N is the smallest joint coherent lower prevision on L (X N ) that is coherent with the family
+of conditional lower previsions N ( P n , n ∈ N ), so we can infer from Walley’s Finite Extension Theorem [30, Theorem 8.1.9]
+that E N is the natural extension of the coherent collection N ( P n , n ∈ N ) to an unconditional (joint) lower prevision. Using
+Eq. (5), we ﬁnd that it is given by:
+
+E N ( f ) = sup min f −
+
+G {o}∪ I ( g I ,o | X I ) : g I ,o ∈ L (X{o}∪ I ), o ∈ N , I ⊆ N \ {o} ,
+o∈ N , I ⊆ N \{o}
+
+for all gambles f on X N , where we let
+
+G {o}∪ I ( g I ,o | X I ) :=
+
+I{x I } g I ,o − P {o}∪ I ( g i ,o | X I ) =
+x I ∈X I
+
+I{x I } g I ,o (·, x I ) − P o g I ,o (·, x I ) .
+x I ∈X I
+
+Therefore we ﬁnd that:
+
+EN( f ) =
+
+sup
+
+min
+
+g I ,o ∈L (X{o}∪ I ) z N ∈X N
+o∈ N , I ⊆ N \{o}
+
+f (z N ) −
+
+g I ,o ( zo , z I ) − P o g I ,o (·, z I )
+
+(11)
+
+.
+
+o∈ N , I ⊆ N \{o}
+
+We ﬁrst show that we can simplify this expression, by restricting the I in the supremum to their largest possible values.
+Theorem 16. Consider coherent lower previsions P n on L (Xn ), n ∈ N. Then for all gambles f on X N :
+
+EN( f ) =
+
+sup
+
+min
+
+hn ∈L (X N ) z N ∈X N
+n∈ N
+
+f (z N ) −
+
+hn ( z N ) − P n hn (·, z N \{n} )
+
+(12)
+
+.
+
+n∈ N
+
+The coherent lower prevision in Eq. (12) is actually the natural extension of the following coherent family of conditional
+lower previsions:
+
+Next ( P n , n ∈ N ) := P {n}∪N \{n} (·| X N \{n} ): n ∈ N ⊆ N ( P n , n ∈ N ).
+Relying on this expression for the independent natural extension, it is fairly straightforward to show that it has the following
+monotonicity property.
+Proposition 17. Let P n and Q n be coherent lower previsions on L (Xn ) such that P n
+
+Q n , n ∈ N. Then
+
+n∈ N
+
+Pn
+
+n∈ N
+
+Q n.
+
+1926
+
+G. de Cooman et al. / Artiﬁcial Intelligence 175 (2011) 1911–1950
+
+5.3. Marginalising and conditioning the many-to-one independent natural extension
+Let us consider the coherent lower previsions P n on L (Xn ), n ∈ N. For any non-empty subset R of N, we denote the
+independent natural extension of the marginal lower previsions P r , r ∈ R, by E R = r ∈ R P r . This E R turns out to be the
+X R -marginal of E N = n∈ N P n .
+Theorem 18. Consider a non-empty subset R of N. Then E N ( f ) = E R ( f ) for all gambles f on X R .
+The argumentation leading to this marginalisation property also allows us to prove the following result.
+Proposition 19. E N is productive. Moreover, E N (I{x I } [ g − E O ( g )]) = 0 for all disjoint subsets I and O of N, all x I ∈ X I and all
+g ∈ L (X O ).
+This implies that the independent natural extension E N satisﬁes the law of large numbers of Theorem 4. So does, therefore,
+any (many-to-one or many-to-many) independent product of these marginals, as it must dominate E N , even though, as we show
+in Appendix B, not all such independent products are productive!
+Let us now deﬁne, for any disjoint subsets I and O of N, the conditional lower previsions E O ∪ I (·| X I ) on the set
+L (X O ∪ I ) as follows:
+
+E O ∪ I (h|x I ) := E N h(·, x I ) = E O h(·, x I )
+
+for all h ∈ L (X O ∪ I ) and x I ∈ X I ,
+
+(13)
+
+where the last equality follows from Theorem 18. This allows us to infer from the many-to-one independent natural extension E N a family of conditional models
+
+I ( E N ) := E O ∪ I (·| X I ): I and O disjoint subsets of N ,
+Interestingly, E N is coherent with the family I ( E N ), and therefore:
+Theorem 20. E N is a many-to-many independent product of the coherent lower previsions P n , n ∈ N.
+Since any many-to-many independent product is in particular also a many-to-one independent product, we are led to
+the following immediate conclusion:
+Theorem 21 (Independent natural extension). The many-to-one independent natural extension E N = n∈ N P n of the coherent lower
+previsions P n , n ∈ N, is also their pointwise smallest many-to-many independent product. We can therefore simply call it the independent natural extension of the marginals P n .
+The independent natural extension is not only a many-to-one and many-to-many independent product of its marginals:
+it is also a factorising lower prevision.
+Theorem 22. Consider coherent lower previsions P n on L (Xn ), n ∈ N. Then their independent natural extension
+torising.
+
+n∈ N
+
+P n is fac-
+
+To show that it is also strongly factorising, it seems easiest to ﬁrst show that it has an associativity property that is
+similar to the one discussed in Propositions 8 and 9.
+5.4. Associativity of the independent natural extension
+Assume that N is the union of two disjoint sets N 1 and N 2 . Then it is natural to ask whether taking the independent
+natural extension is an associative operation, i.e., whether
+
+Pn =
+n∈ N 1 ∪ N 2
+
+Pn
+n∈ N 1
+
+⊗
+
+Pn ?
+n∈ N 2
+
+Let us look at this formulation from a slightly different angle. We can consider the tuple X N 1 as a variable assuming values
+in the set X N 1 , and E N 1 :=
+n∈ N 1 P n as the corresponding ‘marginal’ lower prevision on L (X N 1 ). Similarly, we can
+consider the tuple X N 2 as a variable assuming values in X N 2 , and E N 2 := n∈ N 2 P n as the corresponding ‘marginal’ lower
+prevision on L (X N 2 ). We now consider the joint variable X { N 1 , N 2 } assuming values in X{ N 1 , N 2 } , and the independent
+natural extension E { N 1 , N 2 } := E N 1 ⊗ E N 2 = ( n∈ N 1 P n ) ⊗ ( n∈ N 2 P n ) of these two ‘marginals’. Since the variable X N 1 ∪ N 2 is
+(essentially) the same as the variable X { N 1 , N 2 } , the natural question to ask is, whether E N 1 ∪ N 2 = E { N 1 , N 2 } ?
+
+G. de Cooman et al. / Artiﬁcial Intelligence 175 (2011) 1911–1950
+
+1927
+
+Theorem 23. Consider arbitrary coherent lower previsions P n on L (Xn ), n ∈ N. Consider a partition N 1 and N 2 of N, then
+n∈ N 1 ∪ N 2 P n = (
+n∈ N 1 P n ) ⊗ (
+n∈ N 2 P n ).
+One important and fairly immediate consequence of this associativity is that it allows us to derive from the factorising
+character of the independent natural extension that it is also strongly factorising:
+Theorem 24. Consider coherent lower previsions P n on L (Xn ), n ∈ N. Then their independent natural extension
+factorising.
+
+n∈ N
+
+P n is strongly
+
+5.5. Interesting special cases
+When some of the marginals are linear or vacuous, the expression for the independent natural extension in Eq. (12)
+simpliﬁes to a great extent. Because of the associativity result in Theorem 23, it suﬃces to consider the case of two variables
+X 1 and X 2 , so we let N = {1, 2}.
+When one of the marginals is linear, all independent products coincide:
+Proposition 25. Let P 1 be any linear prevision on L (X1 ), and let P 2 be any coherent lower prevision on L (X2 ). Let P {1,2} be any
+independent product of P 1 and P 2 . Then for all gambles f on X1 × X2 :
+
+P {1,2} ( f ) = ( P 1 × P 2 )( f ) = ( P 1 ⊗ P 2 )( f ) = P 2 P 1 ( f ) ,
+where P 1 ( f ) is the gamble on X2 deﬁned by P 1 ( f )(x2 ) := P 1 ( f (·, x2 )) for all x2 ∈ X2 .
+On the other hand, when one of the marginals is vacuous, then the strong product and the independent natural extension
+are also guaranteed to coincide:
+A
+
+Proposition 26. Let P 1 1 be the vacuous lower prevision on L (X1 ) relative to the non-empty set A 1 ⊆ X1 , and let P 2 be any
+coherent lower prevision on L (X2 ). For all gambles f on X1 × X2 :
+A
+
+A
+
+(i) ( P 1 1 × P 2 )( f ) = ( P 1 1 ⊗ P 2 )( f ) = minx1 ∈ A 1 P 2 ( f (x1 , ·)).
+(ii) If P is a factorising coherent lower prevision with these marginals, then
+A
+
+A
+
+P ( f ) = P 1 1 × P 2 ( f ) = P 1 1 ⊗ P 2 ( f ) = min P 2 f (x1 , ·) .
+x1 ∈ A 1
+
+A
+
+(iii) If P 2 = P 2 2 is the vacuous lower prevision on L (X2 ) relative to the non-empty set A 2 ⊆ X2 , then any coherent lower prevision
+A
+
+A
+
+with these marginals P is an independent product of P 1 1 and P 2 2 .
+In contrast with what we might come to expect from Proposition 25, when one of the marginals is vacuous, we cannot
+guarantee that all independent products coincide: see Example 3 in Appendix B. This implies that the second statement of
+Proposition 26 cannot be extended from factorising coherent lower previsions to independent products.14
+6. External additivity
+We can now bring what we have learnt about the independent natural extension to bear on our discussion of the
+more formalist approaches to independence. In the following section, we investigate the connections between epistemic
+independence and factorisation. Here, we discuss weakened versions for lower previsions of the additivity property that all
+linear previsions have. Vicig [29] discusses a related but weaker notion of external n-monotonicity for the case of coherent
+lower probabilities.
+Deﬁnition 7 (External additivity). Consider a coherent lower prevision P N on L (X N ). We call this lower prevision:
+(i) externally additive if for all non-empty R ⊆ N and all gambles f r on Xr , r ∈ R, P N ( r ∈ R f r ) = r ∈ R P N ( f r );
+(ii) strongly externally additive if P N ( f + g ) = P N ( f ) + P N ( g ) for all f ∈ L (X I ) and g ∈ L (X O ), where I and O are any
+disjoint subsets15 of N.
+
+14
+15
+
+It also explains why the lower prevision in Example 3 of Appendix B cannot be factorising.
+The coherence of P N guarantees that for empty I or O the corresponding condition is trivially satisﬁed.
+
+1928
+
+G. de Cooman et al. / Artiﬁcial Intelligence 175 (2011) 1911–1950
+
+Clearly, strong external additivity implies external additivity. The latter is called summation independence by Cozman [3],
+who also gives, for the case N = {1, 2}, a proof for the external additivity of the strong product [3, Theorem 1]. We generalise
+his result by proving that both the strong product and the epistemic natural extension are generally (strongly) externally
+additive.
+Proposition 27. Consider arbitrary coherent lower previsions P n , n ∈ N. Then both their strong product S N and their independent
+natural extension E N are strongly externally additive, and therefore also externally additive.
+It follows from the deﬁnition that any convex combination of (strongly) externally additive coherent lower previsions is
+again (strongly) externally additive. In fact, looking at the proof of this result in Appendix A, we see that any many-to-one
+independent product of the given marginals that is dominated by the strong product is also externally additive. To see that this does
+not extend to all many-to-one independent products, consider Example 3 in Appendix B.
+On the other hand, Example 4 in the same appendix shows that the properties of external additivity and strong external
+additivity are not equivalent. It also shows that not all many-to-one independent products between the independent natural
+extension and the strong product are strongly externally additive.
+7. Factorisation and independence
+Since we know from Proposition 8(iv) that the strong product is factorising, we wonder if we can use factorising lower
+previsions as many-to-one independent products. That this is indeed the case is proved in the following theorem:
+Theorem 28. Consider an arbitrary coherent lower prevision P N on L (X N ). If it is factorising, then it is a many-to-one independent
+product of its marginals P n , n ∈ N.
+It is therefore natural to ask whether, by extension, all strongly factorising lower previsions are many-to-many independent. While we have not been able to answer this question in its full generality, we are able to show that this is indeed the
+case under fairly weak additional positivity conditions.
+Recall that for a factorising (or indeed any) coherent lower prevision P N on L (X N ) to be an independent product,
+it must be strongly coherent with the family I ( P N ) of conditional lower previsions. It turns out that at least the weak
+coherence is never an issue.
+Theorem 29. Consider a coherent lower prevision P N on L (X N ). If it is strongly factorising, then it is weakly coherent with the
+family I ( P N ).
+Next, we turn to deriving a suﬃcient condition for a strongly factorising lower prevision P N on L (X N ) to be also
+many-to-many independent, so strongly coherent with the family I ( P N ). For any non-empty subset I of N, we see at once
+that
+
+PN
+
+×A
+
+i
+
+=
+
+i∈I
+
+P N ( A i ) and
+
+PN
+
+×A
+
+=
+
+i
+
+i∈I
+
+i∈I
+
+P N ( A i ),
+i∈I
+
+where A i ⊆ Xi for all i ∈ I . Now suppose we want to condition P N on an observation X I = x I , where I is some subset of N.
+To this end, we calculate the regular extension, as discussed in Section 2.6:
+
+R (h|x I ) := max
+
+μ ∈ R: P N I{x I } [h − μ]
+
+0 ,
+
+where h is any gamble on X O and O is any subset of N \ I . If P N is strongly factorising, we see that
+
+P N I{x I } [h − μ] = P N I{x I } P N (h − μ) = P N I{x I } P N (h) − μ
+
+=
+
+P N ({x I })( P N (h) − μ)
+
+if P N (h)
+
+P N ({x I })( P N (h) − μ)
+
+if P N (h)
+
+μ,
+μ,
+
+so we conclude that
+
+R (h|x I ) = P N (h) as soon as
+
+P N { x I } > 0.
+
+This means that, heuristically speaking and under some positivity assumptions, the conditional lower previsions that are
+found by conditioning a strongly factorising joint lower prevision using regular extension, reﬂect the irrelevance conditions
+that are involved in the deﬁnition of many-to-many independence. Taking into account that, from Theorem 3, the conditional
+lower previsions derived by regular extension are strongly coherent, we deduce the following:
+
+G. de Cooman et al. / Artiﬁcial Intelligence 175 (2011) 1911–1950
+
+1929
+
+Theorem 30. Let P N be a strongly factorising coherent lower prevision. If P N ({x I }) > 0 for every {x I } ∈ X I , then P N is many-to-many
+independent.
+It is an open problem at this point whether this positivity condition is really necessary.
+Since the independent natural extension is the pointwise smallest many-to-one independent product of given marginals,
+and since we have shown in Proposition 8(iv) that the strong product is in particular Kuznetsov, we deduce that the
+smallest many-to-one independent product that is still Kuznetsov lies between the independent natural extension and the
+strong product. For the case N = {1, 2}, this was also established by Cozman [3].
+Concerning the other conditions introduced in Section 3, we point out the following:
+Proposition 31. Consider arbitrary coherent lower previsions P n on L (Xn ), n ∈ N, and let Q 1 and Q 2 be coherent lower previsions
+on L (X N ) with these marginals P n . Let Q 3 be any coherent lower prevision on L (X N ) such that Q 1
+Q3
+Q 2 . Then the
+following statements hold:
+(i)
+(ii)
+(iii)
+(iv)
+
+If
+If
+If
+If
+
+Q 1 and Q 2 are many-to-one independent products, then so is Q 3 ;
+Q 1 and Q 2 are factorising, then so is Q 3 ;
+Q 1 and Q 2 are Kuznetsov, then so is Q 3 ;
+Q 2 is externally additive, then so is Q 3 .
+
+We deduce that a convex combination of many-to-one independent products of the same given marginals is again a
+many-to-one independent product of these marginals. A similar result holds for factorising or Kuznetsov lower previsions.
+It is also interesting to investigate the connections between independent products and the notion of productivity.
+Proposition 32. Consider a coherent lower prevision P N on L (X N ). Then the following statements are equivalent:
+(i) P N is weakly coherent with I ( P N );
+(ii) P N is productive.
+In addition, any many-to-many independent lower prevision is productive, and any productive coherent lower prevision is many-toone independent. Moreover, if P N ({x I }) > 0 for every x I ∈ X I and every subset I of N, then P N is many-to-many independent if and
+only if it is productive.
+We conclude that productivity, which is suﬃcient for the law of large numbers in Theorem 4 to hold, is intermediate
+between being a many-to-one and being a many-to-many independent product, and is equivalent to many-to-many independence when all the conditioning events have positive lower probability. Example 6 in Appendix B shows that not all
+many-to-one independent lower previsions are productive, and that many-to-one and many-to-many independence are not
+equivalent even if the conditioning events all have positive lower probability.
+8. An application: probabilistic inference in imprecise Markov trees
+Independence is at the very heart of much research done in Artiﬁcial Intelligence. In this section we show how the
+independent natural extension affects a very traditional domain of AI: probabilistic graphical models. We do so by reviewing
+and discussing a model and algorithm recently introduced elsewhere by some of us [11]. The coherence results that are at
+the core of that algorithm rely quite heavily on the properties of the independent natural extension proved in this paper,16
+such as its being the smallest many-to-many independent product, its marginalisation and associativity properties, and its
+being strongly factorising.
+8.1. Background notions and notation
+As is widely known, a graphical model consists of a graph enriched with speciﬁc probabilistic information. One such
+model is a Bayesian network [27]. Here a directed graph represents variables through nodes, and independence statements
+between them by arcs. Conditional probabilities are associated with the nodes of the graph.
+Let us make this more precise by introducing some notation. We tailor the notation to the case of tree topologies, which
+are the focus of our attention: every node of the graph has exactly one parent, with the exception of one node, called root,
+which has no parents.
+We call T the set of the nodes s of the tree, and we denote the root node by . For any node s, we denote its mother
+node by m(s). The root
+has no mother node, and we use the convention m( ) = ∅. For each node s, we denote the set
+16
+
+The paper was written jointly with the present one, but published earlier due to circumstance.
+
+1930
+
+G. de Cooman et al. / Artiﬁcial Intelligence 175 (2011) 1911–1950
+
+of its children by C (s). If C (s) = ∅, then we call s a leaf, or terminal node. Moreover, D (s) denotes the set of descendants
+of s (its successors in the graph). We also use the notation ↓s := D (s) ∪ {s} for the subtree with root s. Similarly, we
+let ↓ S := {↓s: s ∈ S } for any subset S ⊆ T . For any node s, its set of non-parent non-descendants is then given by
+s := T \ ({m(s)} ∪ ↓s).
+With each node s of the tree, there is associated a variable X s . We adopt the usual notation and assumptions for the
+variables in the tree. In particular, variable X s takes values in the corresponding non-empty ﬁnite set Xs , and we assume
+all variables to be logically independent.
+At this point we can deﬁne the probabilistic information in a Bayesian net more precisely: a generic node s is equipped
+with a mass function for X s conditional on X m(s) = zm(s) , for all zm(s) ∈ Xm(s) . We can rephrase this in the language of
+previsions by saying that each node s has a (separately coherent) conditional linear prevision Q s (·| X m(s) ) on L (Xs ): for
+each possible value zm(s) of the variable X m(s) associated with its mother node m(s), we have a linear prevision Q s (·| zm(s) )
+for the value of X s , conditional on X m(s) = zm(s) .17 We call Q s (·| X m(s) ) a local uncertainty model.
+The tree together with the local uncertainty models provides a compact way to deﬁne a joint probability mass function
+over X T . This follows from the Markov condition, which is also what provides the graphical model with a probabilistic semantics: conditional on its mother variable X m(s) , variable X s is assumed to be independent of its non-parent non-descendant
+variables X s . Again, in terms of lower previsions, this means that the graphical model is an equivalent representation of a
+global uncertainty model P T , that is, a linear prevision deﬁned on L (X T ).
+The global uncertainty model is then used for inference, which most often amounts to computing posterior beliefs (i.e.,
+probabilities or expectations) for a query variable X s conditional on X E = x E , where E is a non-empty subset of T whose
+variables are in the known state x E . This task is called updating. Updating is performed by applying Bayes’s rule to the
+global uncertainty model while exploiting the structure of the graph in order to perform the computation as eﬃciently as
+possible. In fact, the computation of updating on a tree-shaped Bayesian network is an easy task, which is solved exactly in
+time linear in the size of the tree.
+8.2. Epistemic trees
+Bayesian networks have been extended to deal with imprecisely speciﬁed probabilities. The resulting models are called
+credal networks [4]. The extension is achieved primarily by replacing the local uncertainty models of Bayesian networks with
+imprecise ones: in the most common case, this means that each mass function required to specify a Bayesian net is replaced
+by a closed convex set of mass functions. In the language of previsions, in a credal network each node s is equipped with a
+(separately coherent) conditional lower prevision Q s (·| X m(s) ) on L (Xs ): for each possible value zm(s) of the variable X m(s)
+associated with its mother node m(s), we have a coherent lower prevision Q s (·| zm(s) ) for the value of X s , conditional on
+X m(s) = zm(s) .
+As in Bayesian networks, these local uncertainty models need to be combined into a global uncertainty model that is
+later used for (imprecise-probabilistic) inference. The Markov condition still plays the leading role in this process, but has to
+be modiﬁed to take into account the speciﬁc notion of independence (or irrelevance) that the graph is assumed to represent.
+The traditional approach in the literature focuses on strong independence: in this case, conditional on its mother variable
+X m(s) , a variable X s is assumed to be strongly independent of its non-parent non-descendant variables X s . The global
+uncertainty model P T obtained through this so-called strong Markov condition, is called the strong extension. The strong
+extension comes with a sensitivity analysis interpretation: in fact, each of its extreme points can be regarded as arising
+from a Bayesian network with the same graph as the credal net, and whose local uncertainty models dominate the local
+uncertainty models of the credal network. In other words, a credal network under strong independence can be regarded as
+the set of all the Bayesian networks that are compatible with the probabilities that have been imprecisely speciﬁed in the
+design of the credal net.
+But the sensitivity analysis interpretation of an imprecise probability model is not always applicable, as we have discussed in the Introduction with reference to modelling expert knowledge. In this case an assumption of epistemic irrelevance
+may allow one to represent more faithfully an expert’s beliefs.18 This point is especially important because modelling expert
+knowledge is among the main motivations for using credal networks (as well as Bayesian nets).
+This lead has been followed in Ref. [11] by looking at the following type of Markov condition based on epistemic
+irrelevance:
+CI. Consider any node s in the tree T , any subset S of its set of children C (s), and the set S := c ∈ S c of their common
+non-parent non-descendants. Then conditional on the variable X s , the non-parent non-descendant variables X S are assumed
+to be epistemically irrelevant to the variables X ↓ S associated with the children in S and their descendants.
+This condition turns T into a credal tree under epistemic irrelevance, which we call imprecise Markov tree.
+
+In the root, this corresponds to having an unconditional local uncertainty model Q
+for X : a linear prevision on L (X ).
+Obviously, there may be cases where strong independence is justiﬁed in order to model an expert’s knowledge. Moreover, strong independence could
+provide a good approximation to more accurate models, even when it is not entirely appropriate.
+17
+18
+
+G. de Cooman et al. / Artiﬁcial Intelligence 175 (2011) 1911–1950
+
+1931
+
+Before we proceed, let us brieﬂy address a technical question: the form of CI might look unusual when compared to
+the common statement of the Markov condition. In fact, CI seems to impose a wider set of irrelevances, focusing as it does
+on sets of children of s, and on the related subtrees, rather than on a single child. But this difference is only apparent,
+because the strong Markov condition, as well as the precise-probabilistic Markov condition, can be reformulated equivalently
+in a completely similar way: the apparent additional irrelevances (or independencies) are actually implied by those in the
+standard Markov condition [use d-separation to see that s blocks all the relevant paths]. Whether or not this is the case
+when we use epistemic irrelevance is not obvious to us at present; this is due to epistemic irrelevance being a relatively
+weak notion for imprecise probability models. For this reason, CI is formulated by imposing all the additional epistemic
+irrelevances explicitly.
+We now shed more light on two immediate consequences of CI.
+First, consider some non-terminal node s different from , and its mother variable X m(s) . We infer from CI that this
+mother variable X m(s) is epistemically irrelevant to the variable X ↓C (s) conditional on X s :
+
+It is worth stressing that such is not necessarily the case when we reason in the opposite way: CI does not imply that X ↓C (s)
+is epistemically irrelevant to X m(s) in case we observe X s . This kind of symmetrised irrelevance (that is, independence)
+can be imposed too, but its treatment is much more involved and problematical from the algorithmic side, because it
+complicates the construction of the global model tremendously. In addition, we would argue that the irrelevances imposed
+by CI are more natural than their symmetrised counterparts for directed graphical models. We will come back to this point
+in Section 8.4.
+Next, consider some node s. Then CI tells us that for any two children c 1 , c 2 ∈ C (s) of s, the variable X ↓c1 is epistemically
+irrelevant to the variable X ↓c2 , conditional on X s .
+
+It even tells us that for any two disjoint non-empty sets S 1 ⊆ C (s) and S 2 ⊆ C (s) of children of s, the variable X ↓ S 1 is
+epistemically irrelevant to X ↓ S 2 , conditional on X s . In contradistinction with the previous example, here we see that the
+symmetrised irrelevance conditions (here between children) originate spontaneously from CI: we conclude that, conditional
+on a node, its children c (or rather, the variables associated with their subtrees ↓c) are epistemically many-to-many independent.
+This is the speciﬁc point where our present work on the independent natural extension meets credal trees. If we want
+to obtain the most conservative global model that arises through coherence from the local models and the statements of
+conditional irrelevance implied by CI, then we need to compute the independent natural extension in order to summarise
+the information carried by the variables associated with the subtrees ↓c, with c ∈ C (s).
+8.3. Constructing the most conservative global model
+Let us illustrate how to construct the most conservative global model for the variables in the tree that extends the local
+models and expresses all conditional irrelevancies encoded by the imprecise Markov tree through CI. Consider the following
+fragment of the tree.
+
+Here we denote by P ↓ck (·| X s ) the lower prevision on L (X↓ck ) that is the most conservative global model for X ↓ck constructed from CI and the local models in the subtree with root ck . This is a conditional global model as it depends on the value
+of X s . For the time being, we assume that such conditional global models related to the children of s exist and have already been computed. Since we know from the foregoing discussion that the X ↓c1 , . . . , X ↓cn are many-to-many independent
+
+1932
+
+G. de Cooman et al. / Artiﬁcial Intelligence 175 (2011) 1911–1950
+
+conditional on X s , we can compute their independent natural extension
+c ∈C (s) P ↓c (·| X s ), which is a conditional lower
+prevision P ↓C (s) (·| X s ) on L (X↓C (s) ). We can reorganise the graph accordingly by clustering all the children into a single
+node.
+
+At this point, the local model Q s (·| X m(s) ) must be combined with P ↓C (s) (·| X s ) into a least-committal (pointwise smallest)
+
+global conditional model about X ↓s . This is achieved by taking their marginal extension19
+
+Q s P ↓C (s) (·| X {m(s),s} )| X m(s) = Q s P ↓C (s) (·| X s )| X m(s) ;
+see Refs. [23] and [30, Section 6.7.2] for more details. Graphically:
+
+It is clear that this process can be iterated by starting from the leaves of the tree and letting P ↓t (·| X m(t ) ) := Q t (·| X m(t ) ) for
+all leaves t, and working our way recursively up to the root. When we eventually get to the root, this process yields a global
+model P ↓ (·| X m( ) ) =: P T .
+A central theorem in Ref. [11] then guarantees that, under mild positivity conditions on the local upper previsions, P T is
+the most conservative (pointwise smallest) joint lower prevision that coherently extends the local models and that expresses
+all the conditional irrelevance statements implied by CI. This remarkable result relies quite heavily on the independent
+natural extension and its properties, as introduced and studied in this paper. The particular properties that are crucial in
+establishing it are: that it is the smallest many-to-many independent product (Theorem 21), that it is strongly factorising
+(Theorem 24), that it satisﬁes some marginalisation and associativity properties (Theorems 18 and 23), and that all of this
+can be extended to the conditional setup (Theorem 11).
+These results have important implications for imprecise-probabilistic graphical models under epistemic irrelevance. They
+show that epistemic irrelevance can be used in the context of at least some graphical models in much the same way as
+stochastic independence or strong independence. In fact, not only does the work in Ref. [11] show by construction that
+the ‘epistemic extension’ P T generally exists, but it goes further by using it to derive an eﬃcient algorithm for updating in
+imprecise Markov trees—another name for credal trees. Similarly to the traditional algorithms for Bayesian nets, it works in
+a distributed fashion by passing (imprecise-)probabilistic messages along the nodes of the tree until it converges and thus
+yields the (exact) updated lower previsions of interest. Moreover, it works in time linear in the size of the tree, as is the
+case with the more traditional algorithms for precise probabilities.
+8.4. Some remarks
+The results obtained with imprecise Markov trees are particularly interesting because it had been uncertain until quite recently whether or not epistemic irrelevance could be used to design eﬃcient algorithms in graphical models. This is related
+to epistemic irrelevance being not as well-behaved as other independence notions with respect to the graphoid axioms; see
+in particular Ref. [6], but also Ref. [26] for a more positive view. Part of the interest in these results is due to complexity
+reasons. Computation in credal nets based on strong independence is substantially harder than the case of Bayesian nets: it
+is an NP-hard task even on polytrees20 [9]. What complexity updating credal trees under strong independence has, is still
+an open problem, but preliminary analyses made by Cassio P. de Campos, based on Ref. [8, Theorem 7], indicate that this
+task should be NP-hard too. If this were to be conﬁrmed, we should have a clear example where epistemic irrelevance leads
+to simpler models of computation than strong independence.
+On the other hand, we should take into account that these positive results have been obtained in the case of tree
+topologies. The expressivity of trees should not be overlooked because, for example, updating problems in Bayesian networks
+can be solved through the well-known join tree structure (this is an undirected tree, but it can be as well represented
+in a directed way with minor changes).21 And yet, it does not seem likely that something similar can be done under
+
+19
+20
+21
+
+Marginal extension is, in the special case of precise probability models, also known as the law of total probability, or the law or iterated expectations.
+These are directed graphs that become (undirected) trees after dropping the orientations of the arcs.
+This was observed by Pearl already at the time of the original proposal by Lauritzen and Spiegelhalter, see Ref. [20, p. 211].
+
+G. de Cooman et al. / Artiﬁcial Intelligence 175 (2011) 1911–1950
+
+1933
+
+epistemic irrelevance. The crucial point here is that when we convert a polytree into a (directed) join tree, we shall be
+obliged to invert the direction of some arcs. This is easy to see by considering a V-shaped graph made of two chains
+that converge into a node. The problem is that the epistemic irrelevances coded by the original V-shaped polytree will
+not imply in general those related to the inverted arcs in the directed tree, simply because epistemic irrelevance is an
+asymmetric notion. Therefore, imprecise Markov trees do not seem suited to be exploited as tools for solving updating
+problems in more general credal networks under epistemic irrelevance. This situation could perhaps change if condition
+CI were reformulated to code symmetric irrelevances (that is, epistemic independencies): in this case inverting the arcs
+should cause no problems. However, as we already suggested above, the development of eﬃcient algorithms for trees under
+such a modiﬁed (strengthened) Markov condition appears to be quite problematic, because the condition complicates the
+computation of the joint model. All these considerations lead us to conjecture that the extension of the existing results from
+trees to polytrees might require a substantial increase in computational complexity.
+Still, there is another direction, relying on tree topologies, that appears to be particularly promising for addressing interesting problems under epistemic irrelevance. It is based on the observation that discrete-time sequential processes are
+very often represented by hidden Markov models [28], which are special trees in the language of graphical models. Hidden
+Markov models have a number of applications, often related to some kind of recognition: speech, gesture, or word recognition. Technically, this is achieved by computing sequences of hidden variables (states) from the observation of sequences
+of other, manifest, variables (outputs). In fact, in order to turn credal trees into workable imprecise hidden Markov models,
+the additional complication that needs to be faced is that of querying the tree for the joint value of the hidden variables,
+rather than for a single one. Recent work [7] has shown that, fortunately, such a task can be solved again exactly and with
+a complexity that is essentially the same as that required for precise-probabilistic hidden Markov models. Once again, the
+key to this result is the use of the independent natural extension and its properties, as developed here.
+9. Conclusions
+We have worked out the foundations of epistemic independence, a generalisation of stochastic independence to imprecise
+probabilities. This has led to a deﬁnition of independent products, and in particular to the especially interesting and useful
+notion of independent natural extension. Like the strong product, or any other independent product, for that matter, it captures
+the idea of mutual irrelevance between sources of information. But it is the most conservative independent product to do
+so, which indicates that it is the only one that is based solely on this mutual irrelevance (and coherence, of course).22 We
+see that, because it encompasses all these types of independent product, the notion of epistemic independence has very
+wide scope.
+We have carried out our study by focusing on variables assuming values in ﬁnite spaces, and have followed two different routes. On the one hand, we have considered generalisations to imprecise probabilities of the factorisation formula:
+productivity, (strong) factorisation, being (strongly) Kuznetsov. On the other, we have deﬁned many-to-one and many-tomany independent products of marginals, or, possibly, conditionals, based on a behavioural notion of symmetrised epistemic
+irrelevance, or in other words, epistemic independence. We have shown that the two routes are tightly interwoven, as factorisation implies many-to-one independence and strong factorisation implies many-to-many independence (under weak
+positivity assumptions). The most important notion of this paper, the independent natural extension, has been shown to
+be the smallest many-to-many (and many-to-one) independent product. It also satisﬁes useful basic properties related to
+marginalisation, associativity, and external additivity.
+What the independent natural extension embodies, in other words, is a way to coherently extend marginal imprecise
+probability models into a joint model using symmetrised epistemic irrelevance judgements alone. As far as practical applications are concerned, this task is simpliﬁed by our next important result: under mild conditions, using the independent
+natural extension is equivalent to imposing strong factorisation when looking for least-committal models. In fact, this is the
+crucial result that has allowed the independent natural extension to be used successfully in graphical models in Ref. [11],
+as we have discussed above.
+All these results appear here, at this level of generality, for the ﬁrst time. It is natural to wonder what they might
+eventually lead us to.
+As far as applications are concerned, we see much scope for epistemic independence. As already indicated, the domain of
+graphical models is particularly worth of consideration in this respect. Future research could, as mentioned in Section 8.4,
+try to extend the work in Ref. [11] to more general graphs, such as polytrees. The recent development of an eﬃcient
+algorithm for the exact computation of state sequences in imprecise hidden Markov models [7] (which are special imprecise
+Markov trees) should favour the emergence of new interesting applications exploiting epistemic independence. Another
+potential domain of application could be probabilistic logic, and in particular the extensions that have been proposed to
+embed independence [5]. This would lead to approaches to probabilistic logic allowing both for imprecise probabilities and
+epistemic independence judgements.
+As regards more technical questions arising from this paper, we summarise the main problems that remain open at this
+stage.
+
+22
+The ‘extra information’ entering the strong product seems to be the underlying assumption of an ideal precise model. In order to make the strong
+product the smallest coherent independent product, the notion of coherence would have to be strengthened.
+
+1934
+
+G. de Cooman et al. / Artiﬁcial Intelligence 175 (2011) 1911–1950
+
+Primo, in Proposition 6, we have established relationships—in fact, implications—between the different factorisation conditions introduced in Section 3. In Appendix B, we give a number of counterexamples that show that none of the converse
+implications hold in general, except for one of them: we still do not know whether the Kuznetsov and strong Kuznetsov
+conditions are generally equivalent.
+Secundo, in Section 4 we have introduced many-to-one and many-to-many independent products, and we have shown in
+Appendix B that the second of these notions is more restrictive. But let us look at the connections between these epistemic
+notions and the more formal conditions introduced in Section 3. We have proved that a factorising coherent lower prevision
+(and as a consequence also one that is strongly factorising, Kuznetsov or strongly Kuznetsov) is many-to-one independent,
+although in Appendix B we can see that the converse is not true in general. We also show in Appendix B that not every
+many-to-many independent product is factorising (and therefore it need not be Kuznetsov, strongly factorising or strongly
+Kuznetsov). But we do not know whether a strongly factorising coherent lower prevision is necessarily many-to-many
+independent.
+Tertio, we have established in Section 5 that the independent natural extension is the smallest many-to-one independent
+product of given marginals, and that it also is the smallest product that is factorising, strongly factorising, or many-tomany independent. We show in Appendix B that it is neither the smallest Kuznetsov nor the smallest strongly Kuznetsov
+product. Another example of this is given in Ref. [3], where it is shown that the least-committal Kuznetsov product of given
+marginals may be different from the strong product.
+Quarto, and related to this, we show in Example 3 that there are many-to-many independent products that dominate the
+strong product, but our next conjecture, that the strong product could be the greatest factorising product of given marginals,
+still remains to be proved or disproved. If the conjecture were to hold, then the strong product would also be the greatest
+strongly factorising, Kuznetsov and strongly Kuznetsov product. Related to this, it might be argued that the coherent lower
+prevision in Example 3 represents a somewhat pathological situation, and that it points to the fact that considering only
+many-to-many independence as our main requirement could be too weak. One possibility would be to restrict ourselves
+to many-to-many independent products which satisfy one of the factorisation conditions we have introduced in this paper;
+this seems to be in accordance with the results in Section 5.5, which show that the coherent lower prevision in Example 3
+is not factorising, and that for those marginals the only factorising product is the intuitive one. Hence, we may focus for
+instance on factorising coherent lower previsions, or on many-to-many independent products which are at the same time
+strongly factorising.
+Finally, we do not know whether all factorising coherent lower previsions are externally additive, nor whether all strongly
+factorising coherent lower previsions are. These open problems could be related to our conjecture about the strong product
+being the greatest factorising lower prevision with given marginals.
+Acknowledgements
+This work has been supported by SBO project 060043 of the IWT-Vlaanderen, projects TIN2008-06796-C04-01, MTM201017844, by Swiss NSF grants nos. 200020_134759/1, 200020-121785/1, and by the Hasler foundation grant no. 10030. We
+would also like to thank the reviewers for their helpful comments.
+Appendix A. Proofs of results
+Proof of Proposition 5. We ﬁrst show that P N is factorising if and only if (i) holds. Since the direct implication is trivial, it
+suﬃces to prove the converse. Consider o ∈ N, f o ∈ L (Xo ) and non-negative f i ∈ L (Xi ) for i ∈ I , where I is any subset
+of N that does not include o. Let f j be the gamble with the constant value 1, for every j ∈
+/ I ∪ {o}. We deduce from (i) that
+
+
+so P N is factorising.
+Next, we prove that (i) and (ii) are equivalent. Let, for notational simplicity, f R := r ∈ R f r for any subset R of N.
+(i) ⇒ (ii). If P N ( f o )
+0, then the coherence of P N tells us that P N ( P N ( f o ) f N \{o} ) = P N ( f o ) P N ( f N \{o} ). Similarly, if
+P N ( f o ) 0, then
+
+P N P N ( f o ) f N \{o} = − P N − P N ( f o ) f N \{o} = P N ( f o ) P N ( f N \{o} ).
+It now suﬃces to establish the equalities P N ( f N \{o} ) = i ∈ N \{o} P N ( f i ) and P N ( f N \{o} ) = i ∈ N \{o} P N ( f i ). These follow easily
+by applying induction on the number of the elements in the product.
+(ii) ⇒ (i). By letting f o := 1, we infer from (ii) that P N ( f N \{o} ) = i ∈ N \{o} P N ( f i ), and by letting f o := −1, that
+P N  Going back to general f o , we now derive from (ii) and the coherence of P N that, when
+P o ) P N 
+P N ( fo)
+i ∈ N \{o}
+
+G. de Cooman et al. / Artiﬁcial Intelligence 175 (2011) 1911–1950
+
+and that when P N ( f o )
+
+1935
+
+0:
+
+P N ( f i ) = P N ( f o ) P N ( f N \{o} ) = − P N − P N ( f o ) f N \{o} = P N P N ( f o ) f N \{o} .
+
+P N ( fo)
+
+✷
+
+i ∈ N \{o}
+
+Proof of Proposition 6. First, assume that P N is strongly Kuznetsov. We show that P N is strongly factorising. Consider
+P N ( f ) 0 and
+disjoint subsets I and O of N, a gamble g on X O and a non-negative gamble f on X I . Since P N ( f )
+P N ( g ) P N ( g ), we infer that
+
+P N ( f g) = P N ( f )
+
+P N (g)
+
+= min P N ( f ) P N ( g ), P N ( f ) P N ( g ) , max P N ( f ) P N ( g ), P N ( f ) P N ( g )
+⎧
+⎨ [ P N ( f ) P N ( g ), P N ( f ) P N ( g )] if P N ( g ) 0,
+= [ P N ( f ) P N ( g ), P N ( f ) P N ( g )] if P N ( g ) 0 P N ( g ),
+⎩
+[ P N ( f ) P N ( g ), P N ( f ) P N ( g )] if P N ( g ) 0,
+and by considering the lower interval bounds, we see that P N is indeed strongly factorising.
+Next, assume that P N is strongly factorising. We show that P N is productive. Consider disjoint subsets I and O of N,
+a gamble g on X O and a non-negative gamble f on X I . Then it follows from the fact that P N is strongly factorising and
+coherent that
+
+P N f g − P N (g)
+
+= P N f P N g − P N (g)
+
+= P N f P N (g) − P N (g)
+
+so P N is indeed productive.
+The proofs of the remaining implications are either similar, or trivial.
+
+= 0,
+
+✷
+
+Proof of Proposition 7. The ﬁrst part of the proposition is immediate. For the second, use the ﬁrst to see that (c) and (d) are
+equivalent, and that (e) and (f) are equivalent. For the other equivalences, use the self-conjugacy and coherence of P N . ✷
+Proof of Proposition 8. The ﬁrst statement is an immediate consequence of Eq. (8) and Proposition 7(i).
+We turn to the proof of the second statement. We ﬁrst show that the set ext(M ( S N )) is included in { n∈ N P n : (∀n ∈
+N ) P n ∈ ext(M ( P n ))}. The sets M ( P n ), n ∈ N, are closed [in the topology of pointwise convergence, or equivalently, in
+the Euclidean topology, because we are working in ﬁnite-dimensional linear spaces]. So the Cartesian product n∈ N M ( P n )
+is closed in the product topology. Since it is clear from Eq. (6) that taking a product of linear previsions is a continuous
+operation with respect to these topologies, it follows that the set of linear previsions M := { n∈ N P n : (∀n ∈ N ) P n ∈
+M ( P n )} is closed. It follows from Walley’s weak* compactness theorem [30, Theorem 3.6.1] that since S N is the lower
+envelope of M , the convex compact set M ( S N ) is equal to the closed convex hull of its subset M . It then follows from
+the extended form of the Krein–Milman Theorem in Ref. [18, p. 74] that ext(M ( S N )) ⊆ M (because M is closed). Suppose
+ex absurdo that some extreme point S N = n∈ N Q n of M ( S N ) does not belong to { n∈ N P n : (∀n ∈ N ) P n ∈ ext(M ( P n ))}.
+
+×
+×
+
+×
+
+×
+
+×
+
+Then there must be some r ∈ N such that Q r is not an extreme point of M ( P r ), so there are different Q r1 and Q r2 in M ( P r )
+and α ∈ (0, 1) such that P r = α Q r1 + (1 − α ) Q r2 . But then S N = α Q N1 + (1 − α ) Q N2 , where Q N1 := ( n=r P n ) × Q r1 ∈ M and
+
+×
+
+Q N2 := (
+
+×
+
+P ) × Q r2 ∈ M . Since M ⊆ M ( S N ), this contradicts that S N is an extreme point of M ( S N ). We deduce that
+n=r n
+indeed ext(M ( S N )) ⊆ { n∈ N P n : (∀n ∈ N ) P n ∈ ext(M ( P n ))}.
+On to the converse inequality { n∈ N P n : (∀n ∈ N ) P n ∈ ext(M ( P n ))} ⊆ ext(M ( S N )). Consider arbitrary P n ∈
+ext(M ( P n )) for all n ∈ N. Then S N := n∈ N P n ∈ M ( S N ) by Eq. (8). It follows from Minkowski’s Theorem (or Krein–
+Milman Theorem in ﬁnite dimensions) that S N is a convex combination of elements of ext(M ( S N )): there are m 1,
+m
+m
+m
+k
+1
+non-negative real α1 , . . . , αm such that
+k=1 αk = 1 and Q N , . . . , Q N in ext(M ( S N )) such that S N =
+k=1 αk Q N . If m = 1
+then clearly S N ∈ ext(M ( S N )), so we may assume without loss of generality that m > 1.
+m
+Consider any n ∈ N, then it follows by marginalisation that P n = k=1 αk Q nk , where Q nk is the Xn -marginal of Q Nk ,
+k = 1, . . . , m. [That the Xn -marginal of S N is P n follows from Proposition 7(i).] Since Q Nk ∈ M ( S N ) we ﬁnd that Q Nk ( g )
+S N ( g ) = P n ( g ) for any g ∈ L (Xn ), where the equality follows from (i). This implies that Q nk ∈ M ( P n ), k = 1, . . . , m. But
+since we assumed that P n ∈ ext(M ( P n )) and m > 1, we must have that Q n1 = · · · = Q nm = P n .
+Since this holds for all n ∈ N, and since we already know from the argumentation above [ext(M ( S N )) ⊆ M ] that
+Q Nk = n∈ N Q nk for k = 1, . . . , m, we see that Q N1 = · · · = Q Nm = S N and therefore S N ∈ ext(M ( S N )).
+The third statement is an immediate consequence of (ii) and Proposition 7(ii).
+Let us ﬁnally prove the fourth statement. Consider arbitrary disjoint proper subsets I and O of N, gambles f ∈ L (X I )
+and g ∈ L (X O ). It follows from the third statement, Eqs. (7) and (8), Proposition 7 and conjugacy that
+
+×
+
+×
+×
+
+×
+
+S N ( f g ) = min P I ( f ) P O ( g ): P I ∈ M ( S I ) and P O ∈ M ( S O ) ,
+S N ( f g ) = max P I ( f ) P O ( g ): P I ∈ M ( S I ) and P O ∈ M ( S O ) .
+
+1936
+
+G. de Cooman et al. / Artiﬁcial Intelligence 175 (2011) 1911–1950
+
+This clearly implies that
+
+S N ( f g ) = min ab: a ∈ S I ( f ) and b ∈ S O ( g ) ,
+S N ( f g ) = max ab: a ∈ S I ( f ) and b ∈ S O ( g ) ,
+or in other words S N ( f g ) = S I ( f ) S O ( g ). Now use the ﬁrst statement and conjugacy to ﬁnd that S I ( f ) = S N ( f ) and
+S O ( g ) = S N ( g ).
+The rest of the proof now follows from Proposition 6. ✷
+Proof of Proposition 9. The proof of (i) is an easy consequence of the coherence condition: if P N is coherent with the family
+of conditional lower previsions N ( P n , n ∈ N ), then its restriction to L (X R ) is coherent with the subfamily N ( P r , r ∈ R )
+containing restrictions of certain elements of N ( P n , n ∈ N ).
+The argumentation for (ii) is similar.
+For (iii), we have to prove that Q N , Q N (·| X R ) and Q N (·| X S ) are coherent, where for instance
+
+Q N ( f |x R ) := Q N f (·, x R )
+
+for all x R ∈ X R and f ∈ L (X N ).
+
+Since both Q N (·| X R ) and Q N (·| X S ) belong to I ( Q N ), this follows from the coherence of Q N with I ( Q N ).
+
+✷
+
+Proof of Proposition 10. We ﬁrst show that S N is a many-to-many independent product of its marginals. It will then
+automatically follow that S N is a many-to-one independent product of its marginals as well. This will establish that arbitrary
+linear previsions P n on L (Xn ), n ∈ N, always have many-to-many and many-to-one independent products.
+To show that S N is a many-to-many independent product of its marginals, we use Theorem 2. This means that we need
+to prove that (a) the family of conditional lower previsions I ( S N ) is coherent; and (b) that the joint model S N is weakly
+coherent with the family I ( S N ).
+We begin with (a). Because we are dealing with linear previsions, coherence is equivalent to the condition in Eq. (2).
+Assume ex absurdo that there are f O , I ∈ L (X O ∪ I ) for all disjoint subsets I and O of N, and δ > 0 such that
+
+G O ∪I ( f O ,I | X I )
+
+−δI A
+
+(14)
+
+O ,I
+
+and A := O , I supp I ( f O , I ) = ∅.
+There are two possibilities. The ﬁrst is that P n ({xn }) > 0 for all xn ∈ Xn and all n ∈ N. Since S N is linear and strongly
+factorising, it follows that
+
+S N I{x I } f O , I (·, x I ) − S N f O , I (·, x I )
+
+S N G O ∪I ( f O ,I | X I ) =
+x I ∈X I
+
+S N { x I } · 0 = 0.
+
+=
+x I ∈X I
+
+Then, if we apply S N to both sides of the inequality in Eq. (14), we get that S N ( A ) = 0, which contradicts the assumption
+that P n ({xn }) > 0 for all xn ∈ Xn and all n ∈ N.
+The second possibility is that there are n ∈ N and xn ∈ Xn such that P n ({xn }) = 0. Consider any ε ∈ (0, 1). For all n ∈ N,
+let A n := {xn ∈ Xn : P n ({xn }) = 0}, and let P nε be the linear prevision on L (Xn ) deﬁned by
+
+P nε {xn } :=
+
+ε
+
+| An |
+
+if xn ∈ A n ,
+
+(1 − ε ) P n ({xn }) otherwise
+
+when A n is non-empty, and P nε := P n when A n is empty. Let S εN be the product of the linear previsions P nε , n ∈ N. Then for
+every I , O and x I ∈ X I , it holds that, with obvious notations:
+
+G O ∪ I ( f O , I |x I ) − G εO ∪ I ( f O , I |x I ) = I{x I } S N f I , O (·, x I ) − S εN f O , I (·, x I )
+
+I{x I } ε |X N | max | f O , I |,
+
+whence
+
+G O ∪ I ( f O , I | X I ) − G εO ∪ I ( f O , I | X I )
+recalling that A =
+
+O ,I
+
+x I ∈supp I ( f O , I )
+
+G O ∪ I ( f O , I |x I ) − G εO ∪ I ( f O , I |x I )
+
+I A ε |X N | max | f O , I |,
+
+supp I ( f O , I ). By summing over all disjoint subsets O , I of N, we obtain that
+
+G O ∪ I ( f O , I | X I ) − G εO ∪ I ( f O , I | X I )
+
+I A ε |X N |
+
+O ,I
+
+If we let 0 < ε < min{δ/2K , 1}, then we infer that
+
+max | f O , I | =: I A ε K .
+O ,I
+
+G. de Cooman et al. / Artiﬁcial Intelligence 175 (2011) 1911–1950
+
+G εO ∪ I ( f O , I | X I )
+
+1937
+
+δ
+− IA.
+2
+
+O ,I
+
+As before, applying S εN to both sides of this inequality leads to S εN ( A ) = 0, a contradiction.
+Next, we turn to (b). By Theorem 1, we must establish the coherence of S N with each conditional linear prevision
+S O ∪ I (·| X I ) (taken separately) for each pair of disjoint subsets I and O of N, or equivalently, that S N (I{x I } [ f − S O ∪ I ( f |x I )]) =
+0 for all f ∈ L (X O ) and all x I ∈ X I . We see that indeed:
+
+S N I{ x I } f − S O ( f | x I )
+
+= S N I{ x I } f − S N ( f )
+
+= S N { x I } S N f − S N ( f ) = 0,
+
+where the ﬁrst equality follows from the deﬁnition of the conditional linear prevision S O ∪ I (·| X I ), and the second one
+because S N is linear and strongly factorising.
+To complete the proof, we show that S N is the only joint coherent lower prevision that is a many-to-one independent
+product of the marginals P n , n ∈ N. Since any many-to-many independent product of the marginals P n , n ∈ N, is in particular
+also a many-to-one independent product of these marginals, it will then also follow that S N is the only joint coherent lower
+prevision that is a many-to-many independent product of these marginals.
+Consider any linear prevision P N that is a many-to-one independent product of the marginals P n , n ∈ N. Fix o ∈ N
+and I ⊆ N \ {o}, g ∈ L (Xo ) and non-negative f i ∈ L (Xi ), i ∈ I . Let f I := i ∈ I f i . By assumption P N and P {o}∪ I (·| X I ) are
+coherent, and therefore we infer from (GBR) that P N (I{x I } [ g − P N ( g )]) = 0 for every x I ∈ X I . Hence also P N ( f I [ g − P N ( g )]) =
+xi ∈X I f I (x I ) P N (I{x I } [ g − P N ( g )]) = 0, where the ﬁrst equality is due to the linearity of P N . It follows that P N is factorising,
+and applying Proposition 7, we deduce that it coincides with the product S N .
+Finally, assume that the lower prevision P N is a many-to-one independent product of the marginals P n , n ∈ N. So P N is
+coherent with the family of conditional linear previsions N ( P n , n ∈ N ), so it must be a lower envelope of linear previsions
+P N coherent with N ( P n , n ∈ N ) by the lower envelope theorem [30, Theorem 8.1.10], given that the spaces Xn , n ∈ N, are
+ﬁnite. Since we have seen above that there is a unique linear prevision S N coherent with N ( P n , n ∈ N ), we deduce that
+P N = SN. ✷
+y
+
+Proof of Theorem 11. (i) ⇒ (ii). Fix y in Y . We show that the conditional lower previsions Q O ∪ I (·| X I k ), k = 1, . . . , m,
+k
+k
+are coherent. Consider arbitrary gambles f k on X O k ∪ I k , k = 1, . . . , m, and arbitrary j ∈ {1, . . . , m}, x I j ∈ X I j and f ∈
+L (X O j ∪ I j ). Let gk := I{ y} f k ∈ L (X O k ∪ I k × Y ) and g := I{ y} f ∈ L (X O j ∪ I j × Y ). Then it follows from Eq. (10) that,
+with obvious notations, for all z N in X N :
+y
+
+y
+
+G O ∪ I ( f k | X I k )( z N ) = f k ( z O k , z I k ) − Q O ∪ I f k (·, z I k )| z I k
+k
+k
+k
+k
+
+= gk ( z O k , z I k , y ) − P O k ∪ I k gk (·, z I k , y )| z I k , y = G O k ∪ I k ( gk | X I k , Y )( z N , y ),
+and similarly,
+y
+
+y
+
+G O ∪ I f |x I j ( z N ) = I{x I } ( z I j ) f ( z O j , x I j ) − Q O ∪ I f (·, x I j )|x I j
+j
+j
+j
+j
+j
+
+= I{x I j } ( z I j )I{ y } ( y ) g ( z O j , x I j , y ) − P O j ∪ I j g (·, x I j , y ) x I j , y
+= G O j ∪ I j g |x I j , y ( z N , y ),
+and therefore
+m
+
+m
+y
+
+k =1
+
+y
+
+G O ∪ I ( f k | X I k ) − G O ∪ I f |x I j
+j
+j
+k
+k
+
+(z N ) =
+
+G O k ∪ I k ( gk | X I k , Y ) − G O j ∪ I j g |x I j , y
+
+( z N , y ).
+
+k =1
+
+Moreover, it follows, again with obvious notations, that
+
+supp I k ( gk ) := (x I k , u ) ∈ X I k × Y : gk (·, x I k , u ) = 0 = supp I k ( f k ) × { y }
+and therefore
+m
+
+(x I j , y ) ∪
+
+m
+
+supp I k ( gk ) =
+
+{x I j } ∪
+
+k =1
+
+supp I k ( f k ) × { y }.
+k =1
+m
+k=1 supp I k ( f k ) such
+y
+G O ∪ I ( f |x I j )]( z N ) 0.
+j
+j
+
+Using this equality and (i), we ﬁnd that there is some z N ∈ {x I j } ∪
+G O j ∪ I j ( g |x I j , y )]( z N , y )
+y
+
+0, and therefore [
+
+m
+k=1
+
+y
+G O ∪I ( f k | X Ik )
+k
+k
+
+−
+
+that [
+
+m
+k=1
+
+G O k ∪ I k ( gk | X I k , Y ) −
+
+This implies that the collection
+
+Q O ∪ I (·| X I k ), k = 1, . . . , m, is coherent. Since y is arbitrary, (ii) holds.
+k
+k
+(ii) ⇒ (i). Consider arbitrary gk ∈ L (X O k ∪ I k × Y ), k = 1, . . . , m, as well as arbitrary j ∈ {1, . . . , m}, (x I j , y ) ∈ X I j × Y
+m
+and g ∈ L (X O j ∪ I j × Y ). We have to prove that there is some ( z N , u ) in {(x I j , y )} ∪ k=1 supp I k ( gk ) such that
+
+1938
+
+G. de Cooman et al. / Artiﬁcial Intelligence 175 (2011) 1911–1950
+
+m
+
+G O k ∪ I k ( gk | X I k , Y ) − G O j ∪ I j g |x I j , y
+
+(z N , u )
+
+0.
+
+k =1
+
+Let f k := gk (·, y ) ∈ L (X O k ∪ I k ) and f := g (·, y ) ∈ L (X O j ∪ I j ). Then it holds for all z N ∈ X N that
+y
+
+y
+
+G O ∪ I ( f k | X I k )( z N ) = f k ( z O k , z I k ) − Q O ∪ I f k (·, z I k )| z I k
+k
+k
+k
+k
+
+= gk ( z O k , z I k , y ) − P O k ∪ I k gk (·, z I k , y )| z I k , y = G O k ∪ I k ( gk | X I k , Y )( z N , y ),
+and similarly,
+y
+
+y
+
+G O ∪ I f |x I j ( z N ) = I{x I } ( z I j ) f ( z O j , x I j ) − Q O ∪ I f (·, x I j )|x I j
+j
+j
+j
+j
+j
+
+= I{x I j } ( z I j )I{ y } ( y ) g ( z O j , x I j , y ) − P O j ∪ I j g (·, x I j , y ) x I j , y
+= G O j ∪ I j g |x I j , y ( z N , y ),
+and therefore
+m
+
+m
+y
+
+k =1
+
+Since the collection Q
+that [
+
+m
+k=1
+
+y
+
+G O ∪ I ( f k | X I k ) − G O ∪ I f |x I j
+j
+j
+k
+k
+y
+O k ∪ I k (·| X I k ),
+
+(z N ) =
+
+G O k ∪ I k ( gk | X I k , Y ) − G O j ∪ I j g |x I j , y
+
+( z N , y ).
+
+k =1
+
+k = 1, . . . , m, is coherent, we infer that there is some z N ∈ {x I j } ∪
+
+G O k ∪ I k ( gk | X I k , Y ) − G O j ∪ I j ( g |x I j , y )]( z N , y )
+
+m
+k=1 supp I k ( f k )
+
+such
+
+0. It therefore suﬃces to prove that
+
+m
+
+( z N , y ) ∈ (x I j , y ) ∪
+
+supp I k ( gk ).
+k =1
+
+This certainly holds if z I j = x I j . If not, then there must be some k ∈ {1, . . . , m} such that z N ∈ supp I k ( f k ), meaning that
+0 = f k (·, z I k ) = gk (·, z I k , y ), so indeed ( z N , y ) ∈ supp I k ( gk ). ✷
+Proof of Proposition 12. It follows from its deﬁnition that the strong product is a lower envelope of product linear
+previsions. By Proposition 10, it is therefore a lower envelope of many-to-many independent (respectively many-to-one
+P is also a
+independent) products. Since both of these two properties are preserved by taking lower envelopes,
+n∈ N n
+many-to-many and many-to-one independent product. ✷
+
+×
+
+Proof of Proposition 13. We infer from Proposition 12 that the strong product
+N ( P n , n ∈ N ). This implies in particular that N ( P n , n ∈ N ) is itself coherent. ✷
+
+×n∈N P n
+
+is coherent with the collection
+
+Proof of Corollary 14. By Proposition 13, the collection N ( P n , n ∈ N ) is coherent. Theorem 2 then tells us that P N is
+coherent with N ( P n , n ∈ N ) if and only if it is weakly coherent with N ( P n , n ∈ N ). Taking into account Theorem 1, this
+holds if and only if for every o ∈ N and I ⊆ N \ {o},
+
+P N I{x I } f − P {o}∪ I ( f |x I )
+
+= 0 for all f ∈ L (X{o}∪ I ) and all x I ∈ X I .
+
+Now use Eq. (9) to ﬁnd that
+
+I{x I } f − P {o}∪ I ( f |x I ) = I{x I } f (·, x I ) − P o f (·, x I ) .
+
+✷
+
+Proof of Theorem 16. Denote the right-hand side in Eq. (12) by Q N ( f ). It follows easily from Eq. (11) that E N ( f ) Q N ( f ),
+so we concentrate on the converse inequality. Consider any real α < E N ( f ), then there are gambles g I ,o in L (X{o}∪ I ) for
+all o ∈ N and I ⊆ N \ {o} such that
+
+min
+
+z N ∈X N
+
+f (z N ) −
+
+g I ,o ( zo , z I ) − P o g I ,o (·, z I )
+
+α.
+
+(15)
+
+o∈ N , I ⊆ N \{o}
+
+For every n in N, deﬁne the gamble hn on X N by hn :=
+and
+
+P n hn (·, z N \{n} ) = P n
+
+g I ,n (·, z I )
+I ⊆ N \{n}
+
+I ⊆ N \{n}
+
+g I ,n . Then for all z N ∈ X N , hn ( z N ) =
+
+I ⊆ N \{n}
+
+g I ,n ( zn , z I )
+
+P n g I ,n (·, z I ) ,
+I ⊆ N \{n}
+
+where the inequality follows from the coherence of P n . We then infer from Eq. (15) and the deﬁnition of Q N ( f ) that
+
+G. de Cooman et al. / Artiﬁcial Intelligence 175 (2011) 1911–1950
+
+Q N( f )
+
+min
+
+z N ∈X N
+
+f (z N ) −
+
+hn ( z N ) − P n hn (·, z N \{n} )
+
+1939
+
+α.
+
+n∈ N
+
+Since this inequality holds for all real
+
+α < E N ( f ), we see that indeed Q N ( f )
+
+E N ( f ).
+
+✷
+
+Next, we turn to the proof of Theorem 18. In order to do this, it will be very helpful to work with sets of the so-called
+strictly desirable gambles [30]. For every n ∈ N, consider the following subset of L (Xn ):
+
+An := f ∈ L (Xn ): f > 0 or P n ( f ) > 0 ;
+we use these sets to deﬁne the following subsets of L (X R ), where R is any non-empty subset of N:
+
+ArR := f ∈ L (X R )=0 : (∀x R \{r } ∈ X R \{r } ) f (·, x R \{r } ) ∈ Ar ∪ {0} ,
+
+r ∈ R.
+
+We also deﬁne, for any subset S of N:
+
+AsS .
+
+E S := posi L (X S )>0 ∪
+
+(16)
+
+s∈ S
+
+For S = ∅, this leads to E∅ = L (X∅ )>0 , which we have identiﬁed with the set of positive real numbers.
+We begin by proving a crucial property of all these sets An , AnN and E N in Lemma 35. In order to prove this result, and
+a few more involved ones further on, we need the following lemmas, one of which is a convenient version of the separating
+hyperplane theorem:
+Lemma 33. Consider a ﬁnite subset A of L (X). Then 0 ∈
+/ posi(L (X)>0 ∪ A ) if and only if there is some linear prevision P on
+L (X) with mass function p such that P ( f ) = x ∈X p (x ) f (x ) > 0 for all f ∈ A and p (x ) > 0 for all x ∈ X .
+Proof. It clearly suﬃces to prove necessity. Since 0 ∈
+/ posi(L (X)>0 ∪ A ), we infer applying a version of the separating
+hyperplane theorem in ﬁnite-dimensional spaces23 that there is a linear functional Λ on L (X) such that
+
+(∀x ∈ X)Λ(I{x } ) > 0 and (∀ f ∈ A )Λ( f ) > 0.
+Then Λ(X) = x ∈X) Λ(I{x } ) > 0, and if we let P := Λ/Λ(X) then P is clearly a linear prevision on L (X) for which
+P ( f ) > 0 for all f ∈ A . Moreover, for any x ∈ X , p (x ) = P (I{x } ) = Λ(I{x } )/Λ(X) > 0. ✷
+Lemma 34. Consider a convex cone A of gambles on X such that max f > 0 for all f ∈ A . Consider any non-zero gamble g on X .
+/ A then 0 ∈
+/ posi(A ∪ {− g }).
+If g ∈
+Proof. Consider a non-zero gamble g ∈
+/ A , and assume ex absurdo that 0 ∈ posi(A ∪ {− g }). Then it follows from the
+m
+assumptions that there are m > 0, λk > 0, f k ∈ A , k = 1, . . . , m, and μ > 0 such that 0 = k=1 λk f k + μ(− g ). Hence
+g ∈ posi(A ) = A , a contradiction. ✷
+Lemma 35. Let S be any subset of N, and let R be any non-empty subset of N. Consider any n ∈ N and r ∈ R.
+(i) An is a convex cone such that L (Xn )>0 ⊆ An and L (Xn ) 0 ∩ An = ∅:
+(ii) ArR is a convex cone such that L (X R )>0 ⊆ ArR and L (X R ) 0 ∩ ArR = ∅;
+(iii) E S is a convex cone such that L (X S )>0 ⊆ E S and L (X S ) 0 ∩ E S = ∅.
+Proof. (i) Immediate: use the coherence of the lower prevision P n .
+(ii) Consider any f ∈ L (X R )>0 . Then for all z R \{r } ∈ X R \{r } , f (·, z R \{r } ) 0 and therefore f (·, z R \{r } ) ∈ An ∪ {0}. Since
+moreover f = 0, it follows that f ∈ ArR . This shows that L (X R )>0 ⊆ ArR .
+/ posi(ArR ). Assume ex absurdo that there are
+To prove that ArR is a convex cone, it clearly suﬃces to show that 0 ∈
+m
+m
+m > 0, λk > 0 and f k ∈ ArR such that 0 = k=1 λk f k . Fix any z R \{r } ∈ X R \{r } . Then 0 = k=1 λk f k (·, z N \{n} ), and it follows
+from (i) that this can only happen if all f k (·, z R \{r } ) = 0. But since this holds for all z R \{r } ∈ X R \{r } , we infer that all f k = 0,
+a contradiction. Hence AnN is indeed a convex cone.
+Finally, consider f ∈ L (X R ) 0 and assume that f ∈ ArR . It already follows from the reasoning above that f < 0, and
+therefore also − f ∈ ArR . Therefore 0 = f + (− f ) ∈ ArR since ArR is a convex cone [closed under addition], a contradiction.
+Hence indeed L (X R ) 0 ∩ ArR = ∅.
+23
+
+We use the version in Appendix E.1 of Ref. [30], for the special choice V := A ∪ {I{x } : x ∈ X} and W := {0}.
+
+1940
+
+G. de Cooman et al. / Artiﬁcial Intelligence 175 (2011) 1911–1950
+
+(iii) It clearly suﬃces to prove that L (X S ) 0 ∩ E S = ∅. This is trivially so if S = ∅, so let us assume that S is nonempty. Let f ∈ L (X S ) 0 and assume ex absurdo that f ∈ E S . Then there are λs 0, μ 0, f s ∈ AsS and g > 0 such that
+f = μ g + s∈ S λs f s and max{μ, maxs∈ S λs } > 0.
+Fix any s ∈ S. Let A := { f s (·, z S \{s} ): z S \{s} ∈ X S \{s} , f s (·, z S \{s} ) = 0}, then it follows from the assumptions that A is
+a ﬁnite non-empty subset of As , and therefore it follows from (i) and Lemma 33 that there is a linear prevision P s on
+L (Xs ) with mass function p s such that
+
+(∀xs ∈ Xs ) p s (xs ) > 0,
+(∀ z S \{s} ∈ X S \{s} ) f s (·, z S \{s} ) = 0
+
+⇒
+
+P s f s (·, z S \{s} ) > 0 .
+
+We conclude that if we deﬁne the gamble g s on X S \{s} by g s ( z S \{s} ) := P s ( f s (·, z S \{s} )) for all z S \{s} in X S \{s} , then g s > 0.
+Since we can do this for all s ∈ S, we can deﬁne a mass function p S on X S by letting p S ( z S ) := s∈ S p s ( z s ) > 0 for
+all z S ∈ X S . The corresponding linear prevision P S is of course the product linear prevision s∈ S P s of the marginal linear
+previsions P s . But then it follows from the reasoning and assumptions above that
+
+×
+
+P S ( f ) = μ P S (g) +
+
+λs P S ( f s ) = μ P S ( g ) +
+s∈ S
+
+λ s P S ( g s ) > 0,
+s∈ S
+
+because P S ( g ) > 0 and all P S ( g s ) > 0, whereas f
+
+0 leads us to conclude that P S ( f )
+
+0, a contradiction.
+
+✷
+
+It turns out that there is a very close relationship between the set of gambles E N and the many-to-one independent
+natural extension E N :
+Lemma 36. For all f ∈ L (X N ), E N ( f ) = sup{α : f − α ∈ E N }.
+Proof. Let, for the sake of notational simplicity, Q N ( f ) := sup{α : f − α ∈ E N }, then we have to prove that E N ( f ) = Q N ( f ).
+Consider any real α such that f − α ∈ E N . Then there are non-negative μ and λn , g > 0 and f n ∈ AnN such that f − α =
+μ g + n∈N λn f n with max{μ, maxn∈N λn } > 0. We infer from f n ∈ AnN that f n (·, z N \{n} ) ∈ An ∪ {0} for all z N \{n} ∈ XN \{n} , so
+we conclude by considering gn := λn f n ∈ L (X N ) that λn f n (·, z N \{n} ) gn (·, z N \{n} )− P n ( gn (·, z N \{n} )) for all z N \{n} ∈ X N \{n} ,
+and therefore
+
+λn f n ( z N )
+
+gn ( z N ) − P n gn (·, z N \{n} )
+
+for all z N ∈ X N and all n ∈ N .
+
+So we ﬁnd that
+
+f (z N ) − α
+
+gn ( z N ) − P n gn (·, z N \{n} )
+
+for all z N ∈ X N ,
+
+n∈ N
+
+and therefore α E N ( f ). Hence Q N ( f ) E N ( f ).
+Conversely, let α < E N ( f ), then there are ε > 0 and gn ∈ L (X N ), n ∈ N, such that
+
+α + ε|N |
+
+f (z N ) −
+
+gn ( z N ) − P n gn (·, z N \{n} )
+
+for all z N ∈ X N ,
+
+n∈ N
+
+or in other words f − α
+n∈ N hn , where we let hn ( z N ) := gn ( z N ) − P n ( gn (·, z N \{n} )) + ε for all z N ∈ X N . This implies
+Q N ( f ) and
+that hn (·, z N \{n} ) ∈ An for all z N \{n} ∈ X N \{n} , whence hn ∈ AnN , and therefore f − α ∈ E N . We infer that α
+therefore also that E N ( f ) Q N ( f ). ✷
+We now show that for any subset R of N, E R is the set of those gambles in E N that depend at most on the variables
+X R , and not on X N \ R .
+Lemma 37. For every subset R of N, E R = E N ∩ L (X R ).
+Proof. The result is trivial for R = ∅ and R = N. Let us therefore assume that both R and N \ R are proper subsets of N.
+Recall from Section 2 that we are interpreting gambles on X R as special gambles on X N . Keeping this in mind, it is obvious
+that ArR ⊆ ArN for all r ∈ R, and therefore E R ⊆ E N . So we already ﬁnd that E R ⊆ E N ∩ L (X R ).
+We prove the converse inequality. Let f ∈ E N ∩L (X R ) and assume ex absurdo that f ∈
+/ E R . It follows from Lemma 35(iii)
+0 such that f = g + s∈ S f s .
+that f = 0. Since f ∈ E N , there are S ⊆ N, f s ∈ AsN , s ∈ S and g ∈ L (X N ) with g
+Clearly S \ R = ∅, because S \ R = ∅ would imply that, with x N \ R any element of X N \ R , f = f (·, x N \ R ) = g (·, x N \ R ) +
+R
+s∈ S ∩ R f s (·, x N \ R ) ∈ E R , since we infer from Lemma 38 below that f s (·, x N \ R ) ∈ As ∪ {0} for all s ∈ S ∩ R.
+/ E R that 0 ∈
+/ posi(E R ∪ {− f }). Let A := { f s (·, z N \ R ): s ∈ S ∩ R , z N \ R ∈
+It follows from Lemmas 35(iii) and 34 and f ∈
+XN \ R , f s (·, z N \ R ) = 0}. Then A is clearly a ﬁnite subset of E R [to see this, use a similar argument as above, involving
+
+G. de Cooman et al. / Artiﬁcial Intelligence 175 (2011) 1911–1950
+
+1941
+
+Lemma 38], so we deduce from Lemmas 35(iii) and 33 that there is some linear prevision P R on L (X R ) with mass
+function p R such that
+
+⎧
+⎨ (∀x R ∈ X R ) p R (x R ) > 0,
+(∀s ∈ S ∩ R )(∀ z N \ R ∈ X N \ R ) P R f s (·, z N \ R )
+⎩
+P R ( f ) < 0.
+
+We then infer from f = f (·, z N \ R ) = g (·, z N \ R ) +
+
+0 > P R ( f ) − P R g (·, z N \ R ) −
+
+0,
+
+s∈ S ∩ R
+
+f s (·, z N \ R ) +
+
+P R f s (·, z N \ R ) =
+s∈ S ∩ R
+
+s∈ S \ R
+
+f s (·, z N \ R ) that for all z N \ R in X N \ R :
+
+P R f s (·, z N \ R ) =
+s∈ S \ R
+
+p R (x R ) f s (x R , z N \ R ).
+s∈ S \ R x R ∈X R
+
+The gambles f s (x R , ·) on X N \ R [where x R ∈ X R and s ∈ S \ R] can clearly not all be zero, and the non-zero ones
+belong to E N \ R by Lemma 38. Since E N \ R is closed under positive linear combinations by Lemma 35, the gamble
+h := s∈ N \ R x R ∈X R p R (x R ) f s (x R , ·) is an element of E N \ R that is everywhere strictly negative. But on the other hand
+we should have that max h > 0 by Lemma 35(iii), a contradiction. We may therefore conclude that indeed f ∈ E R . ✷
+Lemma 38. Consider an arbitrary non-empty subset R of N and let r ∈ R. Then f (·, x N \ R ) ∈ ArR ∪ {0} for all f ∈ ArN and all
+xN \ R ∈ XN \ R .
+Proof. Fix f ∈ ArN and x N \ R ∈ X N \ R and consider the gamble g := f (·, x N \ R ) on X R . Then it follows from the assumptions
+that for all x R \{r } ∈ X R \{r } :
+
+g (·, x R \{r } ) = f (·, x R \{r } , x N \ R ) = f (·, x N \{r } ) ∈ Ar ∪ {0},
+whence indeed g ∈ ArR ∪ {0}.
+
+✷
+
+Proof of Theorem 18. Use Lemma 36 and the fact that f − α ∈ E N ⇔ f − α ∈ E R for all f ∈ L (X R ), by Lemma 37.
+
+✷
+
+Next, consider an arbitrary subset R of N and consider, for each x R ∈ X R , the set of gambles:
+
+E N |x R := f ∈ L (X N \ R ): I{x R } f ∈ E N .
+Note that if R is the empty set then we obtain trivially that E N |x∅ = E N .
+Then the set E N satisﬁes the following interesting epistemic irrelevance condition:
+Lemma 39. For every subset R of N and every x N \ R ∈ X N \ R , E N |x N \ R = E R .
+Proof. The proof is similar to that of Lemma 37. Again, it is trivial for R = ∅ or R = N, so we turn to the case where both R
+and N \ R are proper subsets of N. We ﬁrst show that E N |x N \ R ⊇ E R . Consider any gamble f ∈ E R , so there are non-negative
+λr and μ, f r ∈ ArR for all r ∈ R and g ∈ L (X R )>0 such that f = μ g + r ∈ R λr f r , with max{μ, maxr ∈ R λr } > 0. Fix r ∈ R
+and let f r := I{xN \ R } f r ∈ L (X N ). Then f r = 0, and for all z N \{r } ∈ X N \{r } , it follows from the deﬁnition of ArR that
+
+f r (·, z N \{r } ) = I{xN \ R } ( z N \ R ) f r (·, z R \{r } ) ∈ Ar ∪ {0},
+and therefore the deﬁnition of ArN tells us that f r ∈ ArN . Similarly, if we let g := I{xN \ R } g ∈ L (X N ), then g > 0. Hence
+I{xN \ R } f = μ g + r ∈ R λr f r , and therefore I{xN \ R } f ∈ E N .
+We now turn to the converse inequality E N |x N \ R ⊆ E R . Consider any gamble f ∈ L (X R ) such that I{xN \ R } f belongs to
+
+E N and assume ex absurdo that f ∈
+/ E R . Since I{xN \ R } f ∈ E N , there are S ⊆ N, f s ∈ AsN , s ∈ S and g ∈ L (X N ) with g 0
+such that I{xN \ R } f = g + s∈ S f s . Clearly S \ R = ∅, because S \ R = ∅ would imply that f = g (·, x N \ R ) + s∈ S ∩ R f s (·, x N \ R ) ∈
+
+E R , since Lemma 38 shows that f s (·, xN \ R ) ∈ AsR for all s ∈ S ∩ R.
+/ E R that 0 ∈
+/ posi(E R ∪ {− f }). Let A := { f s (·, xN \ R ): s ∈ S ∩ R , f s (·, xN \ R ) = 0}.
+It follows from Lemmas 35(iii), 34 and f ∈
+Then A is clearly a ﬁnite subset of E R [to see this, use a similar argument as above, involving Lemma 38], so we deduce
+from Lemma 33 that there is some linear prevision P R on L (X R ) with mass function p R such that
+
+⎧
+⎨ (∀x R ∈ X R ) p R (x R ) > 0,
+(∀s ∈ S ∩ R ) P R f s (·, xN \ R )
+⎩
+P R ( f ) < 0.
+
+We then infer from f = g (·, x N \ R ) +
+
+0,
+
+s∈ S ∩ R
+
+0 > P R ( f ) − P R g (·, x N \ R ) −
+
+f s (·, x N \ R ) +
+
+s∈ S \ R
+
+f s (·, x N \ R ) that:
+
+P R f s (·, x N \ R ) =
+s∈ S ∩ R
+
+P R f s (·, x N \ R ) =
+s∈ S \ R
+
+p R (x R ) f s (x R , x N \ R ).
+s∈ S \ R x R ∈X R
+
+1942
+
+G. de Cooman et al. / Artiﬁcial Intelligence 175 (2011) 1911–1950
+
+Similarly, since 0 = g (·, z N \ R ) +
+
+0
+
+s∈ S ∩ R
+
+− P R g (·, z N \ R ) −
+
+f s (·, z N \ R ) +
+
+s∈ S \ R
+
+P R f s (·, z N \ R ) =
+s∈ S ∩ R
+
+f s (·, z N \ R ) for all z N \ R ∈ X N \ R \ {x N \ R }, we infer that:
+
+P R f s (·, z N \ R ) =
+s∈ S \ R
+
+p R (x R ) f s (x R , z N \ R ).
+s∈ S \ R x R ∈X R
+
+Hence
+
+h :=
+
+p R (x R ) f s (x R , ·) < 0.
+s∈ S \ R x R ∈X R
+
+The gambles f s (x R , ·) on X N \ R [where x R ∈ X R and s ∈ S \ R] can clearly not all be zero, and the non-zero ones belong to
+E N \ R by Lemma 38. Since E N \ R is closed under positive linear combinations by Lemma 35, the gamble h < 0 is an element
+of E N \ R . But on the other hand we should have that max h > 0 by Lemma 35(iii), a contradiction. We may therefore conclude
+that indeed f ∈ E R . ✷
+From this lemma, we deduce the following:
+Lemma 40. Consider any subset R of N. Then f g ∈ E N for all f ∈ L (X N \ R )>0 and all g ∈ E R .
+Proof. Consider any g ∈ E R and any f ∈ L (X N \ R )>0 . Then it follows from Lemma 39 that I{xN \ R } g ∈ E N for all x N \ R ∈
+XN \ R . But E N is closed under positive linear combinations by Lemma 35, and there is at least one x N \ R ∈ XN \ R for which
+f (x N \ R ) > 0, so we deduce that f g = xN \ R ∈XN \ R f (x N \ R )I{xN \ R } g is essentially a positive linear combination of gambles in
+
+E N , and therefore also belongs to E N . ✷
+
+Proof of Proposition 19. We begin by showing that E N is productive. First, consider arbitrary disjoint proper subsets I and
+O of N, x I ∈ X I , g ∈ L (X O ) and non-negative f ∈ L (X I ), and let us prove that E N ( f [ g − E N ( g )]) 0.
+Fix α > 0 and β > 0, then f + β > 0 and g − E O ( g ) + β ∈ E O , by Lemma 36 [where we replace the set N with O ].
+Hence ( f + α )[ g − E O ( g ) + β] ∈ E O ∪ I ⊆ E N , by Lemmas 40 [where we replace N with O ∪ I and R with O ] and 37. Then
+Lemma 36 tells us that E N (( f + α )[ g − E O ( g ) + β]) 0. If we now invoke the coherence of the lower prevision E N , we see
+that
+
+0
+
+E N ( f + α) g − E O ( g) + β
+
+E N f g − E O (g)
+
++ β E N ( f ) + α E N (g) − E O (g) + β .
+
+Since this holds for all α > 0 and all β > 0, we infer that E N ( f [ g − E N ( g )]) = E N ( f [ g − E O ( g )]) 0, where the equality
+follows from Theorem 18. Hence E N is indeed productive.
+Next let us consider the special cases where I or O are empty. If I = ∅, then we obtain E N ( f [ g − E N ( g )]) = f ( E N ( g ) −
+E N ( g )) = 0, since f is then a non-negative real number. If on the other hand O = ∅, then E N ( f [ g − E N ( g )]) = E N ( f · 0) = 0,
+since in this case g is a real number.
+This implies in particular that E N (I{x I } [ g − E O ( g )]) 0 for arbitrary disjoint subsets I and O of N. Assume ex absurdo that
+E N (I{x I } [ g − E O ( g )]) > 0. By Lemma 36, there is some α > 0 such that I{x I } [ g − E O ( g )] − α ∈ E N . Since I{x I } [ g − E O ( g ) − α ]
+I{x I } [ g − E O ( g )] − α , this implies that I{x I } [ g − E N ( g ) − α ] ∈ E N . By Lemmas 39 and 37, this implies that g − E O ( g ) − α ∈ E O .
+But then Lemma 36 implies that −α = E O ( g − E O ( g ) − α ) 0, a contradiction. Hence indeed E N (I{x I } [ g − E O ( g )]) = 0. ✷
+Proof of Theorem 20. By Theorem 2, it suﬃces to prove that (a) E N is weakly coherent with the family I ( E N ); and that
+(b) the family I ( E N ) is coherent.
+We begin by showing that (a) E N is weakly coherent with the family I ( E N ). Consider any disjoint subsets I and O of N.
+Taking into account Theorem 1, it suﬃces to show that E N (I{x I } [ f − E O ∪ I ( f |x I )]) = 0 for all x I ∈ X I and all f ∈ L (X O ∪ I ).
+If we look at Eq. (13), we see that this amounts to proving that E N (I{x I } [ g − E O ( g )]) = 0 for all x I ∈ X I and all g ∈ L (X O ).
+Now use Proposition 19.
+To ﬁnish the proof, we show that (b) the family I ( E N ) is coherent. Assume ex absurdo that there are f O , I ∈ L (X O ∪ I )
+for all disjoint subsets I and O of N, disjoint subsets I ∗ and O ∗ of N, g ∈ L (X O ∗ ∪ I ∗ ), x I ∗ ∈ X I ∗ and δ > 0 such that
+
+G O ∪ I ( f O , I | X I ) − G O ∗ ∪ I ∗ ( g |x I ∗ )
+
+−δI A ,
+
+O ,I
+
+where A := {x I ∗ } ∪ O , I supp I ( f O , I ). But K I A I{x I ∗ } + O , I Isupp I ( f O , I ) for some natural number K > 0, so there is some
+ε := δ/ K > 0 such that −δI A −εI{x I ∗ } − O , I εIsupp I ( f O , I ) and therefore also [see Theorem 18]:
+
+I{x I ∗ } g (·, x I ∗ ) − E O ∗ g (·, x I ∗ ) − ε
+
+G O ∪ I ( f O , I | X I ) + ε Isupp I ( f O , I ) .
+O ,I
+
+For arbitrary disjoint I and O , it follows from the deﬁnition of supp I ( f O , I ) and Theorem 18 that
+
+(17)
+
+G. de Cooman et al. / Artiﬁcial Intelligence 175 (2011) 1911–1950
+
+G O ∪ I ( f O , I | X I ) + ε Isupp I ( f O , I ) =
+
+1943
+
+I{x I } f O , I (·, x I ) − E O f O , I (·, x I ) + ε ,
+x I ∈supp I ( f O , I )
+
+so we infer from Lemmas 36 and 40 that the gamble G O ∪ I ( f O , I | X I ) + ε Isupp I ( f O , I ) belongs to the convex cone E N . So
+does, therefore, the right-hand side in Eq. (17). As a consequence, I{x I ∗ } [ g (·, x I ∗ ) − E O ∗ ( g (·, x I ∗ )) − ε ] ∈ E N , so we infer
+from Lemmas 39 and 37 that g (·, x I ∗ ) − E O ∗ ( g (·, x I ∗ )) − ε ∈ E O ∗ . But then Lemma 36 and the coherence of E O ∗ lead to
+−ε = E O ∗ ( g (·, x I ∗ ) − E O ∗ ( g (·, x I ∗ )) − ε ) 0, a contradiction. ✷
+
+×
+
+Proof of Theorem 22. Denote the independent natural extension
+P by S N .
+n∈ N P n by E N , and the strong product
+n∈ N n
+We use the characterisation of factorisation in Proposition 5, and we take into account that for all n ∈ N and f n ∈ L (Xn ),
+E N ( f n ) = S N ( f n ) = P n ( f n ).
+We begin by proving an auxiliary result, namely that
+
+EN
+
+fi
+i∈I
+
+=
+
+P i( fi)
+
+for all non-negative f i ∈ L (Xi ), i ∈ I ,
+
+(H 1I )
+
+i∈I
+
+for all subsets I of N. We give a proof by induction. It is clear from the coherence of E N that the statement (H 1I ) holds for
+I = ∅. Next, assume that (H 1I ) holds for I = M, where M is some subset of N that does not coincide with N [this is the
+induction hypothesis]. Then the statement is proved if we can show that (H 1I ) holds for I = M := M ∪ {n}, where n is any
+element of the non-empty set N \ M.
+So consider any non-negative f i ∈ L (Xi ), i ∈ M . Let, for ease of notation, f M := i ∈ M f i , so i ∈ M f i = f M f n . Because
+of the induction hypothesis, E N ( f M ) = i ∈ M P i ( f i ), so we have to show that E N ( f M f n ) = E N ( f M ) P n ( f n ). Because the strong
+product is factorising [see Propositions 8 and 5], we also have that S N ( f M ) = i ∈ M P i ( f i ), and therefore E N ( f M ) = S N ( f M ).
+Since E N is dominated by the (many-to-one independent) strong product S N [see Deﬁnition 6 and Proposition 12], and
+because the strong product is factorising [see Propositions 8 and 5], we see that
+
+E N ( f M fn)
+
+S N ( f M f n ) = S N ( f M ) P n ( f n ) = E N ( f M ) P n ( f n ).
+
+We now prove the converse inequality. Recall from its deﬁnition that E N is coherent with the conditional lower prevision
+P {n}∪ M (·| X M ) on L (X{n}∪ M ) deﬁned by
+
+P {n}∪ M (h|x M ) := P n h(·, x M )
+
+for all h ∈ L (X{n}∪ M ) and all x M ∈ X M ,
+
+(18)
+
+so it follows that:
+
+E N ( f M fn)
+
+E N P {n}∪ M ( f M f n | X M ) = E N f M P n ( f n ) = E N ( f M ) P n ( f n ).
+
+Here, the inequality follows from the coherence of E N with P n (·| X M ) and Eq. (4), the ﬁrst equality from the fact that
+P n ( f M f n | X M ) = f M P n ( f n | X M ) by Eqs. (1) and (18), and the last equality from the coherence of E N and the fact that
+P n ( f n ) 0. This completes the proof of the auxiliary result.
+The proof that E N is factorising goes along similar lines. Fix any o in N and any I ⊆ N \ {o}, any f o ∈ L (Xo ), and nonnegative f i ∈ L (Xi ), i ∈ I . Let, for ease of notation, f I := i ∈ I f i . Then we already know from the argumentation above
+that E N ( f I ) = S N ( f I ) = i ∈ I P i ( f i ). We have to show that E N ( f o f I ) = E N ( f I P o ( f o )).
+As before, since E N is dominated by the (many-to-one independent) strong product S N , and because the strong product
+is factorising, we see that
+
+E N ( fo f I )
+
+S N ( fo f I ) = S N ( f I )
+
+P o( fo) = E N ( f I )
+
+P o( fo) = E N f I P o( fo) .
+
+We now prove the converse inequality. Recall from its deﬁnition that E N is coherent with the conditional lower prevision
+P {o}∪ I (·| X I ) on L (Xo ) deﬁned by
+
+P o (h|x I ) := P o h(·, x I )
+
+for all h ∈ L (X{o}∪ I ) and all x I ∈ X I ,
+
+(19)
+
+so it follows that:
+
+E N ( fo f I )
+
+E N P {o}∪ I ( f o f I | X I ) = E N f I P {o}∪ I ( f o | X I ) = E N f I P o ( f o ) .
+
+Here, similarly as before, the inequality follows from the coherence of E N with P o (·| X I ) and Eq. (4), the ﬁrst equality from
+the fact that P {o}∪ I ( f o f I | X I ) = f I P {o}∪ I ( f o | X I ) by Eq. (1), and the second equality from Eq. (19). ✷
+Proof of Theorem 23. We construct the set E{ N 1 , N 2 } after the fashion of Eq. (16). We let
+
+A N 1 := f ∈ L (X N 1 ): f > 0 or E N 1 ( f ) > 0
+and
+
+1944
+
+G. de Cooman et al. / Artiﬁcial Intelligence 175 (2011) 1911–1950
+
+{N ,N2 }
+
+AN1 1
+
+:= f ∈ L (X{N 1 , N 2 } )=0 : (∀ z N 2 ∈ X N 2 ) f (·, z N 2 ) ∈ A N 1 ∪ {0}
+{N ,N2 }
+
+and similarly for A N 2 and A N 2 1
+
+. Then
+{N ,N2 }
+
+E{N 1 , N 2 } := posi L (X{N 1 , N 2 } )>0 ∪ A N 1 1
+
+{N ,N2 }
+
+∪ AN2 1
+
+(20)
+
+.
+{N ,N2 }
+
+We infer from Lemma 36 that A N 1 ⊆ E N 1 and A N 2 ⊆ E N 2 . Now let f 1 ∈ A N 1 1
+
+and consider any z N 2 ∈ X N 2 . Then
+
+f 1 (·, z N 2 ) ∈ E N 1 ∪ {0}, and therefore24 I{z N } f 1 (·, z N 2 ) ∈ E N 1 ∪ N 2 ∪ {0} by Lemma 40. Since f 1 = 0 and E N 1 ∪ N 2 is a convex
+2
+
+cone by Lemma 35(iii), it follows that f 1 =
+{N1 ,N2 }
+
+{N ,N2 }
+
+I{z N2 } f 1 (·, z N 2 ) ∈ E N 1 ∪N 2 . Hence A N 1 1
+
+z N 2 ∈X N 2
+
+⊆ E N 1 ∪N 2 and similarly,
+
+AN2
+
+⊆ E N 1 ∪N 2 , so we infer from Eq. (20) that E{ N 1 , N 2 } ⊆ E N 1 ∪N 2 . Hence E { N 1 , N 2 } E N 1 ∪N 2 , by Lemma 36.
+For the converse inequality, it suﬃces to prove that E { N 1 , N 2 } is an independent many-to-one product of the marginals P n ,
+n ∈ N 1 ∪ N 2 . We use Corollary 14(ii). Consider any o ∈ N 1 ∪ N 2 , any I ⊆ ( N 1 ∪ N 2 ) \ {o}, any g ∈ L (Xo ), and any x I ∈ X I .
+We have to prove that E { N 1 , N 2 } (I{x I } [ g − P o ( g )]) = 0. Let I 1 := I ∩ N 1 and I 2 := I ∩ N 2 . We may assume without loss of
+generality that o ∈ N 2 . Since the independent natural extension is factorising [by Theorem 22], we ﬁnd that indeed
+E { N 1 , N 2 } I{ x I } g − P o ( g )
+
+= E { N 1 , N 2 } I{ x I 1 } I{ x I 2 } g − P o ( g )
+= E N 1 (I{x I 1 } )
+
+E N 2 I{ x I } g − P o ( g )
+2
+
+= E N 1 (I{x I 1 } )
+
+0 = 0,
+
+where the third equality follows from Corollary 14(ii).
+
+✷
+
+Proof of Theorem 24. Consider arbitrary disjoint subsets I and O of N, an arbitrary gamble g on X O and an arbitrary
+non-negative gamble f on X I . We have to show that E N ( f g ) = E N ( f E N ( g )). Consider any partition N 1 and N 2 of N such
+that I ⊆ N 1 and O ⊆ N 2 . Since the independent natural extension E { N 1 , N 2 } = E N 1 ⊗ E N 2 of E N 1 and E N 2 is factorising by
+Theorem 22, we see that E { N 1 , N 2 } ( f g ) = E { N 1 , N 2 } ( f E { N 1 , N 2 } ( g )). Now use Theorem 23 to ﬁnd that this implies that indeed
+E N ( f g ) = E N ( f E N ( g )). ✷
+Proof of Proposition 25. Let P {1,2} be any (many-to-one) independent product of P 1 and P 2 , and consider the conditional
+linear prevision P {1,2} (·| X 2 ) on L (X{1,2} ) deﬁned by
+
+P {1,2} ( f |x2 ) := P 1 f (·, x2 )
+
+for all f ∈ L (X{1,2} ) and x2 ∈ X2 .
+
+Then P {1,2} is in particular coherent with P {1,2} (·| X 2 ). Fix f in L (X{1,2} ). It follows from Eq. (4) and the self-conjugacy
+of P {1,2} (·| X 2 ) that P {1,2} ( f ) = P {1,2} ( P {1,2} ( f | X 2 )). Moreover, it follows from Corollary 15 that P 2 is the X2 -marginal of
+P {1,2} , so P {1,2} ( f ) = P 2 ( P {1,2} ( f | X 2 )) = P 2 ( P 1 ( f )). This holds in particular for P N = ( P 1 × P 2 ) and P N = ( P 1 ⊗ P 2 ). ✷
+Proof of Proposition 26. Let P {1,2} (·| X 1 ) be the conditional lower prevision on L (X{1,2} ) deﬁned by
+
+P {1,2} ( f |x1 ) := P 2 f (x1 , ·)
+
+for all f ∈ L (X{1,2} ) and x1 ∈ X1 .
+A
+
+A
+
+Then the independent natural extension P 1 1 ⊗ P 2 is coherent with P {1,2} (·| X 1 ), so we infer from Eq. (4) that P 1 1 ⊗ P 2
+
+( P 1A 1
+
+⊗ P 2 )( P {1,2} (·| X 1 )) =
+A
+
+P11 × P2 ( f )
+
+A
+P 1 1 ( P {1,2} (·| X 1 )),
+
+A
+
+P11 ⊗ P2 ( f )
+
+where the equality follows from Corollary 15. So we ﬁnd that
+
+min P 2 f (x1 , ·)
+
+x1 ∈ A 1
+
+for every gamble f on X1 × X2 .
+To prove that the equalities hold, consider any gamble f on X{1,2} . Since A 1 is ﬁnite there is some x∗1 ∈ A 1 such
+that P 2 ( f (x∗1 , ·)) = minx1 ∈ A 1 P 2 ( f (x1 , ·)). Moreover, it follows from the coherence of the lower prevision P 2 that there is
+{x∗ }
+
+some linear prevision P 2 ∈ ext(M ( P 2 )) such that P 2 ( f (x∗1 , ·)) = P 2 ( f (x∗1 , ·)). Let P 1 := P 1 1 denote the (degenerate) linear
+
+prevision on L (X1 ), all of whose probability mass lies in x∗1 . Observe that P 1 ∈ ext(M ( P 1 1 )). Then the deﬁnition of the
+strong product implies that
+A
+
+min P 2 f (x1 , ·) = P 2 f x∗1 , ·
+
+x1 ∈ A 1
+
+= P 2 f x∗1 , ·
+
+= ( P 1 × P 2 )( f )
+
+A
+
+P 1 1 × P 2 ( f ).
+A
+
+We turn to the second statement. Let P be any factorising product of P 1 1 and P 2 . Consider any gamble f ∈ L (X{1,2} ),
+and let us show that the equalities hold. It suﬃces to give a proof for non-negative f , since for arbitrary gambles we
+
+24
+
+We can identify a gamble on X{ N 1 , N 2 } in a trivial way with a unique corresponding gamble on X N 1 ∪ N 2 .
+
+G. de Cooman et al. / Artiﬁcial Intelligence 175 (2011) 1911–1950
+
+1945
+
+only need to add a non-negative constant [coherence guarantees that we can take additive real numbers out of the lower
+prevision operator]. Let a1 and b1 be elements of A 1 such that P 2 ( f (a1 , ·)) = minx1 ∈ A 1 P 2 ( f (x1 , ·)) and P 2 ( f (b1 , ·)) =
+maxx1 ∈ A 1 P 2 ( f (x1 , ·)). Then
+
+P f − P 2 f (a1 , ·)
+
+I{x1 } f (x1 , ·) − P 2 f (a1 , ·)
+
+=P
+x1 ∈X1
+
+P I{x1 } f (x1 , ·) − P 2 f (a1 , ·)
+x1 ∈X1
+
+P I{x1 } f (x1 , ·) − P 2 f (a1 , ·)
+
+=
+
+P I{x1 } f (x1 , ·) − P 2 f (a1 , ·)
+
++
+
+x1 ∈ A 1
+
+x1 ∈ A c1
+
+P 1 (I{x1 } ) P 2 f (x1 , ·) − P 2 f (a1 , ·)
+
+=
+
++0
+
+0,
+
+x1 ∈ A 1
+
+where the ﬁrst inequality follows from the coherence of P and the last equality holds because P is assumed to be factorising
+/ A 1 . Hence P ( f ) minx1 ∈ A 1 P 2 ( f (x1 , ·)). Using the conjugacy between
+and because P 1 ({x1 }) = P 1 ({x1 }) = 0 for every x1 ∈
+P and P , we get P ( f ) maxx1 ∈ A 1 P 2 ( f (x1 , ·)).
+On the other hand,
+
+P 2 f (b1 , ·) = P 1 ({b1 }) P 2 f (b1 , ·) = P I{b1 } f (b1 , ·)
+
+max P 2 f (x1 , ·) ,
+
+P(f)
+
+x1 ∈ A 1
+
+where the ﬁrst equality holds because P 1 ({b1 }) = 1, and the second because P is assumed to be factorising. The ﬁrst
+inequality holds because f is non-negative. We conclude that for any gamble f on X{1,2} , P ( f ) = maxx1 ∈ A 1 P 2 ( f (x1 , ·)),
+and therefore also P ( f ) = minx1 ∈ A 1 P 2 ( f (x1 , ·)), by conjugacy.
+A
+
+We conclude with a proof for the third statement. Assume that P 2 is the vacuous lower prevision P 2 2 with respect
+A
+
+A
+
+to A 2 , and let P be any coherent lower prevision on L (X{1,2} ) with marginals P 1 1 and P 2 2 . Because it is coherent, P
+satisﬁes
+
+P ( A 1 × A 2 ) = 1 − P A c1 × X2 ∪ X1 × A c2
+
+A
+
+A × A2
+
+and therefore it dominates the vacuous lower prevision P {11,2}
+A
+
+A
+
+A
+
+A
+
+1 − P 1 1 A c1 − P 2 2 A c2 = 1,
+relative to A 1 × A 2 , which also is the independent natural
+
+A
+
+extension P 1 1 ⊗ P 2 2 of P 1 1 and P 2 2 , by the second statement.
+
+A
+
+There are now two possibilities. Either A 1 has more than one element. To prove that P is an independent product of P 1 1
+and
+that
+
+A
+P 2 2 , we use Corollary 14(ii). Consider any z1 ∈ X1 and any gamble f
+A ×A
+A ×A
+P {11,2} 2 (I{z1 } [ f − P 2 ( f )]) = P {11,2} 2 (I{z1 } [ f − P 2 ( f )]) = 0, and therefore
+
+A × A2
+
+0 = P {11,2}
+
+I{ z 1 } f − P 2 ( f )
+
+on X2 . If z1 ∈
+/ A 1 , then we ﬁnd by inspection
+P (I{z1 } [ f − P 2 ( f )]) = 0. If z1 ∈ A 1 , then
+
+P I{x1 } f − P 2 ( f )
+A
+
+P I{x1 } [max f − min f ] = [max f − min f ] P 1 1 {x1 } = 0.
+Here, the ﬁrst and the last equalities hold because A 1 has more than one element.
+A
+Or A 1 has only one element x1 , and then Lemma 41 implies that P ( f ) = P 2 2 ( f (x1 , ·)) for all gambles f on X1 × X2 , so
+A
+
+there is only one coherent lower prevision that has these marginals. But in this case the marginal P 1 1 is a linear prevision,
+and Proposition 25 tells us that the marginals
+
+A
+P11
+
+and
+
+A
+P22
+
+have only one independent product, and it is equal to P .
+
+✷
+
+{x }
+
+Lemma 41. Let P 1 1 be the vacuous lower prevision on L (X1 ) relative to the singleton {x1 } ⊆ X1 , and let P 2 be any coherent lower
+prevision on L (X2 ). Let P be any coherent lower prevision with these marginals. Then P is unique and given by P ( f ) = P 2 ( f (x1 , ·))
+for all gambles f on X1 × X2 .
+Proof. First of all, consider any gamble g on X1 × X2 and any z1 ∈ X1 \ {x1 }. We show that P (I{z1 } g ) = P (I{z1 } g ) = 0.
+Indeed, by coherence of P :
+{x }
+
+{x }
+
+0 = P 1 1 (I{z1 } ) min g ( z1 , ·) = P 1 1 (I{z1 } ) min g ( z1 , ·)
+P I{z1 } g ( z1 , ·) = P (I{z1 } g )
+P (I{z1 } g ) = P I{z1 } g ( z1 , ·)
+{x }
+
+{x }
+
+P 1 1 (I{z1 } ) max g ( z1 , ·) = P 1 1 (I{z1 } ) max g ( z1 , ·) = 0.
+
+1946
+
+G. de Cooman et al. / Artiﬁcial Intelligence 175 (2011) 1911–1950
+
+For any gamble f on X1 × X2 we then infer from the coherence of P that
+
+P (I{x1 } f ) = P (I{x1 } f ) +
+
+P (I{z1 } f )
+
+I{ z 1 } f
+
+P
+
+z1 ∈X1 \{x1 }
+
+= P(f)
+
+P (I{x1 } f ) +
+
+z1 ∈X1
+
+P (I{z1 } f )
+z1 ∈X1 \{x1 }
+
+= P (I{x1 } f ).
+But this tells us that indeed
+
+P ( f ) = P (I{x1 } f ) = P I{x1 } f (x1 , ·) = P f (x1 , ·) = P 2 f (x1 , ·) .
+
+✷
+
+Proof of Proposition 27. We begin with the strong product. Because of its marginalisation and associativity properties
+[Proposition 8], it clearly suﬃces to consider the case N = {1, 2}, and to show that S {1,2} is externally additive. So consider
+arbitrary f 1 in L (X1 ) and f 2 in L (X2 ), then indeed:
+
+S N ( f 1 + f 2 ) = inf ( P 1 × P 2 )( f 1 + f 2 ): P 1 ∈ ext M ( P 1 ) and P 2 ∈ ext M ( P 2 )
+
+= inf P 1 ( f 1 ) + P 2 ( f 2 ): P 1 ∈ ext M ( P 1 ) and P 2 ∈ ext M ( P 2 )
+= inf P 1 ( f 1 ): P 1 ∈ ext M ( P 1 )
+
++ inf P 2 ( f 2 ): P 2 ∈ ext M ( P 2 )
+
+= P 1 ( f 1 ) + P 2 ( f 2 ).
+We ﬁnish by considering the independent natural extension. Here too, because of its marginalisation and associativity
+properties [Theorems 18 and 23], it clearly suﬃces to consider the case N = {1, 2}, and to show that E {1,2} is externally
+additive. So consider arbitrary f 1 in L (X1 ) and f 2 in L (X2 ). Since we know that E {1,2} is dominated by S {1,2} , we see
+that E {1,2} ( f 1 + f 2 ) S {1,2} ( f 1 + f 2 ) = P 1 ( f 1 ) + P 2 ( f 2 ). To prove the converse inequality, it suﬃces to use the coherence of
+E {1,2} to deduce that
+
+E {1,2} ( f 1 + f 2 )
+
+E {1,2} ( f 1 ) + E {1,2} ( f 2 ) = P 1 ( f 1 ) + P 2 ( f 2 ),
+
+where the equality follows from Corollary 15.
+
+✷
+
+Proof of Theorem 28. We use Corollary 14(ii). Consider arbitrary o ∈ N, I ⊆ N \ {o}, x I ∈ X I and g ∈ L (Xo ). Then, since
+P N is factorising and has Xo -marginal P o :
+
+P N I{ x I } g − P o ( g )
+
+= P N I{ x I } P N g − P o ( g )
+
+= P N (0) = 0.
+
+✷
+
+Proof of Theorem 29. By Theorem 1, P N is weakly coherent with the family I ( P N ) if and only if it is pairwise coherent
+with each of its members. Let us therefore establish the coherence of P N with each conditional lower prevision P O (·| X I )
+(taken separately, for each pair of disjoint subsets I and O of N). Again using Theorem 1, we see we have to show that
+
+P N I{ x I } f − P O ( f | x I )
+
+= 0 for all f ∈ L (X O ) and all x I ∈ X I .
+
+We see that indeed:
+
+P N I{ x I } f − P O ( f | x I )
+
+= P N I{ x I } f − P N ( f )
+
+= P N I{ x I } P N f − P N ( f )
+
+= P N (0) = 0,
+
+where the ﬁrst equality follows from the deﬁnition of the conditional lower prevision P O (·| X I ), and the second one from
+the strongly factorising character of P N . ✷
+Proof of Proposition 31. To prove (i), we use Corollary 14(ii). Observe that Q 1 , Q 2 and Q 3 all have the same marginals P n .
+Consider arbitrary o ∈ N, I ⊆ N \ {o}, x I ∈ X I and g ∈ L (Xo ). Then it follows from the inequalities Q 1 Q 3 Q 2 that
+
+0 = Q 1 I{ x I } g − P o ( g )
+
+Q 3 I{ x I } g − P o ( g )
+
+Q 2 I{ x I } g − P o ( g )
+
+= 0,
+
+where the equalities hold because Q 1 and Q 2 are many-to-one independent products. We deduce that Q 3 is a many-to-one
+independent product too.
+To prove (ii), consider arbitrary o ∈ N, I ⊆ N \ {o}, f o ∈ L (Xo ) and non-negative f i ∈ L (Xi ), i ∈ N \ {o}. Let, for ease of
+notation f I := i ∈ I f i . Since Q 1 and Q 2 are factorising, we deduce from Proposition 5 that Q 1 ( f I ) = i ∈ I P i ( f i ) = Q 2 ( f I )
+and Q 1 ( f I ) =
+
+Q 1( f I )
+
+i∈ I
+
+P i ( f i ) = Q 2 ( f I ), whence Q 3 ( f I ) =
+
+P o ( fo ) = Q 1( fo f I )
+
+Hence Q 3 ( f o f I ) = Q 3 ( f I )
+
+Q 3( fo f I )
+
+i∈ I
+
+P i ( f i ) and Q 3 ( f I ) =
+
+Q 2( fo f I ) = Q 2( f I )
+
+i∈ I
+
+P i ( f i ). Moreover,
+
+P o ( f o ).
+
+P o ( f o ) = Q 3 ( f I P o ( f o )). Applying Proposition 5 again, we deduce that Q 3 is also factorising.
+
+G. de Cooman et al. / Artiﬁcial Intelligence 175 (2011) 1911–1950
+
+1947
+
+The proof of (iii) is similar to that of (ii). Finally, to prove (iv) use that the inequality Q 3 ( r ∈ R f r )
+r ∈ R P r ( f r ) follows
+from the super-additivity of the coherent lower prevision Q 3 , and that the converse inequality follows from Q 3 Q 2 . ✷
+Proof of Proposition 32. (i) ⇒ (ii). Assume that P N is weakly coherent with the family I ( P N ). Consider any disjoint proper
+subsets I and O of N, g ∈ L (X O ) and non-negative f ∈ L (X I ). By Theorem 1, it follows from the assumption that P N is
+coherent with P O ∪ I (·| X I ), and this implies the equality P N (I{x I } [ g − P N ( g )]) = 0 for every x I ∈ X I . The coherence [superadditivity] of P N and the non-negativity of f then imply that:
+
+P N f g − P N (g)
+
+f ( x I ) P N I{ x I } g − P N ( g )
+
+= 0.
+
+x I ∈X I
+
+Hence P N is productive.
+(ii) ⇒ (i). Assume P N is productive. Consider any disjoint proper subsets I and O of N, g ∈ L (X O ) and non-negative
+f ∈ L (X I ). The assumption implies in particular that P N (I{x I } [ g − P N ( g )]) 0 for all x I ∈ X I and all g ∈ L (X O ). If there
+were some x I ∈ X I such that P N (I{x I } [ g − P N ( g )]) > 0, then the coherence of P N would imply that
+
+0 = P N g − P N (g) = P N
+
+P N I{ x I } g − P N ( g )
+
+I{ x I } g − P N ( g )
+x I ∈X I
+
+> 0,
+
+x I ∈X I
+
+a contradiction. So we infer from Theorem 1 that P N is weakly coherent with the family I ( P N ).
+To complete the proof, if P N is many-to-many independent then it is in strongly, and therefore also weakly, coherent
+with the family I ( P N ), and therefore productive as well. On the other hand, the ﬁrst part of this proposition, together
+with Corollary 14, shows that if P N is productive it is in particular many-to-one independent. Finally, the last statement is
+a consequence of Ref. [22, Theorem 11], which shows that all the conditioning events have positive lower probability then
+weak and strong coherence are equivalent. ✷
+Appendix B. Counterexamples
+In this appendix, we have gathered a few examples with additional information on the notions introduced in this paper.
+Example 2 (Factorisation properties are not preserved by taking lower envelopes). Let N := {1, 2} and X1 := X2 := {0, 1}. Consider the linear marginals P 1 and Q 1 for X 1 deﬁned by P 1 ({0}) := P 1 ({1}) := 12 , Q 1 ({1}) := 1 and Q 1 ({0}) := 0. Similarly,
+consider the linear marginals P 2 and Q 2 for X 2 deﬁned by P 2 ({0}) := P 2 ({1}) := 12 , Q 2 ({1}) := 1 and Q 2 ({0}) := 0.
+Let P {1,2} be the product of P 1 and P 2 , and let Q {1,2} be the product of Q 1 and Q 2 . It follows from Proposition 7 that
+P {1,2} and Q {1,2} are factorising and therefore strongly factorising [for N = {1, 2}, these notions are equivalent].
+Now let P {1,2} be the lower envelope of P {1,2} and Q {1,2} . Consider the gamble f := I{0} on X1 and the gamble g :=
+I{0} − I{1} on X2 . Then P 1 ( f ) = 12 , Q 1 ( f ) = 0, P 2 ( g ) = 0 and Q 2 ( g ) = −1, and therefore
+
+P {1,2} ( f g ) = min P {1,2} ( f g ), Q {1,2} ( f g ) = min
+
+1
+2
+
+· 0, 0 · −1 = min{0, 0} = 0,
+
+while P {1,2} ( g ) = min{ P 2 ( g ), Q 2 ( g )} = min{0, −1} = −1, and
+
+1
+1
+P {1,2} f P {1,2} ( g ) = P {1,2} (− f ) = min P 1 (− f ), Q 1 (− f ) = min − , 0 = − .
+2
+2
+Hence P {1,2} is not (strongly) factorising.
+factorising; many-to-many
+Example 3 (The strong product is not the greatest independent product; many-to-many independent
+independent
+externally additive; productive
+strongly factorising). Consider the possibility spaces X1 = X2 = {0, 1}, and
+let P 1 and P 2 be the vacuous lower previsions on L (X1 ) and L (X2 ), respectively. From the second statement in Proposition 26, the strong product S {1,2} := P 1 × P 2 is the vacuous lower prevision on L (X{1,2} ), and it coincides with the
+independent natural extension E {1,2} := P 1 ⊗ P 2 .
+Let Q {1,2} be the vacuous lower prevision relative to {(0, 0), (1, 1)}. This lower prevision strictly dominates the strong
+product S {1,2} : we have for instance that
+
+Q {1,2}
+
+(0, 0), (1, 1)
+
+= 1 > 0 = S {1,2} (0, 0), (1, 1) .
+
+Yet Q {1,2} is a many-to-one independent product of the marginals P 1 and P 2 . [Since N = {1, 2} it is then also many-to-many
+independent.] To prove this, use the third statement in Proposition 26. Applying Proposition 32, it is productive too.
+The lower prevision Q {1,2} is not factorising. To see this, consider the non-negative gambles f := I{1} + I{0,1} on X1 and
+g := I{0} + I{0,1} on X2 . Then Q {1,2} ( f g ) = min{2 · 1, 1 · 2} = 2, whereas Q {1,2} ( f ) Q {1,2} ( g ) = 1 · 1 = 1. As a consequence, it is
+
+1948
+
+G. de Cooman et al. / Artiﬁcial Intelligence 175 (2011) 1911–1950
+
+not strongly factorising either. On the other hand, if we consider the gambles f 1 := I{0} on X1 and f 2 := I{1} on X2 we see
+that f 1 + f 2 I{(0,0),(1,1)} and therefore Q {1,2} ( f 1 + f 2 ) = 1 > 0 = P 1 ( f 1 ) + P 2 ( f 2 ). This shows that not every many-to-many
+independent product is externally additive.
+strongly externally additive; factorising
+strongly factorising). Let N := {1, 2, 3} and consider
+Example 4 (Externally additive
+the binary variables X 1 , X 2 and X 3 assuming values in X1 = X2 = X3 = {0, 1}. Consider the corresponding marginal lower
+previsions P 1 , P 2 and P 3 given by
+
+P j ( f j ) :=
+
+1
+2
+
+f j (0) +
+
+2
+5
+
+f j (1) +
+
+1
+10
+
+for f j ∈ L (X j ) and j = 1, 2, 3.
+
+min f j (0), f j (1)
+
+Walley [30, Example 9.3.4] has shown that the independent natural extension E {1,2} of P 1 and P 2 is the lower envelope of
+the set of linear previsions P k with mass functions pk , k = 1, . . . , 6 given by
+k
+
+pk (1, 1)
+
+pk (1, 0)
+
+pk (0, 1)
+
+pk (0, 0)
+
+1
+
+1
+4
+1
+5
+1
+5
+4
+25
+2
+11
+2
+9
+
+1
+4
+1
+5
+3
+10
+6
+25
+3
+11
+2
+9
+
+1
+4
+3
+10
+1
+5
+6
+25
+3
+11
+2
+9
+
+1
+4
+3
+10
+3
+10
+9
+25
+3
+11
+1
+3
+
+2
+3
+4
+5
+6
+
+On the other hand, the strong product S {1,2} of P 1 and P 2 is the lower envelope of the set of linear previsions
+
+{ P 1 , P 2 , P 3 , P 4 }.
+
+Let P 7 and P 8 be the linear previsions on X3 whose respective mass functions p 7 and p 8 are determined by p 7 (1) =
+1
+,
+2
+
+2
+5
+
+and p 8 (1) =
+so P 3 is the lower envelope of P 7 and P 8 . Let Q {1,2,3} be the lower envelope of the following set of linear
+previsions on L (X{1,2,3} ):
+
+{ P 1 × P 7 , P 2 × P 7 , P 3 × P 7 , P 4 × P 7 , P 1 × P 8 , P 2 × P 8 , P 3 × P 8 , P 4 × P 8 , P 5 × P 8 }.
+Then Q {1,2,3} = min{ S {1,2,3} , P 5 × P 8 }, where S {1,2,3} is the strong product of P 1 , P 2 and P 3 : because of the associativity
+of the strong product, established in Proposition 8, the strong product S {1,2,3} is the lower envelope of the set of linear
+previsions:
+
+{ P 1 × P 7 , P 2 × P 7 , P 3 × P 7 , P 4 × P 7 , P 1 × P 8 , P 2 × P 8 , P 3 × P 8 , P 4 × P 8 }.
+To see that Q {1,2,3} is not strongly externally additive, let f be the indicator of the set {(0, 0), (1, 1)} × X3 and let g be
+the indicator of the set X{1,2} × {1}. Then
+
+Q {1,2,3} ( f ) + Q {1,2,3} ( g ) = P 5
+
+(0, 0), (1, 1)
+
++ P 7 {1} =
+
+5
+11
+
++
+
+2
+5
+
+=
+
+47
+55
+
+,
+
+whereas
+
+Q {1,2,3} ( f + g ) = min S {1,2,3} ( f + g ), P 5 × P 8 ( f + g )
+
+= min S {1,2,3} ( f + g ), P 5 (0, 0), (1, 1)
+= min
+
+1
+2
+
+2
+
++ ,
+
+5
+
+5 11
+
++
+
+1
+2
+
+=
+
+9
+10
+
+>
+
+47
+55
+
++ P 8 {1}
+
+.
+
+Let us show that Q {1,2,3} is not productive, from which it follows, taking into account Proposition 6, that it is not strongly
+factorising either. Let f be minus the indicator of the set {1} × X{2,3} and g minus the indicator of the set X1 × {1} × X3 .
+Then it follows that
+
+Q {1,2,3} ( g ) = min S {1,2,3} ( g ), P 5 × P 8 ( g )
+
+= min − S {1,2} X1 × {1} , − P 5 X1 × {1}
+1
+
+5
+
+2
+
+11
+
+= min − , −
+and as a consequence
+
+1
+
+=− ,
+2
+
+G. de Cooman et al. / Artiﬁcial Intelligence 175 (2011) 1911–1950
+
+Q {1,2,3} f g − Q {1,2,3} ( g )
+
+1949
+
+P 5 × P 8 f g − Q {1,2,3} ( g )
+
+= P 5 (1, 1)
+
+1
+
+P 5 {1} × X2
+2
+2
+1 5
+1
+−
+=−
+< 0.
+=
+11
+2 11
+22
+
+−
+
+We now show that, nevertheless, Q {1,2,3} is externally additive. For this, use that Q {1,2,3} is dominated by S {1,2,3} and
+that both these coherent lower previsions have P 1 , P 2 and P 3 as their marginals, and apply Proposition 31(iv).
+Now, the associativity of the independent natural extension [Theorem 23] and its being dominated by the strong product
+imply that
+
+E {1,2,3}
+
+E {1,2} ⊗ P 3
+
+E {1,2} × P 3 = min{ P i × P j : i = 1, . . . , 6, j = 7, 8}
+
+Q {1,2,3} .
+
+Applying Proposition 31(i), we deduce that Q {1,2,3} is a many-to-one independent product, and from Proposition 31(ii) we
+infer that it is factorising.
+Kuznetsov; strongly factorising
+strongly Kuznetsov). Consider two binary variables X 1 , X 2 assuming
+Example 5 (Factorising
+values in the set X1 = X2 = {0, 1}. Let P 1 , P 2 be the marginal lower previsions from Example 4. Consider the gambles f :=
+I{0} − I{1} on X1 and g := I{0} − I{1} on X2 . Then P 1 ( f ) = P 2 ( g ) = 0 and P 1 ( f ) = P 2 ( g ) = 15 . As a consequence, P 1 ( f )
+1
+P 2 ( g ) = [0, 25
+], whereas, considering the linear previsions P 1 , . . . , P 6 in that example, we see that their independent natural
+extension provides the following value for the lower bound:
+
+E {1,2} ( f g ) = min 0, 0, 0,
+
+1
+25
+
+,−
+
+1
+
+,
+
+1
+
+11 9
+
+=−
+
+1
+11
+
+.
+
+This shows that the independent natural extension E {1,2} , which is factorising by Theorem 22, is not Kuznetsov. Moreover,
+in this example where N = {1, 2}, factorisation is equivalent to strong factorisation, and being Kuznetsov is equivalent to
+being strongly Kuznetsov.
+many-to-many independent; factorising
+strongly factorising). Let N := {1, 2, 3} and
+Example 6 (Many-to-one independent
+consider the binary variables X 1 , X 2 and X 3 assuming values in X1 = X2 = X3 = {0, 1}, and consider the corresponding
+marginal lower previsions P 1 , P 2 and P 3 given by
+
+P j ( f j ) :=
+
+1
+2
+
+f j (0) +
+
+2
+5
+
+f j (1) +
+
+1
+10
+
+min f j (0), f j (1)
+
+for all f j ∈ L (X j )
+
+for j = 1, 2, 3. Let E {1,2,3} denote their independent natural extension and S {1,2,3} their strong product.
+Deﬁne the coherent lower prevision Q {1,2,3} on L (X{1,2,3} ) as the convex mixture Q {1,2,3} := 12 ( E {1,2,3} + S {1,2,3} ). It
+follows from Proposition 31 that Q {1,2,3} is factorising, and a many-to-one independent product. We are going to prove that
+Q {1,2,3} is not a many-to-many independent product. It will then follow from Theorem 29 that it is not strongly factorising
+either.
+Consider the conditional lower prevision Q {1,2,3} (·| X 3 ) derived from the joint lower prevision Q {1,2,3} using the epistemic irrelevance of X 3 to X {1,2} :
+
+Q {1,2,3} ( f |x3 ) := Q {1,2,3} f (·, x3 )
+
+for all x3 ∈ X3 and all f ∈ L (X{1,2,3} ).
+
+In order to show that it Q {1,2,3} is not a many-to-many independent product, it suﬃces to show that it is not weakly
+coherent with this conditional lower prevision Q {1,2,3} (·| X 3 ). Consider the event A := {(0, 0), (1, 1)} that X 1 = X 2 , and the
+corresponding indicator g := I A on X{1,2} . It follows from Ref. [30, Example 9.3.4] that E {1,2,3} ( A ) =
+so
+
+Q {1,2,3} ( A ) =
+
+1
+2
+
+E {1,2,3} ( A ) + S {1,2,3} ( A ) =
+
+1
+
+1
+
+2
+
+2
+
++
+
+5
+11
+
+=
+
+21
+44
+
+5
+11
+
+and S {1,2,3} ( A ) = 12 ,
+
+.
+
+Let x3 = 0. Since both E {1,2,3} and S {1,2,3} are strongly factorising [by Theorem 24 and Proposition 8(iv), respectively], we
+see that
+
+E {1,2,3} I{x3 } g − Q {1,2,3} ( g )
+
+= P 3 {0} E {1,2,3} g − Q {1,2,3} ( g ) =
+
+3
+
+5
+
+5
+
+11
+
+1
+
+1
+
+2
+
+2
+
+−
+
+21
+44
+
+=−
+
+3
+220
+
+whereas
+
+S {1,2,3} I{x3 } g − Q {1,2,3} ( g )
+
+= P 3 {0} S {1,2,3} g − Q {1,2,3} ( g ) =
+
+−
+
+21
+44
+
+=
+
+1
+88
+
+.
+
+,
+
+1950
+
+G. de Cooman et al. / Artiﬁcial Intelligence 175 (2011) 1911–1950
+
+As a consequence, we deduce that
+
+Q {1,2,3} I{x3 } g − Q {1,2,3} ( g )
+
+=
+
+1
+2
+
+−
+
+3
+220
+
++
+
+1
+88
+
+=−
+
+1
+880
+
+< 0,
+
+so Q {1,2,3} is not coherent with Q {1,2,3} (·| X 3 ). This also shows that Q {1,2,3} is not productive, applying Proposition 32.
+Finally, note that, from Example 5 we can deduce that the independent natural extension E {1,2,3} is not Kuznetsov, and
+since Q {1,2,3} has the same marginals we deduce that it is not Kuznetsov either: it suﬃces to take the same gambles f and
+g from that example.
+This example shows that if we consider a many-to-one independent product Q N of some given marginals P n , n ∈ N, and
+a partition of N given by sets R and S, then Q N need not be coherent with the conditional lower previsions Q R ∪ S (·| X S ) and
+Q R ∪ S (·| X R ). In this sense the associativity properties satisﬁed by the strong product and the independent natural extension
+do not extend towards their convex combinations.
+References
+[1] Giulanella Coletti, Romano Scozzafava, Probabilistic Logic in a Coherent Setting, Kluwer, 2002.
+[2] Inés Couso, Moral Serafín, Peter Walley, A survey of concepts of independence for imprecise probabilities, Risk Decision and Policy 5 (2000) 165–181.
+[3] Fabio G. Cozman, Constructing sets of probability measures through Kuznetsov’s independence condition, in: G. de Cooman, T.L. Fine, T. Seidenfeld
+(Eds.), ISIPTA ’01 – Proceedings of the Second International Symposium on Imprecise Probabilities and Their Applications, Shaker Publishing, Maastricht,
+2000, pp. 104–111.
+[4] Fabio G. Cozman, Credal networks, Artiﬁcial Intelligence 120 (2000) 199–233.
+[5] Fabio G. Cozman, Cassio P. de Campos, José C. Ferreira da Rocha, Probabilistic logic with independence, International Journal of Approximate Reasoning 49 (1) (2008) 3–17.
+[6] Fabio G. Cozman, Peter Walley, Graphoid properties of epistemic irrelevance and independence, Annals of Mathematics and Artiﬁcial Intelligence 45 (1–
+2) (2005) 173–195.
+[7] Jasper De Bock, Gert de Cooman, State sequence prediction in imprecise hidden Markov models, in: ISIPTA ’11 – Proceedings of the Seventh International Symposium on Imprecise Probability: Theories and Applications, 2011, accepted for publication.
+[8] Cassio P. de Campos, New complexity results for MAP in Bayesian networks, in: Proceedings of the International Joint Conference on Artiﬁcial Intelligence, 2011, accepted for publication.
+[9] Cassio P. de Campos, Fabio G. Cozman, The inferential complexity of Bayesian and credal networks, in: Proceedings of the International Joint Conference
+on Artiﬁcial Intelligence, Edinburgh 2005, pp. 1313–1318.
+[10] Cassio P. de Campos, Fabio G. Cozman, Computing lower and upper expectations under epistemic independence, International Journal of Approximate
+Reasoning 44 (3) (2007) 244–260.
+[11] Gert de Cooman, Filip Hermans, Alessandro Antonucci, Marco Zaffalon, Epistemic irrelevance in credal nets: the case of imprecise Markov trees,
+International Journal of Approximate Reasoning 51 (9) (2010) 1029–1052.
+[12] Gert de Cooman, Enrique Miranda, Weak and strong laws of large numbers for coherent lower previsions, Journal of Statistical Planning and Inference 138 (8) (2008) 2409–2432.
+[13] Gert de Cooman, Enrique Miranda, Forward irrelevance, Journal of Statistical Planning and Inference 139 (2) (2009) 256–276.
+[14] Gert de Cooman, Enrique Miranda, Marco Zaffalon, Factorisation properties of the strong product, in: Combining Soft Computing and Statistical Methods in Data Analysis, Proceedings of the 5th International Conference on Soft Methods in Probability and Statistics, SMPS 2010, Oviedo and Mieres
+(Asturias), Spain, September 28–October 1, 2010, in: Advances in Soft Computing, vol. 77, Springer, 2010, pp. 139–147.
+[15] Gert de Cooman, Enrique Miranda, Marco Zaffalon, Independent natural extension, in: Computational Intelligence for Knowledge-Based Systems Design,
+13th International Conference on Information Processing and Management of Uncertainty, IPMU 2010, Dortmund, Germany, June 28–July 2, 2010.
+Proceedings, in: Lecture Notes in Computer Science, vol. 6178, Springer, 2010, pp. 737–746.
+[16] Bruno de Finetti, Teoria delle Probabilità, Einaudi, Turin, 1970.
+[17] Bruno de Finetti, Theory of Probability: A Critical Introductory Treatment, John Wiley & Sons, Chichester, 1974–1975 (English translation of [16], two
+volumes).
+[18] Richard Holmes, Geometric Functional Analysis and Its Applications, Springer-Verlag, New York, 1975.
+[19] Vladimir Kuznetsov, Interval Statistical Methods, Radio i Svyaz Publ., 1991 (in Russian). Downloadable at http://www.sipta.org/index.php?id=res#kuz.
+[20] Steffen L. Lauritzen, David J. Spiegelhalter, Local computations with probabilities on graphical structures and their application to expert systems (with
+discussion), Journal of the Royal Statistical Society, Series B 50 (1988) 157–224.
+[21] Enrique Miranda, A survey of the theory of coherent lower previsions, International Journal of Approximate Reasoning 48 (2) (2008) 628–658.
+[22] Enrique Miranda, Updating coherent lower previsions on ﬁnite spaces, Fuzzy Sets and Systems 160 (9) (2009) 1286–1307.
+[23] Enrique Miranda, Gert de Cooman, Marginal extension in the theory of coherent lower previsions, International Journal of Approximate Reasoning 46 (1) (2007) 188–225.
+[24] Enrique Miranda, Marco Zaffalon, Coherence graphs, Artiﬁcial Intelligence 173 (2009) 104–144.
+[25] Enrique Miranda, Marco Zaffalon, Natural extension as a limit of regular extensions, Journal of Statistical Planning and Inference 140 (7) (2010) 1805–
+1833.
+[26] Moral Serafín, Epistemic irrelevance on sets of desirable gambles, Annals of Mathematics and Artiﬁcial Intelligence 45 (2005) 197–214.
+[27] Judea Pearl, Probabilistic Reasoning in Intelligent Systems: Networks of Plausible Inference, Morgan Kaufmann, San Mateo, CA, 1988.
+[28] Lawrence R. Rabiner, A tutorial on HMM and selected applications in speech recognition, Proceedings of the IEEE 77 (2) (February 1989) 257–286.
+[29] Paolo Vicig, Epistemic independence for imprecise probabilities, International Journal of Approximate Reasoning 24 (3) (2000) 235–250.
+[30] Peter Walley, Statistical Reasoning with Imprecise Probabilities, Chapman and Hall, London, 1991.
+[31] Peter Walley, Renato Pelessoni, Paolo Vicig, Direct algorithms for checking consistency and making inferences from conditional probability assessments,
+Journal of Statistical Planning and Inference 126 (2004) 119–151.
+[32] Peter M. Williams, Notes on conditional previsions, Technical report, School of Mathematical and Physical Science, University of Sussex, UK, 1975.
+Revised journal version: [33].
+[33] Peter M. Williams, Notes on conditional previsions, International Journal of Approximate Reasoning 44 (2007) 366–383. Revised journal version of [32].
+
+

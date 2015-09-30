@@ -1,0 +1,2076 @@
+Neural Networks 71 (2015) 159–171
+
+Contents lists available at ScienceDirect
+
+Neural Networks
+journal homepage: www.elsevier.com/locate/neunet
+
+Neural networks with non-uniform embedding and explicit
+validation phase to assess Granger causality
+Alessandro Montalto a,∗ , Sebastiano Stramaglia b,c , Luca Faes d,e , Giovanni Tessitore f ,
+Roberto Prevete g , Daniele Marinazzo a
+a
+
+Data Analysis Department, Ghent University, Ghent, Belgium
+
+b
+
+Dipartimento Interateneo di Fisica, University of Bari, Italy
+
+c
+
+INFN Sezione di Bari, Italy
+
+d
+
+BIOtech, Department of Industrial Engineering, University of Trento, Italy
+
+e
+
+IRCS-PAT FBK, Trento, Italy
+
+f
+
+Department of Physical Sciences, University of Naples Federico II, Italy
+
+g
+
+DIETI, University of Naples Federico II, Italy
+
+article
+
+info
+
+Article history:
+Received 13 February 2015
+Received in revised form 27 May 2015
+Accepted 13 August 2015
+Available online 21 August 2015
+Keywords:
+Neural networks
+Granger causality
+Non-uniform embedding
+
+abstract
+A challenging problem when studying a dynamical system is to find the interdependencies among its
+individual components. Several algorithms have been proposed to detect directed dynamical influences
+between time series. Two of the most used approaches are a model-free one (transfer entropy) and a
+model-based one (Granger causality). Several pitfalls are related to the presence or absence of assumptions in modeling the relevant features of the data. We tried to overcome those pitfalls using a neural
+network approach in which a model is built without any a priori assumptions. In this sense this method
+can be seen as a bridge between model-free and model-based approaches. The experiments performed
+will show that the method presented in this work can detect the correct dynamical information flows
+occurring in a system of time series. Additionally we adopt a non-uniform embedding framework according to which only the past states that actually help the prediction are entered into the model, improving
+the prediction and avoiding the risk of overfitting. This method also leads to a further improvement with
+respect to traditional Granger causality approaches when redundant variables (i.e. variables sharing the
+same information about the future of the system) are involved. Neural networks are also able to recognize
+dynamics in data sets completely different from the ones used during the training phase.
+© 2015 Elsevier Ltd. All rights reserved.
+
+1. Introduction
+A fundamental problem in the study of dynamical systems
+is how to find the interdependencies among their individual
+components, whose activity is recorded and stored in time series.
+Over the last few years, considerable effort has been dedicated
+to the development of algorithms for the inference of causal
+relationships among subsystems, a problem which is strictly
+related to the estimate of the information flow among subsystems
+(Sameshima & Baccala, 2014; Wibral, Vicente, & Lizier, 2014). Two
+major approaches to accomplish this task are Granger causality
+(GC) (Bressler & Seth, 2011; Granger, 1969b) and transfer entropy
+
+∗
+
+Corresponding author.
+E-mail address: alessandro.montalto@ugent.be (A. Montalto).
+
+http://dx.doi.org/10.1016/j.neunet.2015.08.003
+0893-6080/© 2015 Elsevier Ltd. All rights reserved.
+
+(TE) (Schreiber, 2000). GC is based on regression, testing whether
+a source variable (driver) is helpful to improve the prediction of a
+destination variable (target) beyond the degree to which the target
+predicts its own future. GC is a model-based approach, implying
+that the corresponding statistics for validation can be derived
+from analytic models, resulting in a fast and accurate analysis. A
+pitfall, however, is inherent to model-based approaches: the model
+assumed to explain the data often implies strong assumptions and
+the method is not able to detect the correct directed dynamical
+networks when these assumptions are not met. On the other
+hand non-parametric approaches, such as transfer entropy, allow
+the pattern of influences to be obtained in the absence of any
+guidance or constraints from theory; the main disadvantages
+of non-parametric methods are the unavailability of analytic
+formulas to evaluate the significance of the transfer entropy and
+the computational burden, typically heavier than those required
+by model-based approaches.
+
+160
+
+A. Montalto et al. / Neural Networks 71 (2015) 159–171
+
+Feed-forward neural networks, consisting of layers of interconnected artificial neurons (Rumelhart, McClelland, & PDP Research
+Group, 1986), are among the most widely used statistical tools for
+non-parametric regression. Relying on neural networks, the proposed approach to Granger causality will be both non-parametric
+and based on regression, thus realizing the Granger paradigm in a
+non-parametric fashion.
+In this paper we address the implementation of Granger’s
+original definition of causality in the context of the artificial neural
+networks approach (Bishop, 1995). The metrics used to validate
+the hypothesis of directed influence is the prediction error: the
+difference between the network output and the expected target.
+The choice of the correct prediction error, and consequently the
+choice of the past states of the time series that will be fed to the
+model, has to be accompanied by a validation phase. Only under
+optimization of the generalization error one can be sure that the
+network is not overfitting.
+In order to deal with an increasing number of inputs, each one
+representing a specific candidate source of directed influence, we
+will adopt a non-uniform embedding procedure (Faes, Nollo, &
+Porta, 2011) that is an iterative procedure to select only the most
+informative past states of the system to predict the future of the
+target series among a wider number of available past states. In line
+with this procedure the network will be trained with an increasing
+number of inputs, each of them representing a precise past state
+of the variables that are most helpful to predict the target. Also
+this selection process will be implemented using the notions of
+prediction error and generalization error, the former quantifying
+how well the training data are reproduced, the latter describing
+the goodness of the validation on a novel set of data.
+It is worth stressing that a neural networks approach to GC
+has been already proposed in Attanasio and Triacca (2011), where
+neural networks with a fixed number of inputs, together with
+other estimators of information flow, are used to evaluate GC. In
+Attanasio and Triacca (2011) neural networks are trained without
+a validation set and an empirical method to avoid overfitting
+is adopted. To our knowledge the present approach is the first
+time that non-uniform embedding and a regularization strategy
+by a validation set are used together in the context of neural
+network approaches to detect dynamic causal links. Moreover,
+the neural networks built by our approach will accomplish not
+only the task of estimating information flows among variables,
+they may also be used for dynamic classification task as well, as
+better explained in Section 6.6. The new method presented in this
+work has been integrated in MuTE MATLAB toolbox (Montalto,
+Faes, & Marinazzo, 2014) and it will be compared here with the
+linear Granger causality as well as with the Transfer Entropy, both
+implemented in the non-uniform embedding framework.
+2. Introduction to neural networks
+Artificial neural networks (ANN) are a very popular branch
+of machine learning. Here we give a brief introduction to neural
+networks to make this work self-consistent.
+Neural networks can be represented as oriented graphs whose
+nodes are simple processing elements called ‘‘neurons’’ handling
+their local input, consisting of a weighted summation of the
+outputs from the parents nodes (Rumelhart et al., 1986). The
+input signal is processed by means of a function, called ‘‘activation
+function’’, and the corresponding outcome, called ‘‘output’’, is
+then sent to the linked nodes by a weighted connection; the
+weight is a real number that represents the degree of relevance
+of that connection inside the neural network. The most common
+architecture of a neural network consists of neurons ordered into
+layers. The first one is called ‘‘input layer’’ that receives the external
+inputs. The last layer is called ‘‘output layer’’ that gives the result
+
+of the computations made by the whole network. All the layers
+between the input and output layer are called ‘‘hidden layers’’.
+Neural networks with at least one hidden layer and activation
+functions as the sigmoid function on the hidden nodes are able to
+adequately approximate all kinds of continuous functions defined
+on a compact set from a d-dimensional input space Rd , the domain,
+to a c-dimensional output space Rc , the codomain given a sufficient
+number of hidden nodes: in this sense one can say that neural
+networks can perform any mapping between two different vector
+spaces (Bishop, 1995). In order to allow a neural network to find
+the correct mapping, a so-called ‘‘learning phase’’ is needed. In
+this work we use supervised learning, during which inputs are
+presented to the network and its output is compared to a known
+output. The weights are adjusted by the network that tries to
+minimize a cost function that depends upon the network output
+and the known output. This kind of learning allows a network to
+discover hidden patterns inside the data.
+In this work we implement a growing neural network to study
+dynamical interactions in a system made up of several variables,
+described by time series, interacting with each other. The aim of
+the work is not only to find a directional relationship of influence
+between a subset of time series, the source, and a target time
+series taking into account the rest of the series collected in a set,
+called conditioning, but also to determine the delay at which the
+source variables are influencing the target. We will then see how
+the neural networks approach can be useful to accomplish, under
+the same framework, several tasks such as: finding the directed
+dynamical influences among variables chosen at a certain delay;
+predicting a target series when the network is fed with a novel
+realization of a dynamical system whose connectivity structure
+has been previously learned; classifying a new data set, giving
+information about how close the causal relationships are to those
+observed in data sets used during the learning phase.
+2.1. Mathematical framework
+In this work we deal with growing feed-forward neural
+networks to better infer the directed dynamical influences in a
+composite system. Each stochastic variable at hand is assumed to
+be zero mean (the mean of the data sample is subtracted from
+data), hence we will deal with neural networks without bias terms.
+A classical feed-forward neural network without bias is usually
+described by: a finite set of O nodes S = 1, 2, . . . , O divided in
+d inputs, c output nodes and O − (d + c ) hidden nodes; a finite
+set of one way direction connections C each one connecting a node
+belonging to the kth layer to a node belonging to the hth layer, with
+h > k. A weight whk is associated with each connection from the
+node k ∈ k to the node h ∈ h. Each node o is characterized by an
+input function so , an input value io , an activation function fo , and an
+output value zo (Bishop, 1995). Let us now define wh as the weights
+vector of the connections which leave the nodes of the kth layer and
+reach the node h. Let us define z as the output vector of a generic
+layer of nodes.
+ The input ih is given by ih = sh (wh , z). Usually we
+have: ih =
+k whk · zk . Each zh is given by
+
+
+zh = fh
+
+
+
+
+whk · zk .
+
+(1)
+
+k
+
+To evaluate the output of a multilayer network, consecutive
+applications of (1) are needed to activate all network nodes. Fig. 1
+depicts the schematic structure of the feed-forward networks
+under discussion here.
+To summarize: the output values of a network can be expressed
+as deterministic functions of the inputs. Assuming that the
+network has only one hidden layer h, we can say that the whole
+network represents a function, linear or non-linear depending on
+
+A. Montalto et al. / Neural Networks 71 (2015) 159–171
+
+161
+
+amount of training epochs and a smaller number of epochs
+called validation epochs. The validation phase is embedded in
+the learning phase: this combination of training and validation
+avoids erroneous use of the training procedure, thus avoiding
+overfitting.
+In the following section, we present the algorithm used for the
+learning phase:
+
+Fig. 1. Schematic representation of a feed-forward neural network.
+
+the linearity or non-linearity of the fh , between the d-dimensional
+input space and the c-dimensional output space, with parameters
+w given by the network weights. The relation holding between
+inputs and outputs of the network can be approximated in the
+multidimensional space spanned by the hidden nodes by either
+an hyperplane if linear functions are used as activation functions
+of the hidden nodes or by a smoother approximation when nonlinear functions are set as activation functions of the hidden nodes.
+Usually, the activation functions of the output nodes are set to be
+the identity function that does not modify the input values of the
+output nodes because the outputs of the network are not supposed
+to be bounded in order to assume values as close as possible to the
+training target values, assuming that overfitting is avoided.
+So far we have shown how neural networks can process inputs
+and how they can be mapped onto a parametric function F (x; w) :
+Rd → Rc .
+We can now assume that there is a function f : x ∈ Rd →
+f (x) ∈ Rc to be modeled and we know a finite set of N couples
+(xn , tn ), where n ∈ [1, . . . , N ], tn is the value of the function f (x)
+evaluated in xn plus an error ϵ(xn ). We want to approximate f using
+the parametric function F : w ∈ Rp , x ∈ Rd → F (x; w) ∈ Rc .
+The function F can be found through the minimization of a certain
+error function E (w). For instance a classical error function is the
+sum of squares function (2) to minimize by means of an iterative
+procedure that requires the data to be presented to the network
+several times through consecutive realizations called epochs:
+E=
+
+d
+N
+1 
+
+2 n=1 k=1
+
+(ynk − xnk )2 .
+
+(2)
+
+The training of the network is the process to determine, starting
+˜ that can better
+from a finite set of couples (xn , tn ), the weights w
+shape F to be as close as possible to f . After each epoch of the training phase the weights in the network are adjusted. At this point a
+definition of close is in order. Let us suppose a noisy data set consisting of xn and tn = f (xn ) + ϵ(xn ) where ϵ is the noise term. If we
+train the network until the input can be exactly reproduced then F
+is not only reproducing f , but the noise too. It is easy to understand
+that the more specialized the network the less it will be able to pre′
+′
+′
+′
+dict the right tn = f (xn ) + ϵ(xn ) when a xn never seen before is
+presented to the network. In this case we say that the network is
+not able to generalize. To overcome this issue the validation phase is
+embedded in the learning. The validation phase is paramount because it allows the network to both model the function from which
+the data could have been drawn and to avoid modeling fluctuations
+produced by noise in the training set. In order to accomplish these
+two modeling tasks at the same time, the whole learning procedure
+is divided into two well distinguished steps:
+1. the whole data set is divided in two groups. One group is used
+for the training step during which the weights are updated
+2. the second group is used for the validation step. These data
+have not been used in the previous step. We used a maximum
+
+1. training step: adjust the weights after a number of training
+epochs
+2. validation step: evaluate the generalization error and store it in
+a vector VEvect
+3. repeat steps 1. and 2. continuing to train the network until one
+of the following three stop conditions is verified:
+• the relative error evaluated as
+∥current VEvect entry − mean(previous VEvect entries)∥
+current VEvect entry
+is less than a validation threshold set to 10−3 . The value of
+previous VEvect is set to 5;
+
+•
+
+(current VEvect entry − mean (previous VEvect entries))
+current VEvect entry
+
+≥0
+• the maximum number of training epochs is reached.
+The previous VEvect and validation threshold values have been
+chosen taking into account a cautious gradient descent implying
+small updating steps as the main concern here is the risk of
+overfitting.
+3. Granger Causality with neural networks
+The aim of this work is to find directed dynamical influences
+among variables, modeled as time series, using neural networks
+as a powerful tool to compute the prediction errors needed to
+evaluate causality in the Granger sense. According to the original
+definition, Granger causality (GC) deals with two linear models
+of the present state of a target variable. The first model does not
+include information about the past states of a driver variable, while
+the second model contains such information. If the second model’s
+error is less than that of the first model in predicting the present
+state of the target, then we can safely say that the driver is causing
+the target in the sense of Granger (1969a). Here we introduce a new
+Granger causality measure called neural networks Granger causality
+(NNGC) defined as
+NNGC = err reduced − err full
+
+(3)
+
+where err reduced is the prediction error obtained by the network
+that does not take into account the driver’s past states, while err full
+is the prediction error evaluated by the network that takes into
+account the driver’s past states.
+Therefore, instead of fitting predefined models, (linear ones in
+the original proposal by Granger) we train a neural network to estimate the target using only the past states that can better explain
+the target series, by using the non-uniform embedding technique.
+Such strategy leads to growing neural networks, with an increasing
+number of input neurons, each input neuron representing a past
+state chosen from the amount of past states available, considering all the variables in the system. The architecture of the network
+and choice of the most suitable past states, performed through
+the non-uniform embedding approach, are described in detail in
+the next sections. Relying on neural networks, this method realizes the Granger paradigm in a non-parametric fashion, like in Ancona, Marinazzo, and Stramaglia (2004) and Marinazzo, Pellicoro,
+and Stramaglia (2006) where radial basis function networks where
+employed. This article improves such previous work by (i) using
+non-uniform embedding and (ii) employing training and validation
+phases concurrently to ensure a more robust detection of dynamical interactions.
+
+162
+
+A. Montalto et al. / Neural Networks 71 (2015) 159–171
+
+4. Non-uniform embedding (NUE)
+We first introduce in this section the NUE approach which is
+the basis of the algorithm used to build a neural network able to
+find the correct mapping between the input and the output spaces
+in an optimal way. The uniform embedding (UE) approach relies
+on a predefined set of candidates making a strong assumption
+about which past states are better able to explain the future of the
+target series. This approach, lacking a specific criterion according
+to which the candidates are chosen, is likely to cause problems
+such as overfitting and detection of false influences (Marinazzo,
+Pellicoro, & Stramaglia, 2008; Palus & Vejmelka, 2007). NUE
+framework, instead, is an iterative procedure aimed at detecting
+only the time series’ past states that can effectively help to predict
+the target series. To evaluate whether a new candidate should be
+chosen, an hypothesis and, eventually, a significance test, should
+be satisfied. In this way of exploring causality, once this hypothesis
+and significance test (when needed) are no longer satisfied, the
+procedure is unable to find additional candidates to help predict
+the target.
+Let us consider a composite system described by a set of M
+interacting dynamical (sub) systems and suppose that, within the
+composite system, we are interested in evaluating the information
+flow from the source system X to the destination
+ system Y,
+collecting the remaining systems in the vector Z = Zk k=1,...,M −2 .
+We develop our framework under the assumption of stationarity,
+which allows to perform estimations replacing ensemble averages
+with time averages (for non-stationary formulations see, e.g.,
+Ledberg & Chicharro, 2012 and references therein). Accordingly,
+we denote X , Y and Z as the stationary stochastic processes
+describing the state visited by the systems X, Y and Z over time,
+and Xn , Yn and Zn as the stochastic variables obtained sampling
+the processes at the present time n. Moreover, we denote Xn− =
+[Xn−1 Xn−2 . . .], Yn− = [Yn−1 Yn−2 . . .], and Z−
+n = [Zn−1 Zn−2 . . .] as
+the infinite-dimensional vector variables representing the whole
+past of the processes X , Y and Z. In some cases, taking the
+instantaneous influences of the candidate drivers into account as
+well may also be desirable. In such cases, the vectors Xn− and Z−
+n
+defined above should also contain the present terms Xn and Zn .
+We will discuss here the crucial issue of how to approximate
+the infinite-dimensional variables representing the past of the
+processes. This problem can be seen in terms of performing
+suitable conditioned embedding of the considered set of time
+series (Vlachos & Kugiumtzis, 2010).
+The main idea is to reconstruct the past of the whole system
+represented by the processes X , Y , Z with reference to the present
+of the destination process Y , in order to obtain a vector V =
+[VnY , VnX , VnZ ] containing the most significant past variables to
+explain the present of the destination.
+Non-uniform embedding constitutes the methodological advance with respect to the state of the art that we propose as a convenient alternative to UE. This approach is based on the progressive
+selection, from a set of candidate variables including the past of X ,
+Y , and Z considered up to a maximum lag (candidate set), of the
+lagged variables which are more informative for the target variable
+Yn . At each step, selection is performed maximizing the amount of
+information that can be explained about Y by observing the variables considered with their specific lag up to the current step. This
+results in a criterion for maximum relevance and minimum redundancy for candidate selection, so that the resulting embedding vector V = [VnX VnY VnZ ] includes only the components of Xn− , Yn− and
+Z−
+n , which contribute most to the description of Yn . Starting from
+the full candidate set, the procedure which prunes the less informative terms is described below:
+
+1. Get the matrix with all the candidate terms
+MC = [Xn−1 . . . Xn−lX Yn−1 . . . Yn−lY Zn−1 . . . Zn−lZ ], with lX , lY , lZ
+representing the maximum lag considered for the past variables
+of the observed processes; these matrices will contain also
+the terms Xn and Zn in case one wants to take into account
+instantaneous effects. The values of lX , lY , lZ can be set by the
+experimenter according to a known feature of the data, or set
+to a reasonably large value for exploratory purposes. If values of
+lX , lY and lZ are set too low, an incorrect estimation of Granger
+causality may result, but higher values should not issues with
+non-uniform embedding.
+2. Run the procedure to select the most informative past variables
+and the optimal embedding vector:
+(0)
+
+(a) Initialize an empty embedding vector Vn
+(b) Perform a while loop on k, where k can assume values from
+1 to the number of initial available candidates, numC, in the
+MC matrix. At the kth iteration, after having chosen k − 1
+(k−1)
+candidates collected in the vector Vn
+:
+for 1 ≤ i ≤ number of current candidate terms
+
+• add the ith term of MC, Wn(i) , to a copy of Vn(k−1) to form
+(i) (k−1)
+]
+the temporary storage variable Vn′ = [Wn Vn
+• compute the information exchanged between Yn and Vn′ .
+(i)
+ˆ n which maximizes
+(c) Among the tested Wn , select the term W
+the information exchanged
+
+ˆ n satisfies a termination criterion, delete it from MC and
+(d) if W
+set k = k + 1.
+(e) else end the procedure setting k = numC + 1 and returning
+(k−1)
+V = Vn
+.
+3. Use Yn and the full embedding vector V = [VnX VnY VnZ ] to evaluate err full . err reduced is obtained excluding from err full the candidates belonging to the variables considered as drivers. Both
+errors are evaluated as the root mean squared error (RMSE) between the neural network output and Yn . If the error resulting from the network that contains the inputs representing the
+driver’s past states (err full ) is lower than the error resulting from
+the network that does not take into account the driver’s past
+states (err reduced ), then the driver assessed is determined to help
+predict the target more than the network that excludes the
+driver.
+The complexity of the algorithm concerns mainly step 2, in
+particular step 2(b), involving a for loop nested inside a while loop:
+in the worst case the body of the for loop is executed numC 2 times
+resulting in a complexity O (numC 2 ).
+Summarizing, the non-uniform embedding is a feature selection technique selecting, among the available variables describing
+the past of the observed processes, the most significant – in the
+sense of predictive information – for the target variable. Moreover,
+given the fact that the variables are included into the embedding
+vector only if associated with a significant contribution to the description of the target, the significance of the NNGC estimated with
+the NUE approach results simply from the selection of at least one
+lagged component of the source process. In other words, if at least
+one component from X is selected by NUE, the estimated NNGC is
+strictly positive and can be assumed to be significant. If not, the estimated NNGC is exactly zero and is assumed to be non-significant.
+This latter also occurs when the first candidate (k = 1) does not
+reach the desired level of significance, meaning that none of the
+candidates provides significant information about the target variable. This may also be encountered, for instance, when the target
+process consists of white noise: the code will return an empty embedding vector and assign a zero value to the NNGC.
+
+A. Montalto et al. / Neural Networks 71 (2015) 159–171
+
+5. Non-uniform embedding using neural networks (NeuNet
+NUE)
+Here we want to investigate the opportunity to use neural
+networks to create the two models needed to evaluate NNGC and,
+at the same time, to better choose the right candidates to be
+considered as terms of the models. In this sense our method is a
+model-free approach because we do not assume any model a priori
+that can explain the data, but we allow the network to explore the
+parameter space in order to find the model we need. The procedure
+will be able to model a function from the input space, spanned by
+the time series’ past states, and the output space, spanned by the
+present state of the target series: Yn = f (V ). It will be possible
+to estimate a function F as close as possible to f . This will ensure
+a precise prediction of Y from Y itself, X and Z. It is easy to see
+that from F it is possible to assess whether for another data set
+Y ′ , X ′ , Z′ , the same relation F holds: in this case the network will
+be able to generalize.
+In this study a three-layers feed-forward neural network is used
+(Bishop, 1995), trained by means of the resilient back propagation
+technique that is one of the fastest learning algorithms (Riedmiller
+& Braun, 1993). Briefly, the resilient back propagation is an
+optimized algorithm to update the weights of a neural network
+based on the gradient descent technique. Let ∆ij be the weight
+update value that only determines the size of the weight update
+and E the error function. Then the resilient back propagation rule
+is the following:
+
+∆ij =
+
+
+
+
+η+ × ∆ij(t −1)
+
+
+
+
+η− × ∆ij(t −1)
+
+
+
+
+
+
+(t −1)
+∆ij
+
+∂ E (t −1)
+×
+∂wij
+∂ E (t −1)
+if
+×
+∂wij
+
+if
+
+∂ E (t −1)
+>0
+∂wij
+∂ E (t −1)
+<0
+∂wij
+
+(4)
+
+else
+
+where 0 < η− < 1 < η+ . To summarize: every time the partial
+derivative of the current weight wij changes in sign, i.e. the error
+function slope changes indicating that a local minimum has been
+avoided, the updated value ∆ij is decreased by the factor η− allowing a reversal, or ‘‘coming back’’, in the parameter space towards
+the local minimum. If the derivative does not change sign, then
+the updated value ∆ij is increased by the factor η+ accelerating towards a local minimum.
+Once the updated value is evaluated, the weight update is quite
+straightforward as shown by the following equations:
+
+∆(wt ij) =
+
+
+
+
+−∆(ijt )
+
+
+
+
+
++∆(ijt )
+
+
+
+
+
+0
+
+∂ E (t )
+>0
+∂wij
+∂ E (t )
+if
+<0
+∂wij
+
+if
+
+(5)
+
+else
+
+(t +1)
+
+(t )
+
+so that wij
+= wij + ∆(wt ij) . However, we should also take into
+account the case when the partial derivative changes sign: the
+previous weight update is then reverted as follows:
+(t )
+(t −1)
+∆w
+= −∆w
+if
+ij
+ij
+
+∂ E (t −1)
+∂ E (t )
+×
+< 0.
+∂wij
+∂wij
+
+(6)
+
+Following the NUE scheme, each input corresponds to a
+candidate, while the minimization criterion is the prediction error
+between the network output and Yn . We should keep in mind
+that the core of the entire procedure lies in the choice of the
+candidates that can actually help to predict the target series. Once
+the relative prediction error, defined as (prediction errork−1 −
+prediction errork )/(prediction error1 − prediction errork ) where
+
+163
+
+k can assume values from 1 to the number of initial available
+candidates, is greater than or equal to a threshold, the procedure
+stops and no further candidates are chosen. To summarize: the
+hypothesis of Granger causality evaluates how much information
+is introduced by adding a new input with respect to the
+information carried only by the inputs previously considered.
+Moreover, it is worth stressing that in this case we do not rely
+on the comparison with a null distribution in order to choose
+whether a given candidate must be chosen or not. On the other
+hand, when a driver–response relationship among variables holds,
+the algorithm will find, input by input, the candidate that will
+give the lowest prediction error, this being a condition that can
+hold only if we ensure the network is not overfitted. The risk of
+overfitting is the reason why a validation phase, described in detail
+in the following sections, was implemented and the idea of a fixed
+amount of training iterations was discarded. As soon as the error on
+the validation set, called generalization error increases, the training
+of the network stops ensuring the capability of the network to
+generalize, implying that it has not been overfitted.
+To better explain the steps implemented to select the past
+states as a pseudo-code we can say that a for loop is nested
+within a while loop. The while loop condition, that takes into
+account the decreasing of the prediction error during the training
+phase, determines whether or not an additional input should be
+added to the network. It is worth stressing that during the whole
+procedure of the candidates’ selection, the internal architecture
+of the network is kept fixed: the number of hidden nodes is set
+up as a fraction of the maximum number of candidates available,
+as shown in Section 6.1, and it does not change. The for loop,
+instead, tests each available candidate given the previous inputs
+already chosen. During this test, at each iteration of the for loop,
+a network is trained taking into account the current candidate
+and the validation phase takes place according to the procedure
+explained in Section 2.1 point 3. Therefore, the validation error
+is taken into account in order to allow the network itself to
+reach its best performance, in terms of the generalization task,
+according to the current candidate. At the end of the for loop the
+candidate which gives the minimum prediction error is selected. If
+the prediction error satisfies the while loop condition, such that the
+relative prediction error is smaller than a threshold, the candidate
+is chosen and deleted from the set of the available candidates so
+that the procedure can continue. Otherwise, the procedure will
+stop. The pseudo-code of the algorithm is shown in the following:
+1:
+2:
+3:
+4:
+5:
+6:
+
+Initialize network parameters;
+Initialize the embedded matrix EM = ∅
+Initialize the prediction error PE vector = ∅
+Initialize the current prediction error CPE vector = ∅
+Initialize final candidate matrix FCM = ∅
+Initialize CS = [Xn−1 . . . Xn−lX , Yn−1 . . . Yn−lY , Zn−1 . . . Zn−lZ ]. The terms Xn and
+Zn should be considered too in case the instantaneous effects should be taken
+into account.
+7: k = 1
+8: while CS ̸= ∅ do
+9:
+if CS is full then
+10:
+Initialize the network NN with one input, the number of chosen hidden
+nodes, one output
+11:
+else
+12:
+Add to NNk−1 another input;
+13:
+Initialize only the weights between the new input and the hidden nodes
+keeping all the rest fixed;
+14:
+end if
+15:
+for i ∈ [1, . . . , length(CS)] do
+16:
+while epoch ≤ maxTrainEpochs do
+% Learning phase:
+17:
+train the network, after 30 training epochs evaluate the prediction
+error;
+18:
+validate the network evaluating the generalized error;
+19:
+if epochs/valEpochs == 0 and epochs ≤ maxTrainEpochs then
+20:
+evaluate the relative validation error
+21:
+if ∥relative validation error∥ ≤ validationThreshold or relative
+error ≥ 0 or epochs == maxTrainEpochs then
+
+164
+
+A. Montalto et al. / Neural Networks 71 (2015) 159–171
+
+22:
+23:
+24:
+25:
+26:
+27:
+28:
+29:
+30:
+
+Store the prediction error in CPE(i)
+epoch = maxTrainEpochs + 1
+end if
+Store the prediction error in CPE(i);
+epoch = epoch + 1
+end if
+end while
+end for
+NNk = neural network having in input the candidates that give the
+minimum prediction error stored in CPE
+31:
+PEk = min(CPE)
+32:
+if relative prediction error ≤ trainThreshold then
+33:
+NN = NNk−1
+34:
+PE = PEk−1
+35:
+CS = ∅
+36:
+else
+37:
+NN = NNk
+38:
+add to FCM the candidate of CS that returns the minimum prediction
+error
+39:
+delete from CS the candidate that returns the minimum prediction error
+40:
+k=k+1
+41:
+end if
+42: end while
+43: return NN; FCM; PE
+
+where the strings after the % symbol should be considered as non
+executable code.
+In the following we will explain in more detail the algorithm
+showed above:
+1. In the initialization phase it is worth noting that lX , lY , lZ
+represent the maximum lag considered for the past variables of
+the observed processes. In the following experiments we will
+set lX , lY , lZ to take into account more past states than needed.
+2. at the kth step of the while loop at line 8, where k runs on the
+number of inputs chosen, the network tests all the candidates
+available by means of the for loop at line 15: there are k inputs.
+The first k − 1 inputs are the ones chosen so far and on the
+kth input one candidate per time is considered. The initial
+conditions are the same for each candidate: the weights have
+been fixed so the ones departing from the k − 1 inputs are the
+same found as the result of the training at the (k − 1)th step
+and the weights departing from the kth input are the same at
+the beginning of each training session when the RMSE between
+the network output and Yn is evaluated. Lines 19–27 take care
+of whether to stop the training phase for the current candidate
+according to the generalization error.
+3. Lines 32–41 check whether it would be worth adding candidates, or it is better to stop the whole procedure because no
+further meaningful information can be added to better predict
+the target. The generalization error is not relevant at this stage,
+since it is only used to stop the training phase.
+The network is finally trained to reproduce the best correspondence between the space spanned by the terms of FCM and the
+space spanned by Yn . The network is then the model that can be
+used to explain Yn , including the driver’s candidates. This model
+will give err full . To evaluate err reduced the candidates belonging to
+the source system should be removed from the network, so the
+corresponding inputs and weights should not be considered. This
+configuration leaves the weights between the hidden nodes and
+the output unchanged, so the network now will not be able to approximate Yn as well as during the evaluation of the previous term
+if the causal hypothesis holds between the driver and the target.
+err reduced can be computed projecting the information carried by
+the inputs representing the candidates belonging to the target and
+the conditioning variables on the output space and evaluating the
+RMSE between the network output and Yn . NNGC is now immediately evaluated by the difference between the two terms. The
+significance of the causality measure estimated with the neural
+network method embedded into the NUE approach results simply from the selection of, at least, one lagged component of the
+
+driver. In other words, if at least one component from the driver
+is selected, the Granger causality is strictly positive and can be assumed as significant. If this is not the case, the estimated causality
+that results is exactly zero and is assumed to be non-significant.
+NUE is used here as a feature selection algorithm. Other feature
+selection algorithms can be used to select the most informative
+candidates; in the present work our choice is in line with other
+approaches to detect dynamical interactions present in literature,
+thus offering a coherent framework for all the estimators.
+6. Applications to simulated data
+Before applying the proposed method, the correct initialization
+parameters were set (see Section 6.1). First of all, we wanted
+to prove that neural networks implemented with the nonuniform embedding framework perform better than neural
+networks implemented with the uniform embedding framework,
+Section 6.2. Then, several data sets were simulated to test NeuNet
+NUE in different situations in order to explore its capability to
+detect the correct directed dynamical links, see Sections 6.3–6.4.
+During those three experiments we compared the neural networks
+with a model-based approach and two model-free approaches, as
+described in Section 6.3, to get a better idea of the performances
+obtained by our method. Furthermore, we wanted to check
+whether NeuNet NUE was both robust with respect to redundant
+information (see Section 6.5) and able to outperform an approach
+based on multivariate Granger causality analysis (Stramaglia,
+Cortes, & Marinazzo, 2014). Finally we wanted to evaluate the
+capability of the networks to predict and classify time series (see
+Section 6.6).
+6.1. Choice of the parameters
+One of the crucial aspects of neural networks approaches
+concerns the choice of the optimal parameters. In this paper we are
+interested not only in the parameters involving the architecture
+and the training of the network, but also in the parameters
+that are responsible for the number of past states that can be
+chosen, allowing the approach to be more or less conservative. The
+parameters can be listed as follows:
+
+• the threshold according to which a certain number of past states
+are chosen (th). This parameter is taken into account to stop
+the training of the network and it consequently regulates the
+amount of past states chosen by the network: for a lower th
+more past states are selected, see Section 5 pointed list 3
+• the validation threshold, useful to not overfit the network
+(valTh). This parameter plays an important role in the validation
+phase, allowing the network not to be overfitted, see Section 5
+pointed list 2
+• the number of hidden nodes (hidNodes), reported as percentage
+of the total amount of the available past states
+• the learning rates for the resilient back propagation, η+ , η− .
+The parameters mentioned above must be set so that the neural
+network approach is able to detect the expected information flow.
+The investigation of the best parameter values was performed on
+linear and non-linear models with memory up to 3 points in the
+past.
+We considered 20 simulations of the systems for each
+combination of the parameter values shown in Table 1. We set lX =
+lY = lZ = 5. Values of η− and η+ , the parameters of the resilient
+back propagation, ranged as η− ∈ [0.4, . . . , 0.9] with step of 0.1
+and η+ ∈ [1.1, . . . , 1.4] with step of 0.1. The threshold’s values
+for the prediction error range between 2−8 and 0.3. According to
+this assumption, it is then possible to consider whether the current
+candidate is significant or not. Small values of the threshold, such
+
+A. Montalto et al. / Neural Networks 71 (2015) 159–171
+
+165
+
+Table 1
+Parameter values to initialize the network.
+Name parameter
+
+Parameter values
+
+th
+valTh
+hidNodes
+
+2−8 2−6 2−4 2−3 5−3 8−3 1−2 0.15 0.30
+0.2 0.4 0.6 0.8 1
+0.1 0.3 0.5 0.7 0.9 1.1 1.3 1.5 1.7 1.9 2.1 2.3 2.5
+0.4 0.5 0.6 0.7 0.8 0.9
+1.1 1.2 1.3 1.4
+
+η−
+η+
+
+as 2−8 , represent a weakly conservative network. On the other
+hand, high values of the threshold, such as 0.3, represent a strongly
+conservative network. We first investigated how the network
+performed for higher values of the threshold and we found that
+the networks were too conservative and, consequently, NueNet
+NUE only found one candidate belonging to the target series only.
+The same reasoning holds for the validation threshold that gives
+the range of values within which the validation error can fall. The
+assumption on how wide the range is, determines whether the
+network can be considered to have undergone enough training.
+Finally the number of hidden nodes ranges between 0.1 and 2.5,
+with step of 0.2, times the number of available past states. In this
+way, we allow the network to have a number of hidden nodes so as
+to allow it to reach the best performance with increasing number
+of inputs. It turned out that number of hidden nodes = 1.3× number
+of available candidates was the best compromise.
+For each combination of the parameters we evaluated how
+many times the method was able to detect the right information
+flows, estimating the number of true positives (TP), true negatives
+(TN), false positives (FP) and false negatives (FN). We then
+evaluated sensitivity = TP/(TP + N), specificity = TN/(TN + FP)
+and F1score = 2 TP/(2 TP + FP + FN) and we checked how the
+performances changed as the parameters varied. We found that
+neural networks obtained high performances on both systems
+corresponding to different parameter values: parameter values
+obtained on the linear system allowed NeuNet NUE to be less
+conservative with regard to neural networks used with parameter
+values found on the non-linear system. We finally chose the
+parameters in correspondence to which the network would be
+considered less conservative: th = 8−3 ; valTh = 0.6; hidNodes =
+0.3. Fig. 2 shows the performances of the network for different
+values of th, keeping all the other parameters fixed. For a better
+visualization, only five points out of the nine showed in the
+table were plotted. The other four points have been omitted,
+being too close to the others in the figure: the resulting curve is
+virtually unchanged. We can notice that for the minimum value
+of th, 2−8 , the network takes into account more past states than
+needed retrieving more FP and less TP than for higher values
+of th. Furthermore, the specificity is lower, almost zero, than
+the sensitivity. For th = 8−3 the network’s performances give
+sensitivity = specificity = 1, while for the maximum value of
+th, 0.3, the network is not allowed to choose a lot of past states
+and, consequently, there are less TP and more TN than for lower
+values of th, resulting in the sensitivity lower than the specificity.
+6.2. Reasoning behind our discarding of the uniform embedding
+approach
+Before explaining the experiments that we performed to test
+the proposed approach, we would like to underline that the
+non-uniform embedding framework was chosen because of its
+theoretical advantages with respect to the uniform embedding.
+Furthermore, we wanted to check whether those advantages held
+in the case of the GC neural networks estimator too. Neural
+networks used with the uniform embedding approach (NeuNet
+UE) only need one network to be trained when err full is evaluated.
+Each input of the network represents a past state, therefore the
+
+Fig. 2. Sensitivity and specificity at varying of the threshold values.
+Table 2
+Sensitivity, specificity and F1score values obtained on the system (7) by NeuNet NUE
+and NeuNet UE.
+
+NeuNet NUE
+NeuNet UE
+
+Sens
+
+Spec
+
+F1score
+
+0.86
+0.69
+
+0.80
+0.93
+
+0.80
+0.77
+
+number of inputs equals the number of available past states. The
+other network parameters have the same values as in the case of
+NeuNet NUE. The validation phase is still required. Once err reduced
+is evaluated by only removing the inputs corresponding to the
+past states that belong to the driver whose influence to a specific
+target is tested, we can obtain a value of NNGC whose significance
+still has to be evaluated. This step is addressed using surrogates
+technique as implemented in the case of other estimators also used
+into the uniform embedding framework (Montalto et al., 2014).
+This means that for each surrogate another network with the same
+architecture has to be trained resulting in a dramatic increase of
+the computational complexity.
+We compared NeuNet NUE and NeuNet UE performing a
+multivariate analysis on 100 realizations of a system composed of
+five coupled Hénon maps with a length of 2500 time points, built
+according to the following equations:
+X1,n = aV (1) − (0.5c (X4,t −1 + X5,t −1 )
+
++ (1 − c )X1,t −1 )2 + aV (2)X1,t −2 + w1,n
+X2,t = aV (1) − (0.5c (X3,t −1 + X5,t −1 )
+
++ (1 − c )X1,t −1 )2 + aV (2)X1,t −2 + w2,n
+X3,t = aV (1) − X32,t −1 + aV (2)X3,t −2 + w3,n
+
+(7)
+
+X4,n = aV (1) − X42,t −1 + aV (2)X4,t −2 − 0.02cX3,t −2 + w4,n
+X5,t = aV (1) − (0.5c (X1,t −1 + X2,t −1 )
+
++ (1 − c )X5,t −1 )2 + aV (2)X5,t −2 + w5,n
+where aV is the characteristic parameter tuned for chaotic
+behavior, the coupling strength c = 0.4 and w is drawn from
+Gaussian noise with zero mean and unit variance. In Fig. 3 the
+modeled links are shown.
+We performed the analysis setting lX = lY = lZ = 5 and using
+the rest of the parameter values found in Section 6.1. Looking at
+sensitivity, specificity and F1score , Table 2, we can clearly notice
+that NeuNet NUE performs better than NeuNet UE. Considering
+this result, the heavy computational complexity and the lack of
+information about the only past states that can give information
+to the target concerning the use of NeuNet UE, led us to only take
+into account NeuNet NUE for further investigations.
+
+166
+
+A. Montalto et al. / Neural Networks 71 (2015) 159–171
+
+Fig. 5. GC matrix representation for the NueNet NUE estimator applied to the
+system (8). The color indicates the magnitude of the GC averaged over 100
+realizations of the simulation. The targets are plotted on the x-axis while on the
+drivers are plotted on the y-axis.
+Table 3
+Sensitivity, specificity and F1score values obtained on the system (8) by the four
+estimators.
+Fig. 3. Simulated system. Interactions between the variables of the simulated
+Hénon maps system generated according to Eqs. (7).
+BIN NUE
+LIN NUE
+NeuNet NUE
+NN NUE
+
+Fig. 4. Simulated system. Interactions between the variables of the simulated
+Hénon maps system generated according to Eqs. (8).
+
+6.3. Simulated data: Hénon maps
+In the first experiment we generated 6 Hénon maps rearranging
+the system (7) as shown in Fig. 4 setting the coupling strength
+c = 0.2. The equations are shown in the following
+X1,n = aV (1) − X12,n−1 + aV (2)X1,n−2 + w1,n
+Xm,n = aV (1) − (0.5cm (Xm−1,n−1 + Xm+1,n−1 )
+
++ (1 − cm )Xm,n−1 )2 + aV (2)Xm,n−2 + wm,n
+
+(8)
+
+X6,n = aV (1) − X62,n−1 + aV (2)X6,n−2 + w6,n
+where aV is the vector of parameters for chaos, w is drawn from
+Gaussian noise with zero mean and unit variance and m ∈ [2, 5] is
+the identifier of the series.
+We generated 100 realizations of the Hénon maps, performed a
+multivariate analysis keeping the parameters found in Section 6.1
+fixed and setting lX = lY = lZ = 5. We then evaluated the mean
+values of the NNGC for all the pairwise combinations driver–target
+as shown in Fig. 5. We compared our method’s performance with
+
+Sens
+
+Spec
+
+F1score
+
+1
+0.99
+1
+1
+
+0.86
+0.74
+0.98
+1
+
+0.84
+0.73
+0.98
+1
+
+the binning, linear and nearest neighbor estimators implemented
+in the non-uniform embedding framework (henceforth BIN NUE,
+LIN NUE and NN NUE). These three estimators are already
+implemented in MuTE (Montalto et al., 2014). The comparison with
+NeuNet NUE has been performed in terms of sensitivity, specificity
+and F1score , as shown in Table 3. We can notice that NeuNet NUE is
+the second best method after NN NUE.
+Furthermore, we wanted to investigate whether NeuNet NUE
+was robust enough with respect to the coupling strength involved
+in (8) using only 5 time series. Again we performed a comparison
+with the estimators implemented in MuTE. In Figs. 6–9 we can
+see the performances of the four methods, noticing that NeuNet
+NUE is the only approach able to detect the expected information
+flows even when the coupling is 0.8. NN NUE detects two false
+positive information flows for the directions 4 → 2, 2 → 4
+from coupling strength value equal to 0.6 on. BIN NUE and LIN NUE
+obtain the worst performances detecting false positive information
+flows even for coupling strength equal to 0.3, see Fig. 6 direction
+2 → 4. Note the differing number of outliers in Fig. 6 versus
+Fig. 9, even if the detection criterion is fixed: on each box, the
+central mark is the median, the edges of the box are the 25th and
+75th percentiles, the whiskers extend to the most extreme data
+points not considered outliers. The four methods show different
+fluctuations of the exchanged information values as remarked by
+the different number of outliers.
+In Figs. 10 and 11 we compare the performances of the four
+methods showing their ROC curves and F1score , respectively. NN
+NUE and NeuNet NUE ROC curves report the highest sensitivity and
+specificity as soon as the coupling is greater than zero. For high
+couplings the ROC curves denote a higher specificity of NeuNet
+NUE. BIN NUE starts with low sensitivity and specificity, and its
+specificity generally increases as the coupling increases. F1score
+curves belonging to NeuNet NUE and NN NUE are very close. For
+couplings greater than 0.5 NeuNet NUE F1score is higher than NN
+NUE F1score , but both lower than BIN NUE F1score denoting once
+again how NeuNet NUE can be much closer to model-free than to
+model-based approaches. Only at coupling = 0.6 NeuNet NUE has
+the highest F1score .
+Referring to the Eqs. (7), we obtained the results shown in
+Table 4 in terms of sensitivity, specificity and F1score . This time
+
+A. Montalto et al. / Neural Networks 71 (2015) 159–171
+
+0.1
+
+1
+
+0.05
+
+0.06
+
+0.03
+
+0.5
+
+0.04
+
+0.02
+0.01
+
+0
+
+0.02
+
+0
+
+0
+
+0
+0.15
+
+0.5
+
+167
+
+–0.5
+0.5
+
+0.04
+
+0.1
+
+2
+
+GC - LIN NUE
+
+0
+
+0.05
+0
+
+–0.5
+0.5
+
+0.1
+
+3
+
+0
+
+0.05
+
+–0.5
+0.5
+
+0
+0.04
+
+0
+
+0.02
+
+–0.5
+0.5
+
+0
+
+0
+
+0.03
+0.02
+0.01
+0
+
+0.06
+0.04
+0.02
+0
+
+0
+
+0
+0.1
+
+–0.5
+0.5
+
+0.05
+
+0
+
+0
+
+–0.5
+0.5
+
+0.15
+0.1
+
+0.1
+0.2
+0.3
+0.4
+0.5
+0.6
+0.7
+0.8
+0.9
+
+0
+–0.5
+
+0.02
+
+4
+
+0.05
+
+0
+–0.5
+
+0.1
+
+5
+
+0.05
+0
+
+Fig. 6. LIN NUE performances on Hénon maps at varying of the coupling strength. GC values are plotted on the y-axis, while the coupling strength values are plotted on the
+x-axis.
+
+1
+
+1.5
+1
+0.5
+0
+
+0.1
+
+NNGC - NeuNet NUE
+
+0
+
+2
+
+0
+–0.5
+0.5
+
+0.15
+0.1
+0.05
+0
+0.5
+
+0
+–0.5
+0.5
+0
+
+0
+0.1
+0.2
+0.3
+0.4
+0.5
+0.6
+0.7
+0.8
+0.9
+
+–0.5
+
+1
+0.5
+
+0.8
+0.6
+0.4
+0.2
+0
+
+–0.5
+
+–0.5
+0.5
+
+0.3
+0.2
+0.1
+0
+
+0
+
+–0.5
+0.5
+
+0
+
+0.01
+0
+
+0
+1.5
+
+0.5
+
+0.5
+
+0.03
+0.02
+
+0.2
+
+3
+
+0
+–0.5
+0.5
+
+0.8
+0.6
+0.4
+0.2
+0
+
+0
+–0.5
+0.5
+
+2
+
+4
+
+1
+0
+
+0
+–0.5
+
+0.2
+
+1.5
+1
+
+0.1
+
+0.5
+
+0
+
+0
+
+5
+
+Fig. 7. NeuNet NUE performances on Hénon maps at varying of the coupling strength. NNGC values are plotted on the y-axis, while the coupling strength values are plotted
+on the x-axis.
+
+NeuNet NUE detects causal influences better than BIN NUE, even
+if it is still not able to perform better than NN NUE.
+6.4. Simulated data: Lorenz system
+In the third experiment we studied a system composed of five
+identical Lorenz subsystems defined by the following equations:
+x˙ 1 = −10x1 + 10x1 ,
+
+x˙ i = −10xi + 10xi + C (xi−1 − xi ),
+
+y˙ 1 = −x1 z1 + 28x1 − y1 ,
+z˙1 = x1 y1 − 8/3z1 ,
+
+y˙ i = −xi zi + 28xi − yi ,
+
+(9)
+
+z˙i = xi yi − 8/3zi ,
+
+where i ∈ [2, 5]. The differential equations are solved by means
+of the Runge–Kutta method implemented in MATLAB and the time
+series are generated at a sampling rate of 0.01 time units. The subsystems, ranging from X1 to X5 , influence each other according the
+
+Table 4
+Sensitivity, specificity and F1score values obtained on the system (7) by the four
+estimators.
+
+BIN NUE
+LIN NUE
+NeuNet NUE
+NN NUE
+
+Sens
+
+Spec
+
+F1score
+
+0.85
+0.88
+0.86
+0.87
+
+0.68
+0.45
+0.80
+0.91
+
+0.73
+0.65
+0.80
+87
+
+following rule: ith time series is influenced only by the (i − 1)th
+time series except for X1 that only gives influence to X2 . The coupling strength C = 5 is the same for the whole set on influences.
+The nature of the Lorenz system results in a more challenging
+system than the Hénon systems. The parameters set up have
+been kept the same as in the other experiments. Even in this
+scenario NeuNet NUE can reach good performances with both high
+
+168
+
+A. Montalto et al. / Neural Networks 71 (2015) 159–171
+
+1
+
+0.6
+0.4
+0.2
+0
+
+0.2
+
+2
+
+0
+
+0
+
+0.8
+0.6
+0.4
+0.2
+0
+
+0.2
+
+0.2
+
+0.2
+0.1
+
+0.1
+
+0.1
+
+0
+
+0
+
+0.2
+
+0.2
+
+0.1
+
+0.1
+
+0.1
+
+0
+
+0
+
+0
+
+0.2
+
+0.2
+
+0.1
+
+0.1
+
+0
+
+0
+
+0.4
+
+0.2
+
+0.2
+
+0.1
+
+0
+
+0
+
+0.3
+0.2
+0.1
+0
+
+3
+
+0.2
+
+0.3
+0.2
+0.1
+0
+
+0.2
+
+0.2
+
+0.2
+
+0.1
+
+0.1
+
+0.1
+
+0
+
+0
+
+0
+
+4
+
+0.1
+0
+
+0.6
+0.4
+0.2
+0
+
+0.1
+0.2
+0.3
+0.4
+0.5
+0.6
+0.7
+0.8
+0.9
+
+TE - BIN NUE
+
+0.1
+
+0.2
+
+5
+
+Fig. 8. BIN NUE performances on Hénon maps at varying of the coupling strength. TE values are plotted on the y-axis, while the coupling strength values are plotted on the
+x-axis.
+
+0.4
+
+1
+
+0.2
+
+.01
+
+.01
+
+.005
+
+0
+
+0
+
+–0.5
+0.5
+
+0
+
+0
+0.5
+
+2
+
+TE - NN NUE
+
+0
+
+0.4
+
+0
+
+3
+
+0
+
+–0.5
+0.5
+
+.04
+0
+
+.02
+
+–0.5
+0.5
+
+0
+0.5
+
+0
+0.1
+0.2
+0.3
+0.4
+0.5
+0.6
+0.7
+0.8
+0.9
+
+0
+–0.5
+
+0
+
+0.02
+
+0.2
+
+0.3
+0.2
+0.1
+
+0
+
+–0.5
+
+0.04
+
+0
+
+–0.5
+0.5
+
+0.5
+
+.02
+
+–0.5
+0.5
+
+0.3
+0.2
+0.1
+
+0
+
+0
+
+–0.5
+0.5
+
+0.4
+
+4
+
+0.2
+0
+
+0
+–0.5
+
+.02
+
+0.4
+
+.01
+
+0.2
+
+0
+
+0
+
+5
+
+Fig. 9. NN NUE performances on Hénon maps at varying of the coupling strength. TE values are plotted on the y-axis, while the coupling strength values are plotted on the
+x-axis.
+Table 5
+Sensitivity, specificity and F1score values obtained on the Lorenz system by the four
+estimators.
+
+BIN NUE
+LIN NUE
+NeuNet NUE
+NN NUE
+
+Sens
+
+Spec
+
+F1score
+
+0.94
+0.51
+0.70
+1
+
+0.91
+0.72
+0.95
+0.86
+
+0.82
+0.39
+0.74
+0.77
+
+sensitivity and specificity, as shown in Table 5. Our method, on
+this system too, reaches performances in the middle between the
+model-free approaches and the model-based approach.
+Another experiment on a chaotic Lorenz system was performed
+in order to check how robust NeuNEt NUE could be with respect to
+influences occurring at longer delays. We used 150 bidirectionally
+coupled Lorenz systems as in Wibral et al. (2013). The delay at
+which series 1 influences series 2 was set at 45 points back, while
+
+the delay at which series 2 influences series 1 was set at 75
+points back. The coupling constant was set as 0.1 for both series.
+We chose 90 candidates for each series and checked how many
+times each candidate was chosen. As we can see in Figs. 12–15
+NN NUE can detect the right delays even if there are many other
+candidates chosen. NeuNet NUE was successful in retrieving the
+correct influences at the corresponding delays, more often than
+NN NUE as it can be seen from the height of the peaks. The other
+two estimators clearly failed in detecting the right influences and
+delays.
+6.5. Redundant data
+An issue that complicates the correct detection of GC is the
+presence of redundant variables. In this case the conditioning
+approach is misled and the analysis results in false negatives
+
+A. Montalto et al. / Neural Networks 71 (2015) 159–171
+
+Fig. 10. ROC curves obtained on Hénon maps at varying of the coupling strength.
+
+169
+
+Fig. 14. NeuNet NUE performances on bidirectionally coupled Lorenz system.
+
+Fig. 11. F1score obtained on Hénon maps at varying of the coupling strength.
+Fig. 15. NN NUE performances on bidirectionally coupled Lorenz system.
+
+(see Stramaglia et al., 2014 for a complete explanation of this
+phenomenon). We applied neural networks Granger causality
+analysis to redundant data to check whether the approach was able
+to detect the right information flows with an increasing number
+of redundant variables. We used data generated by the following
+equations:
+tn = hn−2 + c εn
+di,n = hn−1 + c ϕn
+
+Fig. 12. BIN NUE performances on bidirectionally coupled Lorenz system.
+
+Fig. 13. LIN NUE performances on bidirectionally coupled Lorenz system.
+
+(10)
+
+where the process h and the noises ε, ϕ are drawn from a Gaussian
+distribution with zero mean and unit variance. The coefficient c
+modulates the noise. The system represent a chain of influences,
+for which redundancy arises when i ≥ 3, (the first two variables
+share information on the future of the third one), and so on.
+We compared NeuNet NUE with the fully conditioned nonlinear kernel Granger causality as in Stramaglia et al. (2014). The
+experiments were performed with lX = lY = lZ = 5 and keeping the parameters found in Section 6.1 fixed. We generated 20
+trials of the system (10) varying the number of redundant variables from 1 up to 20, with 2500 time points. The analyses were
+performed taking into account the variable t as targets and each
+variable di as driver, conditioning on the remaining d(i−1) variables,
+with i ∈ [1, . . . , 20]. We then evaluated GC for both methods averaging over the number of trials, varying the number of redundant
+variables. According to the results shown in Fig. 16, we can notice
+how GC detected by the neural networks never drops to zero, as it
+happens for kernel GC. Table 6 reports the number of false negatives given by NeuNet NUE. It is worth noting that the amount of
+false negatives is zero up to 10 redundant variables. Conversely,
+due to the different construction of the method, the values of kernel Granger causality are always significant, albeit very low, at least
+for this system size.
+
+170
+
+A. Montalto et al. / Neural Networks 71 (2015) 159–171
+
+Table 6
+Number of false negatives, FN, returned by NeuNet NUE for 20 trials at varying of the number of redundant variables, RV.
+# RV
+# FN
+
+1
+0
+
+2
+0
+
+3
+0
+
+4
+0
+
+5
+0
+
+6
+0
+
+7
+0
+
+8
+0
+
+9
+0
+
+10
+0
+
+Fig. 16. NeuNet NUE and multivariate GC performances on the redundant system.
+
+6.6. Classification task
+Our final goal in this paper was to test whether NeuNet NUE
+could correctly classify dynamics. We trained NeuNet NUE on
+the system (8). We have randomly chosen one of the networks
+trained to detect the causal influences towards a certain target.
+Then we fed the network with 100 realizations of the system (8),
+never used in the learning phase, and with 100 realizations of an
+autoregressive system, represented by the following equations:
+
+√
+
+X1,n = 0.95 2 X1,n−1 − 0.9025 X1,n−2 + z1,n
+X2,n = 0.5 X12,n−2 + z2,n
+X3,n = −0.4 X1,n−3 + z3,n
+
+X5,n
+
+√
+
+√
+
+(11)
+
++ 0.25 2 X4,n−1 + 0.25 2 X5,n−1 + z4,n
+√
+= −0.25 2 X4,n−1 + 0.25 2 X5,n−1 + z5,n
+
+X4,n = −0.
+
+5 X12,n−2
+
+√
+
+where z1,n , z2,n , z3,n , z4,n , z5,n are drawn from Gaussian noise with
+zero mean and unit variance.
+System (8) is considered, this time with only five variables to
+be consistent with the size of the autoregressive model. We then
+evaluated the average RMSE for both the systems. We repeated the
+procedure for 30 different noise values, ranging from 0 to 0.7, and
+different couplings strength, ranging in the interval [0, 0.8] with
+step of 0.2. The results are shown in Fig. 17. We plotted the average
+RMSE with respect to the different noise level for each coupling
+strength value. We can notice that the errors obtained when the
+two systems are given to NeuNet NUE as test sets lie in linear
+separable portions of space. This represents an encouraging result
+as it may be useful to classify systems, given that our approach has
+been trained with a known system.
+7. Conclusions
+In this paper we have implemented the Granger paradigm for
+detection of dynamical influences in the frame of feed-forward
+neural networks. The novelty of the present approach arises from
+the use of non-uniform embedding for variable selection and
+generalization error for the assessment of Granger causality. We
+have demonstrated the theoretical and experimental advantages
+of implementing the neural network approach with non-uniform
+embedding compared to the uniform one. Due to the universal
+
+11
+3
+
+12
+4
+
+13
+14
+
+14
+13
+
+15
+17
+
+16
+29
+
+17
+41
+
+18
+49
+
+19
+57
+
+20
+79
+
+Fig. 17. RMSE versus the noise level. The red curves are obtained testing NeuNet
+NUE on the same kind of data with which it was trained. The blue curves are
+obtained testing NeuNet NUE on the system (11). Each curve represents the network
+trained to detect the influence towards a specific target with a different coupling
+strength. (For interpretation of the references to color in this figure legend, the
+reader is referred to the web version of this article.)
+
+character of function approximation of neural networks, the proposed approach is intermediate between the classical Granger
+linear implementation and the non-parametric estimator corresponding to transfer entropy: by means of several examples, we
+have shown that there are situations where our approach outperforms both approaches. The proposed method differs from the kernel Granger causality not only by providing a validation phase, but
+also by letting the neural networks explore the parameter space
+and building the best model to explain the information transfers
+among variables. Kernel Granger causality, instead, is still a modelbased approach, for which the type of kernel and the degree of nonlinearity have to be specified beforehand. We would like to remark
+that so far neural networks have been used to detect GC only when
+combined with other estimators. Furthermore the training phase
+was stopped only when a certain number or training epochs was
+reached. This choice seems quite approximate because of the lack
+of knowledge about the exact amount of training epochs needed to
+both minimize the error function and to avoid overfitting the neural networks. Therefore, the validation phase is necessary in our
+opinion to ensure that the network fully explores the parameter
+space, converges to a minimum and avoids the risk of overfitting.
+We conclude remarking that other wrappers can be taken into account and many deep learning architectures are built from artificial
+neural networks, therefore we expect that further developments
+of our approach will be the implementations of Granger causality
+both using other feature selection algorithms and in the frame of
+deep learning (Deng & Yu, 2013).
+Acknowledgments
+This work is supported by: the Belgian Science Policy (BELSPO
+IAP number P7/11 Cerebnet); the University of Ghent (Special
+Research Funds for visiting researchers). The neural network
+toolbox has been developed by Roberto Prevete and Giovanni
+Tessitore: rprevete@unina.it; tessitore@na.infn.it.
+The authors would like to thank Dr. Christopher Stewart for his
+valuable feedback.
+
+A. Montalto et al. / Neural Networks 71 (2015) 159–171
+
+References
+Ancona, N., Marinazzo, D., & Stramaglia, S. (2004). Radial basis function approach
+to nonlinear granger causality of time series. Physical Review E, 70, 056221.
+Attanasio, A., & Triacca, U. (2011). Detecting human influence on climate using
+neural networks based granger causality. Theoretical and Applied Climatology,
+103(1–2), 103–107.
+Bishop, C. (1995). Neural networks for pattern recognition.
+Bressler, S. L., & Seth, A. K. (2011). Wiener–granger causality: a well established
+methodology. Neuroimage, 58(2), 323–329.
+Deng, L., & Yu, D. (2013). Deep learning: Methods and applications. Foundations and
+R
+Trends⃝
+in Signal Processing, 7(3–4), 197–387.
+Faes, L., Nollo, G., & Porta, A. (2011). Information-based detection of nonlinear
+granger causality in multivariate processes via a nonuniform embedding
+technique. Physical Review E, 83, 051112.
+Granger, C. W. (1969a). Investigating causal relations by econometric models and
+cross-spectral methods. Econometrica, 424–438.
+Granger, C. (1969b). Investigating causal relations by econometric models and
+cross-spectral methods. Econometrica, 3, 424–438.
+Ledberg, A., & Chicharro, D. (2012). Framework to study dynamic dependencies in
+networks of interacting processes. Physical Review E—Statistical, Nonlinear, and
+Soft Matter Physics.
+Marinazzo, D., Pellicoro, M., & Stramaglia, S. (2006). Nonlinear parametric model
+for granger causality of time series. Physical Review E, 73, 066216.
+Marinazzo, D., Pellicoro, M., & Stramaglia, S. (2008). Kernel method for nonlinear
+granger causality. Physical Review Letters, 100(14), 144103.
+
+171
+
+Montalto, A., Faes, L., & Marinazzo, D. (2014). Mute: A matlab toolbox to compare
+established and novel estimators of the multivariate transfer entropy. PloS One,
+9(10), e109462.
+Palus, M., & Vejmelka, M. (2007). Directionality of coupling from bivariate time
+series: How to avoid false causalities and missed connections. Physical Review
+E, 75, 056211.
+Riedmiller, M., & Braun, H. (1993). A direct adaptive method for faster backpropagation learning: The RPROP algorithm. In IEEE international conference on neural
+networks, 1993 (pp. 586–591). IEEE.
+Rumelhart, D. E., McClelland, J. L., & PDP Research Group, C. (Eds.) (1986). Parallel
+distributed processing: explorations in the microstructure of cognition, Vol. 1:
+foundations. Cambridge, MA, USA: MIT Press.
+Sameshima, K., & Baccala, L. A. (2014). Methods in brain connectivity inference
+through multivariate time series analysis. CRC Press.
+Schreiber, T. (2000). Measuring information transfer. Physical Review Letters, 85(2),
+461.
+Stramaglia, S., Cortes, J., & Marinazzo, D. (2014). Synergy and redundancy in
+the granger causal analysis of dynamical networks. New Journal of Physics,
+16, 18.
+Vlachos, I., & Kugiumtzis, D. (2010). Nonuniform state-space reconstruction and
+coupling detection. Physical Review E, 82(1), 016207.
+Wibral, M., Pampu, N., Priesemann, V., Siebenhühner, F., Seiwert, H., Lindner, M.,
+Lizier, J. T., & Vicente, R. (2013). Measuring information-transfer delays. PloS
+ONE, 8(2), e55809.
+Wibral, M., Vicente, R., & Lizier, J. T. (2014). Directed information measures in
+neuroscience. Springer.
+
+

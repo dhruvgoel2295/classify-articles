@@ -1,0 +1,783 @@
+Computational Geometry 48 (2015) 635–645
+
+Contents lists available at ScienceDirect
+
+Computational Geometry: Theory and
+Applications
+www.elsevier.com/locate/comgeo
+
+An improved data stream algorithm for clustering ✩
+Sang-Sub Kim, Hee-Kap Ahn ∗
+a r t i c l e
+
+i n f o
+
+Article history:
+Received 2 July 2014
+Accepted 19 June 2015
+Available online 23 June 2015
+Keywords:
+Euclidean k-clustering
+Euclidean k-center
+Streaming algorithms
+Computational geometry
+
+a b s t r a c t
+In the k-center problem for streaming points in d-dimensional metric space, input points
+are given in a data stream and the goal is to ﬁnd the k smallest congruent balls whose
+union covers all input points by examining them. In the single-pass streaming model, input
+points are allowed to be examined only once and the amount of space that can be used to
+store relative information is limited.
+In this paper, we present a single-pass, (1.8 + ε )-factor, O (d/ε )-space data stream
+algorithm for the Euclidean 2-center problem for any d ≥ 1. This is the ﬁrst result
+with an approximation factor below 2 using O (d/ε ) space for any d. Our algorithm
+naturally extends to the Euclidean k-center problem with k > 2. We present a single-pass
+(1.8 + ε )-factor data stream algorithm for the Euclidean k-center problem for any d ≥ 1,
+which uses O (2k (k + 3)!d/ε ) space and O (2k (k + 2)!d/ε ) update time.
+© 2015 Elsevier B.V. All rights reserved.
+
+1. Introduction
+Given a set of points in a metric space, the k-clustering problem asks to ﬁnd k points c 1 , c 2 , . . . , ck in the underlying space
+such that
+
+max{ min |pci |} is minimized,
+p ∈ P 1≤i ≤k
+
+where |pq| denotes the distance between any two points p and q in the space. This problem has received intensive attention from researchers over the last decades as it is a fundamental problem arising from abundant real-world applications,
+including data mining [8,11], image processing [16], and astrophysics [4,7].
+Most of previous works on this problem assume that all input points are at hand, that is, they all are already in the
+memory and can be examined multiple times to compute the optimal solution. This is, however, not always the case as
+the amount of data collected and used by various applications has signiﬁcantly increased over the last years. To cope with
+steadily increasing amount of data, it is desirable to design an algorithm that eﬃciently clusters them into groups of high
+relevance without storing them all in the memory. This is also due to the relatively smaller and ﬁxed size of physical
+memory available in devices compared to the amount of data they use. This constraint implies some restriction in accessing
+the data, as not all data are available in the memory.
+In this paper we consider the Euclidean k-center problem for streaming points in Rd , where each point arrives one by
+one in a stream and is allowed to be examined only once [2], and a small amount of information can be stored in a device.
+If k is a part of input, this problem is NP-hard as the k-center problem with no streaming constraints is NP-hard [9],
+even in the plane [14]. There have been quite a few works on computing k centers for small k in the Euclidean space.
+
+✩
+
+*
+
+This work was supported by the National Research Foundation of Korea (NRF) grant funded by the Korea Government (MSIP) (No. 2011-0030044).
+Corresponding author.
+E-mail address: heekap@gmail.com (H.-K. Ahn).
+
+http://dx.doi.org/10.1016/j.comgeo.2015.06.003
+0925-7721/© 2015 Elsevier B.V. All rights reserved.
+
+636
+
+S.-S. Kim, H.-K. Ahn / Computational Geometry 48 (2015) 635–645
+
+Hershberger and Suri [12] considered the problem of maintaining extreme points among streaming input points in a number
+of different directions in a ﬁxed dimension d. Their algorithm can easily be adapted to a (1 + ε )-approximation algorithm
+using O (1/ε (d−1)/2 ) space with ε > 0 for the √
+Euclidean 1-center problem. Later, Agarwal and Sharathkumar [1] presented
+an approximation
+algorithm
+with
+factor
+((
+1
++
+3)/2 + ε ) using O ((d/ε 3 ) log(1/ε )) space. They also showed a lower bound,
+√
+(1 + 2)/2 > 1.207, on the approximation factor which any single-pass stream algorithm using space bounded polynomially
+in d can achieve. Recently, Chan and Pathak [5] showed by careful analyses that the approximation factor of the algorithm
+by Agarwal and Sharathkumar can be improved to 1.22.
+For k = 2, Zarrabi-Zadeh [17] presented a (1 + ε )-approximation algorithm using O (1/εd ) space and O (1) amortized
+update time in ﬁxed dimensions under any L p -metric. McCutchen and Khuller [13] presented a (2 + ε )-approximation
+algorithm using O ((d/ε ) log(1/ε )) space and O ((d/ε ) log(1/ε )) update time in arbitrary dimensions for any metric. Later,
+Guha [10] gave a (2 + ε )-approximation algorithm using O ((d/ε ) log(1/ε ) + (d/(nε )) log r ∗ ) amortized time, where r ∗ is the
+optimal radius of the 2-centers, using the same space. Very recently, Ahn et al. [3] presented an approximation algorithm
+guaranteeing a (2 + ε )-factor using O (d/ε ) space and update time in arbitrary dimensions for any metric.
+For larger k, Zarrabi-Zadeh [17] presented a coreset method which computes an ε -coreset for the k-center problem
+using O (k/εd ) space and O (1) amortized update time in ﬁxed dimensions under any L p -metric. Because of the exponential
+dependency on d in its performance, this algorithm is not eﬃcient in high dimensions. There have been a few works for
+the problem in any d ≥ 1 that use space bounded polynomially in d. Charikar et al. [6] gave an 8-approximation algorithm
+using O (dk) space. McCutchen and Khuller’s algorithm [13] and Guha’s algorithm [10] use O ((dk2 /ε ) log(1/ε )) update
+time and O ((dk/ε ) log(1/ε ) + (dk/(nε )) log r ∗ ) amortized update time, respectively, in arbitrary dimensions for any metric.
+These algorithms return a factor-(2 + ε ) approximate solution using O ((dk/ε ) log(1/ε )) space. Very recently, Ahn et al. [3]
+presented an algorithm that approximates an optimal k-center within factor (2 + ε ) using O (2k (k + 3)! · d/ε ) space and
+O ((k + 3)!d/ε ) update time in arbitrary dimensions for any metric. For small k, Ahn et al.’s algorithm outperforms Guha’s
+algorithm and McCutchen and Khuller’s algorithm in space and update time.
+There have also been works on computing k centers using the minimum space in any arbitrary dimension. Zarrabi-Zadeh
+and Chan [18] gave a 1.5-approximation algorithm for the Euclidean 1-center problem using only one center and one radius.
+Poon and Zhu [15] gave a 5.611-approximation algorithm for the Euclidean 2-center problem using two centers and one
+radius.
+Our results We present a single-pass data stream algorithm that uses O (d/ε ) space and returns two centers with
+(1.8 + ε )-approximation to the Euclidean 2-center problem in any d ≥ 1. Each update takes O (d/ε ) time. This is an improvement on the approximation factor of (2 + ε ) by Ahn et al. [3] and Guha [10]. To our best knowledge, this is the ﬁrst
+breakthrough with an approximation factor below 2 using space bounded polynomially in d. This can also be considered as
+an improvement on the space over the (1 + ε )-factor and O (1/εd )-space algorithm of Zarrabi-Zadeh [17], while sacriﬁcing
+the approximation factor a little bit.
+We show that our algorithm also extends to the Euclidean k-center problem for some constant k with k > 2. For any
+dimension d ≥ 1, our algorithm uses O (2k (k + 3)!d/ε ) space and returns k centers that guarantee a (1.8 + ε )-approximation.
+Each update takes O (2k (k + 2)!d/ε ) time.
+2. The Euclidean two-center problem
+In this section we present an approximation algorithm for the Euclidean 2-center problem. Let X = p 1 , p 2 , . . . , pn be a
+sequence of n points in d-dimensional Euclidean space. We denote by X j = p 1 , . . . , p j the sequence of the ﬁrst j points
+of X . Let B (c , r ) denote a ball of radius r centered at c, and let r ( B ) and c ( B ) denote the radius and the center of a ball B,
+respectively. We denote by pq the straight line segment connecting any two points p and q in Rd , and by |pq| the length
+of pq. For a compact set A, we denote by ∂ A the boundary of A.
+Throughout this section, we prove the following theorem.
+Theorem 1. For any d ≥ 1, our single-pass data stream algorithm uses O (d/ε ) space and returns two centers together with their radii
+that guarantee a (1.8 + ε )-approximation for the Euclidean 2-center problem. Each update takes O (d/ε ) time.
+Let B ∗1 and B ∗2 denote a ﬁxed optimal pair of two congruent balls for X . We let r ∗ = r ( B ∗1 ) = r ( B ∗2 ) and c i∗ = c ( B ∗i ) for
+i = 1, 2. By δ ∗ we denote the distance between B ∗1 and B ∗2 , that is, δ ∗ := max{0, |c 1∗ c 2∗ | − 2r ∗ }. Without loss of generality, we
+assume p 1 ∈ B ∗1 . In Section 2.1, we give a description of our algorithm for a given r > 0 for the case δ ∗ ≤ 2r ∗ . Then we
+show that for r with 1.2r ∗ ≤ r ≤ (1.2 + 2ε /3)r ∗ , the algorithm returns a solution with (1.8 + ε )-approximation. We explain
+how to get such an r and present a full description of our algorithm for the case δ ∗ ≤ 2r ∗ in Section 2.2. Then we consider
+the case δ ∗ > 2r ∗ in Section 2.3.
+When a solution encloses the points of X inserted so far, the solution is said to be feasible for them. Our algorithm
+maintains at most three feasible solutions and returns the best one when all points of X are processed.
+
+S.-S. Kim, H.-K. Ahn / Computational Geometry 48 (2015) 635–645
+
+637
+
+Fig. 1. Proof of Lemma 1.
+
+TwoCentersNear(r )
+1. Initially, there is no candidate solution.
+2. When p 1 is inserted, we create one candidate solution B ( p 1 , r ).
+3. Let p o2 be the ﬁrst point of X that arrives after p 1 and does not lie in the current candidate solution, that is, p o2 ∈
+/ B ( p 1 , r ). When po2 arrives, we
+replace the current candidate solution with two candidate solutions, one corresponding to the case of p o2 ∈ B ∗1 and the other corresponding to the
+case of p o2 ∈ B ∗2 .
+4. For each case, let p o3 be the ﬁrst point of X that arrives after p o2 and does not lie in the corresponding candidate solution. When p o3 arrives, we
+replace the corresponding candidate solution with at most two new candidate solutions, one corresponding to the subcase of p o3 ∈ B ∗1 if the candidate
+solution corresponds to the case p o2 ∈ B ∗2 (both p o2 and p o3 cannot be contained in B ∗1 at the same time, by deﬁnition), and the other corresponding to
+the subcase of p o3 ∈ B ∗2 .
+5. For each subcase, let p o4 be the ﬁrst point of X that arrives after p o3 and does not lie in the corresponding candidate solution. Again, when p o4 arrives,
+we replace the corresponding candidate solution with a new candidate solution.
+6. For each subcase, if there are more points arriving after p o4 and lying outside of the current candidate solution, we abandon the solution.
+7. If there is any candidate solution, then our algorithm returns the one with the smallest radius as the ﬁnal solution among all feasible solutions
+maintained by the algorithm. Otherwise, our algorithm returns a ball of radius ∞ as the ﬁnal solution.
+
+Fig. 2. Pseudocode of TwoCentersNear.
+
+2.1. The case δ ∗
+
+≤ 2r ∗
+
+Before explaining the main idea, we need the following technical lemma.
+Lemma 1. Let B 0 be a unit ball in Rd for d ≥ 1. For any line segment pq of length at least 1.2 contained in B 0 , every point x of pq at
+distance at least 0.6 from both endpoints is contained in B (c ( B 0 ), 0.8).
+Proof. Let B be B (c ( B 0 ), 0.8). Clearly the lemma holds for d = 1. When d = 2, we know from some basic geometry that
+any line segment of length at least 1.2 intersects B . See Fig. 1(a). Let x be a point on pq such that |px| ≥ 0.6 and |xq| ≥ 0.6.
+Assume to the contrary that x is not contained in B . Then we have either px ∩ B = ∅ or xq ∩ B = ∅ as pq intersects B
+once. Without loss of generality, assume that px ∩ B = ∅. See Fig. 1(b). Let p be the point on the boundary of B such that
+the line through p and p is tangent to B and the triangle pp c ( B 0 ) contains x. Clearly we have |px| < |pp |. But |pp | ≤ 0.6
+as |pc( B 0 )| ≤ 1 and | p c ( B 0 )| = 0.8. This contradicts that |px| ≥ 0.6.
+For d > 2, we can show the lemma by choosing the 2-dimensional plane passing through c ( B 0 ) and the line segment. ✷
+We call our algorithm TwoCentersNear. Given a ﬁxed value r , TwoCentersNear(r ) maintains at most three candidate
+solutions, where each candidate solution consists of a ball or a pair of balls. If a candidate solution consists of a single
+ball, then the radius of the candidate solution is clearly the radius of the ball of the solution. Otherwise, the radius of the
+candidate solution is deﬁned to be the larger radius of the two solution balls. In both cases, the radius of the candidate
+solution is either r or 3r /2.
+If any of candidate solutions does not contain every input point arrived so far, it becomes infeasible and our algorithm
+simply abandons it. Once all points of X are processed, the algorithm returns the feasible candidate solution with the
+smallest radius if there is any feasible candidate solution, or a ball of radius ∞ otherwise. Fig. 2 shows the pseudocode of
+TwoCentersNear(r ).
+Now we show how TwoCentersNear works in more details. We assume that we are given r with 1.2r ∗ ≤ r ≤ (1.2 +
+2ε /3)r ∗ . We will show how to get such an r in Section 2.2.
+We need the following technical lemma before describing all possible cases that our algorithm may encounter.
+Lemma 2. Let p be a point lying outside of B ( p 1 , r ) where p 1 is the ﬁrst input point. If p ∈ B ∗1 , then we have B ∗1 ∪ B ( p 1 , r ) ⊂
+B (c 12 , 3r /2), where c 12 = ∂ B ( p 1 , r /2) ∩ p 1 p.
+
+638
+
+S.-S. Kim, H.-K. Ahn / Computational Geometry 48 (2015) 635–645
+
+Fig. 3. (a) Proof of Lemma 2. (b) An illustration of Case 3b: p o2 ∈ B ∗2 and p o3 ∈ B ∗1 .
+
+Proof. We ﬁrst show that B ∗1 ⊂ B (c 12 , 3r /2). See Fig. 3(a) for an illustration. Since r ≥ 1.2r ∗ , we have c 12 ∈ B (c 1∗ , 0.8r ∗ ) by
+Lemma 1. Therefore, for any point x ∈ B ∗1 , we have |xc12 | ≤ |xc∗1 | + |c 1∗ c 12 | ≤ r ∗ + 0.8r ∗ = 1.8r ∗ ≤ 3r /2.
+Next we show that B ( p 1 , r ) ⊂ B (c 12 , 3r /2). For any point y ∈ B ( p 1 , r ), |yc12 | ≤ |yp1 | + | p 1 c 12 | ≤ r + r /2 = 3r /2. ✷
+Here are a list of all possible cases that TwoCentersNear may encounter over streaming points of X for r with 1.2r ∗ ≤
+r ≤ (1.2 + 2ε /3)r ∗ . Refer to the pseudocode of TwoCentersNear for the deﬁnitions of p o2 , p o3 and p o4 .
+Case 1: There is no p o2 . This implies that all points of X lie in B ( p 1 , r ). We simply return B ( p 1 , r ) and a dummy ball as the
+solution of the 2-center problem.
+Now we consider the case that there is p o2 and p o2 ∈ B ∗1 . There are three subcases as follows.
+Case 2a: p o2 ∈ B ∗1 and there is no p o3 . By deﬁnition, p o2 denotes the ﬁrst point of X that does not lie in B ( p 1 , r ). When p o2 is
+inserted, we replace B ( p 1 , r ) with B (c 12 , 3r /2), where c 12 = p 1 p o2 ∩ ∂ B ( p 1 , r /2). We have B ∗1 ∪ B ( p 1 , r ) ⊂ B (c 12 , 3r /2) by
+Lemma 2. We return B (c 12 , 3r /2) and a dummy ball as the solution.
+Case 2b: p o2 ∈ B ∗1 , p o3 ∈ B ∗2 , and there is no p o4 . The points of X that are not in B (c 12 , 3r /2) are inserted after p o2 , and they
+are all in B ∗2 . By deﬁnition, p o3 denotes the ﬁrst such point. When p o3 is inserted, we create another ball B ( p o3 , r ). Since
+there is no p o4 , every point of X lies in B (c 12 , 3r /2) or B ( p o3 , r ), and we return these two balls as the solution.
+Case 2c: p o2 ∈ B ∗1 and p o3 , p o4 ∈ B ∗2 . By deﬁnition, p o4 denotes the ﬁrst point of X that does not lie in B (c 12 , 3r /2) ∪ B ( p o3 , r ).
+When p o4 is inserted, we replace B ( p o3 , r ) with B (c 34 , 3r /2), where c 34 = p o3 p o4 ∩ ∂ B ( p o3 , r /2). Note that r < | p o3 p o4 | ≤ 2r ∗ as
+both p o3 and p o4 are contained in B ∗2 . Again by Lemma 2, we have B ∗2 ⊂ B (c 34 , 3r /2). Since B ∗1 ⊂ B (c 12 , 3r /2), every point
+of X \ B (c 12 , 3r /2) lies in B (c 34 , 3r /2). We return B (c 12 , 3r /2) and B (c 34 , 3r /2) as the solution.
+The only remaining case is that p o2 ∈ B ∗2 . There are ﬁve subcases as follows.
+Case 3a: p o2 ∈ B ∗2 and there is no p o3 . Since there is no p o3 , we have X ⊂ B ( p 1 , r ) ∪ B ( p o2 , r ). We simply return B ( p 1 , r ) and
+B ( p o2 , r ) as the solution.
+Case 3b: p o2 ∈ B ∗2 , p o3 ∈ B ∗1 , and there is no p o4 . By deﬁnition, p o3 denotes the ﬁrst point of X that does not lie in B ( p 1 , r ) ∪
+B ( p o2 , r ). When p o3 is inserted, we replace B ( p 1 , r ) with B (c 13 , 3r /2), where c 13 = p 1 p o3 ∩ ∂ B ( p 1 , r /2). By Lemma 2, we
+have B ∗1 ∪ B ( p 1 , r /2) ⊂ B (c 13 , 3r /2). We return B (c 13 , 3r /2) and B ( p o2 , r ) as the solution.
+Case 3c: p o2 ∈ B ∗2 , p o3 ∈ B ∗1 and p o4 ∈ B ∗2 . By deﬁnition, p o4 denotes the ﬁrst point of X that is not in B (c 13 , 3r /2) ∪ B ( p o2 , r ).
+When p o4 is inserted, we replace B ( p o2 , r ) with B (c 24 , 3r /2), where c 24 = p o2 p o4 ∩ ∂ B ( p o2 , r /2). Fig. 3(b) illustrates this case.
+Lemma 2 implies that every point of X \ B (c 13 , 3r /2) lies in B ∗2 and that B ∗2 ⊂ B (c 24 , 3r /2). We return B (c 13 , 3r /2) and
+B (c 24 , 3r /2) as the solution.
+Case 3d: p o2 , p o3 ∈ B ∗2 and there is no p o4 . This case can be handled in exactly the same way as for Case 3b, except that the
+roles of B ( p 1 , r ) and B ( p o2 , r ) are interchanged for the subsequence of X from p o3 . When p o3 is inserted, we replace B ( p o2 , r )
+with B (c 23 , 3r /2), where c 23 = p o2 p o3 ∩ ∂ B ( p o2 , r /2). Since every point of X lies in B ( p 1 , r ) or B (c 23 , 3r /2), we return them
+as the solution.
+Case 3e: p o2 , p o3 ∈ B ∗2 and p o4 ∈ B ∗1 . By deﬁnition, p o4 denotes the ﬁrst point of X that is not in B ( p 1 , r ) ∪ B (c 23 , 3r /2). Since
+B ∗2 ⊂ B (c 23 , 3r /2), p o4 ∈ B ∗1 . When p o4 is inserted, we replace B ( p 1 , r ) with B (c 14 , 3r /2), where c 14 = p 1 p o4 ∩ ∂ B ( p 1 , r /2).
+
+S.-S. Kim, H.-K. Ahn / Computational Geometry 48 (2015) 635–645
+
+639
+
+Table 1
+Nine possible subcases for r with 1.2r ∗ ≤ r ≤ (1.2 + 2ε /3)r ∗ .
+p o2
+Case 1
+Case 2a
+Case 2b
+Case 2c
+Case 3a
+
+B ∗1
+
+B ∗1
+
+B ∗1
+B ∗2
+
+p o3
+
+B ∗2
+
+Case 3b
+
+2
+
+B∗
+
+Case 3c
+
+B ∗2
+B ∗2
+
+B ∗1
+B ∗2
+
+Case 3e
+
+B ∗2
+
+Candidate solution
+
+1
+
+B ∗2
+
+B ( p 1 , r ) and a dummy ball
+
+no p o3 , p o4
+
+B (c 12 , 3r /2) and a dummy ball
+no p o4
+
+B ∗2
+
+B∗
+
+Case 3d
+
+p o4
+
+no p o2 , p o3 , p o4
+
+B ∗2
+
+B (c 12 , 3r /2) and B ( p o3 , r )
+B (c 12 , 3r /2) and B (c 34 , 3r /2)
+
+no p o3 , p o4
+
+B ( p 1 , r ) and B ( p o2 , r )
+no
+B ∗2
+
+p o4
+
+no p o4
+B ∗1
+
+B (c 13 , 3r /2) and B ( p o2 , r )
+B (c 13 , 3r /2) and B (c 24 , 3r /2)
+B ( p 1 , r ) and B (c 23 , 3r /2)
+B (c 14 , 3r /2) and B (c 23 , 3r /2)
+
+By Lemma 2, every point of X \ B (c 23 , 3r /2) lies in B ∗1 and B ∗1 ⊂ B (c 14 , 3r /2). We return B (c 23 , 3r /2) and B (c 14 , 3r /2) as
+the solution.
+Table 1 summarizes all possible subcases and their candidate solutions that our algorithm maintains for 1.2r ∗ ≤ r ≤
+
+(1.2 + 2ε /3)r ∗ .
+
+Lemma 3. For δ ∗ ≤ 2r ∗ and r with 1.2r ∗ ≤ r ≤ (1.2 + 2ε /3)r ∗ , our algorithm uses O (d) space and returns two centers that guarantee
+(1.8 + ε )-approximation. Our algorithm spends O (d) update time for each point of X .
+Proof. Since our algorithm considers all possible input cases of streaming points, there is at least one feasible solution.
+Since every feasible solution has radius at most 3r /2, the ﬁnal solution has radius at most 3r /2 ≤ (1.8 + ε )r ∗ .
+For space complexity, our algorithm maintains at most two balls in each case, and therefore it uses O (d) space. Whenever
+the next point is inserted, the algorithm updates the solution for each subcase in O (d) time. Therefore, the algorithm
+spends O (d) update time for each point of X . ✷
+2.2. Finding a good candidate radius r
+In this section, we explain how we ﬁnd an r such that either (a) r < 1.2r ∗ and X ⊂ B ( p 1 , r ), or (b) 1.2r ∗ ≤ r ≤
+(1.2 + 2ε /3)r ∗ .
+The basic procedure works as follows: Our algorithm maintains m = 18/ε candidate lengths for ε with 0 < ε < 1.
+Let L j = {i · j | for i = 1, . . . , m} denote the set of such m lengths for X j , where j denotes a certain nonnegative value
+deﬁned by X j . For each candidate length , we assume that r = and run the algorithm in Section 2.1. This is similar to
+LayerPartition procedure of the algorithm by Ahn et al. [3].
+More precisely, we maintain m candidates as follows. The algorithm starts with two input points p 1 and p 2 , and sets
+2 := | p 1 p 2 |/m. Assume that we have processed the points of X j −1 and computed L j −1 . For the next point p j , we let
+L j := L j−1 if | p 1 p j | ≤ m · j−1 . Otherwise, we compute L j from L j−1 by letting j := 2x j−1 , where x is the integer
+satisfying 2x−1 · m · j −1 < | p 1 p j | ≤ 2x · m · j −1 . When we are done with processing all points of X , there are m candidate
+lengths i · n ∈ Ln for i = 1, . . . , m.
+We claim that there is at least one candidate length in Ln satisfying either case (a) or case (b) above. If m · n < 1.2r ∗ ,
+we are done because all points of X are contained in B ( p 1 , m · n ) by deﬁnition. Indeed, with r := m · n , Case 1 of the
+algorithm in Section 2.1 returns a feasible solution, B ( p 1 , r ) and a dummy ball.
+Now we show that if m · n ≥ 1.2r ∗ , there is a candidate length r in Ln with 1.2r ∗ ≤ r ≤ (1.2 + 2ε /3)r ∗ . Let pt be the
+last point that changed the set of candidates. Since δ ∗ ≤ 2r ∗ , we have | p 1 pt | ≤ 6r ∗ and | p 1 pt | ≤ m · n ≤ 2| p 1 pt | ≤ 12r ∗ .
+Since m ≥ 18/ε , we have n ≤ 12r ∗ /m ≤ 2εr ∗ /3 < r ∗ . This implies that there is a candidate i · n , for some i with 1 < i ≤ m,
+such that 1.2r ∗ ≤ i · n ≤ (1.2 + 2ε /3)r ∗ .
+Lemma 4. For δ ∗ ≤ 2r ∗ , there is a candidate length r in Ln such that either r < 1.2r ∗ and X ⊂ B ( p 1 , r ), or 1.2r ∗ ≤ r ≤ (1.2 +
+2ε /3)r ∗ .
+Updating solutions In the following we show how to update the candidate solutions eﬃciently when the candidate lengths
+are updated. If a new candidate length i · j is at most m · j −1 , it always coincides with an old candidate length, say y · j −1
+for some y ∈ {1, . . . , m}, and we take the solutions of y · j −1 for points of X j −1 as the initial solutions and update them
+for the insertion of p j . Otherwise, there are two cases: either i · j > | p 1 p j | or i · j ≤ | p 1 p j |. For the former case, all points
+of X j are contained in B ( p 1 , r ), and therefore it corresponds to Case 1 of the algorithm in Section 2.1. For the latter case,
+p j is the only point of X j that does not lie in B ( p 1 , r ), and therefore it corresponds to Case 2a or Case 3a. The algorithm
+computes solutions for both cases.
+
+640
+
+S.-S. Kim, H.-K. Ahn / Computational Geometry 48 (2015) 635–645
+
+kCentersNear(k, r )
+1. Initially, there is no candidate solution.
+2. When p 1 is inserted, we create one candidate solution B ( p 1 , r ) and let S := {(∅, { B ( p 1 , r )})}.
+3. When p i , for i = 2 to n, is inserted: For each pair (Bs , Bc ) ∈ S such that p i is not contained in U (Bs ∪ Bc ),
+(a) Remove (Bs , Bc ) from S .
+(b) Add (Bs , Bc ∪ { B ( p i , r )}) to S if |Bs | + |Bc | < k.
+(c) Add (Bs ∪ {SelectBall( B , p i )}, Bc \ { B }) to S for each ball B ∈ Bc satisfying p i ∈ SelectBall( B , p i ).
+4. If there is any candidate solution, then our algorithm returns the one with the smallest radius as the ﬁnal solution among all feasible solutions
+maintained by the algorithm. Otherwise, our algorithm returns a ball of radius ∞ as the ﬁnal solution.
+
+Fig. 4. Pseudocode of kCentersNear.
+
+Lemma 5. For δ ∗ ≤ 2r ∗ , our algorithm uses O (d/ε ) space and returns two centers together with their radii that guarantee
+(1.8 + ε )-approximation. Our algorithm spends O (d/ε ) update time for each point of X .
+Proof. Whenever a point is inserted, the algorithm updates the set of O (1/ε ) candidate lengths, if needed, and updates
+the solutions for each candidate length in O (d) time. Therefore, the algorithm spends O (d/ε ) update time for each point
+of X . ✷
+2.3. The case δ ∗ > 2r ∗
+For δ ∗ > 2r ∗ , the points of X are well separated. For this case, we use MergeExpand procedure [3] together with Chan’s
+minimum enclosing ball algorithm [18] for streaming points.
+MergeExpand maintains one smallest ball B U centered at p 1 enclosing the input points inserted so far. It also maintains
+a pair of congruent balls, ( B 1 , B 2 ), whose centers and common radius constitute a solution to the 2-center problem for
+the input points inserted so far. Initially, B 1 = B ( p 1 , 0) and B 2 = B ( p 2 , 0). For the next point p, if p is not contained in
+B 1 ∪ B 2 , MergeExpand updates the pair ( B 1 , B 2 ) as follows. It replaces ( B 1 , B 2 ) with ( B U , B ( p , r ( B U ))) if r ( B U ) ≤ rm , or
+with ( B (c 1 , rm ), B (c 2 , rm )) otherwise, where c 1 and c 2 are the centers of B 1 and B 2 , and rm = min{|c 1 p |, |c 2 p |}. Then it
+updates B U if necessary. It is shown that MergeExpand always guarantees an optimal partition to the Euclidean 2-center
+problem for δ ∗ > 2r ∗ . We use Chan’s minimum enclosing ball algorithm for streaming points to compute each enclosing
+ball. This gives us 1.5-approximation.
+Lemma 6. For δ ∗ > 2r ∗ , our algorithm uses O (d) space and returns two centers together with their radii that guarantee
+1.5-approximation. Each update takes O (d) time.
+3. Extension to the Euclidean k-center problem
+In this section we design an approximation algorithm for the Euclidean k-center problem. Let f ( p ) denote a point in X
+that is farthest from p. We consider two cases: | p 1 f ( p 1 )| ≤ 4kr ∗ and | p 1 f ( p 1 )| > 4kr ∗ .
+In Section 3.1, we present an algorithm for a given r > 0 for the case | p 1 f ( p 1 )| ≤ 4kr ∗ . Then we show that for r
+with 1.2r ∗ ≤ r ≤ (1.2 + 2ε /3)r ∗ , the algorithm returns a solution satisfying (1.8 + ε )-approximation. We explain how to
+get such an r and present a full description of the algorithm for the case | p 1 f ( p 1 )| ≤ 4kr ∗ . Then we consider the case
+| p 1 f ( p 1 )| > 4kr ∗ in Section 3.2. Our algorithm maintains a certain number of feasible solutions and returns the best one
+among them when all points of X are processed.
+3.1. The case | p 1 f ( p 1 )| ≤ 4kr ∗
+We extend the idea in Section 2.1 to the k-center problem. Let SelectBall( B , p ) denote a procedure that takes a ball B
+and a point p, and returns B (c , 3r ( B )/2), where c = c ( B ) p ∩ ∂ B (c ( B ), r ( B )/2).
+We call our algorithm kCentersNear. Given k and r , it maintains a set S of pairs (Bs , Bc ) of sets of balls with |Bs | +
+|Bc | ≤ k. We call Bs the set of selected balls and Bc the set of candidate balls. Each pair (Bs , Bc ) in S represents a candidate
+solution for the points inserted so far. Let U (Bs ∪ Bc ) denote the union of balls in Bs ∪ Bc , that is, B ∈Bs ∪Bc B. Fig. 4 shows
+the pseudocode of kCentersNear.
+If any of candidate solutions (Bs , Bc ) does not contain the input point inserted at an iteration, it becomes infeasible
+and gets removed from S . Then kCentersNear adds to S a pair (Bs , Bc ∪ { B ( p i , r )}) if |Bs | + |Bc | < k, and a pair (Bs ∪
+{SelectBall( B , p i )}, Bc \ { B }) for each ball B ∈ Bc satisfying p i ∈ SelectBall( B , p i ).
+Now we show the correctness of kCenterNear and analyze its space and time complexity. We assume that we are
+given r with 1.2r ∗ ≤ r ≤ (1.2 + 2ε /3)r ∗ .
+Let B ∗ = { B ∗1 , B ∗2 , . . . , B k∗ } be an optimal solution for the k-center problem over X . Assume B ∗ is known to us before
+input points are streaming in. Let (B˜s , B˜c ) denote a solution pair of sets of balls constructed by using B ∗ as follows. When p 1
+
+S.-S. Kim, H.-K. Ahn / Computational Geometry 48 (2015) 635–645
+
+641
+
+is inserted, we make a ball B ( p 1 , r ) and set B˜s := ∅ and B˜c := { B ( p 1 , r )}. Let p o denote the ﬁrst point of X not contained
+in U (B˜s ∪ B˜c ). If there is a ball B ∈ B˜c such that both c ( B ) and p o are contained in an optimal ball B ∗ ∈ B ∗ , then we
+remove B from B˜c and add SelectBall( B , p o ) to B˜s . Note that B ∗ ∪ B ⊂ SelectBall( B , p o ) by Lemma 2. Otherwise we add
+B ( p o , r ) to B˜c . We repeat the above procedure until all points of X are processed.
+Lemma 7. For r with 1.2r ∗ ≤ r ≤ (1.2 + 2ε /3)r ∗ , (B˜s , B˜c ) satisﬁes that (1) X ⊂ U (B˜s ∪ B˜c ), (2) |B˜s | + |B˜c | ≤ k, and (3) B˜s ∪ B˜c
+guarantees (1.8 + ε )-approximation.
+Proof. For (1), assume to the contrary that there are points not contained in U (B˜s ∪ B˜c ), and let p o be the ﬁrst such
+point of X the construction above encounters. When p o was inserted, the construction above must have added either
+SelectBall( B , p o ) to B˜s or B ( p o , r ) to B˜c , as p o ∈
+/ U (B˜s , B˜c ). For the case of SelectBall( B , p o ) added to B˜s , we have
+p o ∈ SelectBall( B , p o ) and the ball would never be removed afterwards. For the case of B ( p o , r ) added to B˜c , the only
+possibility for B ( p o , r ) to be removed from B˜c is that it is removed from B˜c but at the same time a larger ball containing
+B ( p o , r ) is added to B˜s which will never be removed afterwards. Thus, p o is contained in U (B˜s ∪ B˜c ), a contradiction.
+For (2), let p o denote the point that has just been inserted but is not contained in the current U (B˜s ∪ B˜c ). Recall that
+if the center of a ball B ∈ B˜c , which is also an input point, and p o are contained in the same optimal ball B ∗ ∈ B ∗ , we
+remove B from B˜c and add SelectBall( B , p o ) to B˜s , and therefore there is no change in the total number of balls. Since
+B ∗ ∪ B ⊂ SelectBall( B , p o ) by Lemma 2, any forthcoming input points that are contained in B ∗ belong to SelectBall( B , p ) ∈
+B˜s and therefore will not incur making any new ball. This implies that we add a ball B ( p o , r ) to B˜c , thus increasing the
+total number of balls by one only when p o is the ﬁrst point of X that, at the time of insertion, is contained in some optimal
+ball B ∗ ∈ B ∗ but is not contained in any ball of B˜s ∪ B˜c . After we add B ( p o , r ) to B˜c , we do not add any ball to B˜c for
+forthcoming points contained in B ∗ . Therefore, we add at most one ball to B˜c for each optimal ball in B ∗ .
+For (3), note that the radii of the balls in B˜s ∪ B˜c are r or 3r /2, and therefore it satisﬁes 3r /2 ≤ 3(1.2 + 2ε /3)r ∗ /2 ≤
+(1.8 + ε )r ∗ . ✷
+The lemma below shows that kCenterNear indeed computes (B˜s , B˜c ) as one of its feasible solutions, which implies,
+together with Lemma 7, the correctness of the algorithm.
+Lemma 8. For r with 1.2r ∗ ≤ r ≤ (1.2 + 2ε /3)r ∗ , (B˜s , B˜c ) is one of feasible solution pairs computed by kCenterNear.
+Proof. We show by induction that this pair (B˜s , B˜c ) is one of feasible solution pairs computed by our algorithm kCenterNear. When p 1 is inserted and processed, kCenterNear has only one solution pair which is the same as (B˜s , B˜c ). Assume
+that the claim holds for points inserted up to p i .
+When p i +1 is inserted, we do one of three followings on (B˜s , B˜c ) constructed for Xi : (a) p i +1 ∈ U (B˜s , B˜c ) and we do
+nothing, (b) p i +1 ∈
+/ U (B˜s , B˜c ) and a ball B ( p i +1 , r ) is added to B˜c , or (c) p i +1 ∈
+/ U (B˜s , B˜c ), and a ball B is removed from B˜c
+and SelectBall( B , p i +1 ) is added to B˜s . For case (a), the claim immediately holds as kCenterNear keeps the same solution
+as (B˜s , B˜c ). For case (b), we have |B˜s | + |B˜c | < k before the insertion and kCenterNear updates the pair (Bs , Bc ) of its
+feasible solution set which is the same as (B˜s , B˜c ) by adding B ( p i +1 , r ) to Bc . Thus, the claim holds for p i +1 . For case (c),
+/ U (Bs , Bc ) and adds a set of pairs of feasible
+kCenterNear removes each pair (Bs , Bc ) of its feasible solution set with p i +1 ∈
+solutions, one for each ball B ∈ Bc satisfying p i +1 ∈ SelectBall( B , p i +1 ). One of them is exactly the same as (B˜s , B˜c ) and
+the claim holds. ✷
+Now we are ready to analyze the space and time complexity of kCenterNear. In doing so, we ﬁrst provide an analysis
+of the algorithm for any ﬁxed r . Then we show how to get r with 1.2r ∗ ≤ r ≤ (1.2 + 2ε /3)r ∗ and conclude with an overall
+complexity of the algorithm for the case of | p 1 f ( p 1 )| ≤ 4kr∗ .
+Lemma 9. kCenterNear uses O ((2k)!d/(2k (k − 1)!)) space and spends O ((2k)!d/(2k (k − 1)!)) update time for each point of X .
+Proof. We analyze the space complexity and update time of our algorithm by counting the number of solutions that kCenterNear maintains. To bound the number we label each solution as follows.
+Each solution has an associated label L = l1l2 . . . lt of t numbers from {0, 1, . . . , 2k} whose length equals the number of
+points inserted so far, where 0 < t ≤ n. At j-th iteration of the algorithm, p j is inserted. For each solution (Bs , Bc ) in S
+with its associated label L, we append 0 to L if p j is contained in U (Bs , Bc ). Otherwise, we ﬁrst remove (Bs , Bc ) from S
+unless S = ∅. Then we append a number from {1, . . . , 2k} to L depending on the subcases and associate it with each new
+solution created by the algorithm: If a ball is added to Bc (3(b) of kCenterNear), we append 2b( j ) − 1 to L, where b( j ) is
+the number of balls created and added to Bc up to p j . If a ball B is removed from Bc and SelectBall( B , p j ) is added to Bs
+(3(c) of kCenterNear), we append l + 1 to L, where l is the number appended to L when B was created and added to Bc .
+Once the algorithm terminates, we complete the label L of each solution by removing all 0’s from L, and then by adding all
+the numbers in {1, . . . , 2k} but not used in L to the end of the label in ascending order. Let L c denote the completed label
+of L.
+
+642
+
+S.-S. Kim, H.-K. Ahn / Computational Geometry 48 (2015) 635–645
+
+We claim that a label L c constructed as above satisﬁes that (1) the odd numbers of L c appear in ascending order from 1,
+(2) for any i and j with 0 < i < j ≤ 2k, if li /2 = l j /2 , then l j = li + 1, (3) numbers appearing in L c are all distinct, and
+(4) each label is unique, that is, there are no two solutions in S whose associated labels are the same.
+We show that each claim holds, and then show an upper bound on the number of solutions. Note that an odd number
+is appended to L only when a ball is added to Bc , and a nonzero even number is appended to L only when a ball is added
+to Bs . Whenever we append an odd number to L, the number of balls created and added to Bc so far is increased by one.
+Thus every odd numbers from 1 to 2m − 1 appear in L in ascending order, where m is the number of balls added to Bc .
+The odd numbers that are added to the end of the label after the algorithm terminates are larger than 2m − 1 and also in
+ascending order, so (1) holds.
+For any two numbers li and l j with i < j of the label, li /2 = l j /2 implies that (a) li = l j , (b) li = l j + 1 for an odd
+number l j , or (c) l j = li + 1 for an odd number li . If (a) is the case, both li and l j are even because odd numbers in L c are
+all distinct by (1). Moreover, it is clear that both li and l j were added to the label before the termination of the algorithm.
+By construction, we have li = l j = l + 1, where l is the odd number of the label corresponding to a ball B. More precisely,
+when li was appended to the label, its value was decided by the odd number l of the label corresponding to the ball being
+removed from Bc at the iteration. Thereafter, l has never been used for deciding another even number as B is not in Bc
+anymore, contradicting that l j = l + 1. For (b), li is even and by construction li = lk + 1 for an odd number lk of the label
+with k < i, which implies that lk = l j with k < j, a contradiction to claim (1). The only possible case is (c) in which the
+even number l j was either added to the label after the termination of the algorithm, or decided by the odd number l i of
+the label that corresponds to the ball being removed from Bc at the iteration of l j being appended to the label. Therefore,
+claim (2) holds. This argument also implies that all even numbers of the label are also distinct. As all odd numbers of the
+label are distinct by claim (1), claim (3) holds.
+We are going to show that claim (4) holds. Now assume that there are two different solutions (Bs , Bc ) and (Bs , Bc )
+whose associated labels L c and L c , respectively, are the same. Let L = l1 l2 · · · ln and L = l1 l2 · · · ln be the uncompleted labels
+that were associated with (Bs , Bc ) and (Bs , Bc ), respectively, after the last iteration of the algorithm. Note that both labels
+may contain 0’s. We are going to show that L = L which implies (Bs , Bc ) = (Bs , Bc ), contradicting to the assumption.
+Without loss of generality, we denote by (Bs (i ), Bc (i )) and (Bs (i ), Bc (i )) the solutions of (Bs , Bc ) and (Bs , Bc ), respectively,
+for the ﬁrst i input points. As a base case, we have Bs (1) = Bs (1) and Bc (1) = Bc (1), and l1 = l1 = 1. We assume that
+Bs (i ) = Bs (i ) and Bc (i ) = Bc (i ), and li = li for all i = 1, . . . , j. Now consider the iteration of the algorithm when the ( j + 1)-th
+point was inserted. There are three possible numbers for each of l j +1 and l j +1 : 0, 2b( j + 1) − 1 (odd), and l + 1 (even). If
+
+l j +1 = 0 or l j +1 = 0, this immediately implies that p j +1 ∈ U (Bs ( j ), Bc ( j )) and p j +1 ∈ U (Bs ( j ), Bc ( j )), and therefore we have
+l j +1 = l j +1 = 0 and there is no change to the solutions. This shows that Bs ( j + 1) = Bs ( j + 1) and Bc ( j + 1) = Bc ( j + 1).
+
+Consider now the case that l j +1 > l j +1 > 0 or l j +1 > l j +1 > 0. This implies that L c = L c since l1 l2 . . . l j = l1l2 . . . l j by the
+induction hypothesis. Therefore, the only possible cases are l j +1 = l j +1 = 2b( j + 1) − 1 (odd) or l j +1 = l j +1 = l + 1 (even),
+
+where l is the odd number appended to L and L for a ball B added to Bc and Bc for a point inserted earlier. For the
+former case, we have Bs ( j + 1) = Bs ( j + 1) = Bs ( j ) and Bc ( j + 1) = Bc ( j + 1) = Bc ( j ) ∪ { B ( p j +1 , r )}. For the latter case, we
+have Bs ( j + 1) = Bs ( j + 1) = Bs ( j ) ∪ {SelectBall( B , p j +1 )} and Bc ( j + 1) = Bc ( j + 1) = Bc ( j ) \ { B }. So we can conclude that
+L = L , and (Bs , Bc ) and (Bs , Bc ) are the same.
+Now we bound the number of solutions by counting the number of possible labels. By (3) and (4), the length of a label
+is 2k and each label is unique. Thus there are (2k)! different labels. Let L denote the set of the (2k)! different labels. By (2),
+there is no label associated with our solutions such that an odd number l appears after l + 1. For each label L = L 1lL 2 (l + 1) L 3
+in L, there is another label L = L 1 (l + 1) L 2 lL 3 in L, where L i for i = 1, 2, and 3 is a sublabel of L. Since there are k odd
+numbers in {1, . . . , 2k}, there are (2k)!/2k labels in L satisfying (2). Let L(2) denote the (2k)!/2k labels in L satisfying (2).
+By (1), the odd numbers in each label in L(2) must appear in ascending order from 1 to 2k − 1. Therefore, there are
+(2k)!/(2k k!) labels in L(2) satisfying (1), which are the possible labels for the solutions in S of our algorithm. This gives
+us an upper bound on the number of solutions in S . Since each solution uses O (dk) space and update time, our algorithm
+uses O ((2k)!d/(2k (k − 1)!)) space and update time for an input point. ✷
+We get r such that 1.2r ∗ ≤ r ≤ (1.2 + 2ε /3)r ∗ by maintaining 12k/ε candidate lengths and update them together with
+their solutions, as we did in Section 2.2. For each candidate length , we assume that r = and run kCenterNear.
+Lemma 10. For | p 1 f ( p 1 )| ≤ 4kr ∗ , we can compute k centers that guarantee (1.8 + ε )-approximation spending O (k(2k)!d/
+(ε 2k (k − 1)!)) update time for each point of X and using O (k(2k)!d/(ε 2k (k − 1)!)) space.
+3.2. The case | p 1 f ( p 1 )| > 4kr ∗
+The main idea in handling this case is to compute a set of balls such that one of them partitions B ∗ into two nonempty
+subsets along its boundary.
+In the following we show how to construct such a set B . To do this, we maintain a value α which is used as the unit of
+radii of balls. As the base, we set α := | p 1 p 2 |/(2k) when p 2 is inserted. When the next point p i +1 is inserted, we update α
+to 2x α if | p 1 p i +1 | > 2kα , where x is the smallest positive integer satisfying 2x 2kα ≥ | p 1 p i +1 |. Let f i ( p 1 ) denote the point
+
+S.-S. Kim, H.-K. Ahn / Computational Geometry 48 (2015) 635–645
+
+643
+
+farthest from p 1 among points in Xi , and let m denote the largest positive integer such that mα < | p 1 f i ( p 1 )|. By deﬁnition,
+we have k ≤ m < 2k, and therefore 2(m − k) < m. If m > k, B consists of balls centered at p 1 with radius u α for every even
+integer u from 2 to 2(m − k), and for every integer u from 2(m − k) + 1 to m + 1. Otherwise, we have m = k and B consists
+of balls centered at p 1 with radius u α for every integer u from 1 to m + 1.
+For each ball B in B , we maintain k − 1 pairs of a data structure. More speciﬁcally, the t-th pair consists of a data
+structure for the optimal t-center of the points lying inside B and a data structure for the optimal (k − t )-center of the
+points lying outside of B for some t ∈ {1, . . . , k − 1}.
+When the next point p i +1 is inserted, we update B and the associated data structures for balls in B , if necessary. There
+are three cases, (1) | p 1 p i +1 | ≤ (m + 1)α , (2) (m + 1)α < | p 1 p i +1 | ≤ 2kα , or (3) | p 1 p i +1 | > 2kα . If (1) is the case, we update
+the data structures of each ball B in B as follows. If p i +1 ∈ B, we update only the data structures for the points lying inside
+B by adding p i +1 to them. Otherwise, we update only the data structures for the points lying outside B by adding p i +1 to
+them.
+For case (2), we have f i +1 ( p 1 ) = p i +1 , and remove some balls with their associated data structures from B and add
+some new balls. Note that α remains the same but there is an integer m larger than m satisfying m α < | p 1 f i +1 ( p 1 )|.
+Let m denote the largest such an integer. We remove each ball from B with radius u α such that u is odd and 2(m − k) <
+u < min{m, 2(m − k)}. If m > 2(m − k), we add a ball centered at p 1 with radius u α for each u with m < u ≤ m + 1. If
+m < 2(m − k), we add a ball centered at p 1 with radius u α for each even u with m < u ≤ 2(m − k), and a ball centered
+at p 1 with radius u α for each u with 2(m − k) < u ≤ m + 1.
+For case (3), we update α accordingly, and compute the largest integer m that satisﬁes m α < | p 1 f i +1 ( p 1 )|. Then we
+update B along with their associated data structures as follows. We scan B and remove all balls with their associated data
+structures whose radii are not from the set of u α ’s for each even integer u with 2 ≤ u ≤ 2(m − k) or u α ’s for each integer u
+with 2(m − k) < u < m . Then we add a ball centered at p 1 with radius u α for each u with 2(m − k) < u ≤ m + 1 unless
+it is already in B .
+Lemma 11. Let B = { B 1 , B 2 , . . . , B k } denote the set of balls constructed as above with r ( B i ) < r ( B i +1 ) for i = 1, . . . , k − 1. It satisﬁes
+(1) B 1 ⊂ B 2 ⊂ · · · ⊂ B k , (2) X ∩ B k = X , and (3) r ( B j +1 ) − r ( B j ) > 2r ∗ for j = 1, 2, . . . , k − 1.
+Proof. Since all balls in B are concentric at p 1 , we have B 1 ⊂ B 2 ⊂ · · · ⊂ B k . The fact that f n ( p 1 ) = f ( p 1 ) ∈
+/ B k immediately
+implies (2). By deﬁnition, we have 2kα ≥ | p 1 f ( p 1 )|. Since | p 1 f ( p 1 )| > 4kr ∗ , we have α > 2r ∗ . Therefore, r ( B j +1 ) − r ( B j ) >
+α > 2r ∗ for j = 1, 2, . . . , k. ✷
+Lemma 12. There is a ball B ∈ B such that the boundary of B partitions B ∗ into two nonempty subsets.
+Proof. By construction, B 1 has radius at least α . Since | p 1 f ( p 1 )| ≤ 2kα and | p 1 f ( p 1 )| > 4kr ∗ , we have r ( B 1 ) ≥ α > 2r ∗ .
+This implies that B 1 contains every optimal ball in B ∗ that contains p 1 . Note that there is at least one such an optimal ball
+in B ∗ .
+By Condition (3), no optimal ball in B ∗ can intersect more than one boundary of balls in B . By the pigeonhole principle, there must be at least one ball B j for j = 1, . . . , k whose boundary does not intersect any optimal ball in B ∗ and
+partitions B ∗ into two nonempty subsets. ✷
+To compute the Euclidean 1-center, we use Chan’s minimum enclosing ball algorithm [18]. This gives a 1.5-approximation
+to the 1-center problem, and obviously, uses only O (1) space. For the 2-center problem, our algorithm for Euclidean 2-center
+in Section 2 guarantees a (1.8 + ε )-approximation. Based on these algorithms, we can recursively build data structures that
+compute a (1.8 + ε )-approximation to the t-center problem for t = 3, . . . , k.
+3.3. Putting them together
+Now we analyze the space and update time complexity for our algorithm for the k-center problem.
+Theorem 2. For any d ≥ 1, our single-pass data stream algorithm uses O (2k (k + 3)!d/ε ) space and returns k centers that guarantee
+a (1.8 + ε )-approximation for the Euclidean k-center problem. Each update takes O (2k (k + 2)!d/ε ) time.
+Proof. Let L (k) denote the size of the data structure for a Euclidean k-center, let M (k) denote the size of the data structure
+for an Euclidean k-center for the case | p 1 f ( p 1 )| > 4kr ∗ , and let N (k) denote the size of the data structure for an Euclidean
+k-center for the case | p 1 f ( p 1 )| ≤ 4kr ∗ . Then we have
+
+L (k) = N (k) + M (k), with base cases L (1) = L (2) = O (d/ε )
+M (k) = 2(k + 1) L (k − 1) + L (k − 2) + · · · + L (2) + L (1)
+N (k) = O (k(2k)!d/(ε 2k (k − 1)!))
+
+644
+
+S.-S. Kim, H.-K. Ahn / Computational Geometry 48 (2015) 635–645
+
+For the ease of analysis, we use another upper bound N (k) = O (2k (k + 2)!d/ε ), which can be derived from
+k(2k)!d/(ε 2k (k − 1)!) = 2k kd(2k)!/(ε (k − 1)!22k ) ≤ 2k kdk!k!/(ε (k − 1)!) = 2k dk2 k!/ε ≤ 2k d(k + 2)!/ε . By letting L(k) =
+k
+i =1 L (k), we have
+
+L (k) = N (k) + 2(k + 1)L(k − 1)
+
+= N (k) + 2(k + 1) N (k − 1) + M (k − 1) + L(k − 2)
+= N (k) + 2(k + 1) N (k − 1) + 2kL(k − 2) + L(k − 2)
+= N (k) + 2(k + 1) N (k − 1) + 2(k + 1)(2k + 1)L(k − 2)
+= N (k) + 2(k + 1) N (k − 1) + 2(k + 1)(2k + 1) N (k − 2) + 2(k − 1)L(k − 3) + L(k − 3)
+= N (k) + 2(k + 1) N (k − 1) + 2(k + 1)(2k + 1) N (k − 2) + 2(k + 1)(2k + 1)(2k − 1)L(k − 3)
+Therefore, we can rearrange the equation as follows.
+k −1
+
+L (k) = N (k) +
+
+i −2
+
+2(k + 1) · N (k − i ) ·
+
+(2(k − j ) + 1)
+
+i =1
+
+j =0
+
+k −1
+
+≤ N (k) +
+
+2i −1 (k + 1)!
+
+2(k + 1) · N (k − i ) ·
+
+(k − i + 2)!
+
+i =1
+k −1
+
+≤ N (k) +
+i =1
+
+=O
+=O
+=O
+
+2i (k + 2)!
+
+(k − i + 2)!
+
+2k (k + 2)!d
+
+ε
+
+k −1
+
+2i (k + 2)!
+
++
+
+(k − i + 2)!
+
+i =1
+
+2k (k + 2)!d
+
+ε
+
+k −1
+
++
+
+· N (k − i )
+
+O
+
+·O
+
+2k−i (k − i + 2)!d
+
+ε
+
+2k (k + 2)!d
+
+ε
+
+i =1
+
+k2k (k + 2)!d
+
+ε
+
+We reuse L (k), M (k), and N (k) to denote the update time for each corresponding algorithm. Each ball B ∈ B maintains
+two sets of data structures: one set consisting of data structures for input points lying inside B and another set consisting
+of data structures for input points lying outside of B. When a new point p is inserted, only one of two sets is updated
+depending on whether p ∈ B or not. Therefore we have a difference equation for M (k) which makes a different result.
+
+M (k) = (k + 1) L (k − 1) + L (k − 2) + · · · + L (2) + L (1)
+L (k) = N (k) + (k + 1)L(k − 1) = · · ·
+k −1
+
+= N (k) +
+
+((k − j ) + 1)
+
+i =1
+
+j =0
+
+k −1
+
+(k + 2)!
+· N (k − i )
+(k − i + 2)!
+
+≤ N (k) +
+i =1
+
+=O
+
+i −2
+
+(k + 1) · N (k − i ) ·
+
+2k (k + 2)!d
+
+ε
+
+k −1
+
++
+
+O
+i =1
+
+2k−i (k + 2)!d
+
+ε
+
+=O
+
+2k (k + 2)!d
+
+ε
+
+✷
+
+4. Conclusions
+In this paper, we consider the Euclidean k-center problem over a streaming data and present a single-pass (1.8 + ε )-factor
+algorithm that uses O (d/ε ) space and update time for k = 2 for any d ≥ 1. We show that this algorithm extends for k > 2,
+and returns k centers that guarantee a (1.8 + ε ) approximation using O (2k (k + 3)!d/ε ) space and O (2k (k + 2)!d/ε ) update
+time.
+
+S.-S. Kim, H.-K. Ahn / Computational Geometry 48 (2015) 635–645
+
+645
+
+An interesting question is whether the approximation factor or the space and update time complexity can be improved
+further. It would be also interesting to investigate whether we can get such an approximation algorithm under the L p -metric,
+especially for p = 1, ∞ that returns k centers with approximation factor smaller than 2 using space bounded polynomially
+in d.
+References
+[1] P. Agarwal, R. Sharathkumar, Streaming algorithms for extent problems in high dimensions, in: Proc. of the 21st ACM–SIAM Sympos. Discrete Algorithms, 2010, pp. 1481–1489.
+[2] C.C. Aggarwal, Data Streams: Models and Algorithms, Springer-Verlag, 2007.
+[3] H.-K. Ahn, H.-S. Kim, S.-S. Kim, W. Son, Computing k-center over streaming data for small k, Int. J. Comput. Geom. Appl. 24 (2) (2014) 107–124.
+[4] I. Bonnell, M. Bate, S. Vine, The hierarchical formation of a stellar cluster, Mon. Not. R. Astron. Soc. 343 (2) (2003) 413–418.
+[5] T. Chan, V. Pathak, Streaming and dynamic algorithms for minimum enclosing balls in high dimensions, Comput. Geom. 47 (2) (2014) 240–247.
+[6] M. Charikar, C. Chekuri, T. Feder, R. Motwani, Incremental clustering and dynamic information retrieval, SIAM J. Comput. 33 (6) (2004) 1417–1440.
+[7] C. Clarke, I. Bonnell, L. Hillenbrand, The formation of stellar clusters, in: V. Mannings, A. Boss, S. Russell (Eds.), Protostars and Planets IV, University of
+Arizona Press, Tucson, 2000, pp. 151–177.
+[8] U. Fayyad, G. Piatetsky-Shapiro, P. Smyth, From data mining to knowledge discovery in databases, AI Mag. 17 (1996) 37–54.
+[9] M. Garey, D. Johnson, Computers and Intractability: A Guide to the Theory of NP-Completeness, W.H. Freeman, New York, 1979.
+[10] S. Guha, Tight results for clustering and summarizing data streams, in: Proc. of the 12th Int. Conf. Database Theory, ACM, 2009, pp. 268–275.
+[11] J. Han, M. Kamber, Data Mining: Concepts and Techniques, Morgan Kaufmann, 2006.
+[12] J. Hershberger, S. Suri, Adaptive sampling for geometric problems over data streams, Comput. Geom. 39 (3) (2008) 191–208.
+[13] R. McCutchen, S. Khuller, Streaming algorithms for k-center clustering with outliers and with anonymity, in: Approximation, Randomization and Combinatorial Optimization. Algorithms and Techniques, in: Lect. Notes Comput. Sci., vol. 5171, 2008, pp. 165–178.
+[14] M. Megiddo, K. Supowit, On the complexity of some common geometric location problems, SIAM J. Comput. 13 (1) (1984) 182–196.
+[15] C. Poon, B. Zhu, Streaming with minimum space: an algorithm for covering by two congruent balls, Theor. Comput. Sci. 507 (2013) 72–82.
+[16] M. Sonka, V. Hlavac, R. Boyle, Image Processing, Analysis, and Machine Vision, Thomson Learning, 3rd edition, 2007.
+[17] H. Zarrabi-Zadeh, Core-preserving algorithms, in: Proc. of 20th Canadian Conf. Computational Geometry, 2008, pp. 159–162.
+[18] H. Zarrabi-Zadeh, T. Chan, A simple streaming algorithm for minimum enclosing balls, in: Proc. of 18th Canadian Conf. Computational Geometry, 2006,
+pp. 139–142.
+
+

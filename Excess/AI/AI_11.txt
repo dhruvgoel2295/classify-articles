@@ -1,0 +1,1150 @@
+Artiﬁcial Intelligence 175 (2011) 2010–2020
+
+Contents lists available at ScienceDirect
+
+Artiﬁcial Intelligence
+www.elsevier.com/locate/artint
+
+Discovering theorems in game theory: Two-person games with unique
+pure Nash equilibrium payoffs ✩
+Pingzhong Tang ∗ , Fangzhen Lin
+Department of Computer Science, Hong Kong University of Science and Technology, Clear Water Bay, Kowloon, Hong Kong
+
+a r t i c l e
+
+i n f o
+
+a b s t r a c t
+
+Article history:
+Received 13 March 2011
+Received in revised form 29 June 2011
+Accepted 5 July 2011
+Available online 14 July 2011
+Keywords:
+Computer-aided theorem discovery
+Game theory
+Pure Nash equilibrium
+Uniqueness of pure Nash equilibrium payoff
+Strict games
+Strictly competitive games
+
+In this paper we provide a logical framework for two-person ﬁnite games in strategic form,
+and use it to design a computer program for discovering some classes of games that have
+unique pure Nash equilibrium payoffs. The classes of games that we consider are those that
+can be expressed by a conjunction of two binary clauses, and our program re-discovered
+Kats and Thisse’s class of weakly unilaterally competitive two-person games, and came up
+with several other classes of games that have unique pure Nash equilibrium payoffs. It also
+came up with new classes of strict games that have unique pure Nash equilibria, where a
+game is strict if for both player different proﬁles have different payoffs.
+© 2011 Elsevier B.V. All rights reserved.
+
+1. Introduction
+This paper pursues the perspective of Lin [11,12] that many interesting theorems can be automatically discovered by
+ﬁrst specifying a class of conjectures in a logical language and then testing them systematically in some small domains. This
+approach presents at least two challenges. The ﬁrst concerns how to come up with a set of reasonable conjectures. This
+raises further issues, such as how to represent these conjectures, what is the yardstick for reasonableness, etc. The second
+concerns how to prove or refute the conjectures automatically.
+In general, using computers to discover theorems is a diﬃcult endeavor. Nonetheless there have been various attempts.
+In one pioneer work, Petkovsek et al. [15] showed that to prove the following theorem,
+“The angle bisectors of every triangle intersect at one point”,
+it suﬃces to verify it in 64 non-isomorphic triangles, which can be automated by computers. In the same spirit, the authors
+went on to demonstrate that certain forms of theorems concerning the close form of the sum of combinatorial sequences
+can be completely discovered by computers programs.
+Langley [5] had brieﬂy summarized the attempts of computer-aided discovery until 1998, ranging from mathematics to
+physics, chemistry as well as biology. Among those attempts, Lenat’s AM system [6] and Fajtlowicz’s Graﬃti [2] are also
+remarkable progresses on theorem discovery. The AM system aims at ﬁnding new concepts and theorems based on existing
+concepts as well as a large amount of heuristic rules, which require extensive domain knowledge of the designers. Despite
+✩
+A short version appeared in Proceedings of IJCAI’09. Part of this paper also appeared in the PhD thesis of the ﬁrst author. This work is partially
+supported by HK RGC GRF 616909 and CERG 616707.
+Corresponding author.
+E-mail addresses: kenshin@cse.ust.hk (P. Tang), ﬂin@cse.ust.hk (F. Lin).
+
+*
+
+0004-3702/$ – see front matter
+doi:10.1016/j.artint.2011.07.001
+
+© 2011 Elsevier B.V.
+
+All rights reserved.
+
+P. Tang, F. Lin / Artiﬁcial Intelligence 175 (2011) 2010–2020
+
+2011
+
+the complexity of design, the system managed to rediscover hundreds of common concepts as well as simple theorems.
+The Graﬃti system, on the other hand, is more intuitive in design. First of all, the system itself does not attempt to prove
+anything. Alternatively, it aims at generating interesting conjectures in graph theory by guessing and testing some invariants,
+ai
+b i , concerning two numerical features in a graph. It is worth some
+most of which are of forms a b, a = b, and
+attention that Graﬃti maintains the quality of the set of conjectures by ﬁltering those implied by existing ones. In other
+words, the current set of conjectures are the strongest ones generated so far. This is similar to our approach in game theory,
+which will be introduced in detail later.
+Our work here continues the line of work in [11,9]. In both papers, the problem domain is formulated in a symbolic
+language. Conjectures about the domains are then represented by sentences in the underlying language. A computer program
+is then used to test through these conjectures to ﬁnd those that are true in domains up to certain small size. These
+conjectures are either guaranteed to be true in the general case or checked manually. A parallel work applies the same
+idea on social-choice theory [10,17], where we prove three of the most important impossibility theorems in a uniﬁed
+computer-aided framework. We also similarly discover several theorems that generalize Arrow’s conditions as well as a
+new theorem that better interprets Arrow’s IIA condition. Interestingly, this approach has recently been proved effective
+in ﬁnding impossibility theorems in another ﬁeld of social choice [3]. Similar idea can be found in automated mechanism
+design [7,8], where they use several parameters as domain language to describe a class of auctions and then search through
+the language to ﬁnd the revenue-optimal auctions.
+In this paper, we will show how the same methodology can be used to discover some interesting theorems about pure
+Nash equilibria. Traditional equilibrium analysis has been mostly focused on mixed strategy equilibria. Part of the reasons
+for this bias is that such an equilibrium always exists and algorithms such as the one by Lemke–Howson are guaranteed to
+ﬁnd one. Moreover, best response functions in games with mixed strategies are continuous and differentiable, allowing for
+standard calculus techniques to be applied.
+However, pure Nash equilibria (PNEs) are also of interest, and there is already much work about them. Examples here include the existence of PNEs in ordinal potential games [13], quasi-supermodular games [20] as well as games with dominant
+strategies, and uniqueness of PNE payoffs1 in two-person strictly competitive games [14].
+As part of our project on using computers to discover theorems in game theory, this paper considers the possibility of
+using computers to discover new classes of two-person games that have unique PNE payoffs. Here is an overview of our
+project.
+
+• Step 1. We ﬁrst formulate the notions of games, strictly competitive games and PNEs in ﬁrst-order logic. Under our
+formulation, a class of games corresponds to a ﬁrst-order sentence.
+
+• Step 2. We then consider sentences that have similar syntactic form as that of strictly competitive games.
+• Step 3. We prove that a sentence of this form is a suﬃcient condition for a game to have a unique PNE payoff iff it is
+so for all 2 × 2 games.
+• Step 4. We then generate all sentences of the form in step 2, and check if any of them is a suﬃcient condition for a
+2 × 2 game to have unique PNE payoff.
+• Step 5. Finally, among these suﬃcient conditions, we collect weakest ones.
+We did not expect much as these conditions are rather simple, but to our surprise, our program returned a condition
+that is more general than the strict competitiveness condition. As it turned out, it exactly corresponds to Kats and Thisse’s
+[4] class of weakly unilaterally competitive two-person games. Our program also returned some other conditions. Two of
+them capture a class of “unfair” games where one player has advantage over the other. The remaining ones capture games
+where everyone gets what he wants – each receives his maximum payoff in every equilibrium state, thus there is no real
+competition among the players. Thus one conclusion that we can draw from this experiment is that among all classes of
+games that can be expressed by a conjunction of two binary clauses, the class of weakly unilaterally competitive games is
+the most general class of “competitive” and “fair” games that have unique PNE payoffs. Of course, this does not mean that
+the other conditions are not worth investigating. For instance, sometimes one may be forced to play an unfair game.
+For the same set of conditions, we also consider strict two-person games where different proﬁles have different payoffs
+for each player. Among the results returned by our program, two of them are exactly the two conjuncts in Kats and Thisse’s
+weakly unilaterally competitive condition, but the others all turn out to be special cases of games with dominant strategies.
+Motivated by these results, we consider certain equivalent classes of games, and show that a strict game has a unique PNE
+iff it is best-response equivalent [16] to a strictly competitive game. This turns out to be a new and interesting result, and
+has recently been published in Games and Economic Behavior [18].
+The rest of the paper is organized as follows. We ﬁrst review some basic concepts in two-person games in strategic form,
+and then reformulate them in ﬁrst-order logic. We then show that for a class of conditions, whether any of them entails
+the uniqueness of PNE payoff needs only to be checked on games up to certain size. We then describe a computer program
+based on this result, and report our experimental results.
+
+1
+Note that the uniqueness of PNE payoffs is also an ordinal property, which means all the PNEs in a game are equally preferred to all players. In
+particular, the notion of unique PNE payoffs is reduced to unique PNEs in strict games.
+
+2012
+
+P. Tang, F. Lin / Artiﬁcial Intelligence 175 (2011) 2010–2020
+
+2. Two-person games
+A (two-person) game (in strategic form) is a tuple ( A , B , 1 , 2 ), where A and B are sets of strategies of players 1 and 2,
+respectively, and 1 and 2 are total orders on A × B called preference relations for players 1 and 2, respectively.
+Instead of two preference relations, a two-person game can also be speciﬁed by two payoff functions, one for each player,
+which map proﬁles to numbers. The relationship between these two formulations are as follows: for any proﬁles s and s ,
+s i s iff u i (s) u i (s ), where u i is the payoff function for player i. In the following, we shall use these two formulations
+interchangeably.
+In the following, two proﬁles (a, b) and (a , b ) are said to be (payoff) equivalent if their payoff proﬁles are the same:
+(u 1 (a), u 2 (b)) = (u 1 (a ), u 2 (b )). In terms of preference relations, (a, b) and (a , b ) are equivalent iff
+
+(x1 , y 1 )
+
+i
+
+(x2 , y 2 ) ∧ (x2 , y 2 )
+
+i
+
+(x1 , y 1 ),
+
+for i = 1, 2.
+For each b ∈ B, we deﬁne B 1 (b) to be the set of best responses by player 1 to the strategy b by player 2:
+
+B 1 (b) = a a ∈ A , and for all a ∈ A , a , b
+
+1
+
+(a, b) .
+
+Similarly, for each a ∈ A, the set of best responses by player 2 is:
+
+B 2 (a) = b b ∈ B , and for all b ∈ B , a, b
+
+2
+
+(a, b) .
+
+A proﬁle (a, b) ∈ A × B is a Pure Nash Equilibrium (PNE) if both a ∈ B 1 (b) and b ∈ B 2 (a). A game can have exactly one,
+more than one, or no PNEs. We say that a game has a unique PNE payoff if all the PNEs are equivalent.
+One interesting class of two-person games is that of strictly competitive games. A game is strictly competitive [14] if for
+every pair of proﬁles s1 and s2 in A × B, we have that s1 1 s2 iff s2 2 s1 . Thus in strictly competitive games, the two
+players’ preferences are weakly opposite.
+Strictly competitive games have many nice properties [14]. If (a, b) and (a , b ) are both PNEs of a strictly competitive
+game, then (1) they are equivalent; (2) they are interchangeable in the sense that (a , b) and (a, b ) are also PNEs. Thus
+if a strictly competitive game has PNEs, then their payoffs must be the same. Furthermore the unique PNE payoff can be
+computed using the minmax procedure.
+Another class of games that we shall consider in this paper is that of strict games. A game is strict if for both players,
+different proﬁles have different payoffs, that is, (a, b) = (a , b ) whenever (a, b) i (a , b ) and (a , b ) i (a, b), where i = 1, 2.
+As we shall see, strict games have some nice properties that general games do not have.
+3. Formulating two-person games in ﬁrst-order logic
+We consider a ﬁrst-order language with two possibly inﬁnite sorts α and β , equality, and two predicates 1 and 2 . We
+use “∧” for conjunction, “∨” for disjunction, “¬” for negation, “⊃” for implication, and “≡” for equivalence. Negation has
+the highest precedence, followed by conjunction and disjunction, implication, and then equivalence.2 The rule of precedence
+can be overridden by a new line. For instance, the following expression
+
+p ⊃q∧
+q⊃p
+stands for the sentence ( p ⊃ q) ∧ (q ⊃ p ).
+In our language, sort α is for player 1’s strategies, and β for player 2’s strategies. In the following, we use variables
+x, x1 , x2 , . . . to range over α , and y , y 1 , y 2 , . . . to range over β . The two predicates represent the two players’ preference
+relations. In the following, as we have already done above, we overload i and write i (x1 , y 1 , x2 , y 2 ) in inﬁx notation as
+(x1 , y 1 ) i (x2 , y 2 ), i = 1, 2, and (x1 , y 1 ) i (x2 , y 2 ) as a shorthand for
+
+(x1 , y 1 )
+
+i
+
+(x2 , y 2 ) ∧ (x2 , y 2 )
+
+i
+
+(x1 , y 1 ),
+
+where i = 1, 2. We also write (x1 , y 1 ) <i (x2 , y 2 ) as a shorthand for
+
+(x1 , y 1 )
+
+i
+
+(x2 , y 2 ) ∧ ¬(x2 , y 2 )
+
+i
+
+(x1 , y 1 ).
+
+In the rest of the paper, unless otherwise stated, all free variables in a displayed formula are assumed to be universally
+quantiﬁed from outside.
+The two relations need to be total orders:
+
+2
+
+A detailed introduction of the logical notations can be found in Chapter 2 [19], available at http://www.cse.ust.hk/~kenshin/thesis.pdf.
+
+P. Tang, F. Lin / Artiﬁcial Intelligence 175 (2011) 2010–2020
+
+(x, y )
+
+i
+
+(x, y ),
+
+2013
+
+(1)
+
+(x1 , y 1 )
+
+i
+
+(x2 , y 2 ) ∨ (x2 , y 2 )
+
+i
+
+(x1 , y 1 ),
+
+(x1 , y 1 )
+
+i
+
+(x2 , y 2 ) ∧ (x2 , y 2 )
+
+i
+
+(x3 , y 3 ) ⊃ (x1 , y 1 )
+
+(2)
+i
+
+(x3 , y 3 ),
+
+(3)
+
+where i = 1, 2. In the following, we denote by Σ the set of the above sentences. Thus two-person games correspond to
+ﬁrst-order models of Σ , and two-person ﬁnite games correspond to ﬁrst-order ﬁnite models of Σ . This correspondence
+extends to other type of games as well. For instance, let Σs be the union of Σ with the following two axioms:
+
+(x1 , y 1 )
+
+1
+
+(x2 , y 2 ) ⊃ (x1 = x2 ∧ y 1 = y 2 ),
+
+(x1 , y 1 )
+
+2
+
+(x2 , y 2 ) ⊃ (x1 = x2 ∧ y 1 = y 2 ).
+
+Then strict games and models of Σs are isomorphic.
+We now show how some other notions in game theory can be formulated in ﬁrst-order logic. The condition for a proﬁle
+(ξ, ζ ) to be a PNE is captured by the following formula:
+
+∀x.(x, ζ )
+
+1
+
+(ξ, ζ ) ∧ ∀ y .(ξ, y )
+
+2
+
+(4)
+
+(ξ, ζ ).
+
+In the following, we shall denote the above formula by NE(ξ, ζ ).
+The following sentence expresses the uniqueness of PNE payoff in a game:
+
+NE(x1 , y 1 ) ∧ NE(x2 , y 2 ) ⊃ (x1 , y 1 )
+
+1
+
+(x2 , y 2 ) ∧ (x1 , y 1 )
+
+2
+
+(x2 , y 2 ).
+
+(5)
+
+A game is strictly competitive if it satisﬁes the following property:
+
+(x1 , y 1 )
+
+1
+
+(x2 , y 2 ) ≡ (x2 , y 2 )
+
+2
+
+(x1 , y 1 ).
+
+(6)
+
+Thus it should follow that
+
+Σ | (6) ⊃ (5).
+
+(7)
+
+Notice that we have assumed that all free variables in a displayed formula are universally quantiﬁed from outside. Thus (6)
+is a sentence of the form ∀x1 , x2 , y 1 , y 2 ϕ . Similarly for (5).
+Theorems like (7) can actually be generated automatically using the following theorem.
+Theorem 1. Suppose Q is a formula without quantiﬁers, x1 and x2 tuples of variables of sort α , and y 1 and y 2 tuples of variables of
+sort β . We have that
+
+|x1 | + 2 and | B | | y 1 | + 2,3 we have that G |
+1. Σ | ∃x1 ∃ y 1 ∀x2 ∀ y 2 Q ⊃ (5) iff for any model G of Σ such that | A |
+∃x1 ∃ y 1 ∀x2 ∀ y 2 Q ⊃ (5), where A is the domain of G for sort α , and B the domain of G for sort β .
+2. Σ | ∃x1 ∃ y 1 ∀x2 ∀ y 2 Q ⊃ ¬∃x, y .NE(x, y ) iff for any model G of Σ such that | A | |x1 | + 1 and | B | | y 1 | + 1 we have that
+G | ∃x1 ∃ y 1 ∀x2 ∀ y 2 Q ⊃ ¬∃x, y .NE(x, y ), where A is the domain of G for sort α , and B the domain of G for sort β .4
+Proof.
+1. “Only if” is trivial. To show “if”, suppose there is a game G (model of Σ ) such that it satisﬁes the condition
+∃x1 ∃ y 1 ∀x2 ∀ y 2 Q but has two non-equivalent PNEs, (a, b) and (a , b ): either (a, b) 1 (a , b ) or (a, b) 2 (a , b ). Thus
+there is a tuple a1 of elements from A and a tuple b1 of elements from B such that |a1 | = |x1 |, |b1 | = | y 1 |, and G
+satisﬁes
+
+(∀x2 ∀ y 2 Q )|x1 /a1 , y 1 /b1 ,
+which is obtained from (∀x2 ∀ y 2 Q ) by replacing in it every free occurrence of each variable in x1 by its corresponding
+element in a1 , and every free occurrence of each variable in y 1 by its corresponding element in b1 . Now construct a
+new game G = ( A , B , 1 , 2 ) as follows:
+
+• A = {a, a } ∪ a1 and B = {b, b } ∪ b1 .
+• 1 is the restriction of 1 on A , and
+
+2 on B .
+2 is the restriction of
+Notice that this game is well-deﬁned as 1 and 2 are both total orders, i.e. G | Σ . Clearly, the size of G is
+smaller or equal to (|x1 | + 2) × (| y 1 | + 2), both (a, b) and (a , b ) are still non-equivalent PNEs of G , and the formula
+∃x1 ∃ y 1 ∀x2 ∀ y 2 Q is still true in G .
+
+|x1 | denotes the number of variables in variable vector x1 . Similarly for | y 1 |, etc.
+For those familiar with ﬁrst-order logic, Theorem 1 and Proposition 1 correspond to a simple property: ∀∃-prenex formulas are ﬁnitely veriﬁable
+(cf. [12]). We present here a constructive proof for readability consideration.
+3
+4
+
+2014
+
+P. Tang, F. Lin / Artiﬁcial Intelligence 175 (2011) 2010–2020
+
+2. The proof of this part follows from the above one by replacing “but has two non-equivalent PNEs, (a, b) and (a , b )” by
+“but has a PNE, (a, b)”, letting the corresponding A = {a} ∪ a1 and B = {b} ∪ b1 and observing that the original PNE is
+still a PNE in the constructed sub-game G . ✷
+Loosely speaking, the proof above says the following: if a game has two PNEs with nonequal payoffs, we can construct
+a 2 × 2 sub-game has two PNEs with nonequal payoffs, simply using the two strategy proﬁles mentioned in the previous
+PNEs. Clearly, the original PNEs are still PNEs in the newly constructed 2 × 2 games.
+In other words, to prove that a sentence of the form ∃x1 ∃ y 1 ∀x2 ∀ y 2 Q is a suﬃcient condition for the uniqueness of PNE
+payoff, it suﬃces to verify that this is the case for all games of sizes up to (|x1 | + 2) × (| y 1 | + 2), and to prove that it is a
+suﬃcient condition for the non-existence of PNE, it suﬃces to verify this for games of sizes up to (|x1 | + 1) × (| y 1 | + 1).
+Theorem 1 holds for many specialized games as well. For instance, it holds for strict games as well.
+Theorem 2. Theorem 1 holds when Σ is replaced by Σs .
+In fact, Theorem 1 holds when Σ is replaced by any set of universally quantiﬁed sentences.
+4. Computer-aided theorem discovery
+Since p ≡ q is logically equivalent to (¬ p ∨ q) ∧ ( p ∨ ¬q), the condition (6) for strictly competitive games can be written
+as a conjunction of two binary clauses:
+
+(l1 ∨ l2 ) ∧ (l3 ∨ l4 ),
+
+(8)
+
+where each li , 1 i 4, is a literal, i.e. either an atom of form (x1 , y 1 ) i (x2 , y 2 ) or the negation of an atom ¬(x1 , y 1 ) i
+(x2 , y 2 ). Clearly, this is a class of formulas that contains condition (6). As mentioned, we want to know if there are other
+sentences of the form (8) that also capture classes of games with unique PNE payoffs. In the following, we say that a
+condition ϕ is a uniqueness condition if whenever a game satisﬁes this condition, it has unique PNE payoff, that is, if
+Σ | ϕ ⊃ (5).
+Based on Theorem 1, a straightforward way of discovering uniqueness conditions of the form (8) is as follows: For each
+condition of the form (8), check that “if a 2 × 2 game does not have unique PNE payoff, then it does not satisfy this
+condition”.
+If we choose the predicates 1 and 2 alternatingly as in condition (6), the class of formulas we consider are in the
+following form:
+
+(x1 , y 1 )
+
+1
+
+(x2 , y 2 ) ∨ (x3 , y 3 )
+
+2
+
+(x4 , y 4 ) ∧ (x5 , y 5 )
+
+1
+
+(x6 , y 6 ) ∨ (x7 , y 7 )
+
+2
+
+(x8 , y 8 ) .
+
+Note that any subset of variables in {x1 , x2 , x3 , x4 } can be equal and will lead to a weaker form of the above formula. For
+instance, let x1 = x2 and x3 = x4 will reduce the ﬁrst conjunction of the formula above to (x1 , y 1 ) 1 (x1 , y 2 ) ∨ (x3 , y 3 ) 2
+(x3 , y 4 ). The same reasoning applies to sets {x5 , x6 , x7 , x8 }, { y 1 , y 2 , y 3 , y 4 } and { y 5 , y 6 , y 7 , y 8 }. For each set, there are 15
+different such groupings/partitions, leading to 154 formulas without negation. Also, we allow negation of each predicate
+(atom), leading to 24 × 154 = 810,000 formulas in total.
+To generate all 2 × 2 games, recall that each player’s preference can be represented by a total order on the set of proﬁles
+(and there are four such proﬁles). We can generate 75 of such total orders, leading to 752 = 5625 2 × 2 games. Without loss
+of generality, we can always ﬁx a proﬁle on top of player one’s preference: this will reduce the number of total orders to
+26, leading to 1950 non-isomorphic 2 × 2 two-person games. Among them, there are 709 games that do not have unique
+PNE payoffs. Thus, our discovery process can be implemented on a computer even by brute-force search.
+The search space can also be pruned by noticing that the conditions of the form (8) are not independent. For instance,
+condition
+
+(x1 , y 1 )
+
+1
+
+(x2 , y 2 )
+
+entails (is stronger than) condition
+
+(x1 , y 1 )
+
+1
+
+(x1 , y 2 ).
+
+Once we know that a condition C is a uniqueness condition, those that entail C are no longer interesting as they become
+special cases of C , thus can be pruned.
+However, checking logical entailment is in general not decidable for ﬁrst-order logic. But as a strategy for pruning search
+space, we can use a weaker notion called subsumption on conditions of the form (8): C subsumes C if there is a substitution
+σ such that C σ = C . For our language, subsumption can be checked eﬃciently, and the search tree can be designed in such
+a way that the condition associated with a node always subsumes the conditions associated with the ancestors of the node.
+Thus once a condition is found to be a uniqueness condition, the entire sub-tree under this condition can be pruned.
+However, we still need a way to check for complete logical entailment under Σ for conditions of the form (8). This
+is because we want every condition returned by our program to be a most general, “weakest” uniqueness condition in
+
+P. Tang, F. Lin / Artiﬁcial Intelligence 175 (2011) 2010–2020
+
+2015
+
+the sense that it does not entail any other uniqueness condition of the form (8). Fortunately, this can be done using the
+following proposition, which is a simple corollary of Theorem 2.2 of [19].
+Proposition 1. To check whether condition ∀x1 y 1 Q 1 entails condition ∀x2 y 2 Q 2 for all two-person games, it suﬃces to check this for
+all games up to max{|x2 |, 1} × max{| y 2 |, 1}, where Q 1 and Q 2 are formulas without quantiﬁers. This result holds for strict games as
+well.
+Notice that what we have described applies to the task of discovering uniqueness conditions of the form (8) for strict
+two-person games as well.
+We now report our experimental results, ﬁrst for general two-person games, and then for strict two-person games.
+5. General games
+For two-person general games, our program returns the following seven uniqueness conditions for 2 × 2 games.
+
+(x1 , y )
+
+1
+
+(x2 , y ) ⊃ (x2 , y )
+
+2
+
+(x1 , y ) ∧ (x, y 1 )
+
+2
+
+(x, y 2 ) ⊃ (x, y 2 )
+
+1
+
+(x, y 1 ),
+
+(9)
+
+(x1 , y )
+
+1
+
+(x2 , y ) ⊃ (x1 , y )
+
+2
+
+(x2 , y ) ∧ (x, y 1 )
+
+2
+
+(x, y 2 ) ⊃ (x, y 2 )
+
+1
+
+(x, y 1 ),
+
+(10)
+
+(x1 , y )
+
+1
+
+(x2 , y ) ⊃ (x2 , y )
+
+2
+
+(x1 , y ) ∧ (x, y 1 )
+
+2
+
+(x, y 2 ) ⊃ (x, y 1 )
+
+1
+
+(x, y 2 ),
+
+(11)
+
+(x1 , y 1 )
+(x1 , y )
+
+1
+1
+
+(x2 , y 1 ) ⊃ (x1 , y 2 )
+
+(x2 , y ) ⊃ (x1 , y )
+
+2
+
+2
+
+(x2 , y 2 ) ∧ (x, y 1 )
+
+(x2 , y ) ∧ (x1 , y 1 )
+
+2
+
+2
+
+(x, y 2 ) ⊃ (x, y 1 )
+
+(x1 , y 2 ) ⊃ (x2 , y 1 )
+
+(x, y 2 ),
+
+(12)
+
+(x2 , y 2 ),
+
+(13)
+
+1
+1
+
+(x1 , y 1 )
+
+1
+
+(x2 , y 2 ) ⊃ (x1 , y 1 )
+
+2
+
+(x2 , y 1 ) ∧ (x1 , y 1 )
+
+2
+
+(x2 , y 2 ) ⊃ (x2 , y 1 )
+
+1
+
+(x2 , y 2 ),
+
+(14)
+
+(x1 , y 1 )
+
+1
+
+(x2 , y 2 ) ⊃ (x1 , y 2 )
+
+2
+
+(x2 , y 2 ) ∧ (x1 , y 1 )
+
+2
+
+(x2 , y 2 ) ⊃ (x1 , y 1 )
+
+1
+
+(x1 , y 2 ).
+
+(15)
+
+By Theorem 1, these are also uniqueness conditions for all two-person games. Furthermore, since these are the only
+conditions returned by our program, for any sentence C of the form (8), if it is a uniqueness condition, then it must entail
+one of the above conditions under Σ . In other words, the above seven conditions are the weakest (most general) uniqueness
+conditions of the form (8).
+Notice that condition (10) and condition (11) are symmetric in the sense that one can be obtained from the other by
+swapping the roles of the two players. So are (12) and (13), and (14) and (15). On the other hand, (9) is symmetric to itself.
+It is easy to see that if two conditions are symmetric, then one is a uniqueness condition iff the other is.
+We now give a more intuitive explanation of these conditions. Condition (9) looks like condition (6) for strictly competitive games, except that the strategy of one of the players is ﬁxed in each implication. As it turned out, it captures exactly
+the class of two-person games that are weakly unilaterally competitive [4]:
+“A game belongs to this class if a unilateral move by one player which results in an increase in that player’s payoff also
+causes a (weak) decline in the payoffs of all other players. Furthermore, if that move causes no change in the mover’s
+payoff then all other players’ payoffs remain unchanged.”
+From another perspective, we can think of it as a game where players are competitive only on columns and rows. Clearly,
+if a game is strictly competitive, then it is also weakly unilaterally competitive, but the converse is not true in general. Kats
+and Thisse [4] showed that if a game is weakly unilaterally competitive, then it has unique PNE payoff. For us, for twoperson games, this follows directly from our computer output and Theorem 1.
+Condition (10), which we coin “I-compete-you-cooperate” condition, can be given a similar interpretation:
+A two-person game satisﬁes this condition if a unilateral move by player 1 which results in a (weak) increase in his
+payoff also causes a (weak) increase in the payoff of player 2, but a unilateral move by player 2 which results in a
+(weak) increase in his payoff will causes a (weak) decline in the payoff of player 1.
+Thus in this class of games, the two players are not equal, and it clearly favors player 2. The game may be competitive
+for player 1, but not for player 2.
+Proposition 2. Given a game that satisﬁes (10), if player 2’s payoff is maximal at (a, b), i.e. (a , b )
+a strategy a∗ such that (a∗ , b) is a PNE and (a∗ , b) 2 (a, b).
+
+2
+
+(a, b) for all a , b , then there is
+
+Proof. Let (a, b) be a maximum proﬁle for player 2. There are two cases. If (x, b) <2 (a, b) holds for all x = a, then by the
+ﬁrst conjunct of (10), (x, b) <1 (a, b) for all x = a, thus (a, b) is a PNE. Otherwise, let a∗ be such that (a∗ , b) 2 (a, b), and
+(x, b) 1 (a∗ , b) for all x such that (x, b) 2 (a, b). We can see that (x, b) 1 (a∗ , b) for all x. So (a∗ , b), which is also a
+maximum proﬁle for player 2, is a PNE of the game. ✷
+
+2016
+
+P. Tang, F. Lin / Artiﬁcial Intelligence 175 (2011) 2010–2020
+
+Thus for the class of games that satisfy condition (10), the best response for player 2 is to do the strategy for which
+there is a strategy by the other player that will give him the maximum payoff. The following is an example of such games
+(as usual, player 1 is the row player, and player 2 the column player; the ﬁrst number in a cell is the payoff of the row
+player, the second the column player):
+
+3, 6 4, 5 5, 1
+2, 3 1, 4 6, 2
+It has a unique equilibrium (3, 6).
+As we mentioned, condition (11) is symmetric to condition (10), with the roles of the two players swapped. So are
+conditions (12)–(13). Condition (12) can be interpreted in words as follows,
+A unilateral move by player 2 which results in a (weak) increase in his payoff also causes a (weak) increase in the payoff
+of player 1, but a unilateral move by player 1 which results in a (weak) increase in his payoff will causes a (weak)
+increase in the payoff of player 2 in this direction, no matter what strategy player 2 chooses.
+From a row-wise perspective, the two players are cooperative, in the sense of condition (10). However, from a columnwise angle, this condition implies something even stronger: there is a weak ordering on player 1’s strategy set such that
+for any player 2’s strategy, with the increasing of player 1’s strategy along this order, both players’ payoffs weakly increase.
+Therefore, player 1 will ﬁrst choose his favorite (dominant) strategy, followed by player 2’s best response to this strategy
+and this best response is in player 1’s best interest too because they cooperate in this direction.
+Condition (13) is symmetrical to condition (12).
+The following proposition summarizes players’ behaviors in games corresponding to conditions (12)–(15): both players
+can obtain their maximal payoffs.
+Proposition 3. Given a game that satisﬁes one of the conditions (12)–(15), if player 1’s (player 2’s) payoff at (a, b) maximal, then
+there is a strategy b∗ (a∗ ) such that (a, b∗ ) ((a∗ , b)) is a PNE where both players receive the maximum payoffs.
+Proof. Suppose a game satisﬁes (12), and (a, b) is a maximum payoff proﬁle of player one. Thus (x, y ) 1 (a, b) all x, y.
+Let b∗ be such that (a, b∗ ) 1 (a, b) and (a, y ) 2 (a, b∗ ) for all y such that (a, y ) 1 (a, b). Now if (a, y ) 1 (a, b), then
+(a, y ) <1 (a, b). Thus (a, y ) <1 (a, b∗ ). From this, by the second conjunct in (12), we have (a, y ) <2 (a, b∗ ). Therefore
+
+(a, y )
+
+a, b ∗
+
+2
+
+(16)
+
+for all y. Since (a, b∗ ) 1 (a, b), (x, b∗ ) 1 (a, b∗ ) for all x. From this, by the ﬁrst conjunct of (12), we get (x, y ) 2 (a, y ) for
+all x and y. Thus by (16), we conclude that (a, b∗ ) is a maximum payoff proﬁle of player two as well, thus a PNE.
+Now suppose (a, b) is a maximum payoff proﬁle of player 2. Let a∗ be such that (a∗ , b) 2 (a, b) and (x, b) 1 (a∗ , b)
+for all x such that (x, b) 2 (a, b). If x is such that (x, b) 2 (a, b), then (x, b) <2 (a, b), thus by the ﬁrst conjunct of (12),
+(x, b) <1 (a, b) 2 (a∗ , b). Thus
+
+(x, b)
+
+a∗ , b
+
+1
+
+for all x. Since (a∗ , b) is a maximum payoff proﬁle of player 2, we have
+
+(17)
+
+(a∗ , y )
+
+∗
+2 (a , b ) for all y. Thus by the second
+
+conjunct of (12), we have
+
+(a∗ , y )
+
+1
+
+a∗ , b
+
+(18)
+
+for all y. Now suppose there exist another proﬁle (a , b ) such that (a∗ , b) <1 (a , b ). By (17), we get (a , b) <1 (a , b ). Thus
+by the second conjunct of (12), (a , b) <2 (a , b ). By (18), we get (a∗ , y ) <1 (a , b ) for all y. By the ﬁrst conjunct of (12),
+(a∗ , y ) 2 (a , y ) for all y. Thus (a∗ , b) 2 (a , b) <2 (a , b ) 2 (a, b) 2 (a∗ , b), a contradiction.
+Condition (13) is symmetric to condition (12), and the proof for conditions (14) and (15) is similar. ✷
+Thus, from these two propositions, we see that the classes of games represented by the conditions (10)–(15) are not
+really “competitive” games. We can then conclude that among the classes of games that can be represented by a conjunction
+(8) of two binary clauses, the class of weakly unilaterally competitive games is the most general class of “competitive” and
+“fair” games that have unique PNE payoffs. As we mentioned above, by this we do not mean that other types of games are
+not interesting. In real life, unfair games like those described by (10) may well arise.
+6. Strict games
+We now describe our experimental results for strict games. Recall that these are games where for each player, different
+proﬁles have different payoffs. Thus uniqueness of PNE payoff simply means uniqueness of PNE in strict games.
+
+P. Tang, F. Lin / Artiﬁcial Intelligence 175 (2011) 2010–2020
+
+2017
+
+6.1. Games with dominant strategies
+We ﬁrst consider conditions that mention only
+
+s1
+
+1 s2
+
+∨ s3
+
+1:
+
+1 s4 ,
+
+where s1 , s2 , s3 , s4 are strategy proﬁles. For this class of conditions, our program outputs the following six uniqueness
+conditions on 2 × 2 strict games:
+
+(x1 , y 1 )
+
+1
+
+(x2 , y 1 ) ∨ (x2 , y 1 )
+
+1
+
+(x1 , y 2 ),
+
+(x1 , y 1 )
+
+1
+
+(x2 , y 1 ) ∨ (x2 , y 2 )
+
+1
+
+(x1 , y 1 ),
+
+(x1 , y 1 )
+
+1
+
+(x2 , y 1 ) ∨ (x2 , y 2 )
+
+1
+
+(x1 , y 2 ),
+
+(x1 , y 1 )
+
+1
+
+(x2 , y 2 ) ∨ (x2 , y 1 )
+
+1
+
+(x1 , y 1 ),
+
+(x1 , y 1 )
+
+1
+
+(x2 , y 2 ) ∨ (x2 , y 2 )
+
+1
+
+(x1 , y 2 ).
+
+By Theorem 2, these are also uniqueness conditions for all strict two-person games. Notice that these conditions do not
+mention 2 . This means that if player 1’s preference relation satisﬁes any of the above conditions, then the game has a
+unique PNE, no matter what the other player’s preference relation is.
+For instance, the ﬁrst condition can be written as
+
+¬(x1 , y 1 )
+
+1
+
+(x2 , y 1 ) ⊃ (x2 , y 1 )
+
+1
+
+(x1 , y 2 ).
+
+For strict games, this is equivalent to
+
+(x2 , y 1 ) <1 (x1 , y 1 ) ⊃ (x2 , y 1 )
+as ¬(x1 , y 1 )
+
+1
+
+1
+
+(x1 , y 2 )
+
+(x2 , y 1 ) iff (x2 , y 1 ) <1 (x1 , y 1 ). It is not hard to see that the above condition implies the following condition:
+
+∃x∀x , y . x , y
+
+1
+
+(x, y ),
+
+meaning that no matter what player 2 does, the best response for player 1 is always the same. For strict games, this means
+that player 1 has a strictly dominant strategy: a strategy x is a strictly dominant strategy if for all other strategy x of player 1,
+and any strategy y of player 2, (x , y ) <1 (x, y ). As it turned out, this is also the case for the other ﬁve conditions above, as
+the following proposition shows.
+Proposition 4. A strict game G = ( A , B , 1 , 2 ) has a strictly dominant strategy for player 1 if and only if for any preference relation
+2 for player 2, the game G = ( A , B , 1 , 2 ) has exactly one PNE.
+Proof. “Only if” is easy to see. For proving “if” case, suppose that G is not unilateral for player 1. Then there are two proﬁles
+(x1 , y 1 ) and (x2 , y 2 ) such that x1 = x2 , x1 ∈ B 1 ( y 1 ), and x2 ∈ B 1 ( y 2 ). Construct a preference relation 2 for player 2 such
+that B 2 (x1 ) = { y 1 } and B 2 (x2 ) = { y 2 }. Then this game has at least two equilibria (x1 , y 1 ) and (x2 , y 2 ), but x1 = x2 . ✷
+Given this result, there is no need to consider any condition of the form (8) that mentions only one player’s preference.
+It is interesting to note that for the prisoner’s dilemma
+
+4 , 4 0, 5
+5, 0 1, 1
+each player has a strictly dominant strategy, thus should play this strategy. The dilemma is that each player can get a higher
+payoff by a unilateral move away from his dominant strategy.
+6.2. Weakly unilaterally competitive games for individual players
+For other conditions of the form (8), our program returns 16 uniqueness conditions for strict games. However, each of
+them has a symmetric one when the roles of the two players are swapped. Thus there are really only eight such conditions,
+given below:
+
+(x1 , y )
+
+1
+
+(x2 , y ) ∨ (x1 , y )
+
+2
+
+(x2 , y ),
+
+(19)
+
+(x1 , y 1 )
+
+1
+
+(x1 , y 2 ) ∨ (x1 , y 2 )
+
+2
+
+(x2 , y 1 ),
+
+(20)
+
+(x1 , y 1 )
+
+1
+
+(x1 , y 2 ) ∨ (x2 , y 2 )
+
+2
+
+(x1 , y 1 ),
+
+(21)
+
+(x1 , y 1 )
+
+1
+
+(x1 , y 2 ) ∨ (x2 , y 2 )
+
+2
+
+(x2 , y 1 ),
+
+(22)
+
+2018
+
+P. Tang, F. Lin / Artiﬁcial Intelligence 175 (2011) 2010–2020
+
+(x1 , y 1 )
+
+1
+
+(x2 , y 2 ) ∨ (x1 , y 2 )
+
+2
+
+(x1 , y 1 ),
+
+(23)
+
+(x1 , y 1 )
+
+1
+
+(x2 , y 2 ) ∨ (x2 , y 2 )
+
+2
+
+(x1 , y 2 ),
+
+(24)
+
+(x1 , y 1 )
+
+1
+
+(x1 , y 2 ) ∨ (x1 , y 1 )
+
+2
+
+(x2 , y 1 ),
+
+(25)
+
+(x1 , y 1 )
+
+1
+
+(x2 , y 1 ) ∨ (x2 , y 2 )
+
+2
+
+(x2 , y 1 ).
+
+(26)
+
+In particular, we found that for strict games, a conjunction C 1 ∧ C 2 of two binary clauses is a uniqueness condition iff either
+C 1 or C 2 is a uniqueness condition.
+The ﬁrst condition is equivalent to
+
+(x2 , y )
+
+1
+
+(x1 , y ) ⊃ (x1 , y )
+
+2
+
+(x2 , y )
+
+(27)
+
+as in strict games, s1 1 s2 iff s1 <1 s2 ∨ s1 = s2 . This is exactly one of the two conjuncts in the condition (9) for weakly
+unilaterally competitive games.
+Now swap the roles of the two players in (27), we get the following condition
+
+(x, y 1 )
+
+2
+
+(x, y 2 ) ⊃ (x, y 2 )
+
+1
+
+(x, y 1 ),
+
+(28)
+
+which is exactly the other conjunct in the condition (9).
+In the following, we call a game that satisﬁes (27) a weakly unilaterally competitive for player 1, and a game that satisﬁes
+(28) a weakly unilaterally competitive for player 2. Thus a game is weakly unilaterally competitive if it is weakly unilaterally
+competitive for both players. The following example shows that a game can be weakly unilaterally competitive for player 1
+but not for player 2.
+
+2, 1 3, 4
+1, 2 4, 3
+This example also shows that a weakly unilaterally competitive game for player 1 may not be almost strictly competitive [1]:
+a game is almost strictly competitive if
+1. the set of payoff vectors of the PNEs is the same as the set of payoff vectors of the twisted equilibria; and
+2. there is a PNE that is also a twisted equilibrium,
+where (a, b) is a twisted equilibrium if no player can decrease the payoff of the other player by a unilateral change of
+his strategy: for every a ∈ A (b ∈ B), (a, b) 2 (a , b) ((a, b) 1 (a, b )). For this example, it is easy to see that the only
+equilibrium of the game, (4, 3), is not a twisted equilibrium.
+As it turns out, (27) and (28) are the only non-trivial conditions. The last two conditions (25) and (26) can never be
+satisﬁed by games larger or equal to 3 × 3. The remaining ﬁve conditions (20)–(24) are games with dominant strategies.
+Proposition 5. If G is a strict game and satisﬁes one of the conditions (20)–(24), then one of the players has a strictly dominant
+strategy in G.
+Proof. We start with condition (20), which is equivalent to
+
+(x1 , y 2 ) <1 (x1 , y 1 ) ⊃ (x1 , y 2 ) <2 (x2 , y 1 ).
+For any a ∈ A, suppose b0 ∈ B such that for any b ∈ B and b = b0 , (a, b) <1 (a, b0 ). Thus (a, b) <2 (a, b0 ) for all such b as
+well. Thus b0 ∈ B 2 (a). Now suppose a ∈ A and a = a, and that b0 ∈ B is such that for any b ∈ B and b = b0 , (a , b) <1
+(a , b0 ). Thus b0 ∈ B 2 (a ). Now if b0 = b0 , then (a, b0 ) <2 (a , b0 ) because (a, b0 ) <1 (a, b0 ), and (a , b0 ) <2 (a, b0 ) because
+(a , b0 ) <1 (a , b0 ). This implies that (a, b0 ) <2 (a, b0 ) by transitivity of <2 , a contradiction. Thus b0 = b0 . Thus the game is
+unilateral for player 2.
+Condition (21) is equivalent to
+
+(x1 , y 2 ) <1 (x1 , y 1 ) ⊃ (x2 , y 2 ) <2 (x1 , y 1 ).
+For any a ∈ A, suppose b0 ∈ B such that for any b ∈ B and b = b0 , (a, b) <1 (a, b0 ). Thus (a, b) <2 (a, b0 ) for all such b as
+well. Thus b0 ∈ B 2 (a). Now suppose a ∈ A and a = a, and that b0 ∈ B is such that for any b ∈ B and b = b0 , (a , b) <1
+(a , b0 ). Thus b0 ∈ B 2 (a ). Now if b0 = b0 , then (a , b0 ) <2 (a, b0 ) because (a, b0 ) <1 (a, b0 ), and (a, b0 ) <2 (a , b0 ) because
+(a , b0 ) <1 (a , b0 ). This implies that (a , b0 ) <2 (a , b0 ) by transitivity of <2 , a contradiction. Thus b0 = b0 . Thus the game is
+unilateral for player two.
+Condition (22) is equivalent to
+
+(x1 , y 2 ) <1 (x1 , y 1 ) ⊃ (x2 , y 2 ) <2 (x2 , y 1 ).
+For any a ∈ A, suppose b0 ∈ B such that for any b ∈ B and b = b0 , (a, b) <1 (a, b0 ). Thus (a, b) <2 (a, b0 ) for all such b as well.
+Thus b0 ∈ B 2 (a). Now suppose a ∈ A and a = a, and that b0 ∈ B is such that for any b ∈ B and b = b0 , (a , b) <1 (a , b0 ).
+
+P. Tang, F. Lin / Artiﬁcial Intelligence 175 (2011) 2010–2020
+
+2019
+
+Thus b0 ∈ B 2 (a ). Now if b0 = b0 , then (a , b0 ) <2 (a , b0 ) because (a, b0 ) <1 (a, b0 ). This contradicts to b0 ∈ B 2 (a ). Thus
+b0 = b0 . Thus the game is unilateral for player two.
+Condition (23) is equivalent to
+
+(x1 , y 1 ) <2 (x1 , y 2 ) ⊃ (x1 , y 1 ) <1 (x2 , y 2 ).
+For any a ∈ A, suppose b0 ∈ B such that for any b ∈ B and b = b0 , (a, b) <2 (a, b0 ). Thus b0 ∈ B 2 (a). Now suppose a ∈ A
+and a = a, and that b0 ∈ B is such that for any b ∈ B and b = b0 , (a , b) <2 (a , b0 ). Thus b0 ∈ B 2 (a ). Now if b0 = b0 , then
+(a, b0 ) <1 (a , b0 ) because (a, b0 ) <2 (a, b0 ), and (a , b0 ) <1 (a, b0 ) because (a , b0 ) <2 (a , b0 ). This implies that (a, b0 ) <1
+(a, b0 ) by transitivity of <1 , a contradiction. Thus b0 = b0 . Thus the game is unilateral for player two.
+Condition (24) is equivalent to
+
+(x1 , y 2 ) <2 (x2 , y 2 ) ⊃ (x1 , y 1 ) <1 (x2 , y 2 ).
+For any b ∈ B, suppose a0 ∈ A such that for any a ∈ A and a = a0 , (a, b) <2 (a0 , b). Thus (a, b) <1 (a0 , b) for all such a as
+well. Thus a0 ∈ B 1 (b). Now suppose b ∈ B and b = b, and that a0 ∈ A is such that for any a ∈ A and a = a0 , (a, b ) <2
+(a0 , b ). Thus a0 ∈ B 1 (b ). Now if a0 = a0 , then (a0 , b ) <1 (a0 , b) because (a0 , b) <2 (a0 , b), and (a0 , b) <1 (a0 , b ) because
+(a0 , b ) <2 (a0 , b ). This implies that (a0 , b ) <1 (a0 , b ) by transitivity of <1 , a contradiction. Thus a0 = a0 . Thus the game is
+unilateral for player one. ✷
+6.3. Strictly competitive game classes
+To summarize, for strict games, the only interesting uniqueness conditions that can be expressed by a conjunction of
+two binary clauses and include games that do not have dominant strategies are weakly unilaterally competitive conditions
+for individual players, (27) and (28). This led us to wonder if these two conditions are also necessary conditions for a strict
+game to have a unique PNE. However, it is easy to see that this is not the case. In fact, a universal condition like (8) can
+never be both a necessary and a suﬃcient condition for a game to have unique PNE. This is because for any given game,
+no matter how many PNEs it has, we can always extend it by one more strategy for each player, and make it into a game
+with a unique PNE by assigning payoffs large enough to a proﬁle made of the two new strategies. However, if a universal
+condition is satisﬁed by a game, it is also satisﬁed by any of its sub-games.
+This led us to consider not individual games, but classes of games under certain equivalence relation.
+Two games G 1 = ( A , B , 1 , 2 ) and G 2 = ( A , B , 1 , 2 ) are unilaterally order equivalent 5 if
+
+• A = A , and B = B .
+• For every a ∈ A, b, b ∈ B, (a, b)
+• For every b ∈ B, a, a ∈ A, (a, b)
+
+2
+1
+
+(a, b ) iff (a, b)
+(a , b) iff (a, b)
+
+(a, b ).
+(
+1 a , b ).
+2
+
+They are best-response equivalent [16] if for all a ∈ A, B 2 (a) in G 1 and G 2 are the same, and for all b ∈ B, B 1 (b) in G 1 and
+G 2 are the same. Clearly, if G 1 and G 2 are unilaterally order equivalent, then they are also best-response equivalent, but the
+converse is not true in general. Both notions of equivalence preserve PNEs.
+We have the following result.
+Theorem 3. A strict game has at most one PNE iff it is best-response equivalent to a strictly competitive game.
+Theorem 3 does not hold for general two-person games. For instance, the following game
+
+1, 1 2, 2
+2, 2 1, 1
+has unique equilibrium payoff (2, 2) but is not best-response equivalent to any strictly competitive games. This theorem
+turns out to be particularly interesting in game theoretical community and has been proved in a separate paper [18].
+7. Concluding remarks
+We have provided a logical framework for computer-aided theorem discovery in two-person game theory, and applied
+it successfully to the task of discovering classes of two-person games with unique PNE payoffs. Our program returned a
+condition that is more general than the strict competitiveness condition, namely, the weakly unilaterally competitiveness.
+Two conditions, which we coin “I-compete-you-cooperate”, capture a class of “unfair” games where one player has advantage
+over the other. The remaining ones capture games where everyone gets what he wants – each receives his maximum payoff
+
+5
+We call it unilaterally order equivalence to distinguish it from order equivalence [16] that requires both the row and column orders in the two games to
+be the same for both players.
+
+2020
+
+P. Tang, F. Lin / Artiﬁcial Intelligence 175 (2011) 2010–2020
+
+in every equilibrium state, thus there is no real competition among the players. Thus one conclusion that we can draw from
+this experiment is that among all classes of games that can be expressed by a conjunction of two binary clauses, the class
+of weakly unilaterally competitive games is the most general class of “competitive” and “fair” games that have unique PNE
+payoffs.
+For the same set of conditions, we also consider strict two-person games where different proﬁles have different payoffs
+for each player. Among the results returned by our program, two of them are exactly the two conjuncts in Kats and Thisse’s
+weakly unilaterally competitive condition, but the others all turn out to be special cases of games with dominant strategies;
+others correspond to games with dominant strategies. Motivated by these results, we consider certain equivalent classes of
+games, and show that a strict game has a unique PNE iff it is best-response equivalent to a strictly competitive game.
+There are many directions for future work. An obvious one is to see how interesting theorems can be discovered using
+Theorem 1 on classes of games that do not have any PNE and games whose PNEs are Pareto optimal. More importantly, we
+would like to see how this methodology can be applied on classes of game that has at least one PNE. In fact, we recently
+have found that two such classes, potential games and supermodular games are best response equivalent [18]. Our program
+also shows there are other classes of games that do not belong to either class but still have at least one PNE. This suggests a
+new research direction: a characterization of these games. An even more interesting direction is to come up with a language
+that can effectively represent mix strategy equilibria and then conduct our theorem discovery method on this setting.
+References
+[1] R. Aumann, Almost strictly competitive games, Journal of the SIAM 6 (1962).
+[2] S. Fajtlowicz, On conjectures of graﬃti, Discrete Math. 72 (1–3) (1988) 113–118.
+[3] C. Geist, U. Endriss, Automated search for impossibility theorems in social choice theory: Ranking sets of objects, Journal of Artiﬁcial Intelligence
+Research 40 (2011) 143–174.
+[4] A. Kats, J.-F. Thisse, Unilaterally competitive games, International Journal of Game Theory 21 (3) (1992) 291–299.
+[5] P. Langley, The computer-aided discovery of scientiﬁc knowledge, in: Proceedings of the First International Conference on Discovery Science, Springer,
+1998, pp. 25–39.
+[6] D.B. Lenat, Automated theory formation in mathematics, in: IJCAI, 1977, pp. 833–842.
+[7] A. Likhodedov, T. Sandholm, Methods for boosting revenue in combinatorial auctions, in: AAAI, 2004, pp. 232–237.
+[8] A. Likhodedov, T. Sandholm, Approximating revenue-maximizing combinatorial auctions, in: AAAI, 2005, pp. 267–273.
+[9] F. Lin, Y. Chen, Discovering classes of strongly equivalent logic programs, Journal of Artiﬁcial Intelligence Research 28 (2007) 431–451.
+[10] F. Lin, P. Tang, Computer aided proofs of arrow’s and other impossibility theorems, in: AAAI’08, 2008.
+[11] F. Lin, Discovering state invariants, in: KR’04, 2004, pp. 536–544.
+[12] F. Lin, Finitely-veriﬁable classes of sentences, in: Proceedings of the 2007 AAAI Spring Symposium on Logical Formalization of Commonsense Reasoning,
+2007, http://www.ucl.ac.uk/commonsense07/.
+[13] D. Monderer, L. Shapley, Potential games, Games and Economic Behavior 14 (1996) 124–143.
+[14] M.J. Osborne, A. Rubinstein, A Course in Game Theory, MIT Press, 1994.
+[15] M. Petkovsek, H. Wilf, D. Zeilberger, A = B, A K Peters, Ltd., 1996.
+[16] R.W. Rosenthal, Correlated equilibria in some classes of two-person games, International Journal of Game Theory (3) (1974) 119–128.
+[17] P. Tang, F. Lin, Computer aided proofs of arrow’s and other impossibility theorems, Artiﬁcial Intelligence 173 (2009) 1041–1053.
+[18] P. Tang, F. Lin, Two equivalence results for two-person strict games, Games and Economic Behavior (2011) 479–486.
+[19] P. Tang, Computer-aided theorem discovery – a new adventure and its application to economic theory, PhD dissertation, HKUST, 2010.
+[20] D.M. Topkis, Supermodularity and Complementarity, Princeton University Press, 1998.
+
+

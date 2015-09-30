@@ -1,0 +1,1482 @@
+j o u r n a l o f i n f o r m a t i o n s e c u r i t y a n d a p p l i c a t i o n s 2 0 ( 2 0 1 5 ) 7 4 e8 3
+
+Available online at www.sciencedirect.com
+
+ScienceDirect
+journal homepage: www.elsevier.com/locate/jisa
+
+Blind SVD-based audio watermarking using
+entropy and log-polar transformation
+Pranab Kumar Dhar*, Tetsuya Shimamura
+Graduate School of Science and Engineering, Saitama University, Saitama 338-8570, Japan
+
+article info
+
+abstract
+
+Article history:
+
+This paper proposes a blind singular value decomposition (SVD) based audio watermarking
+
+Available online 11 November 2014
+
+scheme using entropy and log-polar transformation (LPT) for copyright protection of audio
+signal. In our proposed scheme, initially the original audio is segmented into non-
+
+Keywords:
+
+overlapping frames and discrete cosine transform (DCT) is applied to each frame. Low
+
+Audio watermarking
+
+frequency DCT coefficients are divided into sub band and entropy of each sub band is
+
+Discrete cosine transform
+
+calculated. Watermark data is embedded into the Cartesian components of the largest
+
+Entropy
+
+singular value obtained from the DCT sub band with highest entropy value of each frame
+
+Log-polar transformation
+
+by quantization. Simulation results indicate that the hidden watermark data is robust
+
+Singular value decomposition
+
+against different attacks. The comparison analysis shows that the proposed scheme has
+high data payload and provides superior performance compared to the state-of-the-art
+watermarking schemes reported recently.
+© 2014 Published by Elsevier Ltd.
+
+1.
+
+Introduction
+
+In recent years, the rapid growth of multimedia technology
+has greatly facilitated the transmission and distribution of
+digital contents over the internet. As a result, the protection of
+the intellectual property rights of digital media has become an
+important issue. Digital watermarking has been used extensively for digital right management of multimedia data. It is a
+process of embedding watermark into the multimedia data to
+show authenticity and ownership. It has various applications
+such as copyright protection, data authentication, privacy
+protection, fingerprinting, broadcast monitoring, and so on. It
+must successfully satisfy the trade-off among the conflicting
+requirements of imperceptibility, robustness, and data
+payload.
+A comprehensive survey on watermarking can be found in
+Cox and Miller (2002) and Cvejic and Seppanen (2007). Most of
+
+the watermarking algorithms proposed over the last few years
+mainly focus on image and video watermarking (Agresteand
+and Andaloro, 2008; Tsolis et al., 2009; Chan et al., 2005;
+Noorkami and Mersereau, 2008). Audio watermarking is
+more challenging than image and video watermarking,
+because the human auditory system (HAS) is significantly
+more sensitive than the human visual system (HVS). Most
+audio watermarking methods utilize either a time domain
+(Swanson et al., 1998; Lie and Chang, 2006) or a transform
+domain such as discrete wavelet transform (DWT) (Chen et al.,
+2013, 2010a, 2010b), lifting wavelet transform (LWT) (Erc¸elebi
+and Batakc¸ı, 2009), and fast Fourier transform (FFT) (Megı´as
+et al., 2010). Time domain methods are very efficient and
+easy to implement, however, transform domain methods can
+provide high robustness. Swanson et al. (Swanson et al., 1998)
+proposed a watermarking scheme that embeds watermark
+bits by modifying the audio samples directly. Lie and Chang
+(Lie and Chang, 2006) introduced a method in which group
+
+* Corresponding author.
+E-mail addresses: pranab@sie.ics.saitama-u.ac.jp (P.K. Dhar), shima@sie.ics.saitama-u.ac.jp (T. Shimamura).
+http://dx.doi.org/10.1016/j.jisa.2014.10.007
+2214-2126/© 2014 Published by Elsevier Ltd.
+
+75
+
+j o u r n a l o f i n f o r m a t i o n s e c u r i t y a n d a p p l i c a t i o n s 2 0 ( 2 0 1 5 ) 7 4 e8 3
+
+amplitudes are modified to achieve high robustness. However,
+both methods have low data payload. In Chen et al. (2013),
+authors presented an adaptive method using wavelet based
+entropy, but robustness to resampling and low-pass filtering
+attacks are quite low. Chen et al. (Chen et al., 2010a) proposed
+an algorithm that embeds watermark information by energyproportion scheme. However, the SNR results of this algorithm are not satisfactory. In Chen et al. (2010b), authors
+introduced an optimization-based watermarking scheme
+which embeds watermark in the lowest-frequency coefficients of DWT. However, the subjective evaluation of
+watermarked audio signals has not been conducted in this
+scheme. Erc¸elebi and Batakc¸ı (2009) proposed a watermarking
+method based on LWT in which a binary image is embedded
+as watermark. However, from the reported result, robustness
+to attacks of this method is quite low. Megı´as et al. (2010)
+suggested a watermarking method that embeds watermark
+in FFT domain, but it has low data payload. Recently, the
+singular value decomposition (SVD) has been used as an
+effective technique in digital watermarking (El-Samie, 2009;
+Al-Nuaimy et al., 2011; Ali and Ahmad, 2010; Bhat et al.,
+2010; Lei et al., 2011). El-Samie (2009) and Al-Nuaimy et al.
+(2011) proposed an efficient SVD based audio watermarking
+algorithm which is domain adaptive. Moreover, the proposed
+segment-by-segment approach enhanced the detectability
+compared to the simple approach utilizing the whole original
+audio signal directly. However, the detection scheme is nonblind and robustness needs further improvement. In Ali and
+Ahmad (2010), authors proposed a method based on DWT
+and SVD. But this method is also non-blind and has low data
+payload. The most recent SVD based blind audio watermarking methods are proposed by Bhat et al. (2010) and Lei
+et al. (2011). These methods provide high robustness; however the data payload of these methods is quite low. Moreover,
+some other techniques such as empirical mode decomposition (EMD) (Khaldi and Boudraa, 2013), time spread (TS) echo
+method (Xiang et al., 2011; Erfani and Siahpoush, 2009), and
+audio histogram technique (Xiang and Huang, 2007; Xiang
+et al., 2008) are becoming popular in audio watermarking
+field. The main limitation of the existing audio watermarking
+techniques is the difficulty to obtain a favorable trade-off
+among imperceptibility, robustness, and data payload. To
+overcome this limitation, in this paper, we propose a blind
+SVD-based audio watermarking scheme in DCT domain using
+entropy and log-polar transformation (LPT). The main features of the proposed scheme include (i) it utilizes the entropy,
+DCT, SVD, LPT, and quantization jointly, (ii) it uses a tent map
+which contains the chaotic characteristic to enhance the
+confidentiality of the proposed scheme, (iii) watermark is
+embedded by quantizing the Cartesian component of highest
+singular value obtained from the DCT sub band with highest
+entropy value, (iv) watermark extraction process is blind, and
+(v) it achieves a good trade-off among imperceptibility,
+robustness, and data payload. Experimental results demonstrate that the proposed watermarking scheme shows high
+robustness against various attacks such as noise addition,
+cropping, resampling, requantization, signal addition, signal
+subtraction, and MP3 compression. Moreover, it outperforms
+state-of-the-art methods (Chen et al., 2013, 2010a; Erc¸elebi and
+Batakc¸ı, 2009; Al-Nuaimy et al., 2011; Ali and Ahmad, 2010;
+
+Bhat et al., 2010; Lei et al., 2011; Khaldi and Boudraa, 2013;
+Xiang et al., 2011; Erfani and Siahpoush, 2009; Xiang and
+Huang, 2007; Xiang et al., 2008) in terms of imperceptibility,
+robustness, and data payload. This is because watermark bits
+are embedded into the Cartesian components of the largest
+singular value obtained from the DCT sub band with highest
+entropy value of each frame. The data payload of the proposed
+scheme is 172.39 bps which is relatively higher than that of the
+state-of-the-art methods.
+The rest of this paper is organized as follows. Section 2
+provides background information including DCT, SVD, and
+LPT. Section 3 introduces our proposed watermarking
+scheme. Section 4 compares the proposed scheme with the
+state-of-the-art methods in terms of imperceptibility and
+robustness. Section 5 provides performance analysis of the
+proposed scheme. Lastly, the conclusion of this paper is presented in Section 6.
+
+2.
+
+Background information
+
+2.1.
+
+Discrete cosine transform
+
+The DCT is widely used in signal and image processing, especially for lossy data compression. It expresses the sequence
+of many data points in terms of a sum of cosine functions
+oscillating at different frequencies. It can be written as.
+
+
+NÀ1
+À Á
+À Á
+À ÁX
+pð2n À 1Þðk À 1Þ
+;
+x n cos
+X k ¼c k
+2N
+n¼0
+
+k ¼ 0; 1; …; N À 1
+(1)
+
+where x(n) is the audio signal with length N samples and
+8
+1
+>
+>
+> pﬃﬃﬃﬃ; k ¼ 0
+À Á < N
+c k ¼ rﬃﬃﬃﬃ
+>
+>
+2
+>
+:
+; k ¼ 1; 2; /N À 1
+N
+
+(2)
+
+The DCT has a strong ‘energy compaction’ property, i.e.,
+most of the signal information tend to be concentrated in a
+few low-frequency components of the DCT coefficients. This
+property can be utilized in audio watermarking to reduce the
+deterioration of watermarked signal.
+
+2.2.
+
+Singular value decomposition
+
+Let H ¼ {Hij}pÂp be an arbitrary matrix with SVD of the form
+H ¼ USVT, where U and V are orthogonal p Â p matrices and S is
+a p Â p diagonal matrix with non negative elements. The diagonal entries of S are called the singular values (SVs) of H
+where S ¼ diag (s1, s2, … sp), the columns of U are called the left
+singular vectors of H, and the columns of V are called the right
+singular vectors of H.
+
+2.3.
+
+Log-polar transformation
+
+The LPT is a conformal transformation from the Cartesian
+coordinate system to the log-polar coordinate system.
+Consider the log-polar coordinate system (r, q), where r
+denotes the logarithm of the distance between a given point
+
+76
+
+j o u r n a l o f i n f o r m a t i o n s e c u r i t y a n d a p p l i c a t i o n s 2 0 ( 2 0 1 5 ) 7 4 e8 3
+
+and the origin and q denotes the angle between a line of
+reference and the line through the origin and the point. The
+transformation from the Cartesian coordinate to the log-polar
+coordinate is given by the following equation:
+r ¼ log
+
+qﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃ
+y
+x2 þ y2 ; q ¼ tanÀ1
+x
+
+(3)
+
+where (x, y) is a point in Cartesian coordinate system. The
+transformation from the log-polar coordinate to the Cartesian
+coordinate is given by the following equation:
+x ¼ er cos q; y ¼ er sin q
+
+3.
+
+(4)
+
+Proposed watermarking scheme
+
+ÀÁ
+z i ¼
+
+&
+
+1 if yðiÞ > T
+0 otherwise
+
+(6)
+
+where T is a predefined threshold. The binary watermark
+image W is converted into a one dimensional sequence q,
+where q ¼ {q(i), i ¼ 1, 2, 3, … , M Â M}. Finally q(i) is encrypted
+using z(i) by the following rule:
+uðiÞ ¼ zðiÞ4qðiÞ;
+
+1
+
+i
+
+MÂM
+
+(7)
+
+where u(i) is the encrypted watermark sequence and 4 is the
+exclusive-or (XOR) operation. Here, y(1) and b are used as secret key K.
+
+3.2.
+
+Watermark embedding process
+
+Let A ¼ {a(n), 1
+n
+L} be an original audio signal with L
+samples, W ¼ {w(k, l), 1 k M, 1 l M } be a binary logo
+image to be embedded into the original audio signal.
+
+The proposed watermark embedding process is shown in
+Fig. 1. The embedding process is implemented in the following
+steps:
+
+3.1.
+
+1) The original audio signal A is first segmented into nonoverlapping frames F ¼ {F1, F2, F3,…, F(MÂM)/2} and then
+each frame Fi is transformed into DCT domain to calculate
+the DCT coefficients Ci, where i indicates the frame
+number.
+
+Watermark preprocesing
+
+In this paper, we use a tent map that contains the chaotic
+characteristics to encrypt the binary watermark image for
+enhancing the confidentiality of the proposed method. Tent
+map can be defined as follows:
+8
+>
+>
+>
+<
+
+1 ÀÁ
+y i ;
+0
+À
+Á
+b
+y iþ1 ¼
+>
+ÀÁ
+1
+1
+>
+>
+y i þ
+; b
+:
+bÀ1
+bÀ1
+
+yðiÞ < b
+(5)
+yðiÞ
+
+1
+
+where y(1)2(0,1) and b are a real parameter (map's initial
+condition). Then a binary sequence z(i) is calculated by using
+the following equation:
+
+2) The first l (low frequency) DCT coefficients of each frame Fi
+are divided into m number of sub bands B ¼ {Bj, 1 j m}
+with r numbers of coefficients in each sub band Bj, where j
+indicates the sub band number.
+j
+m} of the sub bands B ¼ {Bj,
+3) The entropy E ¼ {Ej, 1
+1 j m} of the selected l DCT coefficients of each frame Fi
+is calculated using the following equation:
+
+Fig. 1 e Watermark embedding process.
+
+j o u r n a l o f i n f o r m a t i o n s e c u r i t y a n d a p p l i c a t i o n s 2 0 ( 2 0 1 5 ) 7 4 e8 3
+
+r
+X
+À Á
+Ej ¼ entropy Bj ¼ À
+pk log2 pk
+
+(8)
+
+77
+
+components Six and Siy using the following log-polar-toCartesian transformation:
+
+k¼1
+
+where Ei represents the entropy value of the sub band Bi, pk
+and k are the amplitude of the DCT coefficients and the index
+of the DCT coefficients, respectively in each sub band Bj.
+
+Six ¼ eSi cos q
+Siy ¼ eSi sin q
+
+(10)
+
+where q is the angle of decomposition.
+4) Find Emax ¼ max{E1, E2, E3,…, Em} of the sub band {B1, B2,
+B3,…, Bm} of each frame Fi, where max operation returns the
+largest element in {E1, E2, E3,…, Em}. Thus, Emax represents
+the largest entropy value in {E1, E2, E3,…, Em}.
+
+9) Let Dix ¼ round (Six/Q) and Diy ¼ round (Siy/Q), where Q is a
+predefined quantization coefficient. Calculate Deix and Deiy
+by using the following equation:
+&
+
+5) Select Emax and find the corresponding sub band from {B1,
+B2, B3,…, Bm} i.e., the sub band with largest entropy value
+(denoted by Bj(largest)) of the DCT coefficients of each frame
+Fi. This sub band is selected because it is the significant
+band to embed watermark data. Fig. 2 shows the illustration of entropy method.
+6) The DCT coefficients of Bj(largest) of each frame Fi are rearranged into an N Â N square matrix Ri. This is done by
+dividing the coefficient set into N segments with N
+coefficients.
+7) SVD is performed to decompose each matrix Ri into three
+matrices: Ui, Si, and Vi. The SVD operation is represented as
+follows:
+Ri ¼ Ui Si ViT
+
+(9)
+
+8) The largest singular value Si (1,1) of each matrix Si is
+selected. Watermark information should be embedded into
+the most significant perceptual components of the audio
+signal in order to guarantee the robustness and imperceptibility of the proposed method. As Si (1,1) contains the
+most power of the signal, therefore, it represents the
+significant perceptual component of the audio signal.
+The Si (1,1) of each matrix Si is further decomposed into two
+
+Dix þ 1
+& Dix
+Diy þ 1
+e
+Diy ¼
+Diy
+
+Deix ¼
+
+if
+if
+if
+if
+
+modðDix ; 2Þ ¼ 1
+modðD
+À ix ; 2ÞÁ ¼ 0
+modÀDiy ; 2Á ¼ 1
+mod Diy ; 2 ¼ 0
+
+(11)
+
+Here, both Deix and Deiy are even numbers.
+10) In order to guarantee the robustness and transparency, the
+proposed scheme embeds watermark bit into Deix and Deiy of
+each matrix Si using quantization. This ensures that the
+watermark is located at the most significant perceptual
+components of the audio signal. Watermark data is
+embedded by using the following equation:
+&
+
+Deix À 1
+De
+& e ix
+D
+iy À 1
+D0iy ¼
+Deiy
+D0ix ¼
+
+if
+if
+if
+if
+
+uðiÞ ¼ 1
+uðiÞ ¼ 0
+uðiÞ ¼ 1
+uðiÞ ¼ 0
+
+(12)
+
+11) The modified components S'ix and S'iy of each matrix S'i are
+calculated using the following equation:
+S'ix ¼ QD'ix
+S'iy ¼ QD'iy
+
+(13)
+
+12) The modified largest singular value S'i (1,1) is calculated
+using the following Cartesian-to-log-polar transformation:
+qﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃ
+
+
+02
+S0i 1; 1 ¼ log S02
+ix þ Siy
+!
+S'iy
+q' ¼ tanÀ1 '
+Six
+
+(14)
+
+13) Reinsert each modified largest singular value S'i (1,1) into
+matrix Si and inverse SVD is applied to obtain the modified
+matrix R'i which is given by
+R0i ¼ Ui S0i ViT
+
+(15)
+
+Each matrix R'i is then reshaped to create the modified sub
+band B'jðlargestÞ of each frame Fi by performing the inverse
+operation of step 6.
+
+Fig. 2 e Illustration of entropy method.
+
+14) After substituting the modified sub band B'jðlargestÞ for
+Bj(largest), an inverse DCT is performed on C'i to obtain the
+watermarked audio frame F'i .
+
+78
+
+j o u r n a l o f i n f o r m a t i o n s e c u r i t y a n d a p p l i c a t i o n s 2 0 ( 2 0 1 5 ) 7 4 e8 3
+
+15) Finally, all watermarked frames are concatenated to
+calculate the watermarked audio signal A'.
+
+7) Perform chaotic decryption using the secret key K to find
+the hidden binary sequence with the following rule:
+ÀÁ
+ÀÁ
+ÀÁ
+q* i ¼ z i 4u* i
+
+3.3.
+
+(18)
+
+Watermark detection process
+
+The proposed watermark detection process is shown in Fig. 3.
+The detection process is blind and described in the following
+steps:
+1) The DCT is performed on each frame F*i of the attacked
+watermarked audio signal.
+2) Calculate the entropy of each sub band B*j of each frame.
+Rearrange each B*j(largest) to obtain R*i .
+3) SVD is performed on each R*i to calculate the largest value
+S*i (1,1) of each matrix S*i of the attacked watermarked audio
+frame.
+4) The S*i (1,1) of each matrix Si is further decomposed into two
+components S*ix and S*iy using the following log-polar-toCartesian transformation:
+
+*
+S*ix ¼ esi cos q
+*
+S*iy ¼ esi sin q
+
+(16)
+
+5) Calculate D*ix and D*iy of each highest singular value S*i (1, 1).
+6) Watermark sequence is extracted as follows:
+
+
+
+
+8
+< 1 if mod D*ix ; 2 ¼ 1 or mod D*iy ; 2 ¼ 1
+À
+Á
+
+
+
+
+u* i ¼
+: 0 if mod D* ; 2 ¼ 0 or mod D* ; 2 ¼ 0
+ix
+iy
+
+(17)
+
+8) Finally, watermark image is obtained by rearranging the
+binary sequence q*(i) into a square matrix W* of size M Â M.
+
+4.
+
+Simulation results and discussion
+
+In this section, several experiments were conducted on four
+different types of 16 bit mono audio signals (Jazz, Blues, Folk,
+and Classical) sampled at 44.1 kHz to evaluate the performance of the proposed method in terms of imperceptibility
+and robustness. Each audio file contains 262,144 samples
+(duration 5.94 s). Each audio signal is divided into frames of
+size 512 samples. In each frame of audio signal, we embed two
+bit watermark information of a binary logo image. In our
+proposed method any binary logo image can be used as a
+watermark. The imperceptibility and robustness results of the
+proposed watermarking method will not be affected significantly by the frequency component of any binary watermark
+image. This is because frequency components of the binary
+image are not embedded as a watermark in the proposed
+method; rather than a binary sequence (obtained by converting the binary image into one dimensional sequence) is
+embedded as a watermark. As the watermark images are
+different from each other, therefore, the performance of the
+proposed method may vary slightly depending on the watermark image. A binary logo image and the corresponding
+encrypted
+image
+by
+chaotic
+encryption
+of
+size
+M Â M ¼ 32 Â 32 ¼ 1024 are shown in Fig. 4. Here, the selected
+value for y(1), b, T, B, q, Q, the sub band number m and the
+coefficients in each sub band r are 0.6, 0.3, 0.5, 2, 45 , 0.4, 3, and
+9, respectively. These parameters have been selected in order
+to have a good compromise among the conflicting requirements of imperceptibility, robustness, and data payload.
+
+4.1.
+
+Imperceptibility test
+
+The imperceptibility of the watermarked audio signal is
+evaluated by using two ways: (i) subjective listening test (ii)
+objective test.
+
+4.1.1.
+
+Subjective listening test
+
+An informal subjective listening test was performed to evaluate the perceptual quality of the watermarked audio. Ten
+
+Fig. 3 e Watermark detection process.
+
+Fig. 4 e (a) Binary watermark image, (b) Encrypted
+watermark image.
+
+79
+
+j o u r n a l o f i n f o r m a t i o n s e c u r i t y a n d a p p l i c a t i o n s 2 0 ( 2 0 1 5 ) 7 4 e8 3
+
+listeners were involved in this listening test and were asked to
+classify the differences between them, using a five point
+subjective difference grade (SDG) ranges from 5.0 to 1.0
+(imperceptible to very annoying) as shown in Table 1. The
+average SDG (i.e., mean opinion) scores for different watermarked sounds using the proposed scheme are shown in
+Table 2. From the test results, we observed that the average
+mean opinion score (MOS) of all watermarked sound using the
+proposed scheme is 4.85, indicating that original and watermarked audio signals are perceptually similar.
+Subjective evaluation was also carried out using ABX
+double blind test. In this test, ten subjects were participated
+whose hearing ability is normal. Initially, the original audio
+signal (A) and the watermarked audio signal (B) are played to
+each subject and then a third audio signal (X) is played in
+random order, which can be either A or B. The subjects were
+asked to verify whether X is A or B. One time of identification
+was assumed as one trial and five times of trials were carried
+out by each subject. A high percentage of correct detection
+clearly indicates the perceptibility of the watermark in the
+audio signal, whereas a detection percentage of 50% suggests
+that the difference between original and watermarked sounds
+was imperceptible. Table 2 shows the evaluation results of all
+subjects in terms of percentage of correct detection. From this
+table it is seen that correct detection scores range from 44% to
+54%, indicating that proposed watermarking scheme provides
+good imperceptible watermarked sound.
+
+4.1.2.
+
+Table 2 e Subjective evaluation for different watermarked
+sounds.
+Type of signal
+
+MOS
+
+Correct detection
+
+Jazz
+Blues
+Folk
+Classical
+Average
+
+4.8
+4.7
+4.9
+5.0
+4.85
+
+56%
+46%
+42%
+54%
+49.50%
+
+imperceptible when SNR is over 20 dB. After embedding
+watermark information, the SNRs of the watermarked audio
+signals using the proposed scheme are above 20 dB, shown in
+Table 3, which satisfied the IFPI standard.
+Fig. 5 shows the time domain representation of the original
+audio signal with a watermarked audio signal in which the
+watermark is imperceptible using the proposed scheme for
+the signal ‘Jazz’.
+The proposed scheme was compared with the several
+recent methods in terms of SNR and MOS. This comparison is
+based on the reported results in Chen et al. (2013, 2010a), AlNuaimy et al. (2011), Ali and Ahmad (2010), Bhat et al. (2010),
+Lei et al. (2011), Khaldi and Boudraa (2013) and Erfani and
+Siahpoush (2009) as shown in Table 4. From the comparison
+results, it is seen that our proposed scheme outperforms the
+recent watermarking methods in terms of SNR and MOS,
+indicating a high transparency of the watermarked audio
+signals.
+
+Objective test
+
+Objective test was conducted using the objective difference
+grade (ODG) which is one of the output values obtained from
+the perceptual evaluation of audio quality (PEAQ) measurement technique specified in ITU-R BS.1387 (International
+Telecommunication Union-Radio-communication Sector)
+standard (Thiede et al., 2000). It corresponds to the subjective
+grade used in human based audio tests. The ODG ranges from
+0.0 to À4.0 (imperceptible to very annoying) as shown in Table
+1. Table 3 shows the objective quality of the watermarked
+audio signals in terms of ODG. We observed that the average
+ODG value is À0.29, indicating that original and watermarked
+audio signals are perceptually indistinguishable.
+Objective evaluation was also done by calculating the SNR
+which is given by.
+PL
+SNR ¼ 10 log10 PL
+i¼1
+
+2
+i¼1 a ðnÞ
+½aðnÞ À a* ðnÞ2
+
+(19)
+
+where a(n) and a*(n) are the original and watermarked audio
+signals in time domain, respectively. According to the International Federation of the Phonographic Industry (IFPI) standard (Bhat et al., 2010), audio watermarking should be
+
+4.2.
+
+Robustness test
+
+Normalized correlation (NC) coefficient is used to compare the
+similarities between the original watermark W and the
+extracted watermark W*, which is calculated as:
+PM PM
+*
+Á
+À
+k¼1
+l¼1 wðk;lÞ$w ðk;lÞ
+ﬃ
+ﬃqﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃ
+NC W;W* ¼ qﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃ
+PM PM *
+PM PM
+*
+k¼1
+l¼1 wðk;lÞ$wðk;lÞ
+k¼1
+l¼1 w ðk;lÞ$w ðk;lÞ
+(20)
+where k and l are the indices of the binary watermark image.
+The correlation between W and W* is very high when NC
+(W, W*) is close to 1. On the other hand, the correlation between W and W* is very low when NC (W, W*) is close to zero.
+The bit error rate (BER) is used to measure the robustness of
+a watermarking scheme and is computed as:
+Á
+À
+BER W; W* ¼
+
+PM PM
+k¼1
+
+*
+l¼1 wðk; lÞ4w ðk; lÞ
+
+MÂM
+
+(21)
+
+where 4 is an exclusive or (XOR) operation.
+
+Table 1 e Subjective and objective difference grades.
+
+Table 3 e Objective evaluation for different watermarked
+sounds.
+
+SDG
+5
+4
+3
+2
+1
+
+ODG
+
+Description
+
+Quality
+
+Types of signal
+
+ODG
+
+SNR
+
+0
+À1
+À2
+À3
+À4
+
+Imperceptible
+Perceptible, but not annoying
+Slightly annoying
+Annoying
+Very annoying
+
+Excellent
+Good
+Fair
+Poor
+Bad
+
+Jazz
+Blues
+Folk
+Classical
+Average
+
+À0.76
+À0.22
+À0.01
+À0.19
+¡0.29
+
+35.30
+30.94
+40.41
+42.15
+37.20
+
+80
+
+j o u r n a l o f i n f o r m a t i o n s e c u r i t y a n d a p p l i c a t i o n s 2 0 ( 2 0 1 5 ) 7 4 e8 3
+
+7. MP3 compression: MPEG-1 layer 3 compression was
+applied. The watermarked audio signal was compressed at
+a bit rate of 128 kbps and then decompressed back to the
+wave format.
+
+Fig. 5 e Imperceptibility of watermarked audio using the
+proposed scheme: (a) original audio signal ‘Jazz’, (b)
+watermarked audio signal ‘Jazz’, (c) difference between
+original and watermarked audio signals.
+
+The following signal processing attacks were performed to
+assess the robustness of the proposed scheme.
+1. Noise addition: Additive white Gaussian noise (AWGN) was
+added to the watermarked audio signal.
+2. Cropping: 1000 samples were removed from the front,
+middle, and end parts of the watermarked signal and then
+these samples were replaced by the watermarked samples
+attacked with AWGN.
+3. Resampling: The watermarked signal originally sampled at
+44.1 kHz was resampled at 22.050 kHz and then restored by
+sampling again at 44.1 kHz.
+4. Requantization: The 16 bit watermarked audio signal was
+quantized down to 8 bits/sample and again requantized
+back to 16 bits/sample.
+5. Signal addition: 1000 samples of each audio signal were
+added to the beginning of the corresponding watermarked
+audio signal.
+6. Signal subtraction: 1000 samples of each audio signal were
+subtracted from the beginning of the corresponding
+watermarked audio signal.
+
+It is very important to select the significant sub band from
+the DCT coefficients for embedding watermark. Entropy
+method can select the optimal sub band from the different sub
+bands of DCT coefficients. In this experiment, first twenty
+seven low frequency DCT coefficients (l ¼ 27) are selected
+which are divided into three sub bands (m ¼ 3) with nine DCT
+coefficients (r ¼ 9) in each sub band. 1st nine DCT coefficients
+belong to 1st sub band, next nine DCT coefficients belong to
+2nd sub band, and last nine DCT coefficients belong to 3rd sub
+band. Entropy method can select one sub band from these
+three sub bands for each frame. In this study, we investigated
+on embedding watermark bits into the Cartesian components
+of the largest singular value obtained from different DCT sub
+band and also the sub band with highest entropy value. Then,
+we calculated the NC values of the proposed scheme against
+different attacks and the results are shown in Fig. 6 for the
+audio signal “Jazz” where 1st band, 2nd band, 3rd band, and
+entropy represent embedding watermark bits into 1st, 2nd,
+and 3rd DCT sub band and the sub band with largest entropy
+value, respectively of each frame. We observed that embedding watermark bits into DCT sub band with largest entropy
+value provides better robustness than embedding watermark
+bits into different DCT sub bands. In this situation entropy
+method can work better than the DCT sub bands. This is
+because highest entropy value indicates the optimal DCT sub
+band for embedding watermark.
+Table 5 shows the NC and BER results of the proposed
+scheme against different attacks for the audio signal ‘Jazz’.
+The minimum NC and the maximum BER are 0.9726 and
+3.3203, respectively. The extracted watermark images are
+visually similar to the original watermark. These results verify
+the good performance of the proposed scheme against various
+attacks.
+Table 6 shows similar results for the audio signal ‘Blues’,
+‘Folk’, and ‘Classical’, respectively. We observed that the NC
+values are all above 0.96 and the BER values are all below 4%,
+demonstrating the high robustness of our proposed scheme
+
+Table 4 e SNR and MOS comparison between the
+proposed scheme and several recent methods.
+Reference
+(Chen et al., 2010a)
+(Chen et al., 2013)
+(Erfani and
+Siahpoush, 2009)
+(Khaldi and
+Boudraa, 2013)
+(Bhat et al., 2010)
+(Al-Nuaimy et al.,
+2011)
+(Ali and Ahmad, 2010)
+(Lei et al., 2011)
+Proposed
+
+Algorithm
+
+SNR
+
+MOS
+
+DWT-based energy
+proportion
+Wavelet-based
+entropy
+TS echo hiding
+
+17.95
+
+4.15
+
+22.46
+
+4.38
+
+22.70
+
+4.70
+
+EMD
+
+24.12
+
+e
+
+DWT-SVD
+SVD
+
+24.37
+27.13
+
+4.46
+e
+
+DWT-SVD
+DCT-SVD
+DCT-SVD-LPT
+
+28.55
+32.53
+37.20
+
+4.33
+4.71
+4.85
+
+Fig. 6 e Robustness result of the proposed scheme where
+watermark is embedded in different DCT sub band for the
+audio signal “Jazz”.
+
+81
+
+j o u r n a l o f i n f o r m a t i o n s e c u r i t y a n d a p p l i c a t i o n s 2 0 ( 2 0 1 5 ) 7 4 e8 3
+
+Table 5 e Robustness result against various attacks for
+the audio signal ‘Jazz’.
+
+Table 6 e NC and BER of the extracted watermark for
+different audio signals.
+
+Type of attacks
+
+Audio signal
+
+Type of attacks
+
+NC
+
+BER (%)
+
+Blues
+
+No attack
+Noise addition
+Cropping (front)
+Cropping (middle)
+Cropping (end)
+Resampling
+Requantization
+Signal addition
+Signal subtraction
+MP3 compression
+No attack
+Noise addition
+Cropping (front)
+Cropping (middle)
+Cropping (end)
+Resampling
+Requantization
+Signal addition
+Signal subtraction
+MP3 compression
+No attack
+Noise addition
+Cropping (front)
+Cropping (middle)
+Cropping (end)
+Resampling
+Requantization
+Signal addition
+Signal subtraction
+MP3 compression
+
+1
+0.9951
+0.9976
+0.9967
+1
+0.9870
+1
+1
+1
+0.9671
+1
+0.9919
+0.9984
+0.9959
+0.9984
+0.9888
+1
+0.9984
+1
+0.9676
+1
+0.9935
+0.9984
+0.9951
+0.9976
+0.9903
+1
+0.9967
+0.9967
+0.9710
+
+0
+0.5859
+0.2930
+0.3906
+0
+1.5625
+0
+0
+0
+3.9063
+0
+0.9766
+0.1953
+0.4883
+0.1953
+1.3672
+0
+0.1953
+0
+3.9063
+0
+0.7813
+0.1953
+0.5859
+0.2930
+1.1719
+0
+0.3906
+0.3906
+3.5156
+
+NC
+
+BER (%)
+
+No attack
+
+1
+
+0
+
+Noise addition
+
+0.9919
+
+0.9766
+
+Cropping (front)
+
+0.9967
+
+0.3906
+
+Cropping (middle)
+
+0.9984
+
+0.1953
+
+Cropping (end)
+
+0.9984
+
+0.1953
+
+Resampling
+
+0.9870
+
+1.5625
+
+Requantization
+
+1
+
+0
+
+Signal addition
+
+1
+
+Extracted
+watermark
+
+0
+
+Folk
+
+Classical
+
+credibility of watermarking scheme. The probability of FPE,
+PFPE, and probability of FNE, PFNE, can be calculated as:
+PFPE ¼ 2Àf
+
+ 
+f
+X
+f
+g
+
+(22)
+
+g¼Q0:8f S
+
+Signal subtraction
+
+1
+
+0
+
+PFNE ¼
+
+Q0:8f
+SÀ1
+X
+g¼0
+
+MP3 compression
+
+0.9726
+
+3.3203
+
+against various attacks. This is because watermark information is embedded into the quantized Cartesian components of
+the largest singular value obtained from the DCT sub band
+with highest entropy value.
+
+5.
+
+Performance analysis
+
+5.1.
+
+Error analysis
+
+Two types of error may occur while searching the watermark
+sequence: (1) false positive error (FPE) (2) false negative error
+(FNE). These errors are very harmful because they impair the
+
+where
+
+ 
+!
+f
+ðUÞg ð1 À UÞf Àg
+g
+
+(23)
+
+ 
+f
+is the binomial coefficient, U is the BER probability
+g
+
+of the extracted watermark, f and g are the total number of
+watermark bits and matching bits, respectively (Bhat et al.,
+2010). The approximate value of U can be obtained from BER
+under different attacks. From Tables 4 and 5, we observed that
+all BER values are less than 0.04. Thus U is taken as 0.96. By
+substituting the value of f and U, (22) and (23) give
+PFPE ¼ 2.62 Â 10À88 and PFNE ¼ 1.36Â10À80, respectively. Fig. 7
+and Fig. 8 show the FPE and FNE probability for f 2 (0.100],
+respectively, which indicates that PFPE and PFNE approaches
+0 when f is larger than 30.
+
+5.2.
+
+Security analysis
+
+Robustness against attack is very important for a secured
+watermarking scheme. The proposed method utilizes chaotic
+encryption to enhance the security. Since the proposed
+
+82
+
+j o u r n a l o f i n f o r m a t i o n s e c u r i t y a n d a p p l i c a t i o n s 2 0 ( 2 0 1 5 ) 7 4 e8 3
+
+watermark embedding and detection processes depend on the
+secret key K and the quantization parameters, thus it is
+impossible to detect the embedded watermark from the
+watermarked audio signal without this information.
+
+5.3.
+
+Data payload
+
+The data payload of a watermarking scheme refers to the
+number of bits that are embedded into the original audio
+signal within a unit of time and is measured by bits per second
+(bps). Usually, the data payload for any watermarking method
+should be more than 20 bps (Bhat et al., 2010). The data
+payload of the proposed scheme is 172.39 bps.
+
+Fig. 7 e Probability of FPE for various values of f.
+
+Fig. 8 e Probability of FNE for various values of f.
+
+5.4.
+
+Algorithm comparison and discussion
+
+To establish the proposed method as a good watermarking
+method, it is necessary to compare the performance of the
+proposed method with state-of-the-art methods. Due to the
+diversity of watermark embedding and detection processes, a
+general comparison between the proposed scheme and the
+several recent methods sorted by data payload is given in
+Table 7, which is based on the reported result in the references
+(Chen et al., 2013, 2010a; Erc¸elebi and Batakc¸ı, 2009; Bhat et al.,
+2010; Lei et al., 2011; Khaldi and Boudraa, 2013; Xiang et al.,
+2011; Erfani and Siahpoush, 2009; Xiang and Huang, 2007;
+Xiang et al., 2008). Moreover, resampling, requantization,
+and MP3 compression are compared in Table 7. The state-ofthe-art methods utilized different kinds of sounds of
+different durations in their simulation. In addition, the
+embedding and detection processes of each method were
+different from each other. Moreover, different methods were
+used different kinds of parameters. These methods experimentally found the optimal value for various parameters of
+their methods. From these comparison results, it is seen that
+the proposed scheme provides higher data payload and lower
+BER values against several attacks compared with the recent
+watermarking methods.
+
+Table 7 e A general comparison of audio watermarking algorithms with proposed scheme sorted by data payload.
+Reference
+Proposed
+(Chen et al., 2013)
+(Chen et al., 2010a)
+(Xiang et al., 2011)
+(Khaldi and
+Boudraa, 2013)
+(Bhat et al., 2010)
+(Lei et al., 2011)
+(Xiang and
+Huang, 2007)
+(Xiang et al., 2008)
+(Erfani and
+Siahpoush, 2009)
+(Erc¸elebi and
+Batakc¸ı, 2009)
+
+Algorithm
+
+Payload
+(bps)
+
+Resampling
+BER (%)
+
+Requantization
+BER (%)
+
+MP3 compression
+BER (%)
+
+DCT-SVD-LPT
+Wavelet-based entropy
+DWT-based energy
+proportion
+TS echo hiding
+EMD
+
+172.39
+172.28-86.14
+114.82
+
+1.56 (22.05 kHz)
+9.1 (22.05 kHz)
+6.92 (22.05 kHz)
+
+0 (8 bits/sample)
+e
+e
+
+3.91 (128 kbps)
+6.7 (128 kbps)
+5.71 (80 kbps)
+
+51.15
+46.9-50.3
+
+e
+3 (22.05 kHz)
+
+5 (8 bits/sample)
+0 (8 bits/sample)
+
+1.92 (80 kbps)
+1 (32 kbps)
+
+DWT-SVD
+DCT-SVD
+Histogram
+
+45.90
+43
+3
+
+2 (22.05 kHz)
+0 (22.05 kHz)
+0 (–)
+
+0 (8 bits/sample)
+0 (8 bits/sample)
+0 (8 bits/sample)
+
+1 (32 kbps)
+3 (32 kbps)
+15 (128 kbps)
+
+DWT-based Histogram
+TS echo hiding
+
+2
+e
+
+0 (16 kHz)
+15 (16 kHz)
+
+0 (8 bits/sample)
+5.5 (8 bits/sample)
+
+17.50 (64 kbps)
+47(e)
+
+LWT
+
+e
+
+16.50 (36.75 kHz)
+
+22.09 (8 bits/sample)
+
+51.73 (128 kbps)
+
+j o u r n a l o f i n f o r m a t i o n s e c u r i t y a n d a p p l i c a t i o n s 2 0 ( 2 0 1 5 ) 7 4 e8 3
+
+6.
+
+Conclusion
+
+In this paper, we introduced a blind SVD-based audio watermarking scheme in DCT domain using entropy, LPT, and
+quantization. Simulation results demonstrate that the proposed scheme is highly robust against different attacks such
+as noise addition, cropping, resampling, requantization,
+signal addition, signal subtraction, and MP3 compression. In
+addition, it provides high quality watermarked audio signal
+and it has low error probability rates. Moreover, it outperforms state-of-the-art audio watermarking methods in
+terms of robustness, imperceptibility, and data payload. These
+results indicate that the proposed watermarking scheme can
+be used for copyright protection of audio signal.
+There are several directions for future work on the proposed scheme introduced in this paper. In future, synchronization code (Megı´as et al., 2010) and error correcting codes
+(Baudry et al., 2001) will be incorporated to improve the performance of the proposed scheme. In addition, computational
+complexity of the proposed scheme will be assessed.
+
+references
+
+Agresteand S, Andaloro G. A new approach to pre-processing
+digital image for wavelet-based watermark. J Computational
+Appl Math 2008;221(2):274e83.
+Al-Nuaimy W, El-Bendary MAM, Shafik A, Shawki F, Abou-El-Azm
+AE, El-Fishawy NA, et al. An SVD audio watermarking approach using chotic encrypted images. Digital Signal Process
+2011;21(6):764e79.
+Ali AH, Ahmad M. Digital audio watermarking based on the discrete wavelet transform and singular value decomposition. Eur J
+Scientific Res 2010;39(1):6e21.
+Baudry S, Delaigle J-F, Sankur B, Macq B, Maıtre H. Analyses of
+error correction strategies for typical communication channels in watermarking. Signal Process 2001;81(6):1239e50.
+Bhat VK, Sengupta I, Das A. An adaptive audio watermarking based on the singular value decomposition in the wavelet domain. Digital Signal Process 2010;20(6):1547e58.
+Chan PW, Lyu MR, Chin RT. A novel scheme for hybrid digital video watermarking: approach, evaluation and experimentation.
+IEEE Trans Circuits Syst Video Technol 2005;15(12):1638e49.
+Chen ST, Huang HN, Chen CJ, Wu GD. Energy-Proportion based scheme
+for audio watermarking. IET Signal Process 2010a;4(5):576e87.
+
+83
+
+Chen ST, Wu GD, Huang HN. Wavelet-domain audio watermarking scheme using optimisation-based quantization. IET Signal Process 2010b;4(6):720e7.
+Chen ST, Huang HN, Chen CJ, Tseng KK, Tu SY. Adaptive audio
+watermarking via the optimization point of view on the wavelet-based entropy. Digital Signal Process 2013;23(3):971e80.
+Cox IJ, Miller ML. The first 50 years of electronic watermarking. J
+Appl Signal Process 2002;56(2):225e30.
+Cvejic N, Seppanen T. Digital audio watermarking techniques and
+technologies: applications and benchmarks. IGI Global; 2007.
+El-Samie FEA. An efficient singular value decomposition algorithm for digital audio watermarking. Int J Speech Technol
+2009;12(1):27e45.
+Erc¸elebi E, Batakc¸ı L. Audio watermarking scheme based on embedding strategy in low frequency components with a binary
+image. Digital Signal Process 2009;19(2):265e77.
+Erfani Y, Siahpoush S. Robust audio watermarking using improved TS echo hiding. Digital Signal Process 2009;19(5):809e14.
+Khaldi K, Boudraa AO. Audio watermarking via EMD. IEEE Trans
+Audio, Speech Lang Process 2013;21(3):675e80.
+Lei BY, Soon IY, Li Z. Blind and Robust Audio Watermarking
+Scheme Based on SVD-DCT. Signal Process 2011;91:1973e84.
+Lie WN, Chang LC. Robust high quality time domain audio watermarking based on low frequency amplitude modification.
+IEEE Trans Multimedia 2006;8(1):46e59.
+Megı´as D, Serra-Ruiz J, Fallahpour M. Efficient SelfeSynchronized
+blind audio watermarking system based on time domain and FFT
+amplitude modification. Signal Process 2010;90(12):3078e92.
+Noorkami M, Mersereau RM. Digital video watermarking in P-frames with controlled video bit rate increase. IEEE Trans Inf Forensics Security 2008;3(3):441e55.
+Swanson MD, Zhu B, Tewfiq AH, Boney L. Robust audio watermarking
+using perceptual masking. Signal Process 1998;66(3):337e55.
+Thiede T, Treurniet WC, Bitto R, Schmidmer C, Sporer T,
+Beerens JG, et al. PEAQ e the ITU standard for objective
+measurement of perceived audio quality. J Audio Eng Soc
+2000;48(1/2):3e29.
+Tsolis D, Nikolopoulos S, Drossos L, Sioutas S, Papatheodorou T.
+Applying robust multibit watermarks to digital images. J Computational Appl Math 2009;227(1):213e20.
+Xiang S, Huang J. Histogram based audio watermarking against
+time scale modification and cropping attacks. IEEE Trans Multimedia 2007;9(7):1357e72.
+Xiang S, Kim HJ, Huang J. Audio watermarking robust against time
+scale modification and MP3 compression. Signal Process
+2008;88(10):2372e87.
+Xiang Y, Peng D, Natgunanathan I, Zhou W. Effective pseudonoise
+sequence and decoding function for imperceptibility and robustness enhancement in time-spread Echo-Based audio watermarking. IEEE Trans Multimedia 2011;13(1):2e13.
+
+

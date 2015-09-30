@@ -1,0 +1,607 @@
+Computational Geometry 48 (2015) 661–672
+
+Contents lists available at ScienceDirect
+
+Computational Geometry: Theory and
+Applications
+www.elsevier.com/locate/comgeo
+
+On the minimum number of mutually disjoint holes in planar
+point sets
+Kiyoshi Hosono
+Department of Mathematics, Tokai University, 3-20-1 Orido, Shimizu, Shizuoka, 424-8610, Japan
+
+a r t i c l e
+
+i n f o
+
+a b s t r a c t
+
+Article history:
+Received 2 September 2012
+Accepted 2 May 2014
+Available online 17 July 2015
+
+Let P be a set of n points in general position in the plane. In 1996, Urabe considered a
+partition of P into subsets S 1 ∪ · · · ∪ S l such that each S i forms a hole (or an empty convex
+polygon) of P and these holes are mutually disjoint. Let f ( P ) be the minimum number of
+holes over all such partitions of P and F (n) = max{ f ( P )} over all sets P of n points. Then
+1
+5n
+the current best bounds are given by n+
+≤ F (n) ≤ 18
+. In this paper, we prove that
+4
+F (n) ≤ n4 + 1.
+© 2015 Elsevier B.V. All rights reserved.
+
+Keywords:
+Partitions of a planar point set
+Mutually disjoint holes (empty convex
+polygons)
+Discrete geometry
+
+1. Introduction
+Partitioning point sets into convex subsets is a ubiquitous problem in discrete geometry. In the 1935 landmark paper of
+˝ and Szekeres [5], they proved that for any integer k ≥ 3 there exists a smallest positive integer N (k) such that any set
+Erdos
+of at least N (k) points, in general position in the plane, contains the vertex set of a convex k-gon. Moreover, they proved
+the following result.
+˝
+Erdos–Szekeres
+Theorem. (See [5,6].)
+
+2k−2 + 1 ≤ N (k) ≤
+
+2k − 4
+k−2
+
++ 1.
+
+Although the lower bound is conjectured to be tight, E. Klein showed N (4) = 5 while E. Makai proved N (5) = 9, as
+noted in [5]; however, the ﬁrst published proof of N (5) = 9 did not appear until 1970 [12]. Szekeres and Peters [17] proved
+N (6) = 17 in 2006. Slight improvements on the upper bound were obtained, ﬁrst by Chung and Graham [2], then by Kleit2k−5
+man and Pachter [13], and subsequently by Tóth and Valtr [18,19]. The current best upper bound is N (k) ≤ k−2 + 1 [19].
+˝ [4] asked a similar question for the value of the smallest integer N 0 (k) with k ≥ 3 such that any set of
+In 1978, Erdos
+N 0 (k) points, in general position in the plane, contains the vertex set of a convex k-gon whose interior is disjoint from the
+point set. Such a convex k-gon is called an empty convex k-gon or a k-hole of the point set. Klein showed N 0 (4) = 5 in [5]
+and N 0 (5) = 10 was determined by Harborth [9]. Horton [10] gave a construction showing that N 0 (7) is not ﬁnite, that is,
+there are arbitrarily many points with no empty convex 7-gons.
+As for the lower bound of the remaining case k = 6, Avis and Rappaport [1] have found a set of 20 points containing
+no empty convex hexagon. Fabella and O’Rourke [7] found a similar set of 22 points. Overmars, Scholten and Vincent [16]
+
+E-mail address: hosono@scc.u-tokai.ac.jp.
+http://dx.doi.org/10.1016/j.comgeo.2015.07.001
+0925-7721/© 2015 Elsevier B.V. All rights reserved.
+
+662
+
+K. Hosono / Computational Geometry 48 (2015) 661–672
+
+also constructed a set of 26 points without an empty convex 6-gon. In 2003, Overmars [15] exhibited a set of 29 points,
+the largest known, with no empty convex 6-gons. For a long time, the question of the existence of empty convex hexagons
+remained open. However, N 0 (6) was shown to be ﬁnite by Nicolás [14] in 2007, and Gerken [8] in 2008. Gerken proved that
+any point set containing a convex 9-gon also contains an empty convex 6-gon; hence, by the best upper bound for N (9)
+mentioned above, it follows that N 0 (6) ≤ 1717. The current best bounds for N 0 (6) are given by the inequality 30 ≤ N 0 (6) ≤
+1717.
+On the other hand, Urabe [20] was interested in the minimum number of mutually disjoint holes in a planar point
+set and deﬁned a function F (n) in 1996 as follows. Let P be a set of n points in general position in the plane. For a
+subset Q ⊆ P , denote the convex hull of Q by conv( Q ). A disjoint convex partition of P is a partition of P into subsets
+S 1 , . . . , S l ; P = 1≤i ≤l S i , such that S i forms an | S i |-hole of P for each i , 1 ≤ i ≤ l, and these holes are mutually disjoint;
+conv( S i ) ∩ conv( S j ) = ∅ for any pair {i , j }, 1 ≤ i , j ≤ l. Here, we allow a k-hole of P for k = 1, 2; that is, a 1-hole is a point
+in P and a 2-hole is the line segment between two points in P . Let f ( P ) denote the minimum number of holes over all
+disjoint convex partitions of P . Deﬁne F (n) = max{ f ( P )}, over all sets P of n points.
+In addition, Urabe also considered a weaker notion of an empty convex partition of P , which is a partition of P into
+subsets S 1 ∪ · · · ∪ S l such that each S i forms an | S i |-hole of P (that is, only the ﬁrst condition of a disjoint convex partition
+is required). Then functions similar to f ( P ) and F (n) can be deﬁned; denote these functions by g ( P ) and G (n), respectively.
+Note that G (n) ≤ F (n) trivially holds for any n. He proved the following results in [20], with the lower bound for F (n)
+obtained from that of G (n).
+Result A. For any n ≥ 1,
+
+n−1
+4
+
+≤ G (n) ≤
+
+3n
+11
+
+and
+
+n−1
+4
+
+≤ F (n) ≤
+
+Later, the upper bound of F (n) is improved to
+n+1
+4
+
+5n
+18
+
+2n
+7
+
+.
+
+for any n, and to
+
+3n+1
+11
+
+for inﬁnitely many n [11]. In the case of G (n),
+
+9
+the lower bound is improved to
+for any n, while the upper bound is improved to 34
+n for any n and to
+inﬁnitely many n [3]. Thus, the current best bounds of both functions are given by the following result.
+
+5n+1
+19
+
+for
+
+Result B. For any n ≥ 1,
+
+n+1
+4
+
+≤ G (n) ≤
+
+9n
+34
+
+and
+
+n+1
+4
+
+≤ F (n) ≤
+
+5n
+18
+
+.
+
+In this paper, we further improve the upper bound for F (n) and prove the following theorem. It means that we can
+always partition any set of n points into at most n4 + 1 subsets so that each subset forms a hole of the set and these holes
+are mutually disjoint.
+Theorem. For any n ≥ 1,
+
+F (n) ≤
+
+n
+4
+
++ 1.
+
+As a consequence, we have the following corollary with
+
+n+1
+4
+
+=
+
+n
+4
+
++ 1.
+
+Corollary. For any n ≥ 1,
+
+n
+4
+
++ 1 ≤ G (n) ≤ F (n) ≤
+
+n
+4
+
++ 1.
+
+Finally, we note that it has been shown that G (11) < F (11) [20].
+2. Preliminaries
+We provide the basic deﬁnitions we use in the proof and introduce some notations. Let P be a given ﬁnite planar point
+set in general position. For a closed region R in the plane, a point of P in the interior of R is called an interior point of R. If
+R contains no interior points, then R is said to be empty.
+Let a, b and c be three non-collinear points in the plane which are not necessarily elements of P . We denote by γ (a; b, c )
+or γ (a; c , b) the closed convex cone with apex a and b and c on the boundary. If γ (a; b, c ) is not empty, we deﬁne an attack
+point from the half-line ab to ac, denoted by α (a; b, c ), as the unique interior point of γ (a; b, c ) for which γ (a; b, α (a; b, c ))
+
+K. Hosono / Computational Geometry 48 (2015) 661–672
+
+(a)
+Fig. 1. (a) Two attack points of
+
+663
+
+(b)
+
+α (a; b, c ) and α (a; b , c ). (b) α S¯ (a; b, c ) where S is the set of white points.
+
+is empty. If δ = b or c, let δ be a (dummy) point collinear with a and δ so that a lies on the line segment δδ . Then we
+can consider another convex cone γ (a; b , c ). We give examples of two attack points in Fig. 1(a) where P is the set of black
+points.
+We next deﬁne the quasi-attack point α (a; b, c ) in γ (a; b, c ) to be the point c if γ (a; b, c ) is empty, or the attack point
+α (a; b, c ), otherwise. We also consider the attack point outside a speciﬁed subset S ⊂ P ; denoted by α S¯ = α S¯ (a; b, c ), it is
+the interior point of γ (a; b, c ) such that α S¯ ∈ P \ S and all the interior points of γ (a; b, α S¯ ) are contained in S. See Fig. 1(b),
+where S is the set of white points and P \ S is the set of black points.
+Finally, we denote the closed half-plane bounded by the line ab and containing c by H (ab; c ). For a subset Q of P ,
+we denote the set of vertices of conv( Q ) by V ( Q ) = { v 1 , v 2 , . . . , v l }, where the elements are labeled in clockwise order.
+We remark that when indexing a set of t points, we identify indices modulo t. If a point set S forms a k-hole H and
+S = { p 1 , p 2 , . . . , pk } with the elements labeled in clockwise order, we write H = ( p 1 p 2 · · · pk )k .
+3. Proof of Theorem
+Before presenting the proof of Theorem, we brieﬂy review the proof from [20] yielding F (n) ≤ 2n
+.
+7
+n
+1. Let P be a set of n points in general position in the plane. Consider a line L not parallel to any of the 2 lines
+determined by P . Translate L in a direction normal to itself. Then L can only meet exactly one point in P . Thus, we
+have disjoint n7 strips parallel to L such that each of the n7 strips contains exactly seven points in P and the possibly
+remaining strip contains at most six points in P .
+2. It was proven that any 7-point set can be partitioned into two subsets such that one forms a 3-hole and the other
+forms a 4-hole and they are disjoint, that is, F (7) ≤ 2. Trivially, F (r ) ≤ 1 for r = 1, 2, 3 and F (r ) ≤ 2 for r = 4, 5, 6. We
+enumerate the number of holes on each strip. Let n = 7k + r for 0 ≤ r ≤ 6. Since a parallel strip is convex, the following
+holds: F (n) ≤ kF (7) + F (r ) ≤ 2n
+.
+7
+We remark that in this proof each 7-point set separated from P lies in a convex region. As for our proof, such a region
+may be concave. We propose the following separation method.
+Admissible Separation:
+Let P be a ﬁnite set of points in general position in the plane. Consider a subset P k ⊆ P such that conv( P k ) ∩ P = P k .
+The subset P k has an admissible separation if we can ﬁnd a subset S k
+P k satisfying the following two properties (P-1) and
+(P-2):
+(P-1) Let P k+1 = P k \ S k . P k+1 is contained in a closed convex region R k+1 whose interior is disjoint from S k .
+(P-2) | S k | = 4m with m = 1, 2, 3. S k can be partitioned into m subsets such that each subset forms a hole of the set and
+these m holes are mutually disjoint. The m disjoint holes lie in the closure of conv( P k ) \ R k+1 , and they belong to one
+of the following ﬁve types:
+(Type 1) one 4-hole
+(Type 2) one 3-hole and one 5-hole
+(Type 3) two 4-holes
+(Type 4) one 3-hole, one 4-hole and one 5-hole
+(Type 5) two 3-holes and one 6-hole.
+Fig. 2 illustrates an admissible separation of (Type 2). The shaded closed convex region R k+1 contains the set P k+1 of
+black points. The set S k of eight white points forms a 3-hole and a 5-hole with disjoint convex hull in the closure of
+conv( P k ) \ R k+1 .
+
+664
+
+K. Hosono / Computational Geometry 48 (2015) 661–672
+
+Fig. 2. An admissible separation of (Type 2).
+
+We present the following lemma whose proof is given in the next section.
+Lemma. For a ﬁnite set P of points in general position in the plane, let P k be any subset of P such that conv( P k ) ∩ P = P k . Then, if
+| P k | ≥ 13, P k has an admissible separation.
+We continue to separate such a 4m-point set S k in (P-2), one by one, from a given point set P so that the remaining
+point set P k+1 lies in the closed convex region R k+1 . We now prove our theorem.
+Theorem. For any n ≥ 1,
+
+n
+
+F (n) ≤
+
+4
+
++ 1.
+
+Proof. Let P be a set of n points in general position in the plane. We can assume without loss of generality that | P | ≥ 13,
+5n
+since F (n) ≤ 18
+≤ n4 + 1 for 1 ≤ n ≤ 12 by Result B. We apply Lemma to each step of our procedure. In the ﬁrst
+step, let P 1 = P . Since | P 1 | ≥ 13 and conv( P 1 ) ∩ P = P 1 , then P 1 has an admissible separation. In any kth step for k ≥ 2,
+conv( P k ) ∩ P = P k holds since P k is contained in a closed convex region R k whose interior is disjoint from S k−1 . Thus,
+P k has an admissible separation (if | P k | ≥ 13). We recursively obtain an inclusion relation P = P 1
+P 2 · · · P L −1
+PL
+where | P L −1 | ≥ 13 and 1 ≤ | P L | ≤ 12.
+By S k = P k \ P k+1 , P = S 1 ∪ · · · ∪ S L −1 ∪ P L . Since every S k forms mutually disjoint holes of some type in (P-2) in the
+closure of conv( P k ) \ R k+1 , then all the holes of the S k ’s are mutually disjoint. In (Type 1), a 4-point set S k forms one hole.
+In (Type 2) or (Type 3), an 8-point set S k forms two disjoint holes. And in (Type 4) or (Type 5), a 12-point set S k forms
+three mutually disjoint holes. Thus, the set S 1 ∪ · · · ∪ S L −1 forms exactly 14 (| S 1 | + · · · + | S L −1 |) mutually disjoint holes in the
+closure of conv( P ) \ R L . Let n = 4q + r with r = 0, 1, 2, 3. Since | P L | = 4q + r with q < q and | P L | ≤ 12, the following holds:
+
+F (n) ≤
+
+1
+4
+1
+
+(| S 1 | + · · · + | S L −1 |) + F (| P L |)
+
+≤ (n − | P L |) +
+4
+
+|P L|
+4
+
++1=
+
+n
+4
+
++ 1.
+
+✷
+
+4. Proof of Lemma
+We make three assumptions to prove Lemma. Each assumption narrows down the conﬁguration of P k . The proof is
+divided into four parts, namely (I) to (IV).
+Lemma. For a ﬁnite set P of points in general position in the plane, let P k be any subset of P such that conv( P k ) ∩ P = P k . Then, if
+| P k | ≥ 13, P k has an admissible separation.
+Proof. Let P k be as speciﬁed above. We construct m mutually disjoint holes of P k by a 4m-point set S k in (P-2) and ﬁnd a
+closed convex region R k+1 so that R k+1 contains P k \ S k such that the m holes lie in the closure of conv( P k ) \ R k+1 . Denote
+the set of these m holes by H and let R = R k+1 for simplicity.
+(I) Let V ( P k ) = { v 1 , v 2 , . . . , v l } with the elements labeled in clockwise order. We ﬁrst consider any triangle v i v i +1 v i +2 of P k ,
+say v 1 v 2 v 3 .
+If v 1 v 2 v 3 is empty, then since | V ( P k )| ≥ 4 by | P k | ≥ 13, there is an attack point α1 = α ( v 1 ; v 3 , v l ). Then we are done
+since we can construct a 4-hole H = {( v 1 v 2 v 3 α1 )4 } of (Type 1) and ﬁnd a closed convex region R = H ( v 1 α1 ; v l ). Otherwise,
+
+K. Hosono / Computational Geometry 48 (2015) 661–672
+
+665
+
+Fig. 3. The 4-hole ( v 1 v 2 p 1 α2 )4 of (Type 1).
+
+Fig. 4. The friends p 1 and p 2 of v 1 v 2 and v 2 v 3 , respectively.
+
+since v 1 v 2 v 3 is not empty, there is p 1 = α ( v 1 ; v 2 , v 3 ). We have cases (A) and (B) depending on whether the convex cone
+γ ( p 1 ; v 1 , v 2 ) is empty or not.
+(A) γ ( p 1 ; v 1 , v 2 ) is not empty: We obtain H = {( v 1 v 2 p 1 α2 )4 } and R = γ ( p 1 ; α2 , v 1 ) for α2 = α ( p 1 ; v 1 , v 2 ) as shown in
+Fig. 3, where the shaded portion contains the remaining interior points.
+(B) γ ( p 1 ; v 1 , v 2 ) is empty: If
+v 2 v 3 p 1 is empty, we obtain H = {( p 1 v 2 v 3 α3 )4 } and R = γ ( p 1 ; v 1 , α3 ) for α3 =
+α ( p 1 ; v 3 , v 2 ). Otherwise, v 2 v 3 p 1 is not empty and let p 2 = α ( v 3 ; v 2 , p 1 ). Then if γ ( p 2 ; v 3 , v 2 ) is not empty, we obtain
+H = {( p 2 v 2 v 3 α4 )}4 and R = γ ( p 2 ; α4 , v 3 ) for α4 = α ( p 2 ; v 3 , v 2 ). Thus, γ ( p 2 ; v 3 , v 2 ) is also empty.
+We now obtain p 1 and p 2 as shown in Fig. 4 where the shaded portion contains the remaining interior points. Similarly,
+we must consider, for any i, an element p i of P k associated with the edge v i v i +1 such that γ ( v i ; p i , v i +1 ) ∪ γ ( v i +1 ; p i , v i )
+is empty and p i lies in p i −1 v i v i +1 ∩ v i v i +1 p i +1 . The point p i is called a friend of the edge v i v i +1 , and we now make
+the ﬁrst assumption for conﬁgurations of P k without loss of generality.
+Assumption 1. There exists a unique friend p i of the edge v i v i +1 for each i , 1 ≤ i ≤ l.
+(II) We now argue using Assumption 1 and consider any triangle v i v i +1 v i +2 , say v 1 v 2 v 3 again. We consider cases (A) and
+(B) depending on whether p 1 v 2 p 2 is empty or not.
+(A) p 1 v 2 p 2 is not empty: Let a1 = α ( p 1 ; v 1 , p 2 ). If v 1 p 1 a1 is not empty, we obtain H = {( p 1 v 2 a1 α1 )4 } and R =
+γ (a1 ; α1 , p 1 ) for α1 = α (a1 ; p 1 , v 1 ) as shown in Fig. 5. Otherwise, v 1 p 1a1 is empty. Then if γ (a1 ; v 1 , v 2 ) is also empty,
+we obtain H = {( v 1 p 1 a1 α2 )4 } and R = γ (a1 ; v 2 , α2 ) for α2 = α (a1 ; v 2 , p 1 ).
+If γ (a1 ; v 1 , v 2 ) is not empty, we let a2 = α (a1 ; v 1 , v 2 ). Consider subcases (1), (2) and (3) according to the position of a2 ,
+where γ (a1 ; a2 , v 2 ) contains only the interior points { v 1 , p 1 }.
+(1) a2 lies in H ( v 1 v 3 ; v 4 ): In this subcase, | V ( P k )| ≥ 4. For S = { p 2 , v 3 }, consider α S¯ = α S¯ (a2 ; a1 , v 1 ). If α S¯ exists,
+we obtain H = {( v 2 v 3 p 2 )3 , (a2 v 1 p 1 a1 α S¯ )5 } of (Type 2) and R = γ (a2 ; a1 , α S¯ ) ∩ H ( v 2 p 2 ; v 1 ) as shown in Fig. 6. Otherwise,
+γ (a2 ; a1 , v 1 ) contains only the interior points { p 2 , v 3 }. Then we obtain H = {( v 1 v 2 p 1 )3 , (a2 a1 p 2 v 3 α )5 } for α = α (a2 ; v 1 , a1 )
+with R = γ (a2 ; a1 , α ).
+(2) a2 lies in γ ( v 1 ; a1 , p 2 ): If γ ( v 1 ; a1 , a2 ) is empty, we obtain H = {( p 1 v 2 a1 a2 )4 } and R = H ( v 1 a2 ; v 3 ). If it is not
+empty, we obtain H = {( v 2 v 3 p 2 )3 , (a2 v 1 p 1 a1 α )5 } and R = γ (a2 ; a1 , α ) ∩ H ( v 2 p 2 ; v 1 ) for α = α (a2 ; a1 , v 1 ).
+(3) a2 lies in γ ( v 1 ; p 2 , v 3 ): If there exists α S¯ = α S¯ (a2 ; a1 , v 1 ) for S = { p 2 }, we obtain H = {( v 2 v 3 p 2 )3 , (a2 v 1 p 1 a1 α S¯ )5 }
+and R = γ (a2 ; a1 , α S¯ ) ∩ H ( v 2 p 2 ; v 1 ). Thus, γ ( v 1 ; a1 , a2 ) contains only the interior point p 2 . Then if a1 p 2 v 3 is not empty,
+we obtain H = {(a1 v 2 p 2 α1 )4 } and R = γ (a1 ; p 1 , α1 ) for α1 = α (a1 ; p 2 , v 3 ). Thus, a1 p 2 v 3 is empty.
+
+666
+
+K. Hosono / Computational Geometry 48 (2015) 661–672
+
+Fig. 5. The 4-hole ( p 1 v 2 a1 α1 )4 .
+
+Fig. 6. Two holes ( v 2 v 3 p 2 )3 and (a2 v 1 p 1 a1 α S¯ )5 of (Type 2).
+
+Fig. 7. a4 lies in H ( v 2 a1 ; v 3 ).
+
+Subsequently, if γ (a1 ; v 3 , v 2 ) is empty, we obtain H = {(a1 p 2 v 3 α2 )4 } and R = γ (a1 ; v 2 , α2 ) for α2 = α (a1 ; v 2 , a2 ). If it
+is not empty, we let a3 = α (a1 ; v 3 , v 2 ). We can consider a3 to lie in γ ( v 3 ; p 1 , v 1 ) by the same argument as in (1) and (2);
+so γ ( v 3 ; a1 , a3 ) contains only the interior point p 1 . (See Fig. 7.) Then we consider cases (a) and (b).
+
+K. Hosono / Computational Geometry 48 (2015) 661–672
+
+667
+
+Fig. 8. Two holes ( v 2 p 2 a3 a1 )4 and ( v 1 p 1 a2 α3 )4 of (Type 3).
+
+Fig. 9. The conﬁguration for | V ( P k )| = 4.
+
+(a) γ (a2 ; v 1 , a3 ) is not empty: Let a4 = α (a2 ; v 1 , a3 ). If a4 lies in H ( v 2 a1 ; v 1 ), we obtain H = {( p 2 v 3 a3 )3 , ( p 1 v 2 a1 a4 a2 )5 }
+and R = γ (a2 ; v 1 , a4 ) ∩ H (a3 v 3 ; v 1 ). If a4 lies in H ( v 2 a1 ; v 3 ) as shown in Fig. 7, we consider a quasi-attack point
+α = α (a4 ; a2 , a3 ). Then we can construct a 5-hole H 5 = (a4a1 v 2 p 2 α )5 . Thus, we obtain H = {( v 1 p 1a2 )3 , H 5 } and R =
+γ (a2 ; a1 , a4 ) ∩ H (a4 α ; v 3 ).
+(b) γ (a2 ; v 1 , a3 ) is empty: If γ (a2 ; a1 , p 1 ) is not empty, we obtain H = {( v 2 p 2 a3 a1 )4 , ( v 1 p 1 a2 α3 )4 } of (Type 3) and
+R = γ (a2 ; α3 , a3 ) for α3 = α (a2 ; a1 , p 1 ). See Fig. 8. Thus γ (a2 ; a1 , p 1 ) is empty, and γ (a3 ; a1 , p 2 ) is also empty by the same
+reasoning. Then for α S¯ = α S¯ (a2 ; a3 , p 1 ) with S = { v 3 }, we obtain H = {( v 2 v 3 p 2 )3 , (a2 p 1 a1 a3 α S¯ )5 } and R = γ (a2 ; v 1 , α S¯ ) ∩
+H ( p 2 a3 ; v 2 ).
+We have therefore shown that under case (A), P k has an admissible separation.
+p 1 v 2 p 2 is empty: If
+v 1 p 1 p 2 is not empty, we obtain H = {( p 1 v 2 p 2 α1 )4 } and R = γ ( p 2 ; α1 , v 3 ) for α1 =
+(B)
+α ( p 2 ; p 1 , v 1 ). Otherwise, v 1 p 1 p 2 is empty. Then if v 1 p 2 v 3 is not empty, we obtain H = {( p 1 v 2 p 2 α2 )4 } and R =
+H ( v 1 α2 ; v 3 ) for α2 = α ( v 1 ; p 2 , v 3 ). Thus, v 1 p 2 v 3 is also empty.
+If | V ( P k )| = 3, P k has an admissible separation by the existence of α2 in (B), and so we are done. Since both p i v i +1 p i +1
+and the convex quadrilateral v i p i p i +1 v i +2 are empty for any i, we have | P k | = 8 < 13 if | V ( P k )| = 4, which has been
+resolved. See Fig. 9. We may now make the second assumption for our conﬁgurations without loss of generality.
+Assumption 2. | V ( P k )| ≥ 5. For each i, 1 ≤ i ≤ l,
+v i v i +1 and v i +1 v i +2 , respectively.
+
+v i v i +1 v i +2 contains only two interior points of p i and p i +1 , friends of
+
+Fig. 10 shows an illustration of Assumption 2 for | V ( P k )| = 5 where the shaded portion contains the remaining interior
+points.
+(III) We proceed to argue using Assumption 2. Take any pentagon v i −2 v i −1 v i v i +1 v i +2 of P k , say v l v 1 v 2 v 3 v 4 ; then consider
+cases (A) and (B) where γ ( v 1 ; v 3 , p 3 ) is empty or not.
+(A) γ ( v 1 ; v 3 , p 3 ) is not empty: Let p = α ( v 1 ; v 3 , p 3 ). We have subcases (1) and (2).
+(1) γ ( v 1 ; p , p 3 ) is not empty: Let a1 = α ( v 1 ; p , p 3 ). We have cases (a), (b) and (c) according to the position of a1 .
+(a) a1 lies in H ( p 2 p ; v 2 ): We obtain H = {( v 3 v 4 p 3 )3 , ( p 1 v 2 p 2 pa1 )5 } and R = H ( v 1 a1 ; v 4 ) ∩ H ( v 2 v 4 ; v 1 ).
+(b) a1 lies in γ ( p ; p 2 , p 3 ): We obtain H = {( v 1 v 2 p 1 )3 , (a1 pp 2 v 3 α1 )5 } and R = γ (a1 ; v 1 , α1 ) for α1 = α (a1 ; v 1 , p 3 ).
+(c) a1 lies in H ( pp 3 ; v 3 ): If p 1 lies in H (a1 p ; v 2 ), we obtain H = {( v 3 v 4 p 3 )3 , ( p 1 v 2 p 2 a1 p )5 } and R = H ( v 1 a1 ; v 4 ) ∩
+H ( v 2 v 4 ; v 1 ). If p 1 lies in H (a1 p ; v 1 ), we obtain H = {( v 2 v 3 p 2 )3 , ( v 1 p 1 pa1 α2 )5 } and R = γ (a1 ; α2 , v 1 ) for α2 =
+α (a1 ; v 1 , pl ). See Fig. 11.
+(2) γ ( v 1 ; p , p 3 ) is empty: γ ( v 1 ; v 3 , p 3 ) contains only the interior point p. We consider the case where γ ( v 1 ; p 3 , v 4 ) is
+not empty and let a2 = α ( v 1 ; p 3 , v 4 ). If a2 lies in H ( p 2 p ; v 2 ) as shown in Fig. 12, we obtain H = {( v 3 v 4 p 3 )3 , ( p 1 v 2 p 2 pa2 )5 }
+
+668
+
+K. Hosono / Computational Geometry 48 (2015) 661–672
+
+Fig. 10. | V ( P k )| = 5 under Assumption 2.
+
+Fig. 11. a1 lies in H ( pp 3 ; v 3 ).
+
+Fig. 12. a2 lies in H ( p 2 p ; v 2 ).
+
+and R = H ( v 1 a2 ; v 4 ) ∩ H ( v 2 v 4 ; v 1 ). If a2 lies in H ( p 2 p ; v 3 ), we obtain H = {( v 1 v 2 p 1 )3 , ( pp 2 v 3 p 3 a2 )5 } and R =
+H ( v 1 a2 ; v 4 ). Thus, γ ( v 1 ; p 3 , v 4 ) is empty.
+(B) γ ( v 1 ; v 3 , p 3 ) is empty: If γ ( v 1 ; p 3 , v 4 ) is also empty, we obtain H = {( v 2 v 3 p 2 )3 , ( v 1 p 1 p 3 v 4 α )5 } and R = H (α v 4 ; v l )
+for α = α ( v 4 ; v 1 , pl ). Otherwise, γ ( v 1 ; p 3 , v 4 ) is not empty and let p = α ( v 1 ; p 3 , v 4 ).
+We now consider the case where γ ( v 1 ; p , v 4 ) is not empty and let a1 = α ( v 1 ; p , v 4 ). Then if a1 lies in H ( p 2 p ; v 2 ), we
+obtain H = {( v 3 v 4 p 3 )3 , ( p 1 v 2 p 2 pa1 )5 } and R = H ( v 1 a1 ; v 4 ) ∩ H ( v 2 v 4 ; v 1 ), and if a1 lies in H ( p 2 p ; v 3 ), we obtain H =
+{( v 1 v 2 p 1 )3 , ( pp 2 v 3 p 3 a1 )5 } and R = H ( v 1 a1 ; v 4 ). Thus, γ ( v 1 ; p 3 , v 4 ) contains only the interior point p since γ ( v 1 ; p , v 4 )
+is empty.
+Since the convex quadrilateral v 1 v 2 v 3 v 4 only contains the interior points { p , p 1 , p 2 , p 3 } by cases (A) and (B), | V ( P k )| = 5
+implies that | P k | = 11 < 13 which has been resolved. See Fig. 13. Denote the convex quadrilateral v i −1 v i v i +1 v i +2 of P k by
+Q i for any i. We may now make the ﬁnal assumption without loss of generality.
+Assumption 3. | V ( P k )| ≥ 6. For each i, 1 ≤ i ≤ l, Q i contains only the interior point p i in Q i \
+besides the friends { p i −1 , p i , p i +1 }.
+
+i −2≤ j ≤i +1
+
+v j v j +1 v j +2
+
+We call this interior point p i a navel of Q i . Fig. 14 gives an illustration of Assumption 3 where Q 2 and Q 3 have no
+common navel but Q 1 and Q 2 have the common navel; here the shaded portion contains the remaining interior points.
+
+K. Hosono / Computational Geometry 48 (2015) 661–672
+
+669
+
+Fig. 13. The conﬁguration for | V ( P k )| = 5.
+
+Fig. 14. The navels of Q 1 , Q 2 and Q 3 .
+
+Fig. 15. p 1 lies in H ( pa1 ; v 2 ).
+
+(IV) We proceed to argue using Assumption 3. Take any two consecutive quadrilaterals Q i and Q i +1 of P k , say Q 1 and Q 2 ;
+we then consider cases (A) and (B).
+(A) Q 1 and Q 2 have the common navel: Denote the common navel by p = p 1 = p 2 , where p lies in γ ( v l ; v 2 , v 3 ) ∩
+γ ( v 4 ; v 2 , v 1 ) ∩ H ( v 1 v 3 ; v 4 ). We have subcases (1) and (2).
+(1) γ ( v l ; v 3 , p 3 ) is not empty: Let a1 = α ( v l ; v 3 , p 3 ).
+(a) a1 lies in H ( v 2 p ; v 1 ): We obtain H = {( v 2 v 3 p 2 )3 , ( pl v 1 p 1 pa1 )5 } and R = H ( v l a1 ; v 4 ).
+(b) a1 lies in H ( v 2 p ; v 3 ): If p 1 lies in H ( pa1 ; v 1 ), we obtain H = {( v 2 v 3 p 2 )3 , ( pl v 1 p 1 pa1 )5 } and R = H ( v l a1 ; v 4 ). If
+p 1 lies in H ( pa1 ; v 2 ) as shown in Fig. 15, then for α = α ( p ; v 4 , a1 ) we obtain H = {( p 2 v 3 p 3 )3 , ( pp 1 v 2 v 4 α )5 } and R =
+γ ( p ; v 1 , α ).
+(2) γ ( v l ; v 3 , p 3 ) is empty: For the same reason as in (1), γ ( v 4 ; v 1 , pl ) is also empty. Since we have at least three
+interior points of γ ( p ; v l , v 4 ) by | P k | ≥ 13 or | V ( P k )| ≥ 6, we suppose that γ ( p ; v l , v 2 ) contains at least two interior points
+by symmetry. Let a1 = α ( p ; v l , v 2 ).
+(a) p 2 lies in H ( pa1 ; v 2 ): We obtain H = {( v 1 pl v l )3 , ( p 1 v 2 p 2 pa1 )5 } and R = γ ( p ; a1 , v 3 ).
+(b) p 2 lies in H ( pa1 ; v 3 ): Consider a2 = α ( p ; a1 , v 2 ). If a2 lies in H ( p 1 a1 ; v 2 ), we obtain H = {( v 1 pl v l )3 , ( p 1 v 2 pa2 a1 )5 }
+and R = γ ( p ; a2 , a1 ). If a2 lies in H ( p 1 a1 ; v 1 ) as shown in Fig. 16, then since there is α S¯ = α S¯ ( p 3 ; v l , v 3 ) for S = {a1 , a2 },
+we obtain H = {( v 1 v 2 p 1 )3 , ( v l pl a1 a2 )4 , ( pp 2 v 3 p 3 α S¯ )5 } of (Type 4) and R = H ( pa2 ; v 3 ) ∩ H (α S¯ p 3 ; v 4 ).
+
+670
+
+K. Hosono / Computational Geometry 48 (2015) 661–672
+
+Fig. 16. a2 lies in H ( p 1 a1 ; v 1 ).
+
+Fig. 17. pl lies in H ( pa1 ; v l ).
+
+(B) Q 1 and Q 2 have no common navel: Denote the navels of Q 1 and Q 2 by p = p 1 and q = p 2 , where p lies in
+γ ( v l ; v 2 , v 3 ) ∩ H ( v 1 v 4 ; v l ), and q lies in γ ( v 4 ; v 2 , v 1 ) ∩ H ( v l v 3 , v 4 ). We remark that if we consider a1 = α ( v l ; v 3 , v 4 ), then
+a1 = q, p 3 or another interior point. We have subcases (1), (2) and (3).
+(1) a1 = q, p 3 :
+(a) a1 lies in H ( p 1 p ; v 1 ): We obtain H = {( v 2 v 3 p 2 )3 , ( v 1 p 1 pa1 pl )5 } and R = H ( v l a1 ; v 4 ).
+(b) a1 lies in H ( p 1 p ; v 2 ): (The line pa1 may intersect the side v 1 v 2 .)
+(i) pl lies in H ( pa1 ; v l ): If γ (a1 ; v l , v 3 ) is not empty, we obtain H = {( v 1 v 2 p 1 )3 , ( p 2 v 3 p 3 q)4 , ( v l pl pa1 α )5 } and R =
+γ (a1 ; α , v l ) ∩ H ( v 1 v 4 ; v l ) for α = α (a1 ; v l , v 3 ). See Fig. 17. If it is empty, we obtain H = {( v 1 pl v l )3 , (a1 pp 1 v 2 p 2 )5 } and
+R = H (a1 v 3 ; v 4 ).
+(ii) pl does not lie in H ( pa1 ; v l ): (The line pa1 intersects the side v l v 1 and pl lies in H ( pa1 ; v 1 ).) We obtain H =
+{( v 2 v 3 p 2 )3 , ( v 1 p 1 a1 ppl )5 } and R = H ( v l a1 ; v 4 ).
+(2) a1 = p 3 : If pl lies in H ( pp 3 ; v 1 ), we obtain H = {( p 1 v 2 p 2 )3 , ( v 1 v 3 p 3 ppl )5 } and R = H ( v l p 3 ; v 4 ). If pl lies in
+H ( pp 3 ; v l ) as shown in Fig. 18, we obtain H = {( v 2 v 3 p 2 )3 , ( pv 1 p 1 p 3 α )5 } and R = γ ( p ; p 3 , α ) for α = α ( p ; p 3 , q).
+(3) a1 = q: α ( v 4 ; v 1 , v l ) = p for the same reason as in (1) and (2). If pl lies in H ( pq; v 1 ), we obtain H =
+{( p 1 v 2 p 2 )3 , (qppl v 1 v 3 )5 } and R = H ( v l q; v 4 ). Thus, pl lies in H ( pq; v l ), and p 3 also lies in H ( pq; v 4 ) by the same way.
+(a) γ ( v l ; q, p 3 ) is not empty: Let a2 = α ( v l ; q, p 3 ).
+(i) a2 lies in H ( p 1 p ; v 1 ): If γ (a2 ; v l , p ) is not empty, we obtain H = {( v 1 v 2 p 1 )3 , (qp 2 v 3 p 3 )4 , ( v l pl pa2 α1 )5 } and R =
+γ (a2 ; α1 , v l ) ∩ H ( pv 4 ; v l ) for α1 = α (a2 ; v l , p ). If it is empty, there is α2 = α (q; v 4 , a2 ) by | V ( P k )| ≥ 6 as shown in Fig. 19.
+We then obtain H = {( v 2 v 3 p 2 )3 , (qp 3 v 4 α2 )4 , ( v 1 p 1 pa2 pl )5 } and R = H ( v l a2 ; v 4 ) ∩ H (qα2 ; v l ).
+(ii) a2 lies in H ( p 2 q; v 3 ): If γ (a2 ; v l , q ) is not empty, we obtain H = {( v 1 v 2 p 1 )3 , (qp 2 v 3 p 3 )4 , ( v l pl pa2 α3 )5 } and R =
+γ (a2 ; α3 , v l ) ∩ H ( pv 4 ; v l ) for α3 = α (a2 ; v l , q ). See Fig. 20. If it is empty, we obtain H = {( v 1 v 2 p 1 )3 , ( v l pl pqa2 )5 } and
+R = γ (q; a2 , p 2 ).
+(iii) a2 lies in H ( p 1 p ; v 2 ) ∩ H ( p 2 q; v 2 ): We obtain H = {( v l v 1 pl )3 , ( v 3 v 4 p 3 )3 , ( pp 1 v 2 p 2 qa2 )6 } of (Type 5) and R =
+H ( v l a2 ; v 4 ) ∩ H ( pv 4 ; v l ).
+(b) γ ( v l ; q, p 3 ) is empty: γ ( v 4 ; p , pl ) is also empty for the same reason as in (a). To show that γ ( v l ; p 3 , v 4 ) is empty,
+we also consider a3 = α ( v l ; p 3 , v 4 ). We follow a similar argument to in (a).
+
+K. Hosono / Computational Geometry 48 (2015) 661–672
+
+671
+
+Fig. 18. pl lies in H ( pp 3 ; v l ).
+
+Fig. 19.
+
+Fig. 20.
+
+γ (a2 ; v l , p ) is empty.
+
+γ (a2 ; v l , q ) is not empty.
+
+(i) a3 lies in H ( p 1 p ; v 1 ): If γ (a3 ; v l , p ) is not empty, we obtain H = {( v 1 v 2 p 1 )3 , ( p 2 v 3 p 3 q)4 , ( v l pl pa3 α4 )5 } and
+R = γ (a3 ; α4 , v l ) for α4 = α (a3 ; v l , p ). If it is empty, we obtain H = {( v 2 v 3 p 2 )3 , (qp 3 v 4 α5 )4 , ( pl v 1 p 1 pa3 )5 } and R =
+H ( v l a3 ; v 4 ) ∩ H (qα5 ; v l ) for α5 = α (q; v 4 , a3 ). See Fig. 21.
+(ii) a3 lies in H ( p 2 q; v 3 ): If γ (a3 ; v l , q ) is not empty, we obtain H = {( v 1 v 2 p 1 )3 , ( p 2 v 3 p 3 q)4 , ( v l pl pa3 α6 )5 } and R =
+γ (a3 ; α6 , v l ) for α6 = α (a3 ; v l , q ). See Fig. 22. If it is empty, we obtain H = {( v 1 v 2 p 1 )3 , ( v l pl pqa3 )5 } and R = γ (q; a3 , p 2 ).
+(iii) a3 lies in H ( p 1 p ; v 2 ) ∩ H ( p 2 q; v 2 ): We obtain H = {( v l v 1 pl )3 , ( v 3 v 4 p 3 )3 , ( pp 1 v 2 p 2 qa3 )6 } and R = H ( v l a3 ; v 4 ) ∩
+H ( p l v 4 ; v l ).
+Since γ ( v l ; p 3 , v 4 ) is empty, if we consider α = α ( v l ; v 4 , p 4 ), we ﬁnally obtain H = {( p 1 v 2 p 2 )3 , ( v 1 v 3 qp )4 ,
+( v l pl p 3 v 4 α )5 } and R = H ( v l α ; v 5 ).
+The proof of the lemma is now complete since all the possible cases have been considered. ✷
+
+672
+
+K. Hosono / Computational Geometry 48 (2015) 661–672
+
+Fig. 21.
+
+Fig. 22.
+
+γ (a3 ; v l , p ) is empty.
+
+γ (a3 ; v l , q ) is not empty.
+
+Acknowledgements
+The author expresses his appreciation to the referees for their careful reading of the manuscript and valuable comments.
+References
+[1] D. Avis, D. Rappaport, Computing the largest empty convex subset of a set of points, in: Proc. of 1st ACM Symp. on Computational Geometry, Baltimore,
+MD, 1985, pp. 161–167.
+[2] F.R.K. Chung, R.L. Graham, Forced convex n-gons in the plane, Discrete Comput. Geom. 19 (1998) 367–371.
+[3] R. Ding, K. Hosono, M. Urabe, C. Xu, Partitioning a planar point set into empty convex polygons, Lect. Notes Comput. Sci. 2866 (2003) 129–134.
+˝ Some more problems on elementary geometry, Aust. Math. Soc. Gaz. 5 (1978) 52–54.
+[4] P. Erdos,
+˝ G. Szekeres, A combinatorial problem in geometry, Compos. Math. 2 (1935) 463–470.
+[5] P. Erdos,
+˝ G. Szekeres, On some extremum problems in elementary geometry, Ann. Univ. Sci. Bp. Rolando Eötvös Nomin., Sect. Math. 3/4 (1960/1961)
+[6] P. Erdos,
+53–62.
+[7] G. Fabella, J. O’Rourke, Twenty-two points with no empty hexagon, manuscript, 1986.
+[8] T. Gerken, Empty convex hexagons in planar point sets, Discrete Comput. Geom. 39 (2008) 239–272.
+[9] H. Harborth, Konvexe Fünfecke in ebenen Punktmengen, Elem. Math. 33 (1978) 116–118.
+[10] J.D. Horton, Sets with no empty convex 7-gons, Can. Math. Bull. 26 (1983) 482–484.
+[11] K. Hosono, M. Urabe, On the number of disjoint convex quadrilaterals for a planar point set, Comput. Geom. Theory Appl. 20 (2001) 97–104.
+[12] J.D. Kalbﬂeisch, J.G. Kalbﬂeisch, R.G. Stanton, A combinatorial problem on convex n-gons, in: Proc. Louisiana Conf. on Combinatorics, Graph Theory and
+Computing, 1970, pp. 180–188.
+[13] D.J. Kleitman, L. Pachter, Finding convex sets among points in the plane, Discrete Comput. Geom. 19 (1998) 405–410.
+[14] C.M. Nicolás, The empty hexagon theorem, Discrete Comput. Geom. 38 (2007) 389–397.
+[15] M.H. Overmars, Finding sets of points without empty convex 6-gons, Discrete Comput. Geom. 29 (2003) 153–158.
+[16] M.H. Overmars, B. Scholten, I. Vincent, Sets without empty convex 6-gons, Bull. Eur. Assoc. Theor. Comput. Sci. 37 (1989) 160–168.
+˝
+[17] G. Szekeres, L. Peters, Computer solution to the 17-point Erdos–Szekeres
+problem, ANZIAM J. 48 (2006) 151–164.
+˝
+[18] G. Tóth, P. Valtr, Note on the Erdos–Szekeres
+theorem, Discrete Comput. Geom. 19 (1998) 457–459.
+˝
+[19] G. Tóth, P. Valtr, The Erdos–Szekeres
+theorem: upper bounds and related results, KAM Series 2004-670 (technical report), Charles University Prague,
+2004.
+[20] M. Urabe, On a partition into convex polygons, Discrete Appl. Math. 64 (1996) 179–191.
+
+

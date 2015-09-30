@@ -1,0 +1,1807 @@
+Parallel Computing 48 (2015) 40–58
+
+Contents lists available at ScienceDirect
+
+Parallel Computing
+journal homepage: www.elsevier.com/locate/parco
+
+Mapping of time-consuming multitask applications on a cloud
+system by multiobjective Differential Evolution
+Ivanoe De Falco, Umberto Scafuri, Ernesto Tarantino∗
+Institute of High Performance Computing and Networking, National Research Council of Italy, Naples 80131, Italy
+
+a r t i c l e
+
+i n f o
+
+Article history:
+Received 8 March 2013
+Revised 30 March 2015
+Accepted 5 April 2015
+Available online 10 April 2015
+Keywords:
+Cloud computing
+Mapping
+Differential Evolution
+Multiobjective problems
+
+a b s t r a c t
+Cloud computing is on-demand provisioning of virtual resources aggregated together so that
+by speciﬁc contracts users can lease access to their combined power.
+Here we hypothesize a new form of service contract by means of which users do not
+explicitly require resources, but simply supply information about their time-consuming multitask applications and specify their needs through some quality of service (QoS) parameters.
+The individuation of the virtual machines (VMs) onto which map and execute them is left
+to the cloud manager. Unfortunately the task/node mapping, already known as NP-hard for
+conventional parallel systems, becomes more challenging when application tasks must be run
+on VMs hosted on heterogeneous and shared cloud nodes, and when it must comply with QoS
+requests too. To support this new cloud service, a novel mapper tool, based on a multiobjective
+Differential Evolution algorithm, is proposed. Such a tool deﬁnes the mapping of the tasks on
+the VMs with the aim to exploit as much as possible the available cloud resources without
+penalizing the execution time of the submitted applications and, at the same time, to respect
+users’ QoS requests.
+To reveal the robustness of this evolutionary tool, an experimental analysis on artiﬁcial
+time-consuming parallel applications, modeled as task interaction graphs, has been effected.
+© 2015 Elsevier B.V. All rights reserved.
+
+1. Introduction
+In the last years high interest has been kindled by the advent of cloud technology [1–3], widely publicized and commercially supported by important ﬁrms and projects as for instance IBM, Amazon, Microsoft, and so on [4–8]. Cloud computing
+is increasingly explored as an effective alternative (and addition) to supercomputers for some high performance computing
+(HPC) applications [9–11]. In fact, the cloud allows beneﬁts in terms of elasticity, maintenance costs, economics of scale and
+virtualization ﬂexibility. Furthermore, many studies have been effected to ﬁnd the nature of the HPC applications suitable to be
+executed on cloud platforms [12,13].
+At the moment most of the cloud systems offers on-demand virtualized services ranging from the hardware to the application
+level [1]. Generally, these services are classiﬁed into three main service delivery models: infrastructure as a service (IaaS),
+platform as a service (PaaS), and software as a service (SaaS). IaaS refers to the practice of delivering on demand IT infrastructure
+as a commodity to customers. PaaS provides a development platform in which customers can create and execute their own
+applications. SaaS endows the user with an integrated service comprising hardware, development platforms, and applications.
+
+∗
+
+Corresponding author. Tel.: +39 081 6139525; fax: +39 081 6139531.
+E-mail address: ernesto.tarantino@na.icar.cnr.it (E. Tarantino).
+
+http://dx.doi.org/10.1016/j.parco.2015.04.001
+0167-8191/© 2015 Elsevier B.V. All rights reserved.
+
+I. De Falco et al. / Parallel Computing 48 (2015) 40–58
+
+41
+
+Typically, a cloud service provider signs contracts with his customers in the form of service-level agreements (SLAs), which
+can concern many aspects of a cloud computing service. The contract deﬁnes the agreed-upon-service fees for the total virtual
+resources negotiated by the client as well as the associated service credit if the provider fails to deliver the level of service.
+Cloud systems are usually endowed with a very high aggregated computational power, so they could represent a viable
+solution to execute in parallel time-consuming multitask applications. This is why, although cloud systems currently seem
+unﬁt to eﬃciently solve compute-intensive parallel applications [9,14,15], many efforts are being dedicated by manufacturers
+and scientists to endow them with new functionalities in order to execute in reasonable times small- and medium-sized HPC
+applications [13,16,17]. In this way customers can have at their disposal virtual instances of all the needed resources without
+having any knowledge about the numbers, the characteristics, and the location of the cloud physical resources used to provide
+the requested services. Thus, in the absence of their own resources, developers of HPC parallel applications can negotiate their
+leasing from a cloud manager by a canonical IaaS or a PaaS SLA. Both these contract forms suppose that the customers, on the
+basis of their application requirements, ﬁrst must individuate and bargain over the virtual machines (VMs) needed and then they
+have to establish the task/VM mapping.
+In this paper a new form of a PaaS contract is hypothesized, by means of which customers only have to submit the information
+about their time-consuming multitask MPI application and to indicate quality of service (QoS) parameters they are mostly
+interested in. In our view, the values of these parameters cannot be negotiated. The cloud management software is instead
+in charge of detecting the available VMs onto which map and execute in parallel the application tasks, by suitably deducting
+the resources already used for other instanced VMs and services. This is accomplished by endowing the software with a novel
+mapping tool that does not face the classical mapping problem of parallel applications on multicomputers or on computational
+grids. Rather, such a tool, on the basis of the residual cloud resources, of the characteristics of the submitted applications and of
+users’ QoS requests, is able to individuate the VM allocation on the cloud physical nodes that supports at best the application
+execution.
+It is quite simple to design a web interface to support the application submission phase. Unfortunately the ﬁnding of an eﬃcient
+task/VM mapping becomes even more challenging when it also has to deal with multiple conﬂicting optimization objectives
+[18], such as performance and QoS under limited budget constraints [19]. Not only is this an NP-complete problem [20,21], it
+is also not-approximable, i.e., it cannot be approximated in polynomial time with arbitrarily good precision by deterministic
+algorithms [22]. As shown in [23,24], given its NP-complete nature, the non-deterministic metaheuristic algorithms are the most
+appropriate to attain approximate solutions that meet the requirements in a reasonable time [25,26].
+Here we propose a multiobjective version of Differential Evolution (DE) [27,28], relying on the Pareto method [29], to provide
+a set of mapping solutions (Pareto front), each with its different balance between use of resources and QoS constraints. More
+precisely, when a user submits a multitask application, the cloud manager determines the set of the VMs that can be instanced
+in parallel on the currently available physical resources. Successively, the manager executes the proposed evolutionary mapping
+tool to ﬁnd the task/VM mapping solutions which allow exploiting the cloud resources that meet at best the needs formulated
+by QoS parameters.
+Differently from other approaches [23,30], our tool is used to tackle the allocation of communicating tasks of time-consuming
+parallel applications modeled as task interaction graphs (TIGs) [31,32].
+Within this paper, according to the minimax model [33,34], for each mapping solution, the cost incurred by each VM, i.e., the
+amount of time spent for the computation and the communication of all the tasks mapped on it, is estimated, and the maximum
+of these costs is to be minimized. This optimization criterion is chosen because, even in the case with the highest degree of
+overlapping, i.e., if no task waits for communications, the time required to complete the execution of a parallel application is
+at least equal to the greatest amount of time. Such a view leads toward the discovery of solutions which do not use the most
+powerful available VM if, due to task overlapping, its use does not contribute to a reduction in the above greatest amount of time.
+In such a way, only the minimal cloud resources needed for the task requirements are used, and this permits the cloud manager
+to more fruitfully exploit powerful resources for further applications. Therefore, each user can be charged for the amount of time
+she/he has effectively used the resources on the basis of the pricing model established by the cloud administrator.
+TIGs are more ﬂexible to describe different program structures than direct acyclic graphs (DAGs) [35,36], therefore our tool
+can also deal with cases for which other mapping algorithms, like Min–min [37,38], Max–min [39], and XSufferage [40], are not
+suitable [41]. Other evolutionary approaches map the application on locally distributed resources only [42]. Our tool, instead,
+can choose from even geographically-distributed VMs which, on the basis of their features, turn out to be the ﬁttest for the
+application tasks to be allocated.
+To evaluate the effectiveness of our evolutionary tool, the mapping of artiﬁcial applications on a cloud infrastructure at
+different workload operating conditions has been performed.
+Paper structure is as follows: Section 2 reports on the related research; Section 3 presents the working environment;
+Section 4 summarizes the evolutionary technique investigated, while Section 5 explains our multiobjective mapper. In Section 6
+the test problems experienced are reported and the results attained are commented. Finally in Section 7 conclusions are given.
+2. Related research
+The selection of the cloud resources which, on the basis of physical characteristics (computational power, frequency, memory,
+bandwidth, ...) and load, better support the services as they are negotiated by the customers is nearly always a problem of
+considerable diﬃculty. Unfortunately, even if the primary objective for IaaS, PaaS, and SaaS models remains to map as well as
+
+42
+
+I. De Falco et al. / Parallel Computing 48 (2015) 40–58
+
+possible the brokered services on the available resources, the criteria and the algorithms adopted vary substantially with the
+model.
+In Eucalyptus [43], which implements Amazon EC2’s interface, three placement policies are pre-deﬁned: round robin, greedy,
+and green-it. Round robin starts from the next node of the last recorded one but is characterized by low accuracy as it does
+not take the current resource usage into account. Greedy queries all the resources from the ﬁrst to the last node until ﬁnding a
+suitable node every time a new request comes. The green-it policy acts like greedy, but has the additional feature to shut down
+unused hosts and power them on if needed. OpenNebula [44] uses load-aware policy, selecting the node with most free CPU, but
+other resources (memory, network bandwidth, etc.) may become a bottleneck to performance due to load imbalance [45].
+Fang et al. [46] discuss a scheduling mechanism based on the two levels of load balance which consider the ﬂexibility and
+virtualization in cloud computing to meet the dynamic task requirements of users and improve the utilization of resources. The
+ﬁrst-level scheduling is from the users’ application to the virtual machine and creates the description of a virtual machine on the
+basis of the resources and other conﬁguration information demanded by the application tasks. The second level is from the virtual
+machine to host resources and ﬁnds appropriate resources for the virtual machine in the host resources under certain rules,
+based on each task description of the virtual machine. The load of the virtual machine is evaluated by the predicted execution
+time of the tasks running on it.
+Ni et al. [47] present a virtual machine mapping policy based on multi-resource load balancing using a probabilistic approach
+to select the physical node and ease the problem of load crowding caused by concurrent users. The requests are served on a ﬁrst
+come ﬁrst served basis to avoid keeping resources idle as much as possible and a resource monitor maintains a resource quota
+list of the cloud node by polling the node in a short monitor cycle.
+Unfortunately the criteria and mapping algorithms presented so far cannot be exploited to eﬃciently execute time-consuming
+multitask applications on cloud nodes. The same applies to the classical mapping algorithms, typically used for traditional
+parallel and distributed systems, and inadequate to work in heterogeneous environments [48] such as clouds. In fact, the
+mapping of communicating multitask applications introduces further degrees of complexity if the cloud resources, besides being
+heterogeneous and geographically dispersed, have features which vary even substantially over time as the local loads and the
+network bandwidth [37,49].
+Considered the NP-nature of the mapping problem, metaheuristic algorithms have been investigated to tackle it.
+In [50] a game-theoretic method to schedule dependent tasks with time and cost constraints is advanced to achieve a better
+load balancing across all the nodes in the cloud, while in [23] a particle swarm optimization (PSO) heuristic is presented to
+minimize the total cost of a data-intensive application workﬂow, denoted as a DAG.
+Gan et al. [25] introduce a genetic simulated annealing algorithm for multitask scheduling in cloud computing. This algorithm
+considers the QoS requirements of tasks with different features. The scheduling model is based on a master/slave hierarchy: the
+master node is responsible for scheduling all the tasks while the slave node is only responsible for the execution of the tasks
+assigned to it by the master node.
+Tayal [24] proposes an algorithm based on the fuzzy-genetic optimization which makes a scheduling decision by evaluating
+the entire group of tasks in the job queue. The author describes and evaluates fuzzy sets to model imprecise scheduling parameters
+and also to represent satisfaction grades of each objective. Genetic Algorithms (GAs) are developed for task level scheduling in
+Hadoop MapReduce.
+To speed up the mapping process and ensure the fulﬁllment of all task deadlines and QoS requirements, Mehdi et al. [26]
+introduce a fast algorithm that can ﬁnd a mapping by using GAs with ‘exist if satisfy’ condition. Mapping time and makespan are
+the performance metrics that are used to evaluate the proposed system.
+Garg et al. [51] face the scheduling problem of HPC applications yet with an objective and scheduling model different
+from ours. They propose near-optimal scheduling policies that exploit heterogeneity across multiple data centers for a cloud
+provider by considering a number of energy eﬃciency factors which change across different data centers depending on their
+location, architectural design, and management system. The aim is to address the high increase in the energy consumption
+not only from the cloud provider’s perspective, but also from that of the environment, providing energy-eﬃcient solutions
+able to also meet QoS requirements of the application. The system model is based on a cloud meta-scheduler which acts as
+an interface to the cloud infrastructure and schedules the applications on behalf of users. This meta-scheduler interacts with
+the local data center scheduler for the application execution. Naturally each local scheduler periodically supplies information
+about available resources to the meta-scheduler. Differently from our approach, the limitations are that each application must
+be executed within an individual data center, the pre-emptive priority is missing, and the CPUs within the same data center are
+homogeneous.
+Gupta et al. [52] present an HPC application-aware allocation of multiple VMs instances to physical hosts whose selection
+is limited to a single pool. The methodology relies on two issues. The ﬁrst is the characterization of applications based on
+their shared use of resources in a multi-core node and their tightly coupledness. The second is the use of a scheduler to
+identify group of applications which have complementary proﬁles and can be consolidated on the same hardware resources
+without compromising the overall HPC performance. They use a multi-dimensional on-line bin packing heuristics. However the
+optimization of the resource allocation is performed on the basis of user’s resource requirements such as number of virtual cores,
+amount of memory and amount of disk space.
+The reported evolutionary approaches, based on DAGs, are not applicable to parallel applications structured as TIGs. The other
+approaches describe the mapping of VMs on physical nodes without giving details about the kind of applications, or differ from
+ours in the objective and in the operating conditions.
+
+I. De Falco et al. / Parallel Computing 48 (2015) 40–58
+
+43
+
+Fig. 1. The task mapping model.
+
+In this paper we present a novel multiobjective DE approach to map parallel applications structured as TIGs on cloud VMs, and
+propose a new form of a cloud service contract which permits the user to leave to the cloud manager all the issues relative to the
+application execution. The eﬃciency of DE, whose initial population is improved by means of appropriate heuristic algorithms, is
+investigated in [53] but the mapping is related to independent tasks, while in [54,55] the analysis is restricted to mono-objective
+cases, like in [56,57] where a distributed approach for mapping TIG applications in a grid system is investigated. Recently,
+multiobjective DE approaches have been presented for the static allocation of workﬂow applications modeled as DAGs [58] or
+even as TIGs [59,60] but still conﬁned in grid environments.
+
+3. Our working environment
+3.1. The PaaS parallel application service
+In [61] the cloud computing stack is described as a layered architecture of IT infrastructures. At the lowest layer there are the
+physical resources which can be quite different depending on the cloud nature. For example commercial cloud infrastructures
+are more likely composed by data centers with hundreds or thousands of computing nodes that host VMs to execute customers’
+tasks. The virtualization of hardware and software is a key factor to provide a customized runtime environment for each type of
+user [3].
+To guarantee appropriate services to the customers, the physical infrastructure of a cloud is usually managed by a core
+middleware layer which, endowed with a wide set of services, provides a suitable runtime environment.
+Today most of the IaaS, PaaS, and SaaS models are supported by cloud infrastructures, e.g., Google App Engine [62], Amazon
+Elastic Compute Cloud (EC2) [5], and Windows Azure [6].
+In Fig. 1 a conceptual and architectural perspective of the proposed cloud manager (CM) module is depicted. As shown, this
+module contains ﬁve distinct sub-modules: accounting, cloud resource status (CRS), IaaS, PaaS and SaaS.
+The three last sub-modules interact with the accounting to acquire information about the services required by the customers
+and with the CRS module to retrieve the current status of physical resources.
+Leaving out considerations about these canonical models, hereinafter we concentrate our attention on a new form of PaaS
+service, i.e., the PaaS parallel application service (PPAS). This is designed to execute eﬃciently time-consuming message passing
+interface (MPI) multitask applications on cloud resources.
+To implement this service the CM is equipped with two speciﬁc tools: the PPAS web interface (P2 WI) inside the accounting
+sub-module and the PPAS mapper (P2 AM) included in the PaaS sub-module.
+By means of P2 WI the user operates as follows: (i) she/he provides the information about the application tasks, each of which
+may have various requirements [18,63]; (ii) among all the contracts proposed by the CM, she/he accepts the one that most satisfy
+her/his needs.
+For each submitted MPI multitask application, P2 AM detects the set of VMs which can be eﬃciently hosted on the available
+physical resources and searches for the task/VM mapping solutions which better fulﬁll the application requirements.
+P2 AM obtains details about the workload, computation and communication activities of the cloud resources by interacting
+with the CRS. Moreover, it receives from the P2 WI the application code and the application information, such as the number of
+tasks, the amount of computations and communications for each task, and so on.
+
+44
+
+I. De Falco et al. / Parallel Computing 48 (2015) 40–58
+
+3.2. The P2 AM mapping strategy
+For each submitted TIG application, P2 AM activates the evolutionary mapping procedure which, on the basis of available cloud
+resources and task requirements, returns the task/VM mapping solutions on the Pareto front. This front is then shown to the
+customer under the form of a set of solutions, each of which is characterized by the expected maximal resource use time, by the
+values of the parameters negotiated in terms of QoS, and by the cost of the contract. This contract has an expiration timeout to
+avoid that the availability of the cloud physical resources can change during the time interval the contract is being stipulated. The
+user selects among these solutions the one most suited to her/his needs, and submits the application for the execution within
+the requested timeout. Naturally if the timeout expires all the arrangement restarts.
+Assuming to have an application subdivided into p tasks and N instantiable VMs, the strategy adopted in P2 AM to provide the
+mapping solutions which allocate the p tasks on n of the N VMs (1 ࣘ n ࣘ N and n ࣘ p) is based on the following considerations:
+if τ i is the amount of time spent to execute all the tasks assigned to the VM i, and τmax is the maximal of these times, the time
+to complete the application execution ranges within τmax and ࢣi ࢠ [1, n] {τ i }, i.e., the sum of the times dedicated by the n VMs
+to execute the application tasks assigned to them. In fact τmax corresponds to the case in which the communications among
+the tasks take place without waiting times, while the worst case is related to the absence of overlapping, i.e., all the tasks are
+executed sequentially.
+On these bases, in addition to satisfying the QoS requests, the proposed mapping algorithm searches among all the possible
+solutions the one which minimizes τmax . It is to note that the time required to execute a generic task is evaluated assuming that
+the execution is not delayed by tasks becoming blocked. Since such blocks cannot be excluded, if a single task were assigned to a
+VM, it might be idle waiting for events, e.g., communications, and cloud resources would remain temporarily unexploited. Then,
+to exploit the available resources in the best possible way, our evolutionary mapper can allocate on the same VM more tasks
+(and this explains n ࣘ p) if this allocation does not increase τmax .
+When a new task is co-allocated on a VM, its execution time is evaluated by taking into account the time requested for the
+execution of the tasks already mapped on the same VM.
+Moreover, to avoid penalizing the execution time of the submitted applications, a pre-emptive ﬁrst in ﬁrst out scheduling
+policy is adopted. According to this hypothesis, a process relative to a task of an application is running if and only if there are no
+processes which, on the basis of their submission order, precede it in the queue, while it is de-scheduled and returns ready as
+soon as a process previously submitted becomes executable. In other words, if at the instant t a process is executing on the node
+j, such a process releases the use of the processor only for the time intervals in which it results blocked and becomes immediately
+running when its state returns ready. This means that its execution time, excluding the context switch time, is practically the
+same obtainable if the process were run on a dedicated node. It is worth noting that a running process is also de-scheduled, and
+becomes blocked, when it is waiting for a communication. Such an operating way encounters the demands of the users who want
+to pay just for the resources they use, their works to be scheduled following their submission order and to avoid penalization in
+the execution (completion) time of their applications by the cloud scheduling policies, once chosen the mapping. At the same
+time this strategy can fulﬁll also the needs of the cloud manager that can exploit as much as possible the available resources by
+using them concurrently for different applications.
+
+3.3. The setup for cloud mapping problem
+In general for an effective mapping of a multitask application on computing nodes, alike other papers [38,64,65], it is
+indispensable to have information about the number of instructions computed per time unit on each node and a good estimation
+of the communication bandwidth between any couple of nodes. The fact that the same physical resources are managed to support
+the execution of multiple VMs is inside the nature of the cloud computing. Nevertheless the organization of the physical resources
+in VMs removes any reciprocal dependence in the sense that the abstraction in VMs yields that the execution of any VM does
+not inﬂuence the execution of another one. This premised, the proposed cloud mapper takes into account for its evaluations
+the available physical resources only. As an example, if we consider the computation power of a node, our cloud mapper for its
+evaluations does not consider the whole nominal power, rather only the portion of power obtained as the difference between
+the nominal power and the power already used to support other VMs deployed on the same node, if any.
+Since clouds address non-dedicated physical resources, our mapper must individuate, on the basis of the current resource
+workloads, the set of available VMs, the number of instructions αi that each VM i is able to compute per time unit, and a good
+estimation of the residual communication bandwidth β ij between any couple i and j of the set of VMs. This set is detected based
+on the following assumptions: indicated with i ( t) the average load of the physical computational node i at any given time span
+t, our mapper assumes that the VM i instantiable on the node i has a computational power (1 − i ( t)) · α i available for the
+execution of the tasks of application being mapped; furthermore we assume that i ( t) ࢠ [0.0, 1.0], where 0.0 means a resource
+completely discharged and 1.0 a resource loaded at 100%. Analogous considerations can be adduced to establish the available
+communication bandwidths among VMs. The current workload and the already employed bandwidth on each cloud physical
+node are provided by the CRS module, outlined in Section 3.1.
+Furthermore, application task properties (e.g., approximate instruction quantity, memory, and storage requirements and
+communication volumes) are also necessary for making an effective deployment [52,66]. We assume that we know for each
+task k the number of instructions γ k and the amount of communications ψ km to be executed between the kth and the mth task
+
+I. De Falco et al. / Parallel Computing 48 (2015) 40–58
+
+45
+
+࢘m ࣔ k. This information can be obtained by performance modeling strategies proposed for predicting execution time of parallel
+applications [67–70].
+4. Multiobjective Differential Evolution
+4.1. The methodology
+DE [27,28] is a population-based stochastic search technique for solving global optimization problems. This technique is
+attractive because it is fairly fast and reasonably robust, requires few control parameters, is relatively easy to implement.
+Moreover, it is reliable and eﬃcient in optimizing a wide variety of multi-dimensional and multi-modal objective functions with
+a higher success rate compared to other evolutionary algorithms and direct search optimization techniques [71,72]. In particular,
+its effectiveness in scheduling tasks in heterogeneous environments is investigated in [53,54,73].
+In a multi-dimensional search space, a ﬁxed number of potential solutions vectors are randomly initialized, then evolved over
+time to explore the search space and to locate the optima of the objective function, named as ‘ﬁtness’ function. Such a ﬁtness
+measures the quality of each solution and is denoted with . The set of the solutions, called population, consists of vectors which
+undergo mutation, recombination, and selection. At each iteration, i.e., generation, new vectors are generated by the perturbation
+of vectors randomly chosen in the current population (mutation). To do so, DE adds a number of weighted differences between
+couples of population vectors to another individual. The outcoming vector is then mixed with a predetermined target vector
+(crossover) in order to produce a trial vector. Finally, this trial vector is accepted for the next generation if and only if it yields an
+improvement in the value of the objective function. This last operator is referred to as selection.
+In more detail, given a minimization problem with q real parameters, DE faces it by starting with a randomly initialized
+population consisting of M individuals xi each made up of q real values. Then, the population is updated from one generation g to
+the next by means of different transformation schemes. These schemes differ in the way new vectors are generated. The inventors
+[27,28] named any DE strategy with a string DE/x/y/z. In it DE stands for Differential Evolution, x is a string which denotes the
+vector to be perturbed (best = the best individual in the current population, rand = a randomly chosen one, rand–to–best = a
+random one, but the current best participates in the perturbation too), y is the number of difference vectors taken for perturbation
+of x (either 1 or 2), while z is the crossover method (exp = exponential, bin = binomial). As an example among transformation
+schemes, within this paper the strategy referenced as DE/rand/1/bin is used, in which a random individual is perturbed by using
+one difference vector, i.e., a vector given by the difference between two vectors, and by applying binomial crossover. This means
+that for the given target individual xi in the current population three vectors xr1 , xr2 , and xr3 are randomly selected, such that
+the indices i, r1 , r2 , and r3 in [1, M] are distinct. A new individual x∗i , i.e., the mutant vector, is generated whose generic jth
+component is obtained by adding the weighted difference of two of the vectors to the third one:
+
+x∗i,j = xr3 ,j + Fm · (xr1 ,j − xr2 ,j )
+The mutation factor Fm is a positive-valued scale factor which controls the magnitude of the exploration vector (xr1 ,j − xr2 ,j ),
+and is a parameter of the algorithm.
+After the mutation operator, the crossover incorporates successful solutions from the previous generation. A trial vector is
+developed from elements of the target vector xi and of the mutant vector x∗i on the basis of CR (crossover rate, a user–speciﬁed
+parameter of the algorithm within the range [0.0,1.0] which controls the fraction of parameter values copied from the mutant
+vector) and a randomly chosen integer number s within the range [1, q]. In particular, components of the mutant vector enter
+the trial vector if a randomly generated number ρ in the range [0.0, 1.0] is lower than CR or the position j under account is
+exactly s. The condition j = s is introduced to assure that the trial vector xi differs from its corresponding target vector by at
+least one parameter. Otherwise the component of the trial vector is set equal to that of the target vector. After that, a selection
+operator is performed to decide whether or not the trial individual xi should become a member of the target population in the
+next generation. To this aim, the ﬁtness of the trial individual xi is compared with that of the parent individual xi in the current
+population and, if its ﬁtness is lower, replaces it in the next population; otherwise the old one survives and is copied into the new
+population. This basic scheme is repeated for a maximum number of generations gmax or until some stopping criterion becomes
+satisﬁed.
+4.2. Multiobjective optimization notions
+In multi-criterion optimization more than one objective function exists. Each single-objective function could have an optimal
+solution which is in conﬂict with those corresponding to the other single-objective functions. Therefore, there is no single optimal
+solution, but rather a set of alternative solutions. We are dealing with a multiobjective problem which can be proﬁtably faced
+by designing and implementing a multiobjective DE algorithm based on the concept of the so-called Pareto optimal set [74,75].
+To make this paper self-contained we report some fundamentals of the multiobjective optimization. This technique relies on the
+notion of dominance: for a problem with multiple objectives to optimize, each represented by a ﬁtness function i , a possible
+solution x1 is said to dominate in the Pareto sense (P-dominate) another possible solution x2 if and only if, for any objective, the
+related i (x1 ) is not worse than i (x2 ) and is better for at least one of the objectives. A solution sol∗ is said Pareto-optimal if
+there is no other solution sol which dominates sol∗ in the current population. The Pareto-optimal set and Pareto-optimal front
+are the sets of Pareto-optimal solutions in design variables and objective function domains, respectively. By doing so, at each
+
+46
+
+I. De Falco et al. / Parallel Computing 48 (2015) 40–58
+
+generation a set of “optimal” solutions emerges in that none of them can be considered to be better than any other in the same
+set. Moreover, these solutions are optimal in the wider sense that no other solutions in the search space are superior to them
+when all objectives are considered. As the number of generations increases the current Pareto front will shift, and will hopefully
+approach the Pareto-optimal front. At the end of DE execution the ﬁnal Pareto front will be proposed to the user that, among the
+solutions contained therein, will choose the one which best suits her/his needs.
+5. Our multiobjective evolutionary mapping tool
+Given the nature of the problem under exam, some considerations about the structure of the cloud physical resources and
+the MPI multitask applications are to be made. As concerns the resources arrangement, a typical cloud system is constituted by
+computing nodes distributed over different sites. For example, this could be the case of multinational ﬁrms with many bases
+spread around the world. In such a structure, the communication bandwidth among the computing nodes varies according to
+their physical location. It is highly plausible that the communication bandwidth between nodes of two different sites is less than
+that between nodes of a same site, which is less than that between the nodes of two sub-sites of a same site, in turn less than
+that inside a same node. Obviously these considerations keep their validity even if we deal with VMs.
+As long as an MPI multitask application is concerned, if the mapping is examined by characterizing the tasks by means of their
+computational needs γ k only, the allocation of one task does not affect that of the other ones, unless, of course, one attempts to
+load more tasks onto a same node. Instead, as soon as communications ψ km are taken into account also, the deployment of a task
+on a node in a given site can cause the optimal mapping to require that other tasks also must be allocated on the same node or in
+the same site. This co-allocation allows a decrease in their communication times and thus of their execution times, by exploiting
+the higher communication bandwidths existing within any site compared to those between sites. Indeed, although co-allocation
+can decrease the response time and the utilization, the time spent to execute a communication-intensive application can increase
+sharply when its tasks are spread over multiple sites because of the low bandwidth and high latency between sites.
+Such a problem is a typical example of epistasis, i.e., a situation in which the value taken on by a variable inﬂuences those of
+other variables. This situation is also deceptive, since one solution can be transformed into another with better ﬁtness only by
+passing through intermediate solutions worse than both current and best ones. Let us consider, as an example, the circumstance
+in which two or more tasks are allocated onto nodes belonging to a site with a given communication bandwidth, while a suitable
+number of nodes at least equally fast in terms of computations yet with a higher bandwidth is available in another site. It is
+extremely improbable to migrate all at once all those tasks from the slow-communicating site to the fast-communicating one by
+using the classical DE mechanisms. In fact, what very likely happens is that a newly-generated solution proposes keeping some
+of those tasks in the former site and moving some others to the latter. This allocation is a solution with a worse ﬁtness value,
+so will be discarded, while it should be saved since it might help to reach the optimal solution by further applications of the
+evolutionary operators to it.
+To overcome this problem we have introduced in the classical DE scheme a new operator, i.e., site migration, that is applied with
+a probability pm any time a new individual must be produced [60]. This operator is devised to enhance the mapper performance
+by increasing the probability of the co-allocation of the tasks of a same application on a same site. When site migration is carried
+out two positions, posi and posj , in the current solution and a site Sk are randomly chosen. The positions from posi up to posj are
+modiﬁed in three possible ways. In a ﬁrst case, taking place with a probability prr , a node nw is randomly chosen in Sk and the
+tasks within posi and posj are displaced in round-robin on sequential nodes in Sk starting from nw . In a second case, occurring
+with a probability prn , each task inside posi and posj is mapped on a randomly chosen node in Sk . Finally, with a probability equal
+to psn , all the tasks within posi and posj are allocated on a same node randomly chosen in Sk . Of course, prr + prn + psn = 1.0. If
+site migration does not take place, the classical transformations typical of DE must be applied. In this way the mapping algorithm
+tries to adapt to network performance.
+The pseudo-code of the multiobjective DE procedure is shown in the Algorithm 1 below in the hypothesis that the ﬁrst ﬁtness
+function should be minimized, while the second should be maximized.
+This is the algorithm implemented by the P2 AM tool, described in Section 3.1, to ﬁnd the mapping solution.
+On the basis of the assumptions about the application and the available resources made in Section 3.3 it is possible to deﬁne
+the encoding and the ﬁtness functions for our multiobjective mapper.
+5.1. Encoding and ﬁtness
+Any mapping solution is represented by a vector μ of p integers ranging in the interval [1, N]. To obtain μ, the real values
+provided by DE within the interval [1, N + 1[ are truncated before evaluation. The truncated value μi denotes the VM onto
+which the task i is mapped by the proposed solution.
+Resource customers and resources providers usually have different motivations and demands to satisfy when they join the
+cloud. As an example customers could be interested in the cost of running their application, while providers could pay more
+attention to the throughput of their resources. Thus objective functions can meet different goals.
+This leads us to evaluate the ﬁtness by making use of the information on the application requirements and on the number
+and features of the instantiable VMs as described in Section 3.3. On the basis of the CM architecture depicted in Section 3.1, the
+former are submitted by the P2 WI of the accounting module and the latter are provided by CRS. In our approach more goals can be
+taken into account, one accounting for the time of use of resources and the others related to the QoS requirements. Within this
+
+I. De Falco et al. / Parallel Computing 48 (2015) 40–58
+
+47
+
+Algorithm 1 A high-level description of the multiobjective DE procedure.
+Require
+Number and features of instantiable cloud VMs
+Number and requests of parallel application tasks
+Control parameters: the population size M, the mutation factor Fm , the crossover rate CR and the site migration probability pm
+Stopping condition: number of generations gmax
+Initialization:
+g=0
+Randomly initialise a population X = (x1 , . . ., xM )
+evaluate ﬁtness 1 and 2 for any individual xi
+Start the optimization:
+while (g < gmax ) do
+for i = 1 to M do
+choose a random real number psm ∈ [0.0, 1.0]
+if (psm < pm ) apply site migration
+else
+choose three integers r1 , r2 , and r3 in [1, M], with r1 = r2 = r3 = i
+choose an integer number s in [1, q]
+for j = 1 to q do
+choose a random real number ρ ∈ [0.0, 1.0]
+if ((ρ < CR) OR (j = s))
+xi,j = xr3 ,j + Fm · (xr1 ,j − xr2 ,j )
+else
+xi = xij
+j
+
+endif
+endfor
+endif
+evaluate the ﬁtness functions 1 (xi ) and 2 (xi )
+if ((( 1 (xi ) < 1 (xi )) AND ( 2 (xi ) ≥ 2 (xi ))) OR (( 1 (xi ) ≤
+insert xi in the new population
+else
+insert xi in the new population
+endif
+endfor
+g =g+1
+endwhile
+Output
+Pareto front of the mapping of the application tasks onto VMs
+
+1
+
+(xi )) AND (
+
+2
+
+(xi ) >
+
+2
+
+(xi ))))
+
+paper the only QoS request considered is the reliability, which causes two goals to be investigated. The reliability is expressed in
+terms of the fraction of actual operativity of the node, and of its communication channels.
+These values can be gathered by means of a historical and statistical analysis and lie in the real range [0.0, 1.0] where a higher
+value means a better reliability. It is to note that the reliability associated to a VM is considered the same as that of the node on
+which it is instanced.
+Use of resources. The diﬃculties in evaluating the completion times of TIG applications arise from the fact that the temporal dependencies in the execution of tasks are not explicitly addressed: the tasks must be simultaneously running and their
+communications can take place at any time, in general on the basis of iterative and non-deterministic patterns.
+comp
+and ecomm
+respectively the computation and the communication amounts of time requested to execute
+Denoting with ei
+i
+all the tasks on the VM i they are assigned to, the total amount of time is:
+
+τi = ecomp
++ ecomm
+i
+i
+The amount τ i is evaluated on the basis of the computation power and of the bandwidth of the VM i. These values are obtained
+by deducing the current workload, reserved to support the already stipulated cloud services, from the power and bandwidth of
+the physical node i. Of course τ i is equal to zero for all the VMs i not present in the vector μ. The ﬁtness function is:
+1
+
+(μ) = max {τi }
+i∈[1,N]
+
+(1)
+
+and the goal of our evolutionary algorithm, according to the minimax cost function [33,34], is to search for the smallest among
+these maxima, i.e., to ﬁnd the mapping which minimizes the maximal resource use time that each VM dedicates to complete the
+tasks assigned to it.
+The amount of time τexec required to execute the application ranges within 1 (μ) if all the tasks run in perfect overlapping
+conditions, and = ࢣi ࢠ [1, N] {τ i } if the tasks are totally sequential.
+In the absence of information related to the communication timing, it is impossible to carry out an effective evaluation of the
+parallelism degree of the application and even to know how much each task contributes to . Naturally many solutions having
+the same value 1 (μ) but with different values for can exist. The most powerful VMs in terms of computation and bandwidth
+must be used to diminish τ i , and hence also , but this does not necessarily imply a decrease in τexec . Conscious of this possibility
+and relying on a good parallelism degree able to minimize the actual contribution of each τ i to τexec , we aim at ﬁnding the
+mapping which minimizes 1 (μ) without being interested in the minimization of the execution times of each single concurring
+
+48
+
+I. De Falco et al. / Parallel Computing 48 (2015) 40–58
+
+Table 1
+Power expressed in MIPS and indices of the virtual machines.
+Site
+
+α
+nI
+
+A
+
+B
+
+C
+
+D
+
+E
+
+F
+
+A1
+
+A2
+
+A3
+
+B1
+
+B2
+
+C
+
+D1
+
+D2
+
+D3
+
+E1
+
+E2
+
+E3
+
+E4
+
+F1
+
+F2
+
+3000
+1–12
+
+2000
+13–28
+
+1500
+29–36
+
+1400
+37–46
+
+1200
+47–62
+
+1000
+63–94
+
+900
+95–98
+
+800
+99–118
+
+700
+119–134
+
+600
+135–142
+
+500
+143–158
+
+400
+159–168
+
+300
+169–188
+
+200
+189–208
+
+100
+209–216
+
+component. This view leads to the discovery of mappings which do not consider the most powerful VMs if, due to overlapping,
+their use does not reduce the above maximal amount of time. This optimization procedure avoids wasting computational power
+which could be more proﬁtably harnessed for further applications and, thus, permits a better exploitation of the cloud resources.
+Reliability. The ﬁtness function evaluates the degree of reliability of the proposed solution in terms of fraction of actual
+operativity π of the VMs and λ of the respective channels involved:
+p
+2
+
+(μ) =
+
+π
+
+μi · λw
+
+(2)
+
+i=1
+
+where μi is the VM onto which the ith task is mapped and w is the site this VM belongs to.
+The cloud nodes can be inoperative for different reasons: system fault, connection interruption, hardware/software management, and so on. Therefore, with operativity we refer to the statistical historical data related to the percentage of the functionality
+of the processors and the communication channels.
+6. Experimentation and results
+6.1. Experimental environment: Motivation and cloud architecture
+Our mapping tool can be used with any cloud platform since all the information (number of real nodes, computational powers,
+bandwidths, loads, etc.), necessary to the mapping tool to operate, are usually available to the cloud manager. Unfortunately, no
+commercial platform provides the users with this information and we do not manage any cloud, so we do not have access to
+those data. This is the reason why it has not been possible for us to test the tool on a real cloud. Consequently, in the following
+of this section we present the results gathered from simulations, rather than from executions on commercial clouds.
+To the best of our knowledge, few mapping tools can deal with applications with communicating tasks, yet they all can
+work only as long as DAGs are concerned [76,77], while no papers exist which provide mapping solutions for environments
+and TIG applications with features comparable with those hypothesized by us. And even when the environments described by
+other authors could be taken into account, the absence of information crucial for our mapper tool, namely the current status of
+the cloud physical resources (average load, available computational power, bandwidth use, and so on), makes any comparison
+objectively meaningless.
+In the light of the above considerations, it has been conceived to take into account TIG applications with regular topologies
+and to arrange the simulations so as to attain solutions appreciable in absolute rather than relative value. In other words, to
+evaluate the goodness of our mapper on allocation problems, experimental environments for which the optimal solutions can
+be simply retrieved have been conceived. In fact, by hypothesizing conveniently the computing capabilities, the communication
+bandwidths, the load conditions, and the reliabilities of all the cloud nodes, and given appropriate applications, it is possible
+to ﬁnd out ‘by hand’ the related optimal mapping solutions. In these situations, the quality of the provided solutions can be
+rapidly veriﬁed by comparison with the expected optimal ones. If irregular TIG applications were chosen, a ‘qualitative’ analysis
+would be impracticable since the optimal or suboptimal solutions would be very diﬃcult to deduce. This holds also for real
+applications for which the evaluation of quality of the mapping is arduous. Our aim has been to test the ability of the mapping
+tool to work in predetermined conditions, so that we can be conﬁdent that it works properly also in realistic scenarios, here
+simulated by generating a random load in terms of both computations and communications. Naturally this does not affect the
+general applicability of our mapper, even in cases of real applications with irregular topologies.
+To show the ‘qualitative’ effectiveness of our mapper, in the forthcoming experiments we will ﬁrstly explain why the achieved
+solutions are optimal or suboptimal by means of numerical considerations related to application and cloud features.
+6.2. Cloud virtual machines
+Our simulations refer to a cloud framework which aggregates 216 physical nodes grouped into six sites denoted with A, B, C,
+D, E, and F with 36, 26, 32, 40, 54, and 28 nodes respectively. This cloud structure is described in Table 1. As it can be seen, except
+C, each site consists of more sub-sites with different cluster sizes. As an example F is subdivided into two sub-sites F1 and F2 ,
+made up of clusters with 20 and 8 nodes respectively. Each node is characterized by a set of resource properties. Without loss of
+generality, we suppose that all the nodes belonging to a cluster of the same sub-site have the same nominal power expressed in
+terms of millions of instructions per second (MIPS).
+
+I. De Falco et al. / Parallel Computing 48 (2015) 40–58
+
+49
+
+Table 2
+Intersite, intrasite, and intracluster bandwidths expressed in Mb/s.
+Site
+
+A1
+A2
+A3
+B1
+B2
+C
+D1
+D2
+D3
+E1
+E2
+E3
+E4
+F1
+F2
+
+A
+
+B
+
+C
+
+D
+
+E
+
+F
+
+A1
+
+A2
+
+A3
+
+B1
+
+B2
+
+C
+
+D1
+
+D2
+
+D3
+
+E1
+
+E2
+
+E3
+
+E4
+
+F1
+
+F2
+
+100
+50
+75
+4
+4
+6
+8
+8
+8
+10
+10
+10
+10
+16
+16
+
+100
+75
+4
+4
+6
+8
+8
+8
+10
+10
+10
+10
+16
+16
+
+100
+4
+4
+6
+8
+8
+8
+10
+10
+10
+10
+16
+16
+
+200
+75
+6
+8
+8
+8
+10
+10
+10
+10
+16
+16
+
+200
+6
+8
+8
+8
+10
+10
+10
+10
+16
+16
+
+300
+8
+8
+8
+10
+10
+10
+10
+16
+16
+
+400
+50
+75
+10
+10
+10
+10
+16
+16
+
+400
+75
+10
+10
+10
+10
+16
+16
+
+400
+10
+10
+10
+10
+16
+16
+
+800
+100
+200
+100
+16
+16
+
+800
+200
+100
+16
+16
+
+800
+200
+16
+16
+
+800
+16
+16
+
+1000
+400
+
+10,000
+
+In Table 1 the computational capacities α of the 216 VMs which can be instantiated in the absence of load on all the nodes,
+i.e., i ( t) = 0.0 ࢘i, are reported. For a generic VM i, its value of α i is obtained subtracting the capacity needed to instance the
+VM i from the one of the physical node i. Moreover, in such a table the values of α and the indices nI of the VMs are outlined
+per sites and sub-sites. To give an example, all the VMs of the sub-site E1 have α = 600 MIPS. It is to observe that the power of
+the clusters decreases from 3000 to 100 MIPS when going from A1 to F2 . Hereinafter we shall denote the VMs by means of the
+indices nI , so that, for instance, 49 is the third VM in B2 , while 138 is the fourth VM in E1 .
+We have hypothesized for each VM four communication typologies. The ﬁrst is the bandwidth β ii available when tasks
+are mapped on the same VM (intranode communication); the second is the bandwidth β ij between the VMs i and j belonging either to the same cluster (intracluster communication), to different clusters of the same site (intrasite communication)
+or to different sites (intersite communication). The intranode bandwidths β ii , usually higher than β ij , have all been ﬁxed to
+100,000 Mb/s.
+For each link, the input and output bandwidths are supposed to be equal. In our case the intersite, the intrasite, and the
+intracluster bandwidths are reported in Table 2. It is to remark that the intracluster bandwidth increases from 100 to 10,000
+Mb/s when going from A1 to F2 , and the bandwidth between clusters belonging to the same site is supposed to be lower than the
+intracluster one. For example, each VM of D2 communicates with a VM of D3 with a bandwidth of 75 Mb/s while the intracluster
+bandwidth inside D2 is 400 Mb/s.
+6.3. Simulations
+Although the simulations have been carried out in different scenarios for cloud systems and applications in terms of load,
+reliability, number of tasks, computations, and communications, here the solutions obtained only for quite general application
+structures, which are described below, are reported.
+Since the CM manages all the contracts and services stipulated with customers, we suppose that it knows the average loads
+of the cloud physical nodes for the time span of interest and also the reliability of both the nodes and the internet channels.
+To make things easy, during the simulations performed the average load of a node is assumed to be constant for the execution
+time of the tasks placed on it. Obviously a load varying with time would require only a different calculation but it would not
+invalidate the approach proposed.
+After a preliminary tuning phase, the parameters of DE have been set as follows: M = 100, gmax = 30, 000, and those for the
+site migration scheme as: pm = 0.33, prr = 0.60, prn = 0.20 and psn = 0.20. Even if the results are not reported within the paper,
+it is to underline that the use of the site migration operator has allowed enhancing the mapper performance. The parameters CR
+and F have been associated to each individual of the population and have been randomly varied in the interval [0.1, 1.0]. This
+choice has been made because the randomization of the control parameters appears to be a propitious mechanism for enhancing
+the DE performance [78–80].
+The DE algorithm has been implemented in C language and all the experiments have been effected on a MacBookPro4.1 Intel
+Core Duo 2.4 GHz, 2 GB RAM. To reduce the randomness of the algorithm, for each test problem 20 DE executions have been
+accomplished. These 20 executions are performed in less than one minute.
+At the end of the experiments the best results are extracted and presented. Moreover the statistics related to the averages
+and the standard deviations are shown.
+Once deﬁned the evolutionary parameters, the cloud characteristics and the application, different scenarios must be devised
+to evaluate the effectiveness of our multiobjective DE. Henceforth we denote by μ 1 and μ 2 the best solutions found in all the
+runs in terms of lowest resource use time and of highest reliability respectively.
+
+50
+
+I. De Falco et al. / Parallel Computing 48 (2015) 40–58
+
+Fig. 2. The ring structure.
+
+Structure 1. The ﬁrst set of experiments has been carried out on a TIG application made up of p = 24 tasks numbered from
+1 to 24, and structured as a ring (Fig. 2). These tasks are divided into three groups G1, G2, and G3 constituted by 10 (1–10), 8
+(11–18), and 6 (19–24) tasks respectively.
+Simulation 1. The 10 tasks in G1 have γ k = 90 Giga Instructions (GI) to execute, those of G2 have γ k = 10 GI, while in G3
+γ k = 1000 Mega Instructions (MI). The consecutive tasks in G1 exchange 100 Mb each other, while those consecutive in G2 and
+in G3 exchange one another 3000 and 100,000 Mb respectively. The ring is closed assuming that the ﬁrst and the last tasks of
+two consecutive groups exchange 10 Mb. As an example, the task denoted by 1 exchanges 10 Mb with task 24. To individuate the
+VMs which can be hosted on the available cloud resources during the time interval t, it is hypothesized that i ( t) = 0.0 and
+π z = 0.999 for all the nodes, and λw = 1.0 ∀w. It is to point out that, for all the simulations in which these operative conditions
+remain valid, all the deployments are equivalent with respect to the reliability. The system is in any case able to choose, reliability
+being equal, the mapping which ensures the best value in terms of resource use time. The consequence is that the solutions for
+the two objectives coincide when the reliability is not discriminatory, as in the current case for which the best allocation is:
+
+μ
+
+1
+
+=μ
+
+2
+
+= 1 2 3 4 5 6 7 8 9 10 135 136 137 138 139 140 141 142 211 212 213 214 215 216
+
+with 1 = 32 s and 2 = 0.976.
+The explanation is that, having at our disposal all the VMs with the same reliability, the mapper has the ability to select always
+the most powerful ones to deploy the application tasks.
+As it can be observed, the solution instantiates VMs on nodes belonging to A1 , E1 , and F2 and distributes the three groups
+of tasks on them respectively by assigning the tasks to the VMs which better satisfy their computation and communication
+requirements. Indeed the tasks of the ﬁrst group can be considered as compute-bound and have been mapped on the most
+powerful VMs, those of the third one as communication-bound and are placed on the VMs with the highest bandwidths, and
+those of G2 are deployed on VMs with characteristics balanced between computations and communications. It is possible to
+argue by simple computations, based on the VM features reported in Tables 1 and 2, that this solution is the optimal one. In
+fact, any different distribution would entail a higher value for 1 . As an example, if the VMs hosted on A1 had not been used
+for the ﬁrst group of tasks, the computation time for this group would have been higher than 32 s. Analogous consideration can
+be adduced with reference to the communication time for the tasks of the third group if the VMs instanced on F2 had not been
+picked to execute them.
+The resource use time equal to 1 = 32 s is obtained by adding the computation time to execute 90 GI on the most powerful
+VMs of A1 (90GI/3000MIPS = 30 s), the communication time of an intermediate task to receive 100 Mb from the previous task
+(100Mb/(100Mb/s) = 1 s), and the communication time needed to send 100 Mb to the following one (100Mb/(100Mb/s) = 1 s).
+Naturally the communication time of the ﬁrst or the last task of this group is inferior since they have to exchange just 10 Mb.
+Simulation 2. This simulation has been carried out by leaving all the operating conditions unchanged apart from the loads of the
+ﬁrst 30 nodes of A which now have i ( t) = 0.7, and the reliabilities of the ﬁrst 108 computing nodes which have π z = 0.7 and
+π z = 0.999 in compliance with odd or even indices respectively, while the vice versa holds for the reliability of the remaining
+nodes. In this case the system provides two different best solutions for the two objectives. The best mapping found in terms of
+resource use time is:
+
+μ
+
+1
+
+= 37 38 39 40 41 42 43 44 45 46
+
+47 50 60 58 51 56 54 49
+
+52 52 52 52 52 52
+
+86 84 86 94 90 90 86 86
+
+84 84 84 84 84 84
+
+with 1 = 65.286 s and 2 = 0.056.
+The best allocation for the reliability is:
+
+μ
+
+2
+
+= 82 62 46 50 40 52 48 38 60 76
+
+with 1 = 106.7 s and 2 = 0.976.
+As it can be seen the solutions are different. It is interesting to notice that, as expected, the proposed solution for 2 has
+selected only the most reliable VMs which are those with even indices within the ﬁrst half. Instead, the solution proposed for
+1 selects the most powerful VMs even if they are less reliable. Moreover, it can be argued that this latter solution deploys the
+three groups on VMs to be instantiated on B1 and B2 which, in the hypothesized operating conditions, better support the request
+in terms of computations and communications of the tasks assigned to them. Indeed, having supposed the ﬁrst 30 nodes of A
+loaded, the 10 tasks of G1 are allocated on B1 which can contain, apart from six VMs of A3 , the current most powerful VMs.
+However, it is to observe that the use of the six VMs of A3 would have provided a worse solution. In fact, the time saved in terms
+of execution would have been lower than that lost for the further intersite communications which would have arisen with G1
+tasks placed on site B.
+
+I. De Falco et al. / Parallel Computing 48 (2015) 40–58
+
+51
+
+Fig. 3. The WK-recursive structure.
+Table 3
+Statistical ﬁndings for the experiments of structure 1.
+
+b
+
+nb
+
+σ
+
+Simulation 1
+
+Simulation 2
+
+Simulation 3
+
+Ob. 1
+
+Ob. 2
+
+Ob. 1
+
+Ob. 2
+
+Ob. 1
+
+Ob. 2
+
+32.0
+18
+32.037
+0.091
+
+0.976
+20
+0.976
+0.0
+
+65.286
+2
+89.207
+19.708
+
+0.976
+20
+0.976
+0.0
+
+64.124
+5
+75.697
+29.157
+
+0.828
+1
+0.444
+0.160
+
+The use of resources for 65.286 s is achieved by adding the computation time to execute 90 GI on the VMs of B1 (90 GI/1400 MIPS
+= 64.286 s) to the time requested by the tasks allocated on the VMs 38–45 to exchange 100 Mb with the previous task
+(100 Mb/(200 Mb/s) = 0.5 s) and 100 Mb with the following task (100 Mb/(200 Mb/s) = 0.5 s).
+Simulation 3. Once established that the system works properly in predetermined conditions, we can test it over more realistic
+scenarios closer to real situations. So this simulation has been carried out by leaving the reliability of all the internet channels
+unchanged, while i ( t) and π z are randomly chosen for each node within the ranges [0.2, 0.7] and [0.7, 0.999] respectively. The
+best deployment for the resource use time is:
+
+μ
+
+1
+
+= 9 3 21 18 14 25 4 6 11 2
+
+141 140 160 168 167 143 156 156
+
+141 141 141 141 141 141
+
+with 1 = 64.124 s and 2 = 0.131.
+The best mapping for the reliability is:
+
+μ
+
+2
+
+= 133 56 56 56 24 56 56 56 56 56
+
+56 56 56 56 56 56 56 56
+
+56 56 56 56 56 56
+
+with 1 = 1381.056 s and 2 = 0.828.
+Since the loads and the reliabilities are randomly distributed, it is arduous, if not prohibitive, even for a particularly skilled
+user, to identify the criteria on the basis of which he/she can perform an even suboptimal placement.
+Dropping any comment on the value of the reliability, it can be argued that to execute the 10 tasks of G1 in 64.124 s at least
+10 VMs with a computational power of about 1400 MIPS (90 GI/64.124 s = 1403.531 MIPS) must be available. Actually, since also
+the communications are to be considered, VMs with a greater computational power are necessary.
+Taking into account that the lowest hypothesized load for all the physical nodes is 20%, it is evident that only VMs hosted on
+A1 and A2 could, as in the proposed solution, have a computational power greater than 1400 MIPS and, thus, this choice is the
+only one that can ensure that time.
+In Table 3, for all the simulations and for both the objectives, i.e., the resource use time Ob. 1 and the reliability Ob. 2, the
+statistical results are outlined in terms of the best found value b , the number of times this value has been obtained nb over
+the 20 runs effected, the average and the standard deviation σ of the best values over the 20 tests effected. These ﬁndings
+indicate a good degree of eﬃciency of the proposed model: optimal or suboptimal solutions were provided for both resource use
+and reliability, independently of work conditions. Concerning the average and the standard deviation values, it must be remarked
+that the apparently high values do not imply that the relative solutions are far from the optimal ones. Rather it means that some
+of the tasks were placed on some inappropriate VMs. In fact, since ﬁtness can take on a ﬁnite set of values only, some even quite
+different from each other, it is suﬃcient that one task be deployed on a wrong VM to have a ﬁtness function value much higher
+than that of the related optimal solution. This explains the value for the averages and the standard deviations.
+Structure 2. This experimental phase has been effected by considering a TIG application composed of p = 16 tasks numbered
+from 1 to 16, and arranged in the WK-recursive topology [81] of degree 4 and level 2 (WK(4,2)) shown in Fig. 3. These tasks are
+divided into four groups G1, G2, G3, and G4 each consisting of four consecutively numbered tasks. As an example G1 includes
+the tasks from 1 to 4 and so on. The amount of computation and communication of each task varies according to the group it
+belongs to, and to the position occupied in the topology. In particular, as regards the computation the tasks of G1, G2, G3, and G4
+have to execute γ k = 160 GI, γ k = 45 GI, γ k = 15 GI, and γ k = 900 MI respectively. As the communication is concerned with,
+inside each of the four groups an all-to-all communication takes place (each task of each of the four groups exchanges data with
+
+52
+
+I. De Falco et al. / Parallel Computing 48 (2015) 40–58
+
+each of the other three tasks in the same group). The amount of this exchange is 100, 1000, 10,000, and 100,000 Mb going from
+the tasks belonging to G1 to those of G4. In addition, there is an inter-group communication of 100 Mb which occurs by means
+of the links connecting the task pairs (2,5), (7,10), (12,15), (13,4), (3,9), and (8,14).
+Given the computations and communications involved, the tasks of G1 can be considered as compute-bound, those of G4 as
+communication-bound, while those of G2 and G3 as balanced between computations and communications. This choice has been
+taken to evaluate the ability of the DE tool to distribute all the tasks to VMs belonging to sites able to satisfy either computation
+or communication requirements, taking into account also the operating conditions of the cloud VMs.
+Simulation 1. In this experiment i ( t) = 0.0 and π z = 0.999 for all the cloud nodes, and all the internet channels have λw = 1.0.
+The best allocations are the same for both the objectives. In particular, the mapping is:
+
+μ
+
+1
+
+=μ
+
+2
+
+= 11 1 2 3
+
+4567
+
+8888
+
+8888
+
+with 1 = 57.333 s and 2 = 0.984.
+The proposed solution allocates the four groups of tasks on VMs to be instanced on A1 . As it can be observed, this cluster can
+provide the VMs with computational power and bandwidths ﬁtting the requirements of the tasks assigned to them. In fact, the
+tasks of G1 are allocated on the most powerful VMs of A1 , while those of G4, involving substantial communications, are placed
+on a same VM in A1 , thus ensuring the fastest communication.
+The best resource use time 1 = 57.333 s is obtained by adding the computation time to execute 160 GI for the tasks on A1
+(160 GI/3000 MIPS = 53.333 s), the communication times needed to one task to exchange 100 Mb with each of the other three
+tasks in this group [3 · (100 GI/100 MIPS = 3 s] plus the time requested for the exchange of 100 Mb with a task of another group
+still placed on a VM of A1 (100 Mb/100 Mb/s = 1 s). The solution found is the optimal one: any other allocation of the four tasks of
+the ﬁrst group would entail, only for their computations, times from 80 to 1600 s if the tasks were placed on A2 or F2 respectively.
+Analogous remarks can be adduced for the allocation of the last four tasks in the case they were not deployed on the same VM.
+Simulation 2. The ﬁrst 40 nodes have i ( t) = 0.3; among the remaining ones, the nodes with even indices are discharged while
+the other ones have i ( t) = 0.7. As regards the reliability, all the nodes in the range [1, 40] have π z = 0.8, while the other nodes
+with even indices have π z = 0.7 and those with odd indices have π z = 0.999. The reliability for the internet channels is unaltered.
+The best allocation for the resource use time is:
+
+μ
+
+1
+
+= 9 10 11 1
+
+2345
+
+7777
+
+7777
+
+with 1 = 80.190 s and 2 = 0.028.
+The best allocation for the reliability is:
+
+μ
+
+2
+
+= 51 45 43 41
+
+131 119 115 125 161 165 179 159
+
+157 149 149 149
+
+with 1 = 448.444 s and 2 = 0.984.
+The proposed solution for the resource use time suggests to create for the most compute-intensive tasks of G1 some VMs
+on A1 nodes which, even if loaded at 30%, remain the most powerful ones. The maximal resource use time is then achieved by
+adding the computation time needed to execute 160 GI on one of the VMs of G1 (160 GI/2100 MIPS = 76.190 s), the time for the
+communication among the tasks of this group [3 · (100 Mb/100 Mb/s) = 3 s], and that required for example by task 3 allotted on
+VM 11 of A1 to exchange 100 Mb with the task 9 placed on VM 7 still in A1 [(100 Mb/100 Mb/s) = 1 s].
+It should be emphasized that the proposed solution is the optimal one. Indeed, the placement of the ﬁrst four tasks on A1 is
+the only choice able to guarantee mappings with this lowest resource use time.
+It is worth remarking that the solution for 2 has picked only the most reliable VMs avoiding those with even indices.
+Simulation 3. Varying randomly i ( t) and π z within the ranges [0.2, 0.7] and [0.7, 0.999] respectively, and supposing the
+reliability of the internet channels unchanged, the best solution for the resource use time is:
+
+μ
+
+1
+
+= 9 4 11 2
+
+14 16 18 28 24 24 24 24
+
+8888
+
+with 1 = 93.071 s and 2 = 0.218.
+The best deployment for the reliability is:
+
+μ
+
+2
+
+= 201 201 201 201
+
+201 201 201 201 201 201 201 201
+
+201 201 201 201
+
+with 1 = 10 381.072 s and 2 = 0.913.
+As it can be noted the extremal solutions are different. Indeed, in spite of the random variation of the reliability in a given
+interval, the tool has been able to propose a set of VMs which ensures the best resource use time by selecting for μ 1 the VMs
+with low reliability and, vice versa, for the best solution in terms of reliability choosing for μ 2 the VMs with medium–high
+loads.
+Even if the starting hypotheses make it diﬃcult to individuate the optimal solutions or the VM which determines the resource
+use time, it is still possible to evaluate the goodness of the mappings provided. In fact, any other solution which proposes an
+allocation of the tasks of G1 on VMs not belonging to A1 would require not less than 100 s for the computation only. This is in fact
+the time needed to execute 160 GI on VMs with immediately inferior power, i.e., those hosted on nodes of A2 which, hypothesized
+
+I. De Falco et al. / Parallel Computing 48 (2015) 40–58
+
+53
+
+Fig. 4. The Pareto fronts.
+Table 4
+Statistical ﬁndings for the experiments of structure 2.
+
+b
+
+nb
+
+σ
+
+Simulation 1
+
+Simulation 2
+
+Simulation 3
+
+Ob. 1
+
+Ob. 2
+
+Ob. 1
+
+Ob. 2
+
+Ob. 1
+
+Ob. 2
+
+57.333
+19
+57.433
+0.307
+
+0.984
+20
+0.984
+0.0
+
+80.190
+7
+97.374
+27.394
+
+0.984
+20
+0.984
+0.0
+
+93.071
+3
+136.741
+62.362
+
+0.913
+2
+0.779
+0.112
+
+loaded at 20%, allow instancing a VM with a power inferior to 1600 MIPS. Naturally the time for the communication must be still
+added. This premised, it is to note that for the proposed solution, having supposed that i ( t) varies randomly within the interval
+[0.2, 0.7], is highly probable that half of the nodes of A1 will have a load within 20% and 45%, and the other half between 45% and
+70%. Not only does the proposed solution allocate the four tasks of G1 on four VMs instanced on nodes of A1 , it also selects four
+VMs hosted on nodes with a load inferior to 45%. This is because if we subtract from the resource use time of 93.071 s the 3 s
+spent by each task of G1 to communicate 100 Mb with the other tasks in the same group ([3 · (100 Mb/100 Mb/s) = 3 s]), and the
+2 s to communicate with a task mapped VMs on A2 , we will obtain a computation time equal to 88.071 s. This is possible only if
+VMs of A1 with a power not inferior to 1816.716 MIPS ((160 GI/88.071 s) = 1816.716 MIPS) have been selected.
+Analogous issues can be mentioned for the mapping recommended for the second objective which, as it can be seen, is
+characterized by a much higher reliability than that achieved for the ﬁrst goal. This still demonstrates that our automatic tool
+can be proﬁtably used to identify a good solution for any working condition.
+In Table 4, for all the experiments performed and for both the objectives, the results analogous to those reported for the
+structure 1 are shown. Even for this set of simulations, considerations analogous to those referred to in Table 3 can be adduced
+to sustain that eﬃcient solutions have been supplied by the proposed evolutionary mapper.
+Naturally it is important to recall here that our mapper proposes for all the experiments other non-dominated solutions μ
+along the Pareto front that are better balanced in terms of quality for the two goals. Although, for the sake of brevity, the fronts
+have not been reported so far, Fig. 4 shows the evolution of the Pareto front achieved in one of the runs, namely the second, for
+the last simulation chosen as an example. In it the extremal points on the ﬁnal front, i.e., that at 20, 000 generations, represent
+the two best solutions for the run, each of which is optimal from the point of view of one objective. The theoretically optimal
+
+54
+
+I. De Falco et al. / Parallel Computing 48 (2015) 40–58
+
+Fig. 5. The mesh structure.
+
+point is (0.0, 1.0), i.e., the one in the top-left corner of the ﬁgure, since it has an use of resources equal to 0.0 and a reliability of
+1.0. All the solutions belonging to the ﬁnal Pareto front are provided to the user as the output of our mapping tool, and she/he has
+to choose the one which best suits her/his needs. Those of them in the middle part of the front are better balanced with respect
+to the two objectives, hence the user might prefer them to the extremal ones. Moreover, the same ﬁgure shows the evolution
+of the Pareto front over generations for this example run. It can be seen that, as the number of generations increases, the front
+tends to more and more closely approach the theoretically optimal solution, i.e., it moves upward and toward left. This means
+that our tool ﬁnds better and better solutions for both objectives over time. It is important to say that the initial fronts in the ﬁrst
+generations contain solutions with very high values for 1 , even up to 40, 000, so we have preferred not to show them in the
+ﬁgure, rather to plot as the ﬁrst front that at 500 generations, otherwise all the therein shown fronts would have appeared too
+overlapping and the resulting ﬁgure would not have been explanatory of the mapper dynamics. An explicit, quite well balanced,
+solution on this front is for instance:
+
+μ = 11 9 3 18
+
+56 51 47 44 24 24 24 24
+
+141 141 141 141
+
+with 1 = 123.797 s and 2 = 0.516.
+Structure 3. The last set of experiments has been carried out on an application made up of p = 36 tasks numbered from 1 to
+36, and arranged on a mesh as outlined in Fig. 5. The root task 36 at the top level is linked to the ﬁve different tasks of the ﬁrst
+level. Each of these ﬁve tasks is connected to a group of six tasks characterized by all-to-all communication. These ﬁve groups
+are indicated as G1, G2, G3, G4, and G5, and represent the second level. For example, the ‘blast’ of G4 contents is shown. The root
+task executes 1 GI and exchanges 10,000 Mb with each of its ﬁve leaves. Each task of the ﬁrst level, in addition to exchanging
+10,000 Mb with the root node, executes 10 GI, exchanges 10 Mb with each of the six tasks of the group to which is connected,
+and 10,000 Mb with each of the other four tasks of its level. The amount of computation and communication carried out by each
+task depends on the group it belongs to. In particular, each task of G1 executes 300 GI and exchanges 10 Mb, of G2 carries out
+100 GI and exchanges 3000 Mb, of G3 executes 50 GI and exchanges 5000 Mb, of G4 executes 25 GI and exchanges 10,000 Mb,
+and ﬁnally each task of G5 performs 1000 MI and exchanges 100,000 Mb.
+Simulation 1. In this experiment all the internet channels have λw = 1.0, π z = 0.999 and i ( t) = 0.0 for all the computing nodes.
+The best allocations are the same for both the objectives. In particular, the mapping is:
+
+μ
+=
+
+⎧1
+⎪
+⎨
+
+=μ
+
+⎫
+⎪
+⎬
+
+2
+
+42
+⎪
+⎩ 123456
+
+42
+
+42
+42
+
+42
+
+44 45 37 38 39 40
+
+131 132 133 119 120 121
+
+137 138 139 140 141 135
+
+42
+
+⎪
+42 42 42 42 42 42 ⎭
+
+with 1 = 146.478 s and 2 = 0.964.
+The solution spreads the leaf tasks based on the different amount of computation and communication that they have to
+execute depending on the group they are gathered in. In fact, excluding the last group, going gradually from the group interested
+by low communication and high computation to that with opposite requirements, the solution proposes to deploy the ﬁrst four
+groups of tasks respectively on A1 , B1 , D3 and E1 on which VMs better satisfying the requests of the said tasks can be instanced.
+As concerns the communication-bound tasks of G5, the solution proposes to allocate all of them on the VM 42 of B1 so exploiting
+the high intranode bandwidth.
+Simulation 2. In this experiment the only change with respect to the previous case is to consider a value of
+nodes of B1 in the range [37, 42]. The best solutions are the same for both the objectives:
+
+μ
+=
+
+⎧1
+⎪
+⎨
+
+=μ
+
+2
+
+63
+⎪
+⎩ 345678
+
+63
+
+63
+63
+
+63
+
+72 73 74 75 76 77
+
+78 79 80 81 82 83
+
+169 177 171 176 178 172
+
+i(
+
+t) = 0.7 for the
+
+⎫
+⎪
+⎬
+
+63
+⎪
+113 113 113 113 113 113 ⎭
+
+with 1 = 150.033 s and 2 = 0.964.
+As it can be noticed, now the solution avoids instancing VMs on nodes of B1 because only four of these nodes are discharged
+and are not suﬃcient to allocate separately the six tasks of G2. Rather, more opportunely, it picks the nodes of C to allocate on
+them VMs for the tasks of G2 still achieving the best solution.
+
+I. De Falco et al. / Parallel Computing 48 (2015) 40–58
+
+55
+
+Table 5
+Statistical ﬁndings for the experiments of structure 3.
+
+b
+
+nb
+
+σ
+
+Simulation 1
+
+Simulation 2
+
+Simulation 3
+
+Ob. 1
+
+Ob. 2
+
+Ob. 1
+
+Ob. 2
+
+Ob. 1
+
+Ob. 2
+
+146.478
+19
+149.883
+15.229
+
+0.964
+20
+0.964
+20
+
+150.033
+20
+150.033
+0.0
+
+0.964
+20
+0.964
+20
+
+203.922
+1
+369.773
+69.591
+
+0.961
+1
+0.952
+0.005
+
+Simulation 3. The last experiment has been effected by assuming to randomly set the values for load and reliability of the nodes
+in the ranges [0.1, 0.4] and [0.99, 0.999] respectively.
+The best solutions at the extremes of the Pareto front obtained are different. In particular, for the best resource use time we
+have:
+
+μ
+
+1
+
+=
+
+⎧
+⎪
+⎨
+
+24
+⎪
+⎩ 18 28 15 25 23 13
+
+24
+
+107
+24
+
+24
+
+48 56 53 59 51 60
+
+71 64 80 89 76 75
+
+24 24 24 24 24 24
+
+⎫
+⎪
+⎬
+
+24
+⎪
+24 24 24 24 24 24 ⎭
+
+with 1 = 203.922 s and 2 = 0.902.
+The solution for the best reliability, not shown here, proposes the placement of all the tasks on the VM 132 and is characterized
+by 1 = 5093.116 s and 2 = 0.961.
+Although the high number of tasks and the random values of load and reliabilities hypothesized do not allow carrying
+out an exact evaluation of the quality of the found solutions, it is still possible to note that the time obtained for the resource utilization is not too high with respect to the previous case in which only a limited number of nodes were loaded.
+It is evident that, in these working conditions, it is arduous for an expert user to attain a better result with a manual
+mapping.
+In Table 5 the results analogous to those reported for the previous application structures are outlined. Naturally, considerations
+similar to the previous simulations can be adduced to support that eﬃcient solutions have been supplied by the proposed
+evolutionary mapper.
+6.4. Comparison
+Notwithstanding no tools are immediately available to perform a comparison, we wish to quantitatively evaluate somehow
+the ﬁtness values of our solutions. By looking at the literature, it can be found that in [38] a wide comparison among 11 heuristics
+is reported for allocation of independent tasks. Their conclusions state that for the different situations, implementations, and
+parameter values used there, Genetic Algorithm (GA) consistently gave the best results. The average performance of the relatively
+simple Min–min heuristic, widely described there, was always within 12% of the GA heuristic. Moreover, more recently, Luo et al.
+[82] have taken 20 different fast greedy heuristics into account when aiming to allocate independent tasks. Their results conﬁrm
+that the classical Min–min performs very well, since it is within the three best algorithms.
+Since literature assesses the robustness and the effectiveness of Min–min, we have decided to make reference to it in this
+paper and improve it so that it can account for communication times too. Of course, as long as reliability objective is concerned,
+Min–min works perfectly as it is. When, instead, the resource use time is considered, it should be emphasized that this algorithm
+takes care of computations only, so communications among tasks are neglected whenever a node has to be chosen as the most
+suitable allocation for a given task. This is due to the sequential nature of the algorithm, which iteratively places one task at a
+time, so communication times cannot be computed if all the tasks have not yet been mapped.
+To overcome this problem we have explicitly designed and implemented an ad-hoc version of the Min–min algorithm, named
+Min–min–C [83], where the ‘C’ points out that this algorithm takes communications too into account. During the construction
+of the solution, when trying to map a task i onto a VM j, Min–min–C computes exactly the communication time with each
+already mapped task k on a VM x on the basis of the actual bandwidth β jx . If the task k, instead, has not been mapped yet,
+the communication between i and k is supposed to take place at a bandwidth equal to the average value over all the possible
+bandwidths available for the VM j with all the other VMs hosted on the cloud. At the end of the algorithm, of course, the execution
+time for the achieved mapping will be computed by taking into account for each communication the exact bandwidth between
+the two VMs onto which the two application tasks have been allocated.
+In Table 6 the results achieved by the Min–min–C algorithm for the simulations of all the structures taken into account are
+shown. From a simple comparison of these ﬁndings with the averages values for the Ob. 1, outlined in the Tables 3–5 for the
+simulations of the different structures, the superiority of our tool with respect to the Min–min–C algorithm results evident in
+terms of resource use time of the mapped applications. An analogous consideration does not hold for the performance relative
+to Ob. 2 of the Min–min–C which are evidently always better than or at least equal to those of our evolutionary mapper. This
+derives from the algorithm implementation which can place all the tasks on the VM with the maximal reliability, even if this
+involves a remarkable detriment for the correspondent resource use time.
+
+56
+
+I. De Falco et al. / Parallel Computing 48 (2015) 40–58
+Table 6
+Findings for the experiments with the ad-hoc versions of the Min–min–C algorithm.
+
+Ring
+WK-recursive
+Mesh
+
+Simulation 1
+
+Simulation 2
+
+Simulation 3
+
+Ob. 1
+
+Ob. 2
+
+Ob. 1
+
+Ob. 2
+
+Ob. 1
+
+Ob. 2
+
+68.625
+68.370
+201.500
+
+0.976
+0.984
+0.965
+
+362.010
+439.135
+201.500
+
+0.976
+0.984
+0.965
+
+493.101
+461.357
+750.118
+
+0.946
+0.963
+0.963
+
+7. Conclusions
+Even if not speciﬁcally designed to this aim, cloud platforms yield available the computational power needed to eﬃciently
+execute time-consuming multitask applications. On the basis of the cloud PaaS model, customers can proﬁtably develop and
+execute such applications on cloud resources. Into a PaaS scenario, providers’ aim is to exploit at the most the cloud resources,
+while the users’ goal is to execute their applications as fast as possible and to pay for the resources actually used only. To support
+a speciﬁc PaaS contract form, which mediates between the user and the provider requests, the role played by the mapper tool
+results fundamental.
+This paper focuses on the task/VM mapping problem of time-consuming multitask applications, modelled as TIGs, by means
+of a multiobjective Differential Evolution, based on the Pareto optimality criterion. By taking possible QoS requirements from
+users into account, the proposed mapper provides at the extremes of the Pareto front the best solutions and along the Pareto
+front some other mappings that are better balanced with respect to resource use time and reliability.
+Experimental results are outlined and discussed on several allocation scenarios differing in terms of applications, node loads,
+communication and computation task requirements, bandwidths, and reliability. The promising ﬁndings achieved reveal that a
+multiobjective DE is an effective approach to face the mapping problem in clouds.
+Although a rich set of QoS parameters, such as the execution time, the resource availability and the cost, could be managed
+by our mapper, in the shown experiments the reliability of the nodes and of the communication channels only have been taken
+into account. This richer set of QoS parameters will be investigated in our future works.
+References
+[1] I. Foster, Z. Yong, I. Raicu, S. Lu, Cloud computing and grid computing 360–degree compared, in: Proceedings of the Workshop on Grid Computing
+Environments, IEEE Press, 2008, pp. 1–10.
+[2] R. Buyya, C.S. Yeo, S. Venugopal, Market–oriented cloud computing: Vision, hype, and reality for delivering it services as computing utilities, keynote paper,
+in: Proceedings of the Tenth International Conference on High Performance Computing and Communications, IEEE Press, 2008, pp. 25–27.
+[3] R. Buyya, C.S. Yeo, S. Venugopal, J. Broberg, I. Brandic, Cloud computing and emerging it platforms: Vision, hype, and reality for delivering computing as the
+5th utility, Future Gener. Comp. Syst. 25 (6) (2009) 599–616.
+[4] IBM platform computing. http://www-03.ibm.com/systems/platformcomputing/solutions/hpccloud.html, 2014.
+[5] Amazon elastic compute cloud. http://aws.amazon.com/ec2/, 2006.
+[6] Windows azure. https://azure.microsoft.com/it-it/, 2011, (in Italian).
+[7] The Magellan project: Building high-performance clouds, Argonne National Laboratory and Lawrence Berkeley National Laboratory (lbl), University of
+Chicago, 2012.
+[8] HP Labs Cloud—Computing test bed projects. http://www.hpl.hp.com/open_innovation/cloud_collaboration/projects.html, 2014.
+[9] E. Walker, Benchmarking amazon EC2 for high performance scientiﬁc computing, in: Proceedings of the Annual Technical Conference USENIX Press, 2008,
+pp. 18–23.
+[10] A. Iosusp, S. Ostermann, N. Yigitbasi, R. Prodan, Performance analysis of cloud computing services for many–tasks scientiﬁc computing, IEEE Trans. Parallel
+Distrib. Syst. 22 (2011) 931–945.
+[11] Y. Khalidi, Building a cloud computing platform for new possibilities, Computer 34 (3) (2011) 29–34.
+[12] P. Fan, Z. Che, J. Wang, Z. Zheng, M.R. Lyu, Topology–aware deployment of scientiﬁc applications in cloud computing, in: Proceedings of the International
+Conference on Cloud Computing, IEEE Press, 2012, pp. 319–326.
+[13] A. Gupta, L.V. Kalé, F. Gioachin, V. March, C.H. Suen, B.-S. Lee, P. Faraboschi, R. Kaufmann, D. Milojicic, Exploring the performance and mapping of
+hpc applications to platforms in the cloud, in: Proceedings of the Twenty–ﬁrst International Symposium on High-Performance Parallel and Distributed
+Computing, ACM, 2012, pp. 121–122.
+[14] C. Evangelinos, C.N. Hill, Cloud computing for parallel hpc applications: Feasibility of running coupled atmosphere–ocean climate model on amazon’s EC2,
+Proceedings of the International Conference on Cloud Computing and its Applications, IEEE Press, 2008, pp. 1–6.
+[15] J. Ekanayake, X. Qiu, T. Gunarathne, S. Beason, G. Fox, High performance parallel computing with clouds and cloud technologies, Technical Report OSC, 2009.
+[16] O. Niehörster, G. Brinkmann A. Fels, J. Krüger, J. Simons, Enforcing slas in scientiﬁc clouds, in: Proceedings of IEEE International Conference on Cluster
+Computing, 2010, pp. 178–187.
+[17] P. Zaspel, M. Griebel, Massively parallel ﬂuid simulations on amazon’s hpc cloud, in: Proceedings of the First International Symposium on Network Cloud
+Computing and Applications, IEEE Press, 2011, pp. 73–78.
+[18] A. Do˘gan, F. Özgüner, Scheduling of a meta–task with qos requirements in heterogeneous computing system, J. Parallel Distrib. Comput. 66 (2) (2006)
+181–186.
+[19] D. Kyriazis, K. Tserpes, I. Menychtas, A. Sarantidis, T. Varvarigou, Service selection and workﬂow mapping for grids: An approach exploiting quality-of-service
+information, Concurrency Comput.: Pract. Exper. 21 (6) (2009) 739–766.
+[20] J.D. Ullman, Np–complete scheduling problems, J. Comput. Syst. Sci. 10 (3) (1975) 384–393.
+[21] M.R. Garey, D.S. Johnson, Computers and Intractability: A Guide to the Theory of NP–Completeness, W. H. Freeman and Co., 1979.
+[22] S. Kumar, K. Dutta, V. Mookerjee, Maximizing business value by optimal assignment of jobs to resources in grid computing, Eur. J. Oper. Res. 194 (3) (2009)
+856–872.
+[23] L. Pandey S.and Wu, S. Guru, R. Buyya, A particle swarm optimization–based heuristic for scheduling workﬂow applications in cloud computing environments,
+in: Proceedings of the Twenty-fourth International Conference on Advanced Information Networking and Applications, IEEE Press, 2010, pp. 400–407.
+[24] S. Tayal, Task scheduling optimization for the cloud computing systems, Int. J. Adv. Eng. Sci. Technol. 5 (2) (2011) 111–115.
+
+I. De Falco et al. / Parallel Computing 48 (2015) 40–58
+
+57
+
+[25] G. Gan, T. Huang, S. Gao, Genetic simulated annealing algorithm for task scheduling based on cloud computing environment, in: Proceedings of the
+International Conference on Intelligent Computing and Integrated Systems, IEEE Press, 2010, pp. 60–63.
+[26] N.A. Mehdi, A. Mamat, H. Ibrahim, S.K. Subramaniam, Impatient task mapping in elastic cloud using genetic algorithm, J. Comput. Sci. 7 (6) (2011) 877–883.
+[27] K. Price, R. Storn, Differential evolution, Dr. Dobb’s J. 22 (4) (1997) 18–24.
+[28] R. Storn, K. Price, Differential evolution—A simple and eﬃcient heuristic for global optimization over continuous spaces, J. Global Optim. 11 (4) (1997)
+341–359.
+[29] C.M. Fonseca, P.J. Fleming, An overview of evolutionary algorithms in multiobjective optimization, Evol. Comput. 3 (1) (1995) 1–16.
+[30] Q. Tao, H. Chang, Y. Yi, C. Gu, Y. Yu, Qos constrained grid workﬂow scheduling optimization based on a novel PSO algorithm, in: Proceedings of the Eighth
+International Conference on Grid and Cooperative Computing, IEEE Press, 2009, pp. 153–159.
+[31] D.L. Long, L.A. Clarke, Task interaction graphs for concurrency analysis, in: Proceedings of the Eleventh International Conference on Software Engineering,
+IEEE Press, 1989, pp. 44–52.
+[32] P. Sadayappan, F. Ercal, J. Ramanujam, Cluster partitioning approaches to mapping parallel programs onto a hypercube, Parallel Comput. 13 (1990) 1–16.
+[33] V.M. Lo, Heuristic algorithms for task assignment in distributed systems, IEEE Trans. Comp. 37 (1) (1988) 1384–1397.
+[34] S.S. Wu, D. Sweeting, Heuristic algorithms for task assignment and scheduling in a processor network, Parallel Comput. 20 (1) (1994) 1–14.
+[35] H. Kasahara, S. Narita, Practical multiprocessor scheduling algorithms for eﬃcient parallel processing, IEEE Trans. Comp. 33 (11) (1984) 1023–1029.
+[36] A.K.M. Khaled Ahsan Talukder, M. Kirley, R. Buyya, Multiobjective differential evolution for workﬂow execution on grids, in: Proceedings of the Fifth
+International Workshop Middleware for Grid Computing, ACM Press, 2007, pp. 1–6.
+[37] O.H. Ibarra, C.E. Kim, Heuristic algorithms for scheduling independent tasks on non identical processors, J. Assoc. Comput. Mach. 24 (2) (1977) 280–289.
+[38] T.D. Braun, H.J. Siegel, N. Beck, L.L. Bölöni, M. Maheswaran, A.I. Reuther, J.P. Robertson, M.D. Theys, B. Yao, A comparison of eleven static heuristics for
+mapping a class of independent tasks onto heterogeneous distributed computing systems, J. Parallel Distrib. Comput. 61 (6) (2001) 810–837.
+[39] F. Dong, S.G. Akl, Scheduling algorithms for grid computing: state of the art and open problems, Technical Report OSC, 2006.
+[40] H. Casanova, A. Legrand, D. Zagorodnov, F. Berman, Heuristics for scheduling parameter sweep applications in grid environments, in: Proceedings of the
+Ninth Heterogeneous Computing Workshop, IEEE Press, 2000, pp. 349–363.
+[41] J. Yu, R. Buyya, K. Ramamohanarao, Workﬂow scheduling algorithms for grid computing, in: F. Xhafa, A. Abraham (Eds.), Metaheuristics for Scheduling in
+Distributed Computing Environments, Studies in Computational Intelligence, Springer: Berlin–Heidelberg, 2008, pp. 173–214.
+[42] A. Bose, B. Wickman, C. Wood, Mars: A metascheduler for distributed resources in campus grids, in: Proceedings of the Fifth IEEE/ACM International
+Workshop on Grid Computing, IEEE Press, 2004, pp. 110–118.
+[43] D. Nurmi, R. Wolski, C. Grzegorczyk, G. Obertelli, S. Soman, L. Youseff, D. Zagorodnov, The eucalyptus open–source cloud–computing system, in: Proceedings
+of the Ninth International Symposium on Cluster Computing and the Grid, IEEE Press, 2009, pp. 124–131.
+[44] B. Sotomayor, R.S. Montero, I.M. Llorente, I. Foster, Virtual infrastructure management in private and hybrid clouds, IEEE Internet Comput. 13 (5) (2009)
+14–22.
+[45] E. Arzuaga, D.R. Kaeli, Quantifying load imbalance on virtualized enterprise servers, in: Proceedings of the First Joint WOSP/SIPEW Int. Conf. on Performance
+Engineering, ACM Press, 2010, pp. 235–242.
+[46] Y. Fang, F. Wang, J. Ge, A task scheduling algorithm based on load balancing in cloud computing, in: Proceedings of the International Conference on Web
+Information Systems and Mining, IEEE Press, 2010, pp. 271–277.
+[47] J. Ni, Y. Huang, Z. Luan, J. Zhang, D. Qian, Virtual machine mapping policy based on load balancing in private cloud environment, in: Proceedings of the
+International Conference on Cloud and Service Computing, IEEE Press, 2011, pp. 292–295.
+[48] F. Berman, High–performance schedulers, in: I. Foster, C. Kesselman (Eds.), The Grid: Blueprint for a Future Computing Infrastructure, Morgan Kaufmann,
+1998, pp. 279–307.
+[49] D. Fernandez-Baca, Allocating modules to processors in a distributed system, IEEE Trans. Softw. Eng. 15 (11) (1989) 1427–1436.
+[50] G. Wei, A.V. Vasilakos, Y. Zheng, N. Xiong, A game–theoretic method of fair resource allocation for cloud computing services, J. Supercomput. 54 (2010)
+252–269.
+[51] S.K. Garg, C.S. Yeo, A. Anandasivam, R. Buyya, Environment–conscious scheduling of hpc applications on distributed cloud–oriented data centers, J. Parallel
+Distrib. Comput. 71 (6) (2011) 732–749.
+[52] A. Gupta, L. Kalé, D. Milojicic, P. Faraboschi, S.M. Balle, Hpc–aware vm placement in infrastructure clouds, in: Proceedings of the International Conference
+on Cloud Engineering, IEEE Press, 2013, pp. 11–20.
+[53] P. Krömer, V. Snášel, P. Platoš, A. Abraham, H. Izakian, Scheduling independent tasks on heterogeneous distributed environments, in: Proceedings of the
+International Conference on Intelligent Networking and Collaborative Systems, IEEE Press, 2009, pp. 170–174.
+[54] C.A. Nearchou, S.L. Omirou, Differential evolution for sequencing and scheduling optimization, J. Heur. 12 (2005) 395–411.
+[55] Q.-K. Pan, M.F. Tasgetiren, Y.C. Liang, A discrete differential evolution algorithm for the permutation ﬂowshop scheduling problem, in: Proceedings of the
+ACM Genetic and Evolutionary Computation Conference, 2007, pp. 126–133.
+[56] I. De Falco, A. Della Cioppa, U. Scafuri, E. Tarantino, A distributed differential evolution approach for mapping in a grid environment, in: Proceedings of
+Fifteenth EUROMICRO International Conference on Parallel, Distributed and Network–Based Processing, 2007, pp. 442–449.
+[57] I. De Falco, U. Scafuri, E. Tarantino, A distributed evolutionary approach for multisite mapping on grids, Concurrency Comput.: Pract. Exper. 23 (2011)
+1146–1168.
+[58] A.K.M.K.A. Talukder, M. Kirley, R. Buyya, Multiobjective differential evolution for scheduling workﬂow applications on global grids, Concurrency Comput.:
+Pract. Exper. 21 (13) (2009) 1742–1756.
+[59] I. De Falco, A. Della Cioppa, U. Scafuri, E. Tarantino, Multiobjective differential evolution for mapping in a grid environment, in: R. Perrott, et al. (Eds.),
+Proceedings of the High Performance Computing Conference, Lecture Notes in Computer Science, 4782, Springer: Berlin–Heidelberg, 2007, pp. 322–333.
+[60] I. De Falco, U. Scafuri, E. Tarantino, An adaptive multisite mapping for computationally intensive grid applications, Future Gener. Comp. Syst. 26 (2010)
+857–867.
+[61] C. Vecchiola, S. Pandey, R. Buyya, High–performance cloud computing: A view of scientiﬁc applications, in: Proceedings of the International Symposium on
+Pervasive Systems, Algorithms, and Networks, IEEE Press, 2009, pp. 4–16.
+[62] Google app engine. https://developers.google.com/appengine/, 2011.
+[63] D. Laforenza, Grid programming: Some indications where we are headed, Parallel Comput. 28 (12) (2002) 1733–1752.
+[64] K. Ki-Hyung, H. Sang-Ryoul, Mapping cooperating grid applications by aﬃnity for resource characteristics, in: Lecture Notes in Computer Science, 3397,
+Springer: Berlin–Heidelberg, 2005, pp. 313–322.
+[65] C.E. Kaﬁl, I. Ahmad, Optimal task assignment in heterogeneous distributed computing systems, IEEE Concurrency 6 (3) (1998) 42–51.
+[66] A. Gupta, D. Milojicic, L.V. Kalé, Optimizing vm placement for hpc in cloud, in: Proceedings of the Workshop on Cloud Services, Federation and the Eighth
+Open Cirrus Summit, San Jose, CA, USA, 2012, pp. 1–6.
+[67] J.M. Schopf, F. Berman, Using stochastic information to predict application behavior on contended resources, Int. J. Foundat. Comp. Sci. 12 (3) (2001)
+341–364.
+[68] G.R. Nudd, D.J. Kerbyson, E. Papaefstathiou, S.C. Perry, J.S. Harper, D.V. Wilcox, Pace—A toolset for the performance prediction of parallel and distributed
+systems, Int. J. High Perf. Comput. Appl. 14 (3) (2000) 228–251.
+[69] V. Adve, M. Vernon, Parallel program performance prediction using deterministic graph analysis, ACM Trans. Comp. Syst. 22 (1) (2004) 94–136.
+[70] H.A. Sanjay, S. Vadhiyar, Performance modeling of parallel applications for grid scheduling, J. Parallel Distrib. Comput. 68 (2008) 1135–1145.
+[71] A. Nobakhti, H. Wang, A simple self–adaptive differential evolution algorithm with application on the alstom gasiﬁer, Appl. Soft Comput. 8 (2008) 350–370.
+[72] S. Das, A. Konar, U.K. Chakraborty, A. Abraham, Differential evolution with a neighborhood–based mutation operator: A comparative study, IEEE Trans. Evol.
+Comput. 13 (3) (2009) 526–553.
+
+58
+
+I. De Falco et al. / Parallel Computing 48 (2015) 40–58
+
+[73] Q.-K. Pan, L. Wang, B. Qian, A novel differential evolution algorithm for bi–criteria no–wait ﬂow shop scheduling problems, Comp. Oper. Res. 36 (8) (2009)
+2498–2511.
+[74] E. Zitzler, L. Thiele, Multiobjective evolutionary algorithms: A comparative case study and the strength pareto approach, IEEE Trans. Evol. Comput. 3 (4)
+(1999) 257–271.
+[75] A. Zhou, B.-Y. Qu, H. Li, S.-Z. Zhao, P.N. Suganthan, Q. Zhang, Multiobjective evolutionary algorithms: A survey of the state of the art, Swarm Evol. Comput.
+1 (1) (2011) 32–49.
+[76] R. Sakellariou, H. Zhao, A hybrid heuristic for dag scheduling on heterogeneous systems, in: Proceedings of the Thirteenth Heterogeneous Computing
+Workshop, IEEE Press, 2004, pp. 1–13.
+[77] G.Q. Liu, K.L. Poh, M. Xie, Iterative list scheduling for heterogeneous computing, J. Parallel Distrib. Comput. 65 (2005) 654–665.
+[78] M.G. Epitropakis, D.K. Tasoulis, N.G. Pavlidis, V.P. Plagianakos, M.N. Vrahatis, Enhancing differential evolution utilizing proximity–based mutation operators,
+IEEE Trans. Evol. Comput. 15 (1) (2011) 99–119.
+[79] M. Weber, F. Neri, V. Tirronen, A study on scale factor/crossover interaction in distributed differential evolution, Artif. Intell. Rev. 39 (2013) 195–224.
+[80] S. Das, P.N. Suganthan, Differential evolution: A survey of the state–of–the–art, IEEE Trans. Evol. Comput. 15 (1) (2011) 4–31.
+[81] G. Della Vecchia, C. Sanges, A recursively scalable network vlsi implementation, Future Gener. Comp. Syst. 4 (3) (1988) 235–243.
+[82] P. Luo, K. Lü, Z. Shi, A revisit of fast greedy heuristics for mapping a class of independent tasks onto heterogeneous computing systems, J. Parallel Distrib.
+Comput. 67 (2007) 695–714.
+[83] I. De Falco, U. Scafuri, E. Tarantino, Two new fast heuristics for mapping parallel applications on cloud computing, Future Gener. Comp. Syst. 37 (2014) 1–13.
+
+

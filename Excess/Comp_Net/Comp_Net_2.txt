@@ -1,0 +1,881 @@
+Computer Networks 91 (2015) 46–56
+
+Contents lists available at ScienceDirect
+
+Computer Networks
+journal homepage: www.elsevier.com/locate/comnet
+
+Online anomaly detection using dimensionality reduction
+techniques for HTTP log analysis
+Antti Juvonen1,∗, Tuomo Sipola1, Timo Hämäläinen
+Department of Mathematical Information Technology, University of Jyväskylä, Finland
+
+a r t i c l e
+
+i n f o
+
+Article history:
+Received 25 July 2014
+Revised 28 April 2015
+Accepted 23 July 2015
+Available online 24 August 2015
+Keywords:
+Cyber security
+Anomaly detection
+Intrusion detection
+Principal component analysis
+Random projection
+Diffusion map
+
+a b s t r a c t
+Modern web services face an increasing number of new threats. Logs are collected from almost all web servers, and for this reason analyzing them is beneﬁcial when trying to prevent
+intrusions. Intrusive behavior often differs from the normal web traﬃc. This paper proposes a
+framework to ﬁnd abnormal behavior from these logs. We compare random projection, principal component analysis and diffusion map for anomaly detection. In addition, the framework
+has online capabilities. The ﬁrst two methods have intuitive extensions while diffusion map
+uses the Nyström extension. This fast out-of-sample extension enables real-time analysis of
+web server traﬃc. The framework is demonstrated using real-world network log data. Actual
+abnormalities are found from the dataset and the capabilities of the system are evaluated and
+discussed. These results are useful when designing next generation intrusion detection systems. The presented approach ﬁnds intrusions from high-dimensional datasets in real time.
+
+1. Introduction
+Web applications and services have become more featured and therefore more complex in recent years. At the
+same time, the number of different vulnerabilities and intrusion attempts has become more and more common. For
+detecting these attacks, intrusion detection systems (IDS) are
+used. There are many different types of systems, and they
+can be divided according to, e.g., detection principle, detection time and the system’s place in the network or host. The
+attacks are changing over time, and therefore IDSs need to
+adapt to new threats as well.
+Intrusion detection systems can generally be divided into
+two categories based on the detection principle: signaturebased and anomaly-based detection [1,2]. In signature-based
+systems, manually created rules are created based on known
+attack patterns. Network behavior is then compared to these
+∗
+
+Corresponding author. Tel.: +358 40 357 3875.
+E-mail
+addresses:
+antti.k.a.juvonen@jyu.ﬁ
+(A.
+Juvonen),
+tuomo.sipola@iki.ﬁ (T. Sipola), timo.hamalainen@jyu.ﬁ (T. Hämäläinen).
+1
+Present address: CAP Data Technologies, Finland.
+http://dx.doi.org/10.1016/j.comnet.2015.07.019
+1389-1286/© 2015 Elsevier B.V. All rights reserved.
+
+© 2015 Elsevier B.V. All rights reserved.
+
+rules, and alarm is created if there is a match. The advantages include computational simplicity and being able to determine which type of attack is taking place. However, only
+previously known attacks can be found using this methodology, while unknown intrusions remain undetected. Another
+option is to use anomaly-based detection, where any new behavior is compared to the normal behavior patterns in the
+network. Alarms are created if a deviation from the norm
+is found. Using this detection principle, it is possible to detect new and unknown intrusion attempts and other anomalies. On the other hand, the biggest possible problem with
+anomaly detection is high number of false alarms. Intrusion detection systems can be implemented using method
+based on different approaches, such as statistics, patterns or
+rules [2].
+Most of the traditional intrusion detection systems are
+based on signature detection. Anomaly detection systems
+work best when used together with traditional systems, not
+on their own. Fig. 1 shows an example of the placement of
+intrusion detection system components in a small network.
+One option is to use anomaly detection to analyze potential intrusions that were not detected by the signature-based
+
+A. Juvonen et al. / Computer Networks 91 (2015) 46–56
+
+47
+
+Fig. 1. IDS topology.
+
+system. This will improve the security of critical infrastructure. The scenario represents the test setting used in this research. There are of course many other options for the placement of the anomaly detection system in the network.
+In recent years, many machine learning methods have
+been used to facilitate anomaly detection. The challenge with
+this approach is that machine learning methods are better
+at ﬁnding similarities than abnormalities. However, this does
+not mean that using machine learning is always unfeasible.
+To overcome this problem, data selection must be performed
+with care so that there is a clear context [3]. With careful
+data selection, preprocessing and feature extraction it is possible to facilitate anomaly detection using machine learning
+algorithms.
+Intrusion detection systems can also be classiﬁed as either network-based or host-based [1]. Network-based systems monitor certain parts of the network and scan for suspicious activity from the network traﬃc. The best place for
+network-based systems is at the boundary of different network segments. On the other hand, host-based intrusion detection systems monitor a single host. Different kinds of activity can be monitored from a single host, e.g., log ﬁles and
+application activity.
+In addition, intrusion detection systems can operate in ofﬂine or online mode [4]. Oﬄine systems scan the network behavior periodically to ﬁnd out if intrusive traﬃc has occurred
+since previous scan. Online systems scan new traﬃc as it arrives, essentially in real time.
+A system using the anomaly detection principle was ﬁrst
+introduced by Denning [5]. Since then, there has been a lot
+of research and many different methods and algorithms have
+been used to facilitate anomaly detection. Very common approaches to intrusion detection in the literature include statistical methods, machine learning and anomaly detection
+[6]. Examples of methodologies used in this context include
+neural networks [7–9], self-organizing maps (SOMs) [10] and
+support vector machines (SVMs) [11]. HTTP traﬃc can be analyzed extracting certain features to build an anomaly-based
+intrusion system [12]. PCA methodology has been used even
+
+quite recently for intrusion detection [13]. A recent study also
+modiﬁed PCA to be able to analyze new data by using online
+updating technique [14]. This extends the system to largescale problems, the system does not apply any other dimensionality reduction algorithms and might suffer from nonlinear data. Many of the new research still focuses on intrusion
+detection using signatures. Anomaly detection continues to
+be a challenging subject.
+The authors of this paper have previously explored network anomaly detection using diffusion map methodology
+for mostly oﬄine detection [15–17]. We have also applied
+a rule extraction algorithm to the framework to create an
+online detection system [18]. This approach works independently of the anomaly detection algorithms used. Random
+projection methodology applied to web anomaly detection
+framework has also been used by the authors [19].
+Our new proposed system reads web server log ﬁles, extracts the features from the raw logs and ﬁnds anomalies using several dimensionality reduction techniques. In addition,
+we get visualizations that make in-depth analysis easier. The
+system is capable of online detection when new data points
+are dynamically added. We use three different dimensionality reduction techniques, some of which are widely used in
+intrusion detection research, while others are not as commonly applied in this context.
+2. System architecture
+At ﬁrst, the system is trained using existing data. The
+system architecture takes log data as input. These could
+theoretically be any structured text ﬁles. The preprocessing
+part extracts n-gram features. The training n-gram proﬁle
+is saved for later. These features are then transformed to a
+low-dimensional space. Machine learning training uses several dimensionality reduction methods and produces a lowdimensional representation of the data.
+When new streaming data arrives, existing n-grams are
+counted and new ones added to the proﬁle. This way the
+n-gram dictionary stays up-to-date. These features are then
+
+48
+
+A. Juvonen et al. / Computer Networks 91 (2015) 46–56
+
+Fig. 2. System architecture ﬂow diagram.
+
+transformed again to the low-dimensional space created in
+the previously explained machine learning training. The new
+data points are classiﬁed either normal or anomalous in the
+low-dimensional space. Afterwards, the detected anomalies
+are output to the user.
+Refer to Fig. 2 for ﬂow diagram. The left column shows
+the training and the right column shows new streaming data
+coming. The n-gram proﬁles beneﬁt the feature extraction on
+the right, and the low-dimensional model is used when projecting new streaming data for anomaly detection.
+
+3. Data acquisition and preprocessing
+Data acquisition is crucially important for any IDS, because it is the ﬁrst phase of any intrusion detection framework. Different types of data can be used. In this paper we
+focus on Hypertext Transfer Protocol (HTTP) log data. It has
+become a universal transfer protocol and will also be heavily
+used in the future [20]. After acquiring the data, they must
+be preprocessed and features must be extracted to transform it into numerical form that can be used for later analysis phases. The data and used preprocessing methods are
+described in the following sections.
+
+3.1. Data acquisition
+The data used in this research are acquired from realworld company web servers. The servers are running the
+widely-used Apache web server software. The logs are in
+combined log format [21], which include different kinds
+of information such as IP address, timestamp, the actual HTTP request, Apache server response code and user
+agent header ﬁeld. An example log line is presented
+below:
+
+127.0.0.1 − −
+[01/January/2012 : 00 : 00 : 01 +0300]
+GET /resource.php?parameter1 = value1&parameter2
+= value2
+HTTP/1.1 200 2680
+http : //www.address.com/webpage.html
+Mozilla/5.0 (SymbianOS/9.2; ...)
+These logs might contain several actual intrusions, especially inside the HTTP requests that are not static, i.e., they
+contain dynamic parameters that depend on the user input.
+This is why we focus on analyzing the request strings. Different kinds of attack attempts, such as SQL injections, can
+be found from web server logs. Even though many intrusions
+cannot be found without having access to the actual payload
+data, web server logs are widely available and used by default in most web servers around the world, which is a huge
+advantage.
+
+3.2. Preprocessing
+Acquired log ﬁles contain essentially strings describing
+requests sent from the user to the server. In the preprocessing
+phase, textual logs are transformed into numerical matrices
+to facilitate the subsequent analysis phases. In this research,
+we use n-gram analysis for extracting meaningful features
+from the data.
+An n-gram can be deﬁned as a consecutive sequence of n
+characters [22]. It could also be described as a substring with
+the length n. For example, the string ababc contains unique 2grams ab, ba and bc. The 2-gram ab appears twice, thus having frequency of 2. A list of tokens of text can be represented
+with a vector consisting of n-gram frequencies [22]. Feature
+vector describing this string would be xababc = [2, 1, 1]. Similar feature vectors will form the whole feature matrix.
+
+A. Juvonen et al. / Computer Networks 91 (2015) 46–56
+
+49
+
+Fig. 3. Dimensionality reduction reduces the number of variables describing the data points while retaining most of the information.
+
+Here is an example of constructing the feature matrix using the n-gram analysis process with two words, anomaly and
+analysis. From these words we get the unique 2-grams an,
+no, om, ma, al, ly, na, ys, si and is. From this information
+we can construct a matrix with the n-gram frequencies.
+
+Table 1
+Different dimensionality reduction methods in this paper.
+RP
+PCA
+DM
+
+an
+
+no
+
+om
+
+ma
+
+al
+
+ly
+
+na
+
+ys
+
+si
+
+is
+
+1
+1
+
+1
+0
+
+1
+0
+
+1
+0
+
+1
+1
+
+1
+1
+
+0
+1
+
+0
+1
+
+0
+1
+
+0
+1
+
+Very fast, sometimes unstable,
+cannot reduce dimensions very much, preserves distance
+Average speed, preserves variance,
+cannot handle non-linear data
+Slowest, can deal with non-linear data,
+can facilitate spectral clustering
+
+4. Dimensionality reduction
+The feature matrix X is constructed in a similar way from
+the request string n-gram frequencies. The occurrences of
+speciﬁc n-grams are summed for each log line. In practice, ngram tables generated from real-life log data are very sparse,
+because most of the n-grams do not actually appear on all the
+log lines. The n-grams that do not appear in the data at all
+as well as the corresponding columns in the feature matrix
+can be excluded. This will reduce the number of dimensions
+(columns) in the matrix.
+Apache log ﬁles are ascii-coded, which means that 256
+different unique characters are possible. If we choose n = 1
+for the n-gram analysis, we get a simple character distribution with 256 theoretical maximum dimensions. For this
+analysis, we choose n = 2, which means that the maximum
+number of dimensions is 2562 = 65, 536. However, in a normal real-world situation the actual number is much lower.
+With n = 3 or higher, the dimensionality of the data is massively increased. Since the performance of many of the algorithms used depend on the size of the individual feature
+vector, high input dimensions would slow performance. With
+the chosen value n = 2, we get a good balance between contained information and the size of the feature matrix.
+
+Dimensionality reduction methods try to map highdimensional data to fewer dimensions while retaining the internal structure of the data. Usually this structure is deﬁned
+by distances between the data points. Several mathematical
+approaches can be found [23], three of which are presented
+in the next three sections: random projection (RP), principal component analysis (PCA) and diffusion maps (DM). Each
+section presents the training step and the out-of-sample extension of new data points.
+These three algorithms perform the same reduction but
+from different theoretical viewpoints. Even though they pursue the same goal, their performances may differ. Table 1
+brieﬂy summarizes the differences between the methods.
+Furthermore, various datasets exhibit behaviors that are appropriate for only some of the methods.
+The basic idea behind dimensionality reduction is expressed in Fig. 3. The data points on the rows of X are described by D dimensions, or features on the columns. The
+dimensionality reduction algorithm reduces the number of
+dimensions to k while retaining suﬃcient information in the
+new dimensions. The most common information to preserve
+
+50
+
+A. Juvonen et al. / Computer Networks 91 (2015) 46–56
+
+is the distance between different data points The most common information to preserve is the distance between different data points.
+5. Random projection
+5.1. Training
+Random projection (RP) is a dimensionality reduction
+method based on Johnson–Lindenstrauss lemma [24], for
+which a proof is available in the literature [25]. It states that
+if points in a vector space are projected onto a randomly selected subspace with high-enough dimensions, the distances
+between these points are preserved approximately provided
+that the vectors have unit lengths. In other words, the goal is
+to use a randomly generated matrix to lower the number of
+dimensions in the data.
+Let us assume that we have the original data matrix X
+with N data points and D dimensions. The number of dimensions in the low-dimensional subspace is k so that k D. The
+randomly generated matrix is Rk×D . The matrix containing
+data points projected onto the low-dimensional subspace is
+obtained with the following multiplication [26]:
+k×N
+XRP
+= Rk×D XD×N .
+
+Random projection is not actually a projection because
+the matrix R is not strictly orthogonal [26]. In addition, orthogonalization of a matrix can be computationally expensive. However, we can use the result by Hecht-Nielsen [27]:
+“There exists a much larger number of almost orthogonal than
+orthogonal directions in a high-dimensional space”. Therefore,
+RP is close to a projection and can be used for practical
+applications.
+We can use a very simple probability distribution for
+choosing the elements rij or random matrix R. Using the following distribution, we get sparse random projection as originally proposed by Achlioptas [28]:
+
+ri j =
+
+√
+3×
+
+⎧
+⎨+1 with probability
+0
+
+⎩
+
+with probability
+
+−1 with probability
+
+1
+6
+2
+3
+1
+6
+
+.
+
+Alternatively, we can use a more general distribution
+[29]:
+
+√
+ri j = s ×
+
+⎧
+⎨+1 with probability
+0
+
+⎩
+
+−1
+
+1
+2s
+
+with probability 1 −
+
+with probability
+
+1
+s
+
+.
+
+1
+2s
+
+If we choose s = 3, we get the original distribution for
+Achlioptas’ sparse random projection. It is also possible to
+choose s
+3, which leads to very sparse random projections
+[29].
+In this case, given the original data matrix iX ∈ RN×D and
+random matrix R ∈ RD×k , we can obtain the randomly projected matrix by [29]:
+
+1
+XRP = √ XR ∈ RN×k ,
+k
+
+k
+
+min (N, D).
+
+The main advantage of random projection methodology
+is its speed and computational eﬃciency. Even though the
+method is very fast, it is accurate enough not to create too
+
+much distortion in the data [26]. This makes it usable for applications where computationally expensive algorithms are
+not feasible.
+It is important to note that in this case “training” simply
+means the generation of the random matrix. The matrix R
+does not depend on the used training data. However, random projection contains a parameter so that 0 < < 1.
+Using this, the minimum number of dimensions for the projection can be calculated for the chosen value of using the
+Johnson–Lindenstrauss lemma. This can be considered a
+training stage, since we are making sure that the dimensionality is not reduced too much for the given dataset, so that
+the distances are still approximately preserved.
+5.2. Out-of-sample extension
+In this context, out-of-sample extension means projecting
+any new data points to the same subspace as all the points in
+the data matrix X. Since generation of the random matrix R
+does not depend on data points in the matrix X, projecting
+any new data points does not require any special steps other
+than matrix multiplication. If we get a new preprocessed data
+vector yi , projecting it onto the low-dimensional subspace
+can simply be done performing the following:
+
+yRP = yi R
+This will give us the original data vector projected to the
+subspace. As can be seen, random projection facilitates outof-sample extension, making it feasible for online anomaly
+detection systems due to its simplicity and speed.
+6. Principal component analysis
+6.1. Training
+Principal component analysis is probably the most popular dimensionality reduction technique. The goal is to represent the information included in the original correlated variables using a smaller number of independent variable called
+principal components. The principal components are linear
+combinations of the original variables [30].
+To perform PCA for the original data matrix X, the matrix
+is ﬁrst centered to form the matrix Xc . Covariance matrix C
+is then calculated from the centered data. From this, we can
+use the following decomposition for real-valued matrices:
+
+C=U U .
+Now we can obtain the eigenvectors in the matrix U. To
+map the data points into the low-dimensional subspace we
+only need to perform the multiplication
+
+XPCA = XU.
+The new principal components are in the direction of
+most variance in the data and thus represent the most differentiating combination of features [23,30,31]. Normally the
+principal components containing 95% of the variance are selected and the rest dropped out because they do not include
+much information. In an optimal situation, the ﬁrst few components are enough.
+
+A. Juvonen et al. / Computer Networks 91 (2015) 46–56
+
+The principal components are linear combinations, and
+PCA can only ﬁnd linear dependencies in the data. It has initial assumptions that restrict its use for latent variable separation and nonlinear dimensionality reduction [23].
+The calculation of covariance matrix C and the subsequent
+calculation of U can be considered the training stage, since
+both of these need some original data to be calculated. If we
+want to retrain the algorithm with new data, these have to be
+calculated again unless some more complicated update algorithm is used. It might also be suﬃcient to recalculate PCA
+periodically.
+6.2. Out-of-sample extension
+When the system gets new data points, using the same
+projection as used in the training stage is very simple, as it
+requires only a multiplication operation. Given a new data
+point yi , we can project it into the same subspace as other
+points by doing the following:
+
+yPCA = yi U
+With this multiplication we get the new projected data
+point yP CA.
+7. Diffusion maps
+7.1. Training
+Diffusion map is a function from multi-dimensional space
+to a space with lower dimensions while the information content is only slightly distorted. It can be described using the
+taxonomy of dimensionality reduction methods as a nonlinear geometric method that preserves the diffusion distance
+as Euclidean distance in the lower dimensions [23,32]. The
+underlying assumption in such manifold learning methods is
+that the data is situated on a manifold that is embedded to
+the ambient space [33].
+Recall that the measurements xi ∈ RD , i = 1 . . . N lie on a
+D-dimensional space, where N is the number of measurements and D is the number of measured variables. The measurements should be normalized in order to make the variables comparable. One way of doing this is simply taking the
+logarithm of each value in the data matrix.
+In the diffusion map method, at ﬁrst, the pairwise distances between the data points are calculated. These distances are exaggerated using a kernel function. Here, the
+Gaussian kernel is used with Euclidean distance measure:
+
+||xi − x j ||
+
+2
+
+Wi j = exp −
+
+.
+
+The degree of each point can be calculated from W by
+summing the weights that connect them to the other points.
+This means that the kernel matrix rows are summed: Dii =
+N
+j=1 Wi j . The rows of W are normalized by the row sums:
+
+P = D−1 W. Matrix P can now be understood as containing
+the transition probabilities between the data points. Sym1
+1
+˜ 2 PD− 2 is simpliﬁed by substituting the
+metric matrix PD
+original P with its deﬁnition:
+1
+
+1
+
+˜ = D− 2 WD− 2 .
+P
+
+51
+
+The decomposition of this real-valued normal matrix is
+˜ = U U . Singular value decomposition (SVD)
+expressed as P
+performs the operation, resulting in matrix U that contains
+eigenvectors on its columns and the diagonal of
+contains
+˜ However, the real interthe corresponding eigenvalues of P.
+est is in the eigenvectors of the transition matrix P. Those
+eigenvalues of the two matrices are the same, but the eigenvectors are obtained by calculating the right eigenvectors:
+1
+
+V = D− 2 U.
+The low-dimensional coordinates can now be formed by
+multiplying each eigenvector column with the corresponding eigenvalue. The resulting matrix contains N rows, each
+corresponding to the data points, and k columns, each representing the new dimensions.
+
+XDM = V
+Only some of these coordinates are needed to represent
+the data to a certain degree of error [34]. The data can be reconstructed using only some of the eigenpairs while the error
+stays small enough. Due to the graph theoretical calculations,
+the ﬁrst eigenvector is constant, so it is not used.
+7.2. Nyström extension
+Nyström extension takes new points data points and extends them to the low-dimensional space mapped earlier
+by diffusion map. The goal is to interpolate the coordinates
+of unknown points based on the coordinate mapping of the
+training data. With this kind of projection, the new points can
+be compared with the training dataset. Many dimensionality
+reduction methods can use the general Nyström extension
+framework for out-of-sample extension [35–37]. The same
+features are used as the ones used during the training, with
+the same normalization.
+Let us assume that a new data point y j ∈ RD is extended.
+The distances between the data point and the training points
+¯ , which is deﬁned as
+are collected to W
+
+¯ i j = exp −
+W
+
+||xi − y j ||2
+
+.
+
+¯ ii =
+Similarly to the training, diagonal matrix of D
+¯ The transition
+¯ i j contains the column sums of W.
+W
+probabilities are then calculated with
+N
+i=1
+
+¯D
+¯ −1 .
+B=W
+¯ can be found:
+Now, the eigenvectors in the columns of V
+
+¯ =B V
+V
+
+−1
+
+The eigenvalues
+are the same as in the training. The
+low-dimensional coordinates for the new points can be
+¯ , and the last two steps are combined as
+found with Y¯ = V
+
+Y¯ DM = B V.
+Matrix Y¯ DM now contains the extended coordinate approximations in its columns for the new points yj .
+8. Anomaly detection
+Anomaly detection is performed using statistical analysis. We assume that the data follows a Gaussian distribution. We calculate the mean point from the training data.
+
+52
+
+A. Juvonen et al. / Computer Networks 91 (2015) 46–56
+
+Fig. 4. Low-dimensional points and anomalies using DM. Red stars are the anomalies, while blue dots are normal HTTP requests.
+
+The average distance of training points from the mean point
+is μtrain , which is used as an estimate for μtest for the testing data. We use a simple anomaly detection method, where
+any data points with a distance greater than nσ from μtest
+will be classiﬁed as an anomaly with the anomaly indicator
+function
+
+g(y) =
+
+1, if nσ < y − μtest .
+0,
+
+otherwise.
+
+Here y is the low-dimensional representation of a data
+point and σ is the standard deviation of the training data
+points from the mean. The choice of n is not trivial, but
+a common option is n = 3 [33]. In practice, with large
+or non-Gaussian datasets a different threshold should be
+selected.
+9. Results
+The proposed framework is tested using several different
+datasets received from companies. The logs contain simulated test data as well as real-life network logs from actual
+production web servers. All of the ﬁles include only HTTP
+server access logs. This is feasible because most or all of
+the traﬃc will be encrypted in the near future, making it
+very diﬃcult to analyze the payload. The header information is still going to be available. The format and contained
+information is introduced in Section 3.1. It is important to
+note that we did not get access to payloads of the packets,
+just the header information contained in normal HTTP log
+ﬁles.
+9.1. Simulated test data
+For the ﬁrst initial experiment, we received two datasets
+with simulated test traﬃc and manually injected intrusion
+attempts. The intrusions fall under two general categories.
+Firstly, some attacks try to access vital ﬁles in the server, e.g.,
+the ﬁle /etc/passwd on a Linux server. Secondly, some
+
+cross-site scripting (XSS) attacks have been injected. These
+attacks attempt to execute malicious foreign scripts when the
+user visits a web page. These are especially diﬃcult, since
+these attacks do not contain many uncommon or encoded
+characters, and are diﬃcult to ﬁnd with access logs alone. In
+addition, all of the analysis phases are done using a normal
+laptop computer, and the execution times are presented so
+the eﬃciency of different methodologies can be compared. In
+an actual scenario with ﬁnished software, the analysis can be
+performed on a specialized server with multiple cores, making the analysis dozens of times faster. More accurate analysis
+of the execution times and scalability can be found below in
+Section 9.2.
+The ﬁrst and smaller log contains only a few intrusions,
+and mostly consists of normal traﬃc. It contains 2693 lines.
+RP methodology analyzes the data in 2.4 s, ﬁnds two actual intrusions and gives one false alarm. PCA-based analysis ﬁnds the same two intrusions with no false positives,
+and takes 11.2 s. Using DM, we discover the same two attacks
+plus one extra intrusion which was not found using the other
+methods. This analysis takes considerably longer, 196.6 s. A
+low-dimensional representation of the data using DM can be
+seen from Fig. 4. In this case RP is fast and eﬃcient, PCA is
+quite fast and more precise, and DM is the most accurate but
+also the slowest. An example plot of the anomaly levels is
+presented in Fig. 5.
+The second simulated log contains 5369 lines and contains the two different attack types mentioned above. RP
+analysis takes 4.7 s, and it ﬁnds 62 attacks trying to access important server ﬁles. PCA takes 25 s, and only ﬁnds 51 of these
+attack attempts. Both of these methods give zero false positives, but completely fail to detect the XSS attacks. The actual
+contents of the scripts are not present in the log ﬁles, making them diﬃcult to be detected. However, DM analysis ﬁnds
+141 lines of XSS attacks , as well as 47 of the other types of attacks. The execution time is 285 s in this experiment. RP ﬁnds
+the ﬁrst type of attacks better and faster than others, but
+once again DM is more accurate at ﬁnding diﬃcult intrusion
+
+A. Juvonen et al. / Computer Networks 91 (2015) 46–56
+
+53
+
+Fig. 5. Anomaly levels for test3 log ﬁle with RP.
+
+Fig. 6. Low-dimensional presentation of the data using DM. Red stars are anomalies, while blue dots are normal HTTP requests.
+
+attempts that cannot be detected using the other methodologies. Fig. 6 shows the normal points as well as the two main
+attack types in a low-dimensional visualization created using
+DM.
+While these manually created logs are useful for initial
+testing, they are much too small for more practical testing.
+Therefore, more testing data is analyzed in the next section.
+9.2. Speed and scalability tests using real-world log data
+This dataset contains HTTP queries to a real web server. In
+this log there is much more traﬃc. Various subsets of the data
+are used to test the speed and especially the scalability of
+the three different methodologies to compare the eﬃciency
+on larger datasets. The variability of this kind of real data is
+higher than in the simulated case. For more accurate and realistic results, it would be essential to have better log data.
+
+However, the size of the data is big enough to test the scalability aspects. We tested up to 300,000 log lines since that
+provided enough evidence in terms of linear scalability. All
+of the methods ﬁnd actual intrusions attempts from the data,
+but it is impossible to say how many potential intrusions are
+left undetected, since the test is completely unsupervised.
+Fig. 7 shows the speed and scalability using different
+sizes of data. There are two main things to note here.
+Firstly, all of the methods scale linearly. This is because
+the training phase is done using a limited number of log
+lines, and analyzing new streaming data is a linear operation. Secondly, the differences in scaling between the methods are massive. As expected, RP can analyzed much more
+data than other methods. The processing time increases
+rapidly when using DM. It seems that RP works well when
+analyzing bigger datasets, and DM can be used for more accurate analysis on smaller sets of data, since the experiments
+
+54
+
+A. Juvonen et al. / Computer Networks 91 (2015) 46–56
+
+Fig. 7. Computational times for RP, PCA and DM.
+
+Fig. 8. Random projection computation time with two Intel® Core
+
+in Section 9.1 showed that DM can ﬁnd some intrusions more
+accurately.
+Another real-world dataset is used for testing RP methodology. Fig. 8 shows the computation time against log ﬁle
+TM
+size. The test was run on two Intel® Core i5-2520M CPU
+@ 2.50 GHz cores using hyper-threading. As expected, the
+time taken by online anomaly classiﬁcation is linearly dependent on the size of data with this data as well. The
+300 MB dataset corresponds to the amount of daily traﬃc
+of a small web service. It happens acceptably fast even on
+a very low-powered computer used in this experiment. Using more cores will signiﬁcantly speed up the processing. The
+most important thing to note here is the linear scaling of the
+system.
+10. Conclusion
+Web log analysis can be done with anomaly detection.
+This paper presents results from three methods that can be
+
+TM
+
+i5-2520M CPU @ 2.50 GHz cores using hyper-threading.
+
+used for dimensionality reduction before anomaly detection:
+random projection, principal component analysis and diffusion maps. These results show that web attacks can be captured using this type of framework.
+The results suggest that an ensemble system could be
+built upon the methodologies described. Based on the experimental results, we propose that RP and DM should be
+used together. RP methodology is eﬃcient for daily analysis
+of huge amounts of traﬃc, while DM produces better visualizations and more accurate analysis of smaller amounts of
+data when needed. PCA falls in between of the other methods, but does not seem to offer any major advantages in our
+experiments.
+These results are relevant to new intrusion detection
+services for web servers. Moreover, analyzing any log ﬁles
+produced by various applications should be easier using
+dimensionality reduction. The usefulness of anomaly detection in any text mining task is also obvious. The results show
+that new data point extension happens in linear time. The
+
+A. Juvonen et al. / Computer Networks 91 (2015) 46–56
+
+analysis can be performed in suﬃcient time on huge volumes
+of data.
+One important question is sampling the data for training. The data sampling should strive to represent the variability in the dataset but with a limited number of samples. It is not trivial to choose the right training data size.
+In addition, the selection of anomaly threshold can be challenging. More robust automatic parameter selection must be
+developed.
+For future research, larger volumes of data must be analyzed to ensure that the scaling is eﬃcient. It is possible that the system will be throttled by memory or I/O
+instead of CPU, which will create new challenges. In addition, it would be useful to try different formats of data to
+test the feasibility of the framework more generally. Furthermore, some optimization could be made to the implementation to ensure a better performance in a realistic network
+application.
+Acknowledgment
+The authors would like to thank Pardco Group Oy and Second Nature Security Oy for co-operation.
+References
+[1] K. Scarfone, P. Mell, Guide to intrusion detection and prevention systems (IDPS), NIST Spec. Publ. 800 (2007) 94.
+[2] H.-J. Liao, C.-H.R. Lin, Y.-C. Lin, K.-Y. Tung, Intrusion detection system: a
+comprehensive review, J. Netw. Comput. Appl. 36 (2013) 16–24.
+[3] R. Sommer, V. Paxson, Outside the closed world: on using
+machine learning for network intrusion detection, in: Proceedings of IEEE Symposium on Security and Privacy (SP), IEEE, 2010,
+pp. 305–316.
+[4] P. Sangkatsanee, N. Wattanapongsakorn, C. Charnsripinyo, Practical
+real-time intrusion detection using machine learning approaches,
+Comput. Commun. 34 (2011) 2227–2235.
+[5] D.E. Denning, An intrusion-detection model, IEEE Trans. Softw. Eng.
+(1987) 222–232.
+[6] A. Patcha, J.-M. Park, An overview of anomaly detection techniques:
+existing solutions and latest technological trends, Comput. Netw. 51
+(2007) 3448–3470.
+[7] Z. Zhang, J. Li, C. Manikopoulos, J. Jorgenson, J. Ucles, HIDE: a hierarchical network intrusion detection system using statistical preprocessing
+and neural network classiﬁcation, in: Proceedings of IEEE Workshop on
+Information Assurance and Security, 2001, pp. 85–90.
+[8] M. Amini, R. Jalili, H.R. Shahriari, RT-UNNID: a practical solution to
+real-time network-based intrusion detection using unsupervised neural networks, Comput. Secur. 25 (2006) 459–468.
+[9] M. Govindarajan, R. Chandrasekaran, Intrusion detection using neural
+based hybrid classiﬁcation methods, Comput. Netw. 55 (2011) 1662–
+1671.
+[10] K. Labib, R. Vemuri, NSOM: a real-time network-based intrusion detection system using self-organizing maps, Netw. Secur. (2002) 1–6.
+[11] W. Hu, Y. Liao, V.R. Vemuri, Robust anomaly detection using support
+vector machines, in: Proceedings of International Conference on Machine Learning, 2003, pp. 592–597.
+[12] J.M. Estévez-Tapiador, P. Garcıa-Teodoro, J.E. Dıaz-Verdejo, Measuring
+normality in HTTP traﬃc for anomaly-based intrusion detection, Comput. Netw. 45 (2004) 175–193.
+[13] M. Ahmadi Livani, M. Abadi, A PCA-based distributed approach for intrusion detection in wireless sensor networks, in: Proceedings of International Symposium on Computer Networks and Distributed Systems
+(CNDS), IEEE, 2011, pp. 55–60.
+[14] Y.-J. Lee, Y.-R. Yeh, Y.-C.F. Wang, Anomaly detection via online oversampling principal component analysis, IEEE Trans. Knowl. Data Eng. 25
+(2013) 1460–1470.
+[15] T. Sipola, A. Juvonen, J. Lehtonen, Anomaly detection from network logs
+using diffusion maps, in: L. Iliadis, C. Jayne (Eds.), Engineering Applications of Neural Networks, Volume 363 of IFIP Advances in Information
+and Communication Technology, Springer, Boston, 2011, pp. 172–181.
+
+55
+
+[16] T. Sipola, A. Juvonen, J. Lehtonen, Dimensionality reduction framework
+for detecting anomalies from network logs, Eng. Intell. Syst. 20 (1–2)
+(2012) 87–97.
+[17] A. Juvonen, T. Sipola, Adaptive framework for network traﬃc classiﬁcation using dimensionality reduction and clustering, in: Proceedings
+of the IV International Congress on Ultra Modern Telecommunications
+and Control Systems 2012 (ICUMT 2012), St. Petersburg, Russia, 2012,
+pp. 274–279.
+[18] A. Juvonen, T. Sipola, Combining conjunctive rule extraction with diffusion maps for network intrusion detection, in: Proceedings of the Eighteenth IEEE Symposium on Computers and Communications (ISCC),
+Split, Croatia, 2013, pp. 411–416.
+[19] A. Juvonen, T. Hämäläinen, An eﬃcient network log anomaly detection system using random projection dimensionality reduction, in: Proceedings of the 6th International Conference on New Technologies, Mobility and Security (NTMS), IEEE, Dubai, United Arab Emirates, 2014,
+pp. 1–5.
+[20] K.L. Ingham, H. Inoue, Comparing anomaly detection techniques for
+HTTP, in: C. Krueqel, R. Lippmann, A. Clark (Eds.), Recent Advances in
+Intrusion Detection, Springer, 2007, pp. 42–62.
+[21] Log ﬁles – Apache HTTP server, 2014.
+[22] M. Damashek, Gauging similarity with n-grams: languageindependent categorization of text, Science 267 (1995) 843.
+[23] J. Lee, M. Verleysen, Nonlinear Dimensionality Reduction, Springer
+Verlag, 2007.
+[24] W.B. Johnson, J. Lindenstrauss, Extensions of Lipschitz mappings into a
+Hilbert space, Contemp. Math. 26 (189–206) (1984) 1.
+[25] S. Dasgupta, A. Gupta, An elementary proof of a theorem of Johnson
+and Lindenstrauss, Random Struct. Algorithm. 22 (2003) 60–65.
+[26] E. Bingham, H. Mannila, Random projection in dimensionality reduction: applications to image and text data, in: Proceedings of the Seventh ACM SIGKDD International Conference on Knowledge Discovery
+and Data Mining, ACM, 2001, pp. 245–250.
+[27] R. Hecht-Nielsen, Context vectors: general purpose approximate meaning representations self-organized from raw data, Comput. Intell.: Imitating life (1994) 43–56.
+[28] D. Achlioptas, Database-friendly random projections, in: Proceedings of
+the Twentieth ACM SIGMOD-SIGACT-SIGART Symposium on Principles
+of Database Systems (2001), ACM, 2001, pp. 274–281.
+[29] P. Li, T. Hastie, K. Church, Very sparse random projections, in: Proceedings of the 12th ACM SIGKDD International Conference on Knowledge
+Discovery and Data Mining, ACM, 2006, pp. 287–296.
+[30] H. Abdi, L. Williams, Principal component analysis, Wiley Interdiscip.
+Rev.: Comput. Stat. 2 (2010) 433–459.
+[31] J. Han, M. Kamber, Data Mining: Concepts and Techniques, Morgan
+Kaufmann, 2006.
+[32] L.J.P. van der Maaten, E.O. Postma, H.J. van Den Herik, Dimensionality
+reduction: a comparative review, J. Mach. Learn. Res. 10 (2009) 1–41.
+[33] V. Chandola, A. Banerjee, V. Kumar, Anomaly detection: a survey, ACM
+Comput. Surv. 41 (2009) 15:1–15:58.
+[34] R.R. Coifman, S. Lafon, Diffusion maps, Appl. Comput. Harmonic Anal.
+21 (2006) 5–30.
+[35] Y. Bengio, J.-F. Paiement, P. Vincent, O. Delalleau, N. Le Roux, M. Ouimet,
+Out-of-sample extensions for LLE, Isomap, MDS, eigenmaps,
+and spectral clustering, Adv. Neural Inf. Proces. Syst. 16 (2004)
+177–184.
+[36] C. Fowlkes, S. Belongie, F. Chung, J. Malik, Spectral grouping using the
+Nyström method, IEEE Trans. Pattern Anal. Mach. Intell. 26 (2004) 214–
+225.
+[37] S. Belongie, C. Fowlkes, F. Chung, J. Malik, Spectral partitioning
+with indeﬁnite kernels using the Nyström extension, in: A. Heyden,
+G. Sparr, M. Nielsen, P. Johansen (Eds.), Proceedings of the European
+Conference Computer Vision ECCV 2002, Volume 2352 of Lecture
+Notes in Computer Science, Springer, Berlin, Heidelberg, 2002, pp. 531–
+542.
+
+Antti Juvonen received his Ph.D. degree from
+University of Jyväskylä, majoring in information
+technology. He is currently applying data mining, anomaly detection and Big Data methodologies in a start-up company CAP Data Technologies. He has worked for several research
+projects collaborating with several companies,
+applying machine learning and data mining concepts to network log analysis and intrusion detection. In addition, his research interests include
+cyber security, anomaly detection, clustering and
+classiﬁcation.
+
+56
+
+A. Juvonen et al. / Computer Networks 91 (2015) 46–56
+Tuomo Sipola received his Ph.D. (2013) degree
+in information technology from University of
+Jyväskylä. His research concerns data mining using dimensionality reduction and ﬁnding abnormalities from high-dimensional datasets. He has
+applied his knowledge of data science to various
+problems, including system health monitoring,
+brain imaging, text mining and network security.
+Other topics of interest include signal processing
+and machine learning in general. He founded CAP
+Data Technologies and holds the position of CEO.
+
+Timo Hämäläinen has over 15 years experience of computer networks. He has more than
+150 internationally peer reviewed publications
+and he has supervised over 20 Ph.D. theses. His
+research interests include performance evaluation and management of telecommunication networks, and in particular anomaly detection and
+network security. He is leading a research group
+in the area of network resource management and
+anomaly detection. He is working at University of
+Jyväskylä.
+
+

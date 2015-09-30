@@ -1,0 +1,167 @@
+Image and Vision Computing 30 (2012) 465–466
+
+Contents lists available at SciVerse ScienceDirect
+
+Image and Vision Computing
+journal homepage: www.elsevier.com/locate/imavis
+
+Toward a uniﬁed framework of motion understanding☆
+J.K. Aggarwal a,⁎, M.S. Ryoo b
+a
+b
+
+Computer and Vision Research Center, The University of Texas at Austin, Austin, TX 78712, United States
+Jet Propulsion Laboratory, California Institute of Technology, Pasadena, CA 91109, United States
+
+a r t i c l e
+
+i n f o
+
+Article history:
+Received 13 December 2011
+Accepted 13 December 2011
+Keywords:
+Opinion paper
+Motion understanding
+Human activity recognition
+
+1. Introduction
+Computer understanding of motion has been a grand challenge in
+computer vision for a long period of time. Even though humans understand the motion of humans, animals, and objects naturally and subconsciously, designing a computer system to recognize motion has proven to
+be very difﬁcult, and we are still far from constructing human-level recognition systems. Nevertheless, computer vision researchers have made
+a great deal of progress in several domains of motion understanding including human activity recognition, vehicle trajectory analysis, and facial
+expression recognition, motivated by applications.
+Recognition of human motion (e.g. actions and activities) has been
+studied since the 1980s [1,2]. Approaches extracting appearance-based
+features from videos (local [3] and global [4]) and those estimating
+human body-parts geometrically [5] were developed. Research on hierarchical recognition methodologies was also conducted particularly for
+detection of multi-person high-level activities, representing activities'
+spatio-temporal structures using the above‐mentioned features [6]. The
+trajectory-level recognition of multiple agents such as vehicles was studied as well for urban highway monitoring [7], and they were able to
+distinguish normal trafﬁc patterns from abnormal movements. Facial expression recognition approaches tracking ﬁducial point features obtained
+successful results on face motion understanding [8].
+However, even though all these problems share the same objective (understanding motion), the approaches used for them were
+very different. That is, an approach used to solve one problem does
+
+☆ This paper has been recommended for acceptance by special issue Opinions Editor
+Sinisa Todorovic.
+⁎ Corresponding author.
+E-mail addresses: aggarwaljk@mail.utexas.edu (J.K. Aggarwal), mryoo@jpl.nasa.jov
+(M.S. Ryoo).
+0262-8856 © 2012 Elsevier B.V. Open access under CC BY-NC-ND license.
+doi:10.1016/j.imavis.2011.12.012
+
+not generalize to solve another problem. For example, video-based
+local spatio-temporal features used for human activity recognition
+are very different from trajectory or motion ﬂow features used to understand vehicle movements. This phenomenon became even more
+true for recent computer vision approaches that prefer to specialize
+in certain datasets and applications (e.g. surveillance videos [9] vs.
+YouTube videos [10]). In contrast, we, as humans, do recognize and
+analyze various types of human motion effortlessly using a single
+system: a human brain. Humans are equally facile at recognizing
+and tracking an herd of cattle, pedestrians in a crossing, cars on a
+highway, and birds in ﬂight. This is done with very good accuracy
+even though humans have a limited amount of computational power.
+One question that follows from such an observation is, whether
+there exists a uniﬁed framework for understanding motion. More
+speciﬁcally, we pose the question whether there is uniﬁed knowledge
+that beneﬁts all motion recognition tasks. The advantage of having a
+uniﬁed framework is that the computer systems can take advantage
+of its experience from one domain to another. We claim that serious
+research on a uniﬁed framework of motion understanding is necessary, in order for the ﬁeld to make signiﬁcant progress rather than becoming domain‐speciﬁc case studies.
+The ultimate objective is to enable a human-level recognition of any
+types of motion, including high-level human behaviors (e.g. multiperson group activities) and subtle social interactions, from static as
+well as moving platforms (e.g. robots). We believe that the following
+three problems are the key topics toward the construction of a uniﬁed
+framework:
+1. Constructing a uniﬁed feature set for motion understanding and a
+method to automatically select its subset tailored for the given
+problem.
+2. Consideration of motion, scene, object, and other contexts in recognizing human/object movements.
+3. Modeling of human intention and its inﬂuence on activity recognition.
+
+2. Challenges
+The ﬁeld of computer vision started around the early 1960s, and
+progress has been excruciatingly slow. Unfortunately, this is unlikely
+to change in the near future. Nevertheless, with the help from faster
+computers, larger memory, and better cameras, we must make scientiﬁc progress by exploring uniﬁed frameworks. We present three obvious directions to pursue in this section.
+
+466
+
+J.K. Aggarwal, M.S. Ryoo / Image and Vision Computing 30 (2012) 465–466
+
+2.1. Features
+In order to construct a uniﬁed theory for recognition of motion,
+feature-level understanding of motion must be performed ﬁrst. For
+example, Johansson's pioneering experiments [11] provide us an observation to answer the fundamental question of what components
+are key for humans understanding human motion. The experiments
+suggest that human joint locations contain sufﬁcient information for
+humans to identify what humans are doing. However, this does not
+tell us whether we internally estimate human body-part locations
+to recognize actions, or if the features we naturally use are robust
+enough to be extracted from such coarse representations.
+The ability of humans to distinguish actions from low-resolution
+videos (e.g. aerial images) suggests that the latter might be the case,
+and we need to explore this more to design and ﬁnd a pool of useful
+features. High-dimensional local spatio-temporal features [3] immune to noise and variances showed a certain potential, and further
+study on features to handle multiple viewpoints must be done. We
+must provide a pool of important features to the systems, and the recognition systems must possess an ability to select a combination of
+useful features for the given problem autonomously.
+
+in the scene (e.g. in the case of an assembly activity) or he/she may
+want to express a friendly atmosphere (e.g. shaking hands). Without
+identifying such underlying motivations behind movements, understanding human behavior is difﬁcult and may sometimes be misleading
+(Can the system distinguish real ﬁghting from martial arts sparing?).
+We must construct a formal representation of the concept of ‘intention’,
+and model its relationship with human activities mathematically.
+
+3. Future
+The future for computer vision in general and that for motion understanding (recognition, and tracking) is bright. From a broader perspective, we have developed enough speciﬁc domain systems that we
+are now at a stage to formulate generalized frameworks. By having a
+uniﬁed framework, we will pose problems in different domains and
+solve them without exploiting speciﬁc domain attributes. In this
+short comment, we brieﬂy reviewed several previous works on motion understanding, and provided an observation that we are missing
+a uniﬁed framework. We believe that research solutions to the abovelisted three topics will lead the ﬁeld one step closer to the construction of a uniﬁed framework.
+
+2.2. Context
+Context often serves as uniﬁed knowledge to support motion
+understanding. The notation of ‘context’ here has a much broader
+meaning than the conventional usage of ‘object context’ or ‘scene
+context’ for motion/gesture understanding. What we want to model
+are variations in human activities caused by social/cultural/biological
+aspects, such as gender, social roles, and regional cultures. For example, walking movements differ greatly depending on whether the
+actor is male or female, and this must be taken into consideration
+when recognizing such actions.
+There are a few existing works [12] on action recognition that utilize
+context, but the usage of context in current state-of-the-art research is
+limited: most of the previous context research focused on joint recognition of motion, objects, and scene. This may be a good starting point. Researchers are required to explore this direction further to consider the
+above-mentioned contexts including social roles as well as more implicit contexts such as spatio-temporal inconsistency in observation. Research on frameworks modeling relations among various types of
+contextual knowledge is necessary.
+2.3. Intention
+In many human activities, a human performing the action has a particular intention: the human may want to change the state of an object
+
+References
+[1] J.A. Webb, J.K. Aggarwal, Structure from motion of rigid and jointed objects, Artif.
+Intell. 19 (1982) 107–130.
+[2] J.K. Aggarwal, M.S. Ryoo, Human activity analysis: a review, ACM Comput. Surv.
+43 (2011) 16:1–16:43.
+[3] I. Laptev, On space–time interest points, Int. J. Comput. Vis. 64 (2005) 107–123.
+[4] A. Bobick, J. Davis, The recognition of human movement using temporal templates, IEEE Trans. Pattern Anal. Mach. Intell. 23 (3) (2001) 257–267.
+[5] J.M. Wang, D.J. Fleet, A. Hertzmann, Gaussian process dynamical models for
+human motion, IEEE Trans. Pattern Anal. Mach. Intell. (2008) 283–298.
+[6] M.S. Ryoo, J.K. Aggarwal, Spatio-temporal relationship match: video structure
+comparison for recognition of complex human activities, International Conference on Computer Vision (ICCV), 2009.
+[7] K. Kim, D. Lee, I. Essa, Gaussian process regression ﬂow for analysis of motion trajectories, International Conference on Computer Vision (ICCV), 2011.
+[8] S. Jain, C. Hu, J.K. Aggarwal, Facial expression recognition with temporal modeling
+of shapes, IEEE Workshop on Dynamic Shape Capture and Analysis, in Conjunction with ICCV, 2011.
+[9] S. Oh, A large-scale benchmark dataset for event recognition in surveillance
+video, IEEE Conference on Computer Vision and Pattern Recognition (CVPR),
+2011.
+[10] J. Liu, J. Luo, M. Shah, Recognizing realistic actions from videos “in the wild”, IEEE
+Conference on Computer Vision and Pattern Recognition (CVPR), 2009.
+[11] G. Johansson, Visual perception of biological motion and a model for its analysis,
+Percept. Psychophys. 14 (1973) 201–211.
+[12] A. Gupta, L.S. Davis, Objects in action: an approach for combining action understanding and object perception, IEEE Conference on Computer Vision and Pattern
+Recognition (CVPR), 2007.
+
+

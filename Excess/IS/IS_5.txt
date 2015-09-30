@@ -1,0 +1,1023 @@
+journal of information security and applications 23 (2015) 68–73
+
+Available online at www.sciencedirect.com
+
+ScienceDirect
+j o u r n a l h o m e p a g e : w w w. e l s e v i e r. c o m / l o c a t e / j i s a
+
+Cryptanalysis of an integrity checking scheme
+for cloud data sharing ☆
+Yuan Zhang *, Chunxiang Xu, Jining Zhao, Xiaojun Zhang, Junwei Wen
+School of Computer Science and Engineering, University of Electronic Science and Technology of China, 2006 Xi
+Yuan Avenue, West High-tech Zone, Chengdu 611731, China
+
+A R T I C L E
+
+I N F O
+
+A B S T R A C T
+
+Article history:
+
+Cloud storage provides an efficient way for users to work together as a group by sharing
+
+Available online 12 June 2015
+
+data with each other. However, since shared data can be accessed and modified by multiple users and group membership may be changed frequently, this new paradigm poses
+
+Keywords:
+
+many challenges for keeping integrity of shared data. Recently, Yuan et al. proposed an ef-
+
+Integrity checking
+
+ficient integrity checking scheme (IEEE INFOCOM 2014, doi: 10.1109/INFOCOM.2014.6848154)
+
+Cloud data sharing
+
+for cloud data sharing with multi-user modification, which had many appealing features.
+
+Cryptanalysis
+
+They claimed that the scheme is secure and efficient, and they also provided the formal
+security proof and the performance evaluation. Regretfully, existing two security flaws in
+Yuan et al.’s scheme are pointed out in this letter. Specifically, by fooling the third-party
+auditor (TPA) into trusting that the data is well maintained by the cloud server, an adversary can process the following two deceiving methods. Firstly, the adversary can modify the
+shared data and tamper with the interaction messages between the cloud server and the
+TPA, thus invalidating shared data integrity checking. Secondly, an adversary, who records
+a fraction of the cloud-stored data, can overwrite the vast majority of the shared data by
+using the recorded data and passing shared data integrity verification. Furthermore, we suggest
+a solution to the two security flaws while retaining all the desirable features of the original scheme.
+© 2015 Elsevier Ltd. All rights reserved.
+
+1.
+
+Introduction
+
+Cloud storage is a momentous service of cloud computing,
+which provides users an easy, cost-effective and reliable way
+to manage data. Using cloud storage services, users can access
+their data remotely through the internet without incurring the
+substantial hardware, software and personnel costs involved
+in deploying and maintaining applications in local storage.
+However, a practical cloud environment is so complex that there
+are some external and internal threats in it (Lee et al., 2013;
+Li et al., 2009). Typically, the cloud-stored data may be cor-
+
+rupted in any infrastructure, no matter what high degree of
+reliable measures the cloud server would provide (Yang and
+Jia, 2013). In addition, an external adversary with profits motivation may tamper with the cloud-stored data but convinces
+the cloud user of the data correctness and integrity (Dolev and
+Yao, March, 1983; Ni et al. ,2013; Xu et al., 2014). Therefore, due
+to the existence of external and internal threats to the practical cloud environment, the integrity of the outsourced data
+has naturally become the concerned focus of cloud users (Yang
+and Jia 2012).
+In order to ensure the integrity of data stored on the
+cloud, several schemes have been proposed based on various
+
+☆ This article belongs to the special issue Security, Privacy and Trust in Future Networks and Mobile Computing.
+* Corresponding author.
+E-mail addresses: ZY_LoYe@126.com, ZY_LoYe@qq.com (Y. Zhang).
+http://dx.doi.org/10.1016/j.jisa.2015.05.001
+2214-2126/© 2015 Elsevier Ltd. All rights reserved.
+
+journal of information security and applications 23 (2015) 68–73
+
+techniques (Wang et al., 2010; Wang et al., 2013a; Worku et al.,
+2014; Zhao et al., December 2013; Wang et al., 2012; Wang et al.,
+2013b; Wang et al., 2015). In these schemes, a cloud user resorts
+to a professional and capable third-party auditor (TPA) to audit
+the outsourced data when needed. This provides a feasible and
+efficient way for the cloud users to ensure the integrity of their
+data in the cloud. However, most of these schemes only support
+the case of single writers, that is, only the data owner holds
+the secret keys and modifies his data that is outsourced into
+the cloud server. If these schemes are simply extended to
+support multiple writers with data integrity checking, the data
+owner will face a tremendous workload, since he has to stay
+online, receive the modified data from other users and generate the new authentication tags for them (Yuan and Yu, 2014).
+Therefore, there are many barriers to applying these schemes
+to different practical scenarios.
+To support cloud-stored data that can be modified by multiple users, recently, Yuan et al. proposed an efficient public
+integrity checking scheme for cloud data sharing with multiuser modification. In the scheme, the data owner, who is named
+as the master user, outsources his data into the cloud server.
+He designates some cloud users as a group, shares the data
+with all the group users and removes any valid group users if
+needed. The shared data can be modified by any valid group
+user and the user who last modifies the shared data can be
+identified. Moreover, collusion among the cloud server and any
+group user other than the master user will not give users any
+chance to impersonate other valid users. The scheme also can
+be extended to support batch verification to improve efficiency. The authors claimed that their scheme is secure and
+the proof information in the scheme cannot be forged, they
+also gave formal security proof to buttress their views.
+In this letter, we first review the Yuan et al.’s scheme and
+point out that the scheme has two security flaws. Accordingly, two deceiving methods can work on the scheme and
+invalidate the shared data integrity checking. Particularly, we
+first show that an adversary modifies the shared data to his
+needs and records how the shared data is modified, according to the interaction messages between the cloud server and
+the TPA, he can generate valid proof information to deceive
+the TPA and pass the shared data integrity checking. We also
+show that if an adversary can intrude on the cloud server and
+record a fraction of the shared data, with the second security
+flaw, he can overwrite the vast majority of the shared data by
+using the recorded data. In this way, even if the shared data
+has been corrupted, it still can pass the TPA’s shared data integrity checking. Finally, for each of the two security flaws, we
+suggest a solution to fix it without sacrificing any desirable features of the original scheme.
+
+2.
+
+Review the Yuan et al.’s scheme
+
+In the scheme, there are K users in a group sharing data
+stored on the cloud server. The manager of the group is the
+master user u0, he is also the data owner. That is, u0 uploads
+his data to the cloud server and manages membership
+of the group. All users in the group can access and modify
+the data. The data file F is divided into n blocks and each block
+
+69
+
+is consisted of s elements. The data component is denoted as
+F = {mi, j }i ∈[1,n], j ∈[0,s−1]. Let H(·) denotes the one-way hash function, G and G1 be two multiplicative cycle groups of prime order
+q, g and u be two random generators of G. e:G × G→G1 is a
+bilinear pairing. fa ( x ) denotes a polynomial with coefficient
+vector a = (a0, a1, … , as−1 ). Here, For ease of description, we omit
+the batch auditing and any other inessential details. The basic
+scheme involves seven algorithms: KeyGen, Setup, Update,
+Challenge, Prove, Verify and User Revocation. Because of limited
+space we will not review the User Revocation algorithm in this
+Section, see (Yuan and Yu, 2014) for more details.
+
+2.1.
+
+KeyGen
+
+Firstly, each user uk, 0≤k≤K−1 in the group randomly chooses
+
+ε k ← Zq* and computes κ k = gεk. For group users uk, 1≤k≤K−1,
+1
+
+they compute g εk and send it to the master user u0. The master
+ε0
+
+user computes ν = gαε0 and g εk for 1≤k≤K−1. u0 randomly chooses
+
+α ← Zq* and computes gα , 0≤j≤s+1. The public keys of the
+j
+
+{
+
+ε0
+⎫⎪
+⎧
+⎫
+, ⎨κ k, g εk ⎬
+⎬, the mast keys
+0≤ j≤s+1
+⎩
+⎭0≤ k≤ K −1 ⎭⎪
+of the system MK = {∈ 0 ,α} and the secret keys of users
+SKk = {ε k }1≤ k≤ K −1.
+
+{ }
+
+system PK = g, u, q, gα
+
+2.2.
+
+j
+
+Setup
+
+The master user u0 splits the data file F into n data blocks, and
+further splits every block into s elements. Then, u0 computes
+authentication tag σi for each data block as:
+
+⎛
+j+ 2 ⎞
+σ i = ⎜ uBi ⋅ ∏ gmi, jα ⎟
+⎝
+⎠
+j∈[0,s − 1]
+
+ε0
+
+= (uBi ⋅ g fmi (α ))
+
+ε0
+
+where Bi = H ({zi H (mi ) 0}), z i is the index of m i and
+mi = {mi,0, mi,1, … , mi,s−1 }. u0 uploads data blocks and the corresponding authentication tags σi to the cloud server, and sends
+Bi to the TPA (in practical implementation Bi can be first uploaded to cloud and later on downloaded by TPA).
+
+2.3.
+
+Update
+
+When a group user uk (k ≠ 0) modifies a data block mi to mi′ .
+He computes the tag of the new data block as:
+
+⎛
+j+ 2 ⎞
+σ i′ = ⎜ uBi ⋅ ∏ gmi′, jα ⎟
+⎝
+⎠
+j∈[0,s − 1]
+
+εk
+
+where Bi = H ({zi H (mi′) k}). Then uk uploads mi′ and σ i′ to the
+cloud server, and sends Bi to the TPA (in practical implementation Bi can be first uploaded to cloud and later on downloaded
+by TPA).
+
+2.4.
+
+Challenge
+
+To verify the data integrity, the TPA first randomly chooses d
+data blocks, these data blocks’ indices compose a set D. Suppose
+the chosen d data blocks are collectively modified by a set of
+
+70
+
+journal of information security and applications 23 (2015) 68–73
+
+users, and assuring the security of the scheme in case of the
+collusion among the cloud server and the misbehaving or
+revoked group users. Moreover, the scheme can extend to support
+the batch auditing in multi-file for improving its efficiency. Additionally, a formal proof is given to prove that the scheme is
+secure. However, there still exists two deceiving methods that
+can invalidate the integrity checking of the original scheme.
+
+C (0≤|C|≤K−1) users. The TPA generates two random number R,
+R
+
+⎛ ε0 ⎞
+μ and for each k ∈ C , the TPA computes X = ⎜ g εk ⎟ . Finally, the
+⎝ ⎠
+TPA generates challenging message CM = {D,X,gR,μ}, and sends
+it to the cloud server.
+
+2.5.
+
+Prove
+
+3.1.
+Deceiving the TPA by tampering with the proof
+information
+
+After receiving CM from the TPA, the cloud server first
+calculates {pi = μ i mod q} (i ∈ D), and computes y = f A ( μ ) mod q ,
+
+{
+
+}
+
+where A = 0, 0, ∑ pi mi,0, … , ∑ pi mi,s−1 . Then, the cloud divides
+i∈D
+
+i∈D
+
+Assume there exists an adversary, who is on-line and
+active, in the real cloud application scenario. The adverˆ i, j = mi, j + li, j for
+sary modifies each data block m i,j to m
+i ∈[1, n ] , j ∈[ 0, s − 1] and he records how the user’s data are
+modified. In Challenge, the adversary intercepts and copies the
+challenging message CM = {D,X,gR,μ}, and then, he sends CM
+to the cloud server.
+In Prove, the cloud server computes pi = μ i mod q (i ∈ D) and
+
+the polynomial f A ( x ) − f A ( μ ) with (x−μ) using polynomial
+long division, and denotes the coefficients vector of the
+resulting quotient polynomial as w = ( w0, w1, … , ws+ 1 ) , that is,
+
+fw ( x ) =
+
+ψ=
+
+fA (x ) − fA (μ )
+x−μ
+
+∏ (gα )
+j
+
+wj
+
+j∈[2,s + 1]
+
+. And the cloud generates:
+
+= g fw(α )
+
+{
+
+}
+
+yˆ = f A∗ ( μ ) , where A∗ = 0, 0, ∑ pi ( mi,0 + li,0 ) , … , ∑ pi ( mi,s−1 + li,s−1 ) .
+
+Then, for data blocks in challenged set D modified by user
+uk, k ∈ C , the cloud server computes:
+
+i∈D
+
+i∈D
+
+The cloud server also computes:
+
+Rε 0
+⎛
+⎞
+Rε 0
+π i = e ⎜ σ i, g εk ⎟ = e ((uBi ⋅ g fmi′ (α ) ) , g)
+⎝
+⎠
+
+f ( x ) − f A∗ ( μ )
+f w∗ ( x ) = A ∗
+=
+x−μ
+
+( x2 − μ 2 ) ∑ pi (mi,0 + li,0 )
+i∈D
+
+x−μ
+
+= ( x + μ ) ∑ pi ( mi,0 + li,0 ) + … + ( x + x
+s
+
+s−1
+
++…+
+
+μ + … + xμ
+
+i∈D
+
+( xs+1 − μ s+1 ) ∑ pi (mi,s−1 + li,s−1 )
+i∈D
+
+x−μ
+
+s−1
+
++μ
+
+s
+
+)∑ pi (mi,s−1 + li,s−1 )
+i∈D
+
+For the rest data blocks of the D, the cloud server
+computes:
+
+π i = e (σ i, gR ) = e ((uBi ⋅ g fmi (α ) ) , g)
+
+ψˆ = g fw∗(α )
+(α + μ ) ∑ pi (mi ,0 + li ,0 ) +…+ (α s + α s−1μ +…+ αμs−1 + μs ) ∑ pi (mi ,s−1 + li ,s−1 )
+
+=g
+=g
+
+Rε 0
+
+i∈D
+
+i∈D
+
+fw(α ) + fw′(α )
+
+= g fw(α ) ⋅ g fw′(α )
+
+Next, the cloud server calculates π = ∏ π . Finally, the cloud
+i∈D
+
+pi
+i
+
+server responds the TPA with proof information Prf = {π,ψ,y}.
+
+where
+
+fw′ (α ) = (α + μ ) ∑ pili,0 + … + (α s + α s−1 μ + … + μ s )∑ pili,s−1.
+i∈D
+
+2.6.
+
+Verify
+
+the cloud server sends Prf = {ψˆ , π , yˆ } to the TPA. The adver-
+
+After receiving the proof information Prf from the cloud server,
+the TPA verifies the proof by the following equation:
+
+⎛ ∑ Bi pi
+⎞
+e ⎜ ui∈D , κ 0R ⎟ ⋅ e (ψ R, ν ⋅ κ 0− μ ) = π ⋅ e (κ 0− y, gR )
+⎝
+⎠
+
+i∈D
+
+And the cloud server computes π as aforementioned. Finally,
+
+(1)
+
+If the equation holds, the TPA outputs VerifyRst as
+Accepted; Otherwise, outputs VerifyRst as Reject.
+
+sary intercepts this invalid proof information. According to the
+challenging message intercepted in Challenge, the adversary
+first computes pi = μ i modq, i ∈ D. Afterwards, the adversary
+computes g fw′(α ) and y′ = μ 2 ∑pili,0 + … + μ s+ 1 pili,s−1, modifies the
+i∈D
+
+Prf to {ψˆ g fw′(α ), π , ( yˆ − y′ )}. Finally, the adversary sends this
+modified proof information to the TPA.
+In Verify, the TPA receives the {ψˆ g fw′(α ), π , ( yˆ − y′ )} and
+verifies:
+⎛ ∑ Bi pi
+⎞
+R
+e ⎜ ui∈D , κ 0R ⎟ ⋅ e (ψˆ g fw′(α ) ) , ν ⋅ κ 0− μ
+⎝
+⎠
+
+(
+
+3.
+
+Cryptanalysis of the Yuan et al.’s scheme
+
+Yuan et al.’s scheme has several appealing features that previous data integrity checking techniques do not yet have, such
+as supporting the data shared and modified by any group
+
+⎛ ∑ Bi pi ⎞
+= e ⎜ ui∈D , g⎟
+⎝
+⎠
+
+Rε 0
+
+⋅ e ( g fw(α ), gα − μ )
+
+= ∏ e ((uBi ⋅ g fmi (α ) ) , g)
+i∈D
+
+(
+
+= π ⋅ e κ 0(
+
+− yˆ − y′)
+
+, gR
+
+)
+
+Rε 0 pi
+
+)
+
+Rε 0
+
+⋅ e (g−( yˆ − y′), g)
+
+Rε 0
+
+71
+
+journal of information security and applications 23 (2015) 68–73
+
+Therefore, the verification equation holds. In this way, the
+TPA seemingly has every reason to believe that the data stored
+in cloud server are well maintained. Actually, it is not true. Thus,
+the adversary successfully modifies the shared data while deceiving the TPA.
+
+⎞
+⎛ ∑ Bi pi
+e ⎜ ui∈D , κ 0R ⎟ ⋅ e (ψˆ R, ν ⋅ κ 0− μ )
+⎠
+⎝
+⎞
+⎛ ∑ Bi pi
+= e ⎜ ui∈D , gε0R ⎟ ⋅ e ( g fw∗(α ), gα Rε0 ⋅ gRε0(− μ ) )
+⎠
+⎝
+⎛ ∑ Bi pi ⎞
+= e ⎜ ui∈D , g⎟
+⎠
+⎝
+
+ε0R
+
+⎛ fA∗(α )− fA∗(μ )
+⎞
+⋅ e ⎜ g α − μ , g(α − μ ) ⎟
+⎝
+⎠
+
+(
+
+)
+
+ε0R
+
+⋅ e ( g fA∗(α )− fA∗(μ ), g)
+
+ε 0 Rpi
+
+= ∏ e uBi pi , g
+
+3.2.
+
+i∈D
+
+Deceiving the TPA by data overwriting
+
+= ∏ e uBi , g
+
+(
+
+)
+
+⋅ e ( g fA∗(α ), g)
+
+(
+
+)
+
+⋅ ∏ e ( g fmi *(α ), g)
+
+i∈D
+
+Assume there exists an adversary, who can intrude on the cloud
+storage and modify the shared data. Without loss of generality, we suppose that the shared data are stored in the cloud
+as Table 1.
+After intruding on the cloud storage, the adversary
+records the data which is stored in the first row, and then,
+he overwrites the data which is stored in the rest of rows by
+using the recorded data. More precisely, after overwriting
+by the adversary, the shared data are stored in the cloud as
+Table 2. (for demonstration purposes, we give an extreme
+example).
+In this case, the TPA sends the challenging message
+CM = {D,X,gR,μ} to the cloud. Then the cloud first generates
+
+{pi = μ imod q} , i ∈ D,
+
+and computes yˆ = f A∗ ( μ ) mod q , where
+
+⎧
+⎫
+A∗ = ⎨0, 0, ∑ ( pi m1,0 ) , … , ∑ ( pi m1,s−1 )⎬. Then, the cloud calcu⎩
+⎭
+i∈D
+i∈D
+lates fw∗ ( x ) =
+
+(
+
+f A∗ ( x ) − f A∗ ( μ )
+, and gets a coefficients vector
+(x − μ )
+
+)
+
+w∗ = w*0, w1*, … , ws*+ 1 .
+
+ψˆ =
+
+∏ (g )
+
+w*j
+αj
+
+j∈[2,s+ 1]
+
+Afterward,
+
+= g fw∗(α ) and
+
+the
+
+cloud
+
+((
+
+generates
+
+πˆ i = e (σ 1, gR ) = e uBi ⋅ g mi*
+ˆ
+
+f
+
+(α )
+
+), g)
+
+ε0R
+
+,
+
+where Bˆ i = B1 and mi* = m1. The cloud also aggregates πˆ i as
+
+((
+
+πˆ = ∏πˆ i pi , where π i = e uBi ⋅ g mi*
+i∈D
+
+f
+
+(α )
+
+), g)
+
+Rε 0
+
+. Finally, the cloud
+
+sends Prf = {πˆ, ψˆ , yˆ } to the TPA.
+On receiving the proof information Prf , the TPA verifies the
+integrity of the shared data as:
+
+Table 1 – The storage form of shared data in the cloud.
+m1,0
+m2,0
+⋯
+mn,0
+
+m1,1
+m2,1
+⋯
+mn,1
+
+⋯
+⋯
+⋯
+⋯
+
+m1,s−1
+m2,s−1
+⋯
+mn,s−1
+
+σ1
+σ2
+⋯
+σn
+
+B1
+B2
+⋯
+Bn
+
+Table 2 – The storage form of shared data in the cloud
+after intruding.
+m1,0
+m1,0
+⋯
+m1,0
+
+m1,1
+m1,1
+⋯
+m1,1
+
+⋯
+⋯
+⋯
+⋯
+
+m1,s−1
+m1,s−1
+⋯
+m1,s−1
+
+σ1
+σ1
+⋯
+σ1
+
+B1
+B1
+⋯
+B1
+
+= ∏ e uBi , g
+i∈D
+
+ε 0 Rpi
+
+((
+
+= ∏ e uBi ⋅ g
+i∈D
+
+(
+
+= πˆ ⋅ e κ 0− yˆ , gR
+
+ε0R
+
+ε0R
+
+⋅ e (g− yˆ , g)
+
+ε0R
+
+ε 0 Rpi
+
+i∈D
+
+f * (α )
+mi
+
+) , g)
+
+ε 0 Rpi
+
+ε0R
+
+⋅ e (g− yˆ , g)
+
+ε0R
+
+⋅ e (g− yˆ , g)
+
+ε0R
+
+)
+
+In the case described above, the adversary successfully deceives the TPA in the way of data overwriting, and invalidates
+the shared data integrity checking.
+
+4.
+
+Improved suggestion
+
+In this Section, we first analyze the reason why there are security flaws in the original scheme, and then, we give an
+improved suggestion to address these two security flaws. Finally,
+we provide the feasibility proof of our improved suggestion.
+According to the cryptanalysis above, we can see that the
+original scheme is vulnerable to the deceiving of tampering the
+proof information, since the external adversary can eavesdrop on and tamper with the interaction messages between
+the cloud server and the TPA. In the first attack process, both
+the confidentiality and the integrity of the interaction messages between the cloud server and the TPA have been
+comprised. In order to ensure that the corrupted shared data
+can pass the TPA’s auditing, the adversary must not only get
+the challenging message, but also tamper with the proof information. Moreover, the original scheme is vulnerable to the
+deceiving of data overwriting, since the TPA does not verify
+the validity of the hash value Bi, i ∈ D. In the original scheme,
+the TPA just verifies whether Bi matches mi, but not verifies
+whether mi is a valid data block.
+According to the above analysis, we can see that the security flaws can be addressed only if (a) the cloud server and the
+TPA protect the confidentiality of challenging message or the
+integrity of the proof information from the external adversary’s violation, and (b) the TPA not only checks the validity
+of Bi, but also audits the correctness of mi. Therefore, in order
+to remedy these two security flaws, we next suggest a solution as follows. Firstly, in order to guarantee the integrity of
+proof information Prf, we employ the digital signature technology. Specifically, in KeyGen, the cloud server generates a
+signing key pair (skc,pkc). In the Prove, before sending Prf = {π,ψ,y}
+to the TPA, the cloud server generates the Prf’s signature σPrf.
+Then it sends {π,ψ,y,σPrf} to the TPA. In Verify, the TPA first verifies the validity of σPrf. If it passes the verification, the TPA
+continues to process Verify, otherwise, outputs Reject.
+And then, to resist the second security flaw, we can make
+the TPA check the validity of the hash value before verifying
+
+72
+
+journal of information security and applications 23 (2015) 68–73
+
+the integrity of the shared data. More precisely, when the cloud
+user uploads the data blocks, the corresponding authentication tags σi and hash value Bi = H (zi H (mi ) k) to the cloud, he
+also uploads H(mi) and k to the cloud. In Verify, the TPA first
+gets H(mi), i ∈ D and k, and computes Bi = H (zi H (mi ) k) , i ∈ D .
+And then, the TPA checks the integrity of the shared data using
+the Bi, i ∈ D which are computed by itself. In this way, the TPA
+thwart the adversary’s deceiving by data overwriting while retaining all the features of the original scheme. Here, we want
+to stress that when the TPA computes Bi. i ∈ D, it must use
+zi, i ∈ D D, which is determined by the TPA itself, otherwise, it
+still cannot remove the second security flaw.
+
+4.1.
+
+Feasibility proof of the improved suggestion
+
+Now, we prove the feasibility proof of our improved suggestion.
+For the first deceiving method, note that the key to success
+is that the external adversary can intercept and tamper with
+the proof information Prf, and this modification cannot be detected by the TPA. Therefore, we can say that the first security
+flaw has been addressed in our improved suggestion indeed.
+To see why this is so, observe that the first thing the TPA does
+in our improved suggestion’s Verify, given Prf, is to check that
+the signature on the proof information is valid. If the signature is not valid, the TPA rejects immediately. Thus if the
+external adversary tampers with Prf to Prf , the TPA will discover it immediately and will not continue auditing.
+For the second security flaw, we can prove that our improved suggestion can remedy it indeed. Observe that in Setup,
+the cloud user uploads the data blocks, σi, Bi, H(mi) and k to the
+cloud server. If the external adversary intrudes on the cloud
+server and overwrites the data by using the method de-
+
+( )
+k, where m* = m . Then, the TPA computes B = H (z H (m* ) 0).
+
+scribed in Section 3.2, in Verify, the TPA first gets H mi* and
+1
+
+i
+
+i
+
+i
+
+i
+
+Here, because we omit the data update operation, we just use
+0 to compute Bi. In general, the TPA has to use k to compute
+Bi. After computing Bi , the TPA verifies the Equation (1) as:
+
+4.2.
+
+Discussion
+
+From the description of the deceiving methods above, we can
+see that an adversary, who exists in the practical cloud environment, can modify the shared data and pass the data integrity
+checking. What is more, in the real scenario, any revoked user
+may become the adversary due to his malicious motivation for
+profits. Compared with other adversaries, the revoked user is
+easier to carry out the aforementioned two deceiving methods.
+Note that although the first attack should be performed by an
+external adversary, which is different from the commonly accepted security model defined in Giuseppe et al. (2007), the
+adversary exists in the practical cloud environment indeed. With
+the security flaw, he can invalidate the public integrity checking scheme proposed by Yuan and Yu (2014) really. Based on
+the cryptanalysis above, we then give an improved suggestion for the two security flaws, and we also prove the feasibility
+of our improve suggestion.
+Here, we want to further emphasize that there exists an
+updated version of the original scheme (Yuan and Yu). In this
+updated version, the authors aware of the existence of the two
+security flaws in the original scheme. To remedy them, (Yuan
+and Yu) makes several changes. Firstly, to thwart the first deceit
+of external adversary, (Yuan and Yu) adds a strong assumption into the threat model, that is, secure communication
+channels exist between each pair of entities. However, compared with our improved suggestion, although computing the
+additional signature reduces efficiency, it is more expensive to
+construct secure communication channels between each pair
+of entities. Therefore, how to address the first security flaw
+pointed out by this letter perfectly without sacrificing efficiency and increasing costs, is still an important problem for
+future work.
+For the second security flaw pointed out by this letter, (Yuan
+and Yu) changes the computational method of Bi, and requires that the master user has to publish and maintain a Log
+for checking. By this way, the second security flaw can be
+removed indeed. As a matter of fact, this solution and our improved suggestion are essentially the same.
+
+⎞
+⎛ ∑ Bi pi
+e ⎜ ui∈D , κ 0R ⎟ ⋅ e (ψˆ R, ν ⋅ κ 0− μ )
+⎠
+⎝
+⎛ ∑ Bi pi
+⎞
+= e ⎜ ui∈D , gε0R ⎟ ⋅ e ( g fw∗(α ), gα Rε0 ⋅ gRε0(− μ ) )
+⎝
+⎠
+
+(
+
+= ∏ e uBi pi , g
+i∈D
+
+((
+
+)
+
+= ∏ e uBi ⋅ g
+i∈D
+
+ε0R
+
+f
+
+mi*
+
+⋅ e ( g fA∗(α )− fA∗(μ ), g)
+
+(α )
+
+), g)
+
+ε 0 Rpi
+
+5.
+
+ε0R
+
+⋅ e (g− yˆ , g)
+
+ε0R
+
+Here, note that for i ∈ D , Bi = H (zi H (m1 ) 0) , which is computed by the TPA, not equals H (z1 H (m1 ) 0)) . Therefore, we get:
+
+∏ e ((u
+i∈D
+
+Bi
+
+⋅g
+
+f * (α )
+mi
+
+) , g)
+
+ε 0 Rpi
+
+⋅ e (g− yˆ , g)
+
+ε0R
+
+(
+
+≠ π ⋅ e κ 0− yˆ , gR
+
+)
+
+The TPA outputs VerifyRst as Reject. The TPA thwarts the adversary’s deceit.
+As we proved above, we can conclude that our improved
+suggestion can resist the external adversary’s deceit indeed
+without sacrificing any appealing features of the original
+scheme.
+
+Conclusion
+
+In this letter, we review the Yuan et al.’s scheme and prove that
+there are two security flaws existing in the scheme. With these
+security flaws, the shared data integrity checking in the original scheme can be invalidated by a strong external adversary.
+And then, we give an improved suggestion to fix them without
+changing any desirable features of the original scheme.
+
+Acknowledgment
+This work is supported by the National Natural Science Foundation of China (No.61370203, No.61472065 and No.61350110238),
+the Science and Technology on Communication Security Laboratory Foundation (Grant No. 9140C110301110C1103), the
+International Science and Technology Cooperation and Exchange Program of Sichuan Province, China under Grant
+
+journal of information security and applications 23 (2015) 68–73
+
+2014HH0029, and China Postdoctoral Science Foundation funded
+project under Grant 2014M552336.
+REFERENCES
+
+Dolev Danny, Yao Andrew C. On the security of public key
+protocols. Inf Theory, IEEE Trans Inf Theory March,
+1983;29(2):198–208.
+Giuseppe A, Randal B, Reza C, Joseph H, Lea K, Zachary P, et al.
+Provable data possession at untrusted stores. In: Pro. of ACM
+conf. on computer and communications security. October
+29CNovember 2, 2007. p. 598–609.
+Lee Cheng-Chi, Lai Yan-Ming, Hsiao Chin-Sung. Cryptanalysis of
+a simple key assignment for access control based on
+polynomial. J Inf Secur Appl 2013;18(4):215–18.
+Li H, Dai Y, Tian L, Yang H. Identity-based authentication for
+cloud computing. In: vol. 5931. Lecture Notes of Computer
+Science (LNCS). 2009. p. 157–66.
+Ni J, Yu Y, Mu Y, Xia Q. On the security of an efficient dynamic
+auditing protocol in cloud storage. IEEE Trans Parallel Distrib
+Syst October, 2013;25(10):2760–1.
+Wang C, Wang Q, Ren K, Lou W. Privacy-preserving public
+auditing for data storage security in cloud computing. In:
+Proc. of IEEE Conf. on Computer Communication. March
+14-19, 2010. p. 1–9.
+Wang B, Li B, Li H. Oruta: privacy-preserving public auditing for
+shared data in the cloud. In: Proc. of IEEE Conf. on Cloud
+Computing. June 24-29, 2012. p. 295–302.
+Wang C, Chow SS, Wang Q, Ren K, Lou W. Privacy-preserving
+public auditing for secure cloud storage. IEEE Trans Comput
+February, 2013;62(2):362–75.
+
+73
+
+Wang B, Li B, Li H. Public auditing for shared data with efficient
+user revoation in the cloud. In: Proc. of IEEE Conf. on
+Computer Communication. April 14-19, 2013. p. 2904–12.
+Wang B, Li B, Li H. Panda: public auditing for shared data with
+efficient user revocation in the cloud. IEEE Trans Serv Comput
+February 2015;8(1):92–106.
+Worku SG, Xu C, Zhao J, He X. Secure and efficient privacypreserving public auditing scheme for cloud storage. Comput
+Electr Eng July, 2014;40(5), 1703C1713.
+Xu C, Zhang Y, Yu Y, Zhang X, Wen J. An efficient provable secure
+public auditing scheme for cloud storage. KSII Trans Internet
+Inf Syst November, 2014;8(11):4226–41.
+Yang K, Jia X. Data storage auditing service in cloud computing:
+challenges, methods and opportunities. World Wide Web July,
+2012;15(4):409–28.
+Yang K, Jia X. An efficient and secure dynamic auditing protocol
+for data storage in cloud computing. IEEE Trans Parallel and
+Distrib Syst September, 2013;24(9):1717–26.
+Yuan J, Yu S. Efficient public integrity checking for cloud data
+sharing with multi-user modification. In: Proc. of IEEE Conf.
+on Computer Communication. April 27- May 2, 2014.
+p. 2121–9.
+Yuan, J,& Yu, S, “Public integrity auditing for Dynamic Data
+Sharing with Multi-User Modification,” [Online]. Available:
+http://iamjiawei.me/personal/papers/infocom14-full.pdf.
+Zhao J, Xu C, Li F, Zhang W. Identity-based public verification
+with privacy-preserving for data storage security in cloud
+computing. IEICE Trans Fundam December 2013;E96A(12):2709–16.
+
+

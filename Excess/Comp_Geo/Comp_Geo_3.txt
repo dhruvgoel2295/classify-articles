@@ -1,0 +1,1529 @@
+Computational Geometry 48 (2015) 688–702
+
+Contents lists available at ScienceDirect
+
+Computational Geometry: Theory and
+Applications
+www.elsevier.com/locate/comgeo
+
+Eﬃcient transformations for Klee’s measure problem in the
+streaming model ✩
+Gokarna Sharma ∗ , Costas Busch, Ramachandran Vaidyanathan, Suresh Rai,
+Jerry L. Trahan
+School of Electrical Engineering and Computer Science, Louisiana State University, Baton Rouge, LA 70803, USA
+
+a r t i c l e
+
+i n f o
+
+Article history:
+Received 19 October 2012
+Accepted 4 June 2015
+Available online 29 June 2015
+Keywords:
+Klee’s measure problem
+Transformations
+Streaming model
+Bounded aspect ratio rectangles
+Bounded side length rectangles
+
+a b s t r a c t
+Given a stream of rectangles over a discrete space, we consider the problem of computing
+the total number of distinct points covered by the rectangles. This is the discrete
+version of the two-dimensional Klee’s measure problem for streaming inputs. Given
+0 < , δ < 1, we provide ( , δ)-approximations for bounded side length rectangles and
+for bounded aspect ratio rectangles. For the case of arbitrary rectangles, we provide an
+O ( log U )-approximation, where U is the total number of discrete points in the twodimensional space. The time to process each rectangle and the total required space
+are polylogarithmic in U . The time to answer a query for the total area is constant.
+We construct eﬃcient transformation techniques that project rectangle areas to onedimensional ranges and then use a streaming algorithm for the one-dimensional Klee’s
+measure problem to obtain these approximations. The projections are deterministic, and
+to our knowledge, these are the ﬁrst approaches of this kind that provide eﬃciency and
+accuracy trade-offs in the streaming model.
+© 2015 Elsevier B.V. All rights reserved.
+
+1. Introduction
+
+The well-known two-dimensional Klee’s measure problem (KMP) [2] is to compute the area of the union of a given set of
+axis-aligned rectangles. Over the years, this problem has received extensive study [3–10]. The problem we consider in this
+paper is a variation of KMP that differs from the “classical KMP” in two important ways. First, we consider rectangles from
+a discrete space rather than the real space that the classical KMP allows; the discrete space is consistent with computerbased applications that beneﬁt from this work. Secondly, we consider streaming input as opposed to oﬄine input used in
+traditional solutions. As streaming input captures the ﬂavor of many modern applications whose inputs are too numerous to
+store in memory and act on in an oﬄine environment. We will call this KMP variant the “Discrete Klee’s Measure Problem
+with Streaming Inputs” and denote it by “KMP_SD.”
+To deﬁne KMP_SD more precisely, let Zn = {0, 1, · · · , 2n − 1} (for some n ≥ 0) be a set of discrete points in one-dimension.
+Let ϒ = {x0 , x1 , · · · , xm−1 } be a set of rectangles in Zn × Zn . That is, each xi is a subset (of rectangular shape) of Zn × Zn .
+
+✩
+
+A preliminary version of this paper has appeared in the Proceedings of the 24th Canadian Conference on Computational Geometry (CCCG 2012) [1].
+Corresponding author.
+E-mail addresses: gokarna@csc.lsu.edu (G. Sharma), busch@csc.lsu.edu (C. Busch), vaidy@lsu.edu (R. Vaidyanathan), srai@lsu.edu (S. Rai), jtrahan@lsu.edu
+(J.L. Trahan).
+
+*
+
+http://dx.doi.org/10.1016/j.comgeo.2015.06.007
+0925-7721/© 2015 Elsevier B.V. All rights reserved.
+
+G. Sharma et al. / Computational Geometry 48 (2015) 688–702
+
+689
+
+m−1
+
+The goal of KMP_SD is to determine the area A m =
+
+xi for streaming inputs xi . Another term for the quantity A m is the
+i =0
+
+zeroth frequency moment, F 0 [11–13].
+The motivation to study KMP_SD stems from applications with spatial and temporal data domains such as VLSI layout
+processing and sensor networks. A spatial database, for example OpenGIS [14], deals with a large collection of relatively
+simple geometric objects, of which rectangles are the most basic types. Moreover, one can view query processing in the
+constraint database model [15] as a computation over the set of geometric objects (for example Benedikt and Libkin
+[16]). The streaming setting suits these applications where workspace is too limited to permit rescanning the entire
+dataset.
+1.1. Related work
+For the classical (non-streaming) KMP, Bentley [3] described a deterministic optimal (m log m) time solution, where m
+is the number of input rectangles. This solution reduces the problem to m one-dimensional KMPs [2] by sweeping a vertical
+line across the area. However, this solution has a very large workspace requirement. Other results [4–10] followed Bentley’s
+work to reduce the workspace needed to solve the problem. In the context of streaming applications, however, they all
+require (m) words space which is prohibitively large. All of these solutions for KMP are deterministic and compute the
+exact area.
+As we noted earlier, the (m log m) time for the exact solution is optimal. Therefore, recent work has focused on an
+approximate solution and reducing workspace and time.
+Deﬁnition 1. Given 0 < , δ < 1, an approximation algorithm ( , δ)-approximates a quantity Q if the estimated output
+est( Q ) satisﬁes Pr[|est( Q ) − Q | < Q ] ≥ 1 − δ , where Pr[·] denotes the probability of an event.
+Bringmann and Friedrich [17] gave a (non-streaming) ( , δ)-approximation algorithm for KMP that runs in O
+
+log 1δ
+time and has (m) words workspace, for any 0 < < 1 and δ ≥ 3/4. Recently, Tirthapura and Woodruff [13] gave a
+(streaming) randomized ( , δ)-approximation algorithm for KMP_SD with workspace and processing time per rectangle
+upper bounded by
+
+1
+
+log( mU
+δ )
+
+O (1)
+
+m
+
+2
+
+, where 0 < , δ < 1, and U = 22n = |Zn × Zn | is the total number of points in the
+
+two-dimensional space. In comparison, the streaming algorithm we present in this paper is much simpler, its complexity is
+independent of m, it reduces the exponent to 1, and it exhibits different tradeoffs.
+1.2. Approach and contributions
+We present two transformations, Side_Length_Map and Aspect_Ratio_Map, that map each input rectangle from Zn × Zn
+to a set of one-dimensional ranges (or intervals) in a manner that preserves intersection properties. That is, range sets R i , R j
+corresponding to rectangles xi , x j intersect in a manner that reﬂects the intersection xi ∩ x j . Side_Length_Map implements
+a very simple technique to transform rectangles to ranges by collapsing each rectangle to a single row. Aspect_Ratio_Map
+implements a transformation technique based on a Z-ordering [18] (note that a depth-ﬁrst traversal of a quadtree is essentially a Z-ordering). Both the transformations are deterministic. After input rectangles have been transformed to ranges,
+any online range-eﬃcient algorithm1 (for example, [12,19,20]) applied to these ranges (with post-processing in some cases)
+solves KMP_SD.
+Fig. 1 illustrates the structure of a KMP_SD algorithm based on our approach. The ﬁrst stage “normalizes” the given
+rectangle; here a normalized rectangle is one with certain constraints on its side lengths and its position in Zn × Zn . The
+parameter χ denotes the number of different “types” of normalized rectangles that xi could generate. Call these Type 0,
+Type 1, · · ·, Type χ − 1 rectangles. The ﬁrst stage of the algorithm decomposes xi into sets N j of normalized rectangles,
+where 0 ≤ j < χ , and each set N j contains only Type j normalized rectangles. Set N j could be empty or contain one or
+more elements. The second stage maps each set N j of normalized rectangles of Zn × Zn to a set R j of one-dimensional
+ranges of Z2n . This mapping preserves intersection properties. That is, if two normalized rectangles xk and x map to
+ranges rk and r , then |rk ∩ rl | is proportional to |xk ∩ x |. Next a range-eﬃcient algorithm A processes R j to produce an
+estimate e j of all normalized rectangles of Type j received so far. Finally, a post-processing step consolidates the estimates
+e 0 , e 1 , · · · , e χ −1 from all χ types of normalized rectangles to derive an estimate of the area of the union of the input
+rectangles.
+Deﬁnition 2. (See Cormen et al. [21].) Given ξ ≥ 1, an approximation algorithm ξ -approximates a quantity Q if the estimated output est( Q ) satisﬁes max
+
+1
+
+Q
+, estQ( Q )
+est( Q )
+
+≤ ξ.
+
+Range-eﬃcient algorithms are the (one dimensional KMP) algorithms that handle ranges more eﬃciently than individual points.
+
+690
+
+G. Sharma et al. / Computational Geometry 48 (2015) 688–702
+
+Fig. 1. The structure of the proposed KMP_SD algorithm.
+
+With the range-eﬃcient algorithm Hits of Pavan and Tirthapura [12] as A and the worst case value of χ (that imposes no restriction on the rectangles), we derive a KMP_SD algorithm that produces an estimate est( A m ) of A m , such that
+max
+
+Am
+, estA( mAm )
+est( Am )
+
+≤ O( log U ); recall that U = |Zn × Zn | = 22n . Since Am is the exact value of the area of the rectangles
+
+in ϒ , our KMP_SD algorithm essentially O ( log U )-approximates A m . In particular, we prove the following theorem (refer Section 7.2.1 for the Side_Length_Map transformation proof and Section 8.2.1 for the Aspect_Ratio_Map transformation
+proof).
+Theorem 1. For any stream ϒ of rectangles, given 0 < , δ < 1, our KMP_SD algorithm with either Side_Length_Map or Aspect_Ratio_Map transformation O ( log U )-approximates A m with probability (1 − δ)χ and achieves space complexity O
+bits, amortized time taken to process a rectangle O log
+
+U
+
+1
+2
+
+log2 U log 1δ
+
+log 1δ , and time taken to process a query at any time O (1), where χ is the
+
+number of different types of normalized rectangles in ϒ .
+Setting
+
+=
+
+1
+2
+
+and δ = χ1 =
+
+1
+log U +1
+
+in Theorem 1, we obtain the following corollary.
+
+Corollary 2. For any stream ϒ of rectangles, given
+
+=
+
+1
+2
+
+and δ =
+
+1
+,
+log U +1
+
+our KMP_SD algorithm with either Side_Length_Map or
+
+Aspect_Ratio_Map transformation O ( log U )-approximates A m with constant probability and achieves space complexity O (log2 U ·
+log log U ) bits, amortized time to process a rectangle O (log U · log log U ), and time taken to process a query at any time O (1).
+The processing time assumes that a processor can perform any computation on O (log U )-bit operands in constant time.2
+The approximation O ( log U ) hides constants which we improve through a rectangle tiling technique at the expense of a
+poly-log factor increase in the processing time per rectangle (refer Sections 7.2.2 and 8.2.2). (We also present an alternative
+approach in Section 7.2.3 for our KMP_SD algorithm with Side_Length_Map transformation that provides a nice trade-off
+between the processing time per rectangle and the approximation quality.) Note that our KMP_SD algorithm does not
+explicitly store the input rectangles. What it stores is some limited information about rectangles from which to get the
+estimate of A m , whenever the system is queried.
+For the special case where χ = 1, we have an ( , δ)-approximation algorithm. For the Side_Length_Map transformation,
+the χ = 1 case corresponds to sets of input rectangles in which the height of each rectangle is within a constant factor of
+2 of the height of every other rectangle in the set, for ≥ 0. We call these as bounded side length rectangles. (The same
+applies to bounded width instead of height.) For the Aspect_Ratio_Map transformation, the χ = 1 case corresponds to sets
+of input rectangles in which the aspect ratio of each rectangle is within a constant factor of 2 of the aspect ratio of every
+other rectangle in the set, for ≥ 0. We call these as bounded aspect ratio rectangles. This includes the special case of “fat
+rectangles” (that have constant aspect ratios) [13,22]. We prove the following theorem for our algorithm for this special
+case of χ = 1 (refer Section 7.1.1 for the Side_Length_Map transformation proof and Section 8.1.1 for the Aspect_Ratio_Map
+transformation proof).
+Theorem 3. For any stream ϒ of bounded side length (respectively, bounded aspect ratio) rectangles, given 0 < , δ < 1, our KMP_SD
+algorithm with Side_Length_Map (respectively, Aspect_Ratio_Map) transformation ( , δ)-approximates A m with space complexity
+
+2
+In our case the assumption is needed mainly for computing the “Z-curve” index, given the x, y coordinates of a point. This assumption can be removed
+at the expense of an O (log U ) factor increase in the processing time per rectangle.
+
+G. Sharma et al. / Computational Geometry 48 (2015) 688–702
+
+691
+
+Algorithm 1: KMP_SD algorithm.
+Input: A streaming set ϒ of m rectangles in Zn2 ;
+Output: An estimate est( A ) of total number of distinct discrete points A covered by the rectangles in ϒ ;
+1 Initialization:
+2
+Deﬁne χ buckets B0 , . . . , Bχ −1 of normal rectangles in Zn2 (initially the buckets are empty);
+3 When a new rectangle x ∈ ϒ arrives:
+4
+Normalization: Transform x into a sequence of normal rectangles y 1 , y 2 , . . . , and then assign each y j to some appropriate bucket Bi j ;
+5
+One-dimensional mapping: Map each y j to a range r j using an appropriate projection based on Bi j ;
+6
+
+Range-eﬃcient approximation: Apply a range-eﬃcient ( , δ)-approximation algorithm to update with respect to r j an estimate of A i , the total area
+j
+
+(total discrete points) of the normal rectangles in Bi j ;
+7
+Maintain E max = maxi est( A i ) and E sum =
+8 On a query for area covered by ϒ :
+9
+
+Return est( A ) =
+
+√
+
+χ −1
+i =0
+
+est( A i ), the maximum and the sum of the
+
+χ bucket estimates;
+
+E max E sum ;
+
+O 12 log U log 1δ bits, amortized time taken to process a rectangle O
+O(1).
+
+1
+
+log
+
+U
+
+The space bound given in Theorem 3 is nearly optimal in light of the
+
+log 1δ , and time taken to process a query at any time
+
+log U +
+
+1
+2
+
+lower bound given by Indyk and
+
+Woodruff [23]. To the best of our knowledge, our KMP_SD algorithm is the ﬁrst to achieve such space complexity and
+processing time bounds for well-studied fat rectangles in the streaming model.
+Thus the two transformations, while performing similarly, emphasize different rectangle “properties.” Consequently, they
+provide trade-offs that are different from each other and from those offered by other algorithms in the literature. Notice
+also that the value of χ need not be known before running the algorithm. Therefore, in a practical case, a general run of
+the algorithm can still beneﬁt from an instance with a small value of χ .
+1.3. Paper organization
+The rest of the paper is organized as follows. We give a KMP streaming algorithm in Section 2 and discuss the normalization in Section 3. Section 4 bounds the area of the union of rectangles considering normalized subrectangles and χ types of
+rectangles. In Section 5, we present Side_Length_Map that transforms a rectangle to a horizontal normalized approximation
+based on striplets. Section 6 describes Aspect_Ratio_Map that transforms a rectangle to a normalized approximation based
+on a Z-ordering. We analyze the implications for KMP_SD of Side_Length_Map in Section 7 and of Aspect_Ratio_Map in
+Section 8. Section 9 concludes the paper with a short discussion.
+2. KMP streaming algorithm
+The pseudocode of our KMP_SD algorithm is given in Algorithm 1. Our algorithm estimates the total number of distinct points A covered by a streaming set ϒ of m rectangles in Zn2 . The basic idea is to transform each rectangle
+to one or more one-dimensional ranges and then use a range-eﬃcient algorithm to estimate the number of discrete
+points covered by the stream of ranges (Fig. 1). The challenge is to perform the transformation so that the estimate
+from the ranges is a good approximation of A. To achieve good approximations, we ﬁrst normalize each input rectangle by aligning it into appropriate space points whose coordinates are multiples of 2 (either in only one dimension or
+in both dimensions depending on the normalization technique). We then separate the rectangles into different buckets according to their normalization. Each bucket has range mapping characteristics that help to accurately estimate the
+respective covered areas. We run a range-eﬃcient algorithm on each bucket, combining results to obtain the estimate
+for A.
+Our algorithm initializes χ buckets B0 , . . . , Bχ −1 of normalized rectangles in Zn2 . It transforms each rectangle x ∈ ϒ into
+one or more normalized rectangles y 1 , y 2 , . . . whose union is a subset of x (Sections 5 and 6 present our transformation
+algorithms). The algorithm then inserts each y j into an appropriate bucket Bi j . Each y j ∈ Bi j maps to a one-dimensional
+range using a projection function appropriate for Bi j . In this way, bucket Bi j produces a stream of ranges fed to some
+known range-eﬃcient ( , δ)-approximation algorithm, e.g. [12,19,20], to ﬁnd an estimate of A i , the total number of
+j
+
+discrete points occupied by the normalized rectangles in Bi j . Our algorithm then maintains E max and E sum , the maximum and√the sum among all the bucket estimates, respectively. When a query for est( A ) arrives, the algorithm returns
+est( A ) = E max E sum .
+Our algorithm is very generic in the sense that it can accommodate different normalizations, mappings, and approximations in Steps 4–6. Speciﬁc selections of these determine the complexity of the algorithm. For Step 4 of the
+algorithm, Normalization, we discuss in Section 3 two techniques that transform a rectangle x to a sequence of normalized rectangles y 1 , y 2 , . . . . The ﬁrst technique, called normal striplets, normalizes the rectangle x in only one dimension (horizontal or vertical), whereas the second technique, called normal rectangles, normalizes x in both dimensions. For Step 5 of the algorithm, One-dimensional mapping, we give two alternatives for the transformation,
+
+692
+
+G. Sharma et al. / Computational Geometry 48 (2015) 688–702
+
+called Side_Length_Map and Aspect_Ratio_Map, in Sections 5 and 6, respectively, that map each y j to a range r j .
+Side_Length_Map implements a very simple technique based on rectangle collapsing to transform a normalized rectangle to a one-dimensional range, whereas Aspect_Ratio_Map implements a technique based on a Z-ordering. For Step 6
+of the algorithm, Range-eﬃcient approximation, we can utilize any range-eﬃcient ( , δ)-approximation algorithm for F 0 .
+Here, we use the Hits algorithm of Pavan and Tirthapura [12]. It has the following time and space complexities, where
+U = 22n .
+Theorem 4. (See Pavan and Tirthapura [12].) Given 0 < < 1 and 0 < δ < 1, Algorithm Hits ( , δ)-approximates F 0 of a stream of
+ranges over [0, U − 1] with space complexity O ( 12 log U log 1δ ) bits, amortized time taken to process a range O (log U log 1δ ), and
+time taken to process a query for F 0 at any time O (1).
+Our two alternatives for the transformation in Step 4 of the algorithm provide different trade-offs. Side_Length_Map
+needs only one bucket (and so is more eﬃcient) in the special case in which ϒ is bounded side length rectangles, while
+Aspect_Ratio_Map needs only one bucket in the special case of bounded aspect ratio rectangles.
+We analyze in Section 7 an instance of our algorithm with Side_Length_Map transformation (Section 5) and provide approximations for bounded side length and arbitrary side length rectangles, which we call Side_Length_Map approximations.
+We perform the same in Section 8 for an instance of our algorithm with Aspect_Ratio_Map transformation (Section 6) and
+provide approximations for bounded aspect ratio and arbitrary aspect ratio rectangles, which we call Aspect_Ratio_Map
+approximations.
+3. Normalization
+We ﬁrst start with some basic deﬁnitions for ranges and their normalizations, and then we extend the deﬁnitions for
+normalized rectangles.
+3.1. Ranges
+For integer n ≥ 0, let Zn = {0, 1, . . . , 2n − 1} ⊂ Z be a one-dimensional space of 2n discrete integer points. A range (or
+interval) r = [ p 1 , p 2 ], where 0 ≤ p 1 ≤ p 2 < 2n , consists of all the points from p 1 to p 2 . Denote by |r | = p 2 − p 1 + 1 the size
+of range r, which is the number of points in it.
+The α -normal subset of Zn , denoted Wnα , for integer 0 ≤ α ≤ n, consists of every (2α )th element of Zn , namely,
+Wnα = { p ∈ Zn : p = i2α ∧ i ∈ Z}. We will refer to the elements of Wnα as normal points. The normal subset Wnα induces
+2n−α normal ranges of size 2α such that each starts at a normal point. We will also use the notation Wnα to denote these
+normal ranges. Let Wn =
+
+n−1
+α
+α =0 Wn
+
+denote the set of all possible normal ranges (and respective normal points).
+
+3.2. Rectangles
+All the deﬁnitions for one-dimensional space Zn extend to the two-dimensional space Zn2 = Zn × Zn of discrete integer
+points. One can view space Zn2 as an array of points such that for any point ( p , q) ∈ Zn2 , p corresponds to a row and q to a
+column (there are 2n rows and 2n columns). The upper left corner of Zn2 is point (0, 0), and the lower right corner is point
+(2n − 1, 2n − 1) (see Fig. 2).
+A rectangle x = ( p 1 , q1 ), ( p 2 , q2 ) is a subset of Zn2 , where p 1 , p 2 , q1 , q2 ∈ Zn with p 1 ≤ p 2 and q1 ≤ q2 , such that x
+contains all points {( p , q) : p 1 ≤ p ≤ p 2 and q1 ≤ q ≤ q2 }. Note that ( p 1 , q1 ) is the north-west corner of x, while ( p 2 , q2 ) is
+the south-east corner. We say that x is an a × b rectangle with side lengths a = p 2 − p 1 + 1 and b = q2 − q1 + 1. We denote
+by |x| = a · b the size of rectangle x, which is the number of points in it.
+3.2.1. Normal rectangle
+α ,β
+β
+α ,β
+For any integers 0 ≤ α , β ≤ n, deﬁne the (α , β)-normal subset Wn = Wnα × Wn ⊆ Zn2 . Each element ( p , q) ∈ Wn is a
+α ,β
+
+normal point for which it holds p = i2α and q = j2β , for integers i and j. In other words, set Wn selects every (2α )th point
+α ,β
+in the vertical direction and every (2β )th point in the horizontal direction of Zn2 . Each normal point w ∈ Wn corresponds
+α ,β
+
+to a 2α × 2β normal rectangle, whose north-west corner is w. We will also use the notation Wn
+to denote the set of
+α ,β
+n
+n
+normal rectangles. Let Wn = α =0 β=0 Wn
+denote the set of all possible normal rectangles (and respective normal
+1, 2
+points). Fig. 2a shows a (1, 2)-normal subset and the respective 21 × 22 normal rectangles W4 of Z24 .
+Lemma 1. Any a × b rectangle x ∈ Zn2 contains an a × b normal rectangle x ⊆ x with 1 ≤ |x|/|x | ≤ 16, such that 1 ≤ a/a ≤ 4 and
+1 ≤ b/b ≤ 4.
+Proof. We prove the result by ﬁrst considering ranges in each dimension independently. Consider a range r = [ p 1 , p 2 ] ∈ Zn .
+Let r ⊆ r denote the largest normalized range inside r. We will show that 1 ≤ |r |/|r | ≤ 4.
+
+G. Sharma et al. / Computational Geometry 48 (2015) 688–702
+
+1,2
+
+Fig. 2. (a) Normal subset W4
+
+693
+
+where circles represent points of Z24 and darkened circles indicate the normal points; each normal point deﬁnes a normal
+1,4
+
+2 × 4 rectangle; (b) the (horizontal) normal strips of W4 ; each normal point deﬁnes a (horizontal) normal 2 × 16 strip.
+
+We focus on the upper bound. If |r | ≤ 4, then the claim follows trivially. So suppose |r | > 4. There is integer u ≥ 3 such
+that 2u −1 < |r | ≤ 2u . Let p = p 1 /2u −2 2u −2 . Note that p is a normal point of Wnu −2 . We have that p < p 1 + 2u −2 . Since
+|r | > 2u −1 , p + 2u −2 < p 2 . Consider the range r = [ p , p + 2u −1 ]. Clearly, r ⊆ r and r ∈ Wnu −2 (that is, r is normalized),
+with |r | = 2u −2 = 2u /4 ≥ |r |/4. Thus, |r | ≥ |r | ≥ |r |/4.
+We can easily compute the maximum size internal range r in constant time by ﬁrst computing all the ranges in Wnu −2
+contained in r (at most four) and then combining them (if possible) to form a normal range either in Wnu or Wnu −1 .
+For rectangle x, we apply the range result two times, once in each dimension to ﬁnd rectangle x . ✷
+Given a rectangle x, we can compute the internal normal rectangle x of Lemma 1 in constant time. See Fig. 2a for an
+example rectangle x and its respective internal normalized rectangle x .
+3.2.2. Normal striplets
+Recall that normal rectangles are the rectangles that are normalized in both the horizontal and the vertical dimension.
+We now describe normal striplets which are rectangles that are normalized in only one dimension, either the vertical
+dimension or the horizontal dimension. When normalized in vertical dimension, we call them horizontal striplets, and vertical
+striplets when normalized in horizontal dimension.
+We describe below the horizontal striplets (the results follow analogously for vertical striplets). Each normal point w ∈
+Wnα ,n corresponds to a horizontal strip which is a 2α × 2n rectangle with north-west corner w and spans from the leftmost to
+n,β
+the rightmost column (analogously, each w ∈ Wn corresponds to a vertical strip which is a 2n × 2β rectangle with top-left
+corner w and spans from the topmost to the bottommost row). We refer to those strips as the α -horizontal strips. Fig. 2b
+1, 4
+α ,n
+shows the 1-horizontal strips of W4 . Given a normal point w = ( p , 0) ∈ Wn , the respective horizontal strip induces the
+α
+n
+set of horizontal striplets { ( p , z1 ), ( p + 2 − 1, z2 ) : 0 ≤ z1 ≤ z2 ≤ 2 }. Namely, each normal striplet in the horizontal strip
+of w has size 2α × y, where 1 ≤ y ≤ 2n , such that the top and bottom rows are aligned with the top and bottom rows,
+respectively, of the strip. Consider now an a × b rectangle x ∈ Zn2 . We obtain the following result by applying the range
+result of Lemma 1 once, along the vertical dimension (note that the range result was used twice in Lemma 1 for normal
+rectangles).
+Lemma 2. Any a × b rectangle x ∈ Zn2 contains an a × b horizontal striplet x ⊆ x with 1 ≤ |x|/|x | ≤ 4, such that 1 ≤ a/a ≤ 4.
+Given a rectangle x, one can compute the horizontal striplet x of Lemma 2 in constant time. See Fig. 2b for an example
+rectangle x and its respective horizontal striplet x . We write striplets to denote both the horizontal striplets and vertical
+striplets.
+3.3. Aspect ratios
+The aspect ratio of an a × b rectangle is
+α +i ,β+i
+
+b
+.
+a
+
+α ,β
+
+Each normal rectangle induced by Wn
+
+has an aspect ratio of 2β−α . All
+α , g +α
+
+rectangles induced by Wn
+(for integer i) also have aspect ratio 2β−α . Thus, given g, 0 ≤ g ≤ n, Wn
+corresponds to
+( g ,+)
+n− g
+α , g +α
+normal rectangles of aspect ratio 2 g and size 2α × 2 g +α . Let Wn
+= α =0 Wn
+denote the normal rectangles of aspect
+( g ,−)
+
+ratio 2 g . Similarly, let Wn
+
+=
+
+n− g
+g +α ,α
+α =0 Wn
+
+denote the normal rectangles of aspect ratio 2− g . Let Wn
+
+(+)
+
+(−)
+
+be the set of all possible normal rectangles with aspect ratio at least one. Let Wn
+normal rectangles with aspect ratio < 1.
+
+=
+
+( g ,−)
+n
+g =1 Wn
+
+=
+
+( g ,+)
+n
+g =0 Wn
+
+be the set of all possible
+
+694
+
+G. Sharma et al. / Computational Geometry 48 (2015) 688–702
+
+Fig. 3. Rectangles x, y, and z, where z contains x, which contains y.
+
+4. Union and area estimation
+For a sequence of rectangles X , we want to have a sequence Y of rectangles so that each xi ∈ X contains the corresponding y i ∈ Y . Section 4.1 bounds the area of the union of subrectangles Y relative to area of the union of rectangles X based
+on the height and width of y i relative to xi . We will apply these results where rectangles xi are input rectangles and subrectangles y i are their normalized versions. For a sequence of rectangles X and their normalized rectangles Y partitioned
+into χ types, Section 4.2 bounds the area estimated by an ( , δ)-estimator algorithm.
+4.1. Union of rectangles
+In our KMP approach, given a rectangle xi , we compute inside it a rectangle y i that is either normal (for example,
+given by Lemmas 1 or 2) or consists of multiple normal rectangles (as will be the case in Sections 7.1 and 8.1). Consider
+a sequence of rectangles x0 , x1 , . . . , xm−1 . Denote the union of these rectangles as X = x0 ∪ x1 ∪ · · · ∪ xm−1 and the area
+of X as | X |. Consider also a sequence of rectangles y 0 , y 1 , . . . , ym−1 , where each y i is contained in xi , with union Y =
+y 0 ∪ y 1 ∪ · · · ∪ ym−1 . We are interested in estimating the area of X based on calculating the area of Y .
+Let rectangle x have size a × b with a · b discrete points in Zn2 , 1 ≤ a, b ≤ 2n . Denote by |x| the area of x, namely, |x| = a · b.
+Let y denote the corresponding a × b rectangle in x such that a = a c x, v and b = b c x,h , for some c x, v , c x,h ≥ 1. Let c v (ch )
+denote the maximum over all rectangles x ∈ X of c x, v (c x,h ).
+Observe that a − a = a (c x, v − 1) ≤ a (c v − 1) and b − b = b (c x,h − 1) ≤ b (ch − 1). We deﬁne rectangle z centered on y
+with dimensions (a (c v − 1) + a + a (c v − 1)) × (b (ch − 1) + b + b (ch − 1)), that is, a (2c v − 1) × b (2ch − 1). In other words,
+to construct z from y, move the top edge of y up and the bottom edge down by a (c v − 1) and move the left edge left and
+the right edge right by b (ch − 1). (See Fig. 3.) It follows that | z| = (2c v − 1)(2ch − 1)| y |. Observe that rectangle z contains
+rectangle x, which contains rectangle y.
+Let Z denote the union of rectangles z0 ∪ z1 ∪ · · · ∪ zm−1 corresponding to Y and constructed as described above.
+We prove the following lemma for the relation between the areas of | X | and |Y |.
+Lemma 3. | X | = γ |Y |, where 1 ≤ γ ≤ (2c v − 1)(2ch − 1).
+Proof. For each i, zi contains xi , so Z contains X , and upper bounding | Z | with respect to |Y | also upper bounds | X | with
+respect to |Y |.
+Given Y , we scale the vertical dimension by (2c v − 1) and the horizontal dimension by (2ch − 1). For each original y i ,
+let zi denote the corresponding scaled rectangle, where y i has center coordinates ( p i , qi ) and dimensions ai × b i , zi has
+center coordinates ( p i (2c v − 1), qi (2ch − 1)) and dimensions ai (2c v − 1) × b i (2ch − 1). Letting Z denote the union of the zi
+rectangles, | Z | = (2c v − 1)(2ch − 1)|Y |.
+Observe that zi has the same dimensions as zi . Now, translate each zi from center coordinates ( p i (2c v − 1), qi (2ch − 1)) to
+center coordinates ( p i , qi ). This places each zi exactly on zi , so the union of the translated rectangles is Z . The translation
+moves each zi closer to the origin (unless zi was already at the origin), so | Z | ≤ | Z |. Consequently, | X | ≤ | Z | ≤ (2c v −
+1)(2ch − 1)|Y |. ✷
+4.2. Area estimation
+
+√
+
+Consider a set ϒ = {x0 , x1 , . . . , xm−1 } of m rectangles in Zn2 , such that each x j is an a j × b j rectangle, 1 ≤ a j , b j ≤ U ,
+with a j b j discrete points and total area A. Partition ϒ arbitrarily into χ subsets {ϒ0 , ϒ1 , . . . , ϒχ −1 } where ϒi has mi
+
+G. Sharma et al. / Computational Geometry 48 (2015) 688–702
+
+695
+
+χ −1
+
+rectangles and m = i =0 mi . Let A i denote the area of the union of the rectangles in ϒi . In each x j of size a j × b j , let
+x j denote an a j × b j rectangle contained in x j , where a j ≤ a j and b j ≤ b j Deﬁne ϒ , ϒi , A , and A i correspondingly. Let
+A
+
+0 < 1 ≤ AA ≤ 2 ≤ 1; we ﬁx 1 and 2 later in Sections 7 and 8. Note that 0 < 1 ≤ A i ≤ 2 ≤ 1 applies also to A i and
+i
+A i for all 0 ≤ i ≤ χ − 1 (Lemma 3).
+Let us assume that there is an ( , δ)-estimator algorithm ALG (similar to Theorem 4) that computes an estimate est( A i )
+of the area in the rectangles in ϒi and returns: (i) E max = maxi est( A i ), the maximum among est( A i ), 0 ≤ i ≤ χ − 1, and
+χ −1
+
+(ii) E sum =
+
+est( A i ), the sum of each est( A i ), 0 ≤ i ≤ χ − 1. The algorithm ALG 2 then uses the estimates E max and
+
+i =0
+
+E sum to estimate quantity est( A ) of A as est( A ) =
+bounds on est( A ).
+
+√
+
+E max E sum . Deﬁne relative error as
+
+=
+
+|est( A )− A |
+A
+
+. We have the following
+
+√
+
+Lemma 4. When est( A ) = E max E sum is returned, the ( , δ)-estimator algorithm ALG 2 computes an estimate est( A ) of the total
+area A such that A · 1 ≤ est( A ) ≤ A · 2 with probability (1 − δ)χ , where χ is the number of blocks in a partition of set ϒ of input
+√
+(1− )
+rectangles, 1 = 1√
+χ , 2 = 2 (1 + ) χ , and 0 < 1 ≤ 2 ≤ 1.
+Proof. We have that E max ≤ est( A ) ≤ E sum . From the deﬁnition of an ( , δ)-estimator, we have that:
+
+A (1 − )
+
+≤ E max ≤ A (1 + ),
+
+χ
+
+(1)
+
+with probability at least (1 − δ)χ . This is because ALG 2 requires that all χ estimates are good, otherwise some estimates
+can be much larger than the true maximum.
+Substituting A by the relation A · 1 ≤ A ≤ A · 2 , Equation (1) reduces to:
+
+A·
+
+1 (1 −
+
+)
+
+χ
+
+≤ E max ≤ A ·
+χ −1
+
+Recall that E sum =
+
+i =0
+
+2 (1 +
+
+est(|ϒi |). From the deﬁnition of an ( , δ)-estimator, we have that:
+
+χ −1
+
+(1 − )
+
+(2)
+
+).
+
+χ −1
+
+|ϒi | ≤ E sum ≤ (1 + )
+i =0
+
+|ϒi |.
+
+(3)
+
+i =0
+
+The following bounds on E sum follow.
+
+A (1 − ) ≤ E sum ≤ A (1 + )χ
+A·
+
+1 (1 −
+
+) ≤ E sum ≤ A ·
+
+(4)
+
+2 (1 +
+
+)χ
+
+(5)
+
+These bounds hold with probability at least (1 − δ)χ . Note that the probability (1 − δ)χ includes the particular est(|ϒi |) that
+is maximum, so, overall, probability (1 − δ)χ covers both Equation (1) bounds on E max and Equation (4) bounds on E sum .
+Now we are interested in bounding the relative error
+
+=
+
+|est( A ) − A |
+
+√
+| E max E sum − A |
+
+=
+
+A
+
+A
+
+Observe that the relative error
+
+(6)
+
+.
+
+, given in Equation (6), depends only on the values of E max and E sum .
+1 (1−
+
+• Lower bound on estimate. For the case A ·
+√
+
+A−
+
+E max E sum
+.
+A
+
+=
+≤
+
+=
+
+)
+
+χ
+
+≤ E max and A ·
+
+1 (1
+
+− ) ≤ E sum ,
+
+=
+
+√
+| E max E sum − A |
+A
+
+becomes
+
+=
+
+Using the lower bounds on E max and E sum ,
+
+A−
+
+√
+
+E max E sum
+A
+
+A−
+
+1 (1 −
+
+A·
+
+)
+
+χ
+
+·A·
+
+1 (1 −
+
+)
+
+A
+
+=1−
+Using
+
+while computing an estimate est( A ), which is given by:
+
+1 (1 −
+
+√
+
+A −est( A )
+,
+A
+
+χ
+
+)
+
+(7)
+
+.
+
+we obtain: est( A ) ≥ A ·
+
+(1−
+1√
+
+χ
+
+)
+
+.
+
+696
+
+G. Sharma et al. / Computational Geometry 48 (2015) 688–702
+
+• Upper bound on estimate. For the case E max ≤ A ·
+=
+
+√
+
+E max E sum − A
+.
+A
+
+√
+
+=
+
+2 (1
+
++ )χ ,
+
+=
+
+√
+| E max E sum − A |
+A
+
+becomes
+
+E max E sum − A
+A
+2 (1 +
+
+)]2 χ − A
+
+A
+
+√
+2 (1 + ) χ − 1.
+
+=
+=
+
++ ) and E sum ≤ A ·
+
+Using the upper bounds on E max and E sum ,
+
+[A ·
+
+≤
+
+Using
+
+2 (1
+
+est( A )− A
+,
+A
+
+we obtain: est( A ) ≤ A ·
+
+(8)
+2 (1 +
+
+√
+) χ. ✷
+E sum
+
+≤ E max (lower bound on estimate) and (ii) E sum ≤
+√
+E max · χ (upper bound on estimate). This implies that
+χ ≤ E max E sum ≤ E max χ . Thus, ALG 2 provides the same
+√
+√
+guarantees as in Lemma 4 for the estimate est( A ) when est( A ) = E max E sum is replaced by est( A ) = E max χ (or E√sum
+χ ).
+√
+Moreover, returning est( A ) = E max χ simpliﬁes the proof of Lemma 4 so that it ends after Equation
+(2). However, if E sum
+√
+is known to be strictly smaller than E max · χ , that is, E sum < E max · χ , then returning est( A ) = E max E sum provides a better
+In the proof of Lemma 4 above, we use two inequalities: (i)
+E√
+sum
+
+√χ
+
+approximation ratio for our algorithm, which might be helpful in reducing the approximation ratio in practical scenarios.
+5. Strips transformation: Algorithm S IDE _L ENGTH _M AP
+Here we describe the Side_Length_Map transformation that uses strips to normalize rectangles. It uses row-major or
+column-major order projection to obtain the respective one-dimensional ranges.
+Algorithm Side_Length_Map transforms a rectangle to a normalized one (Step 4 of our KMP_SD algorithm) based on the
+horizontal and vertical strips of Zn2 . It uses in total χ = 2n + 1 buckets, where n + 1 buckets are for the horizontal strips,
+and n buckets are for the vertical strips. Speciﬁcally, bucket Bα (horizontal bucket), where 0 ≤ α ≤ n, corresponds to the
+α -horizontal strips, and bucket Bn+β (vertical bucket), where 0 < β ≤ n, corresponds to the β -vertical strips. Given an a × b
+new rectangle x, if a ≤ b, then we compute the horizontal striplet x of x, which belongs to one of the horizontal strips, and
+put x in the respective horizontal bucket. Otherwise, if a > b, then we normalize x on a vertical strip and put the respective
+striplet x in a vertical bucket.
+α ,n
+Without loss of generality consider a horizontal bucket Bα that contains horizontal normal strips from Wn (similarly,
+n,β
+vertical normal strips from Wn for a vertical bucket). For the one-dimensional mapping (Step 5 of our KMP_SD algorithm),
+Algorithm Side_Length_Map maps each horizontal striplet x = ( p 1 , q1 ), ( p 2 , q2 ) to a one-dimensional range r ∈ Z2n using
+row-major projection as follows. Let x = ( p 1 , q1 ), ( p 1 , q2 ) , consisting of the top row of x . The range r is the result of
+the row-major projection of x . Speciﬁcally, let t 1 and t 2 be the row-major projections of points ( p 1 , q1 ) and ( p 1 , q2 ),
+respectively. Then r = [t 1 , t 2 ]. Observe that the area of x is 2α times the size of r. We have a symmetric procedure for the
+vertical buckets using column-major projection.
+For every rectangle x, the normalization step to x takes constant time. Further, the one-dimensional mapping step takes
+constant time. Therefore, these two steps together incur a constant computation time. One can also easily verify that this
+one-dimensional mapping gives ranges that preserve the intersection properties of the striplets in the buckets. Namely for
+any two horizontal striplets, x1 , x2 ∈ Bα , with respective ranges r1 and r2 , it holds that x1 ∩ x2 = 2α |r1 ∩ r2 |.
+6. Proximity transformation: Algorithm A SPECT _R ATIO _M AP
+Here we describe the Aspect_Ratio_Map transformation that maps each normal rectangle to a one-dimensional range
+based on a Z-ordering.
+For the normalization (Step 4 of our KMP_SD algorithm), Aspect_Ratio_Map ﬁrst transforms each rectangle x to a norα ,β
+malized rectangle x ∈ Wn , for some α and β , using normal subsets as described in Section 3.2.1, and then assigns x to
+(+)
+a bucket according to its aspect ratio. We use in total χ = 2n + 1 buckets, where n + 1 buckets are for Wn (aspect ratio
+(−)
+at least one), and n buckets are for Wn (aspect ratio less than one). Speciﬁcally, bucket Bα , where 0 ≤ α ≤ n, corresponds
+(α ,+)
+
+to Wn
+
+(β,−)
+
+, and bucket Bn+β , where 0 < β ≤ n, corresponds to Wn
+
+appropriate bucket according to the aspect ratio
+
+b
+a
+
+. We place a normalized a × b rectangle x in the
+
+.
+( g ,−)
+
+Without loss of generality consider a bucket Bn+ g that contains normal rectangles from Wn
+. For the one-dimensional
+mapping (Step 5 of our KMP_SD algorithm), we show how Aspect_Ratio_Map takes a normalized rectangle x ∈ Bn+ g and
+maps it to a linear interval (range) r in a manner that preserves the intersection properties of the rectangles of Bn+ g +1 .
+(0,+)
+
+: Zn2 −→ Z2n as the well-known Z-ordering [18] (see Fig. 4a). Note that a depth-ﬁrst traversal of a quadtree
+Deﬁne f n
+is essentially a Z-ordering [24]. Fig. 4a shows the Z-values for the case g = 0 of points for the two dimensional space
+0 ≤ x ≤ 3, 0 ≤ y ≤ 3 (shown in binary). Interleaving the binary coordinate values gives binary Z-values and connecting the
+
+G. Sharma et al. / Computational Geometry 48 (2015) 688–702
+
+697
+
+Fig. 4. A Z-curve for aspect ratio (a) 1, (b) 1/4.
+
+Z-values in their order from the lowest (0000) to the highest (1111) produces the recursively Z-shaped curve, i.e., a Z-order.
+( g ,−)
+For aspect ratio < 1, deﬁne f n
+: Zn2 −→ Z2n as follows. Partition Zn2 into 2 g contiguous vertically aligned elements, then
+connect them, end to end, in the order provided by a Z-ordering for the aspect ratio 1. For the example given in Fig. 4b,
+the aspect ratio is 14 , i.e. g = 2. Now the contiguous vertically aligned 4 elements are connected in the order provided
+by the Z-ordering given in Fig. 4a for g = 0 (aspect ratio 1) as follows. As the points (0, 0) and (0, 1) are connected by
+a line in Fig. 4a, the two vertically aligned elements in the top left of Fig. 4b are connected by a line. (The connection
+between two vertically aligned elements is always from the bottom point of the ﬁrst element to the top point of the second
+element.) As the points (0, 1) and (1, 0) are connected by a line in Fig. 4a, the second vertically aligned element in the
+top left of Fig. 4b is connected by a line to the ﬁrst vertically aligned element immediately below the top left vertically
+aligned element of Fig. 4b. Repeat this process until all the vertically aligned elements are connected by a Z-ordering. For
+( g ,−)
+aspect ratio > 1, partition as horizontally aligned 2 g elements, then connect them analogously. Note that f n
+translates
+( g ,−)
+normalized rectangles to intervals preserving the intersection properties of normalized rectangles of Wn
+, that is, for any
+( g ,−)
+( g ,−)
+( g ,−)
+x1 , x2 ∈ Wn
+, x1 ∩ x2 = |( f n
+(x1 )) ∩ ( f n
+(x2 ))|. The intersection properties of normalized rectangles are preserved
+( g ,+)
+
+since f is also an injective function. Similarly, f n
+preserves the intersection properties of normalized rectangles in
+( g ,+)
+Wn
+.
+( g ,−)
+( g ,+)
+Each element i of Z2n = {0, 1, · · · , 22n − 1} (the codomain of f n
+( fn
+)) is a 2n-bit binary representation of i. The
+( g ,−)
+( g ,+)
+2
+domain Zn of f n
+( fn
+) consists of doublets ( p , q), where p , q ∈ Zn . So, each ( p , q) expressed as the concatenation of
+the binary representations of p and q is a 2n-bit quantity. Call this 2n-bit number (belonging to Z2n ) as the row-major index
+( g ,−)
+( g ,+)
+of ( p , q). Thus, function f n
+( fn
+) transforms of one 2n-bit number into another 2n-bit number.
+Since we assume that we can compute with O (log U )-bit numbers in constant time and n = O (log U ), the function
+( g ,−)
+( g ,+)
+fn
+(·) ( f n
+(·)) can be computed in constant time. Therefore, we obtain the following.
+( g ,−)
+
+is a set of |x| contiguous integers (a range) in Z2n . This mapping can be
+Lemma 5. For any normalized rectangle x ∈ Bn+ g , f n
+computed in constant time for a given rectangle and preserves the intersection properties of rectangles of Bn+ g . The same holds for
+( g ,+)
+
+x ∈ B g and f n
+
+(x).
+
+7. S IDE _L ENGTH _M AP approximations
+7.1. One bucket
+In this section, we describe how to eﬃciently estimate the area of a stream with bounded side length rectangles. We
+ﬁrst describe the special case of a stream of rectangles of equal height (or equal width) ϒ = {x0 , x1 , . . . , xm−1 } and then
+we extend the result to include bounded side length rectangles. The normalization (Step 4 of our KMP_SD algorithm) uses
+only one bucket B that contains horizontal striplets of equal height (or vertical striplets of equal width). Using the following
+result it is possible to transform each rectangle x ∈ ϒ into a set of horizontal striplets of equal height (analogously, a set of
+vertical striplets of equal width) that approximately cover x to within an arbitrary constant factor of area.
+Lemma 6. Given an a × b rectangle x and η , 0 < η ≤ 1, there is an internal a × b rectangle x that consists of at most c /η horizontal
+striplets of equal height h(a, η), for some positive constant c, such that a(1 − η) ≤ a ≤ a.
+Proof. Consider the case where ηa/4 ≥ 1. Let λ be a power of 2 with ηa/4 ≤ λ < ηa/2. If the top (bottom) edge of x is
+not aligned with a normal boundary with respect to λ, then remove the part of x covered by the horizontal normal λ × b
+striplet overlapping the top (bottom) edge. Let x be the largest rectangle inside x that remains. Now cover the area x by
+
+698
+
+G. Sharma et al. / Computational Geometry 48 (2015) 688–702
+
+horizontal normal λ × b-striplets. This requires at most a/λ ≤ 4/η of them. Since x ⊆ x, we have that a ≤ a. Therefore,
+a − a ≤ 2λ < aη . If ηa/4 < 1, then we start with λ = 1, and hence a = a , which requires at most a ≤ 4/η such horizontal
+normal λ × b-striplets. Therefore, we obtain the desired bound by setting c = 4. ✷
+
+√
+
+In our algorithm, since est( A ) = E max E sum and we use only one bucket, E max = E sum . Thus, the result of the
+Side_Length_Map algorithm is directly the output of Hits (Theorem 4) on bucket B.
+For each rectangle xi ∈ ϒ , let xi be the corresponding rectangle given by Lemma 6. Suppose that the set ϒ =
+{x0 , x1 , . . . , xm−1 } has total area A . Replace each xi with c /η horizontal normal striplets that cover the respective xi (as
+speciﬁed by Lemma 6), and further project each such horizontal striplet to a range through the Side_Length_Map transformation (Section 5). Running Hits on these ranges returns an ( , δ) estimate of A , for 0 < , δ < 1, which is an estimate
+of A.
+Using Lemma 3, we relate the areas of A and A through η , since c v ≤ 1/(1 − η) and ch = 1 (c v = 1 and ch ≤ 1/(1 − η) for
+vertical striplets). Finally, by appropriately substituting
+and η by linear functions of , we obtain an ( , δ)-approximation
+for est( A ). The space complexity and query time remain asymptotically the same as in Hits, while the time complexity
+increases by a factor of c /η due to the number of horizontal striplets inside each xi . Therefore, we obtain the following
+result.
+Theorem 5. For a stream ϒ of rectangles of equal height (or width), given 0 < , δ < 1, our KMP_SD algorithm with the
+Side_Length_Map transformation ( , δ)-approximates the area of A with space complexity O ( 12 log U log 1δ ) bits, amortized time
+taken to process a rectangle O ( 1 log
+
+log 1δ ), and time taken to process a query for A at any time O (1).
+
+U
+
+Proof. From Lemma 3, we have that | A | = γ | A | for the Side_Length_Map transformation, where 1 ≤ γ ≤ 2c v − 1 (due to
+1
+1
+the normalization based on the height of the rectangles). From Lemma 6, we have that c v ≤ 1−
+η . Therefore, for 0 < η < 2 ,
+
+1
+
+γ
+
+1−η
+
+≥
+
+1+η
+
+= 1−
+
+2η
+
+≥ (1 − 2η).
+
+1+η
+
+(9)
+
+Let ( , δ) be the approximation of Algorithm Hits given in Theorem 4. Our KMP_SD algorithm returns est( A ) as computed
+by Hits, and hence, (1 − ) A < est( A ) < (1 + ) A with probability more than 1 − δ . Since A = γ A , we get
+
+1
+
+γ
+
+· (1 − ) A < est( A ) < (1 + ) A .
+
+(10)
+
+Below we will use the following inequality, which holds for all 0 < p < 1, k ≥ 1:
+
+1− p≤ 1−
+
+p
+
+k
+
+(11)
+
+.
+
+k
+
+We focus now on the lower bound of est( A ). When we combine Equations (9), (10), and (11), and setting the values of
+and η such that 2 = 4η = (which also implies 0 < η < 14 ), we obtain
+
+est( A ) > (1 − 2η)(1 −
+
+)A
+
+2
+
+= (1 − 2η) A
+≥ (1 − 4η) A
+= (1 − ) A .
+
+(12)
+
+Therefore, from Equations (10) and (12), we get
+
+(1 − ) A < est( A ) < (1 + ) A .
+
+(13)
+
+Since the Side_Length_Map transformation is deterministic, the bounds of Equation (13) hold with probability more than
+1 − δ , which is the probability in the approximation of Hits. In other words,
+
+Pr[|est( A ) − A | < A ] > 1 − δ,
+which means that our algorithm with the Side_Length_Map transformation provides an ( , δ)-approximation for area A of
+the stream of equal height rectangles ϒ .
+= /2, the workspace used is:
+The space complexity in terms of bits is the same as in Hits. Since
+
+O
+
+1
+2
+
+log U log
+
+1
+
+δ
+
+=O
+
+1
+2
+
+log U log
+
+1
+
+δ
+
+.
+
+The amortized time taken to process a range that constitutes a rectangle xi is equivalent with processing c /η ranges from
+the horizontal striplets of xi . Since η = /4, the amortized time needed is:
+
+G. Sharma et al. / Computational Geometry 48 (2015) 688–702
+
+O
+
+1
+
+η
+
+log
+
+U
+
+log
+
+1
+
+δ
+
+=O
+
+1
+
+log
+
+U
+
+log
+
+1
+
+δ
+
+699
+
+.
+
+The time taken to process a query is the same as in Hits, namely, O (1).
+
+✷
+
+7.1.1. Proof of Theorem 3 for Side_Length_Map transformation
+Theorem 5 also applies to bounded side length rectangles. One can convert each bounded side length rectangle with
+length within a constant factor h to a stream of at most h + 1 equal height (or width) rectangles that cover the rectangle
+area (h + 1 rectangles are due to their alignment into appropriate space points whose coordinates are multiples of 2 and
+they are possibly overlapping). Thus, the approach above works with a constant factor increase in time. This completes the
+proof of our KMP_SD algorithm with the Side_Length_Map transformation given in Theorem 3 for bounded side length
+rectangles.
+7.2. Many buckets
+Here we give an analysis of our KMP_SD algorithm with the Side_Length_Map transformation for the general case of
+arbitrary input rectangles. Recall that Section 4.2 establishes a relation of ( , δ)-estimators (Deﬁnition 1) to ξ -approximations
+(Deﬁnition 2).
+We project each bucket Bi to Z2n (as described in Section 5) and apply a range-eﬃcient algorithm for F 0 . Let
+ϒ = {ϒ0 , ϒ1 , . . . , ϒχ −1 } and ϒ = {ϒ0 , ϒ1 , . . . , ϒχ −1 }, where ϒi denote the original rectangles in ϒ that are projected
+
+to bucket Bi and ϒi denote the normal rectangles assigned to Bi (according to their heights or widths). In other words,
+the rectangles in ϒi are the rectangles in ϒi after their normalization. For each x ∈ ϒ we use a single internal horizontal
+(vertical) striplet x as given by Lemma 2, which is assigned to a bucket Bi according to its height (width). Let A i (resp. A i )
+denote the total area of ϒi (resp. ϒi ). This results in A i / A i = γ , γ ≤ 7, from Lemma 3. This is because c v ≤ 4 and ch = 1
+for horizontal striplets, and c v = 1 and ch ≤ 4 for vertical striplets.
+The Hits algorithm (Theorem 4) yields an ( , δ)-approximation of F 0 for the ranges in each Bi . These estimates of A i
+determine the estimate est( A ) of the total area A of ϒ using E max and E sum .
+
+7.2.1. Proof of Theorem 1 for Side_Length_Map transformation
+From Lemma 4, substituting 1 = 1/γ and 2 = 1, our algorithm with the Side_Length_Map transformation computes
+an estimate est( A ) of the total area A of the set ϒ of m rectangles mapped to χ buckets such that A · 1 ≤ est( A ) ≤ A · 2 ,
+√
+(1− )
+where 1 = γ1 √χ and 2 = (1 + ) χ with probability (1 − δ)χ . We set χ = 2n + 1 = log U + 1 (the total number of
+normal strip buckets), and hence,
+
+1
+
+= γ1
+
+(1− )
+log U +1
+
+and
+
+2
+
+= (1 + ) log U + 1 with probability (1 − δ)log U +1 .
+
+log2 U log 1δ ) bits,
+amortized time taken to process a rectangle O (log log δ ), and the time taken to process a query for F 0 is O (1). These
+bounds follow from Theorem 4 by combining the space and time complexities of log U + 1 instances of Hits. In comparison
+to Hits, the space needed by our algorithm increases by a factor of O (log U ) due to the log U + 1 buckets. The amortized
+time taken to process a rectangle remains the same as we need to run Hits on only a single bucket for that rectangle.
+Moreover, the time taken to process a query for A remains the same as the answer to a query for A can be computed
+immediately after processing a rectangle. Note that this computation does not asymptotically increase the process time per
+rectangle. This completes the proof of Theorem 1 for our algorithm with the Side_Length_Map transformation.
+Our algorithm with the Side_Length_Map transformation reaches est( A ) with space complexity O (
+U
+
+1
+
+2
+
+1
+
+7.2.2. Improving the constants in the approximation
+The asymptotic notation O ( log U ) (Theorem 1) hides a constant factor of 14 for the Side_Length_Map transformation
+while setting = 12 (Corollary 2), due to the fact that for each xi we use some internal horizontal (or vertical) striplet. We
+can improve the constants and bring them down to 2 by tiling each xi with poly-log number of horizontal (vertical) striplets
+as speciﬁed by the lemma below. This has the side effect of increasing the time complexity by a poly-log factor which can
+be traded-off for the enhanced accuracy. Note that we need O (log U ) horizontal striplets of possibly different side lengths
+to completely tile a rectangle r.
+Lemma 7. A rectangle r can be (1 − η)-approximately tiled with 2 log( η1 ) horizontal (vertical) striplets.
+Proof. Consider the following invariant. Range r = [ p 1 , p 2 ] contains a tiled interval [t 1 , t 2 ], where p 1 ≤ t 1 and t 2 ≤ p 2 . For
+the untiled interval on the right, [t 2 + 1, p 2 ], with size 2α −1 < p 2 − t 2 ≤ 2α , point t 2 + 1 is a normal point of Wnα −1 ; for the
+β−1
+
+untiled interval on the left, [ p 1 , t 1 − 1], with size 2β−1 < t 1 − p 1 ≤ 2β , point t 1 is a normal point of Wn .
+The heart of the proof consists of showing that the initial tiling of one or two normal ranges establishes the invariant
+and next showing that each iteration of the greedy incremental tiling algorithm maintains the invariant. The former follows
+from case analysis. For the latter, without loss of generality, assume that one tiling is of an interval on the right side. This
+adds to the tiled interval the largest normal range starting from t 2 + 1 contained in [t 2 + 1, p 2 ]. For size 2α −1 < p 2 − t 2 ≤ 2α ,
+
+700
+
+G. Sharma et al. / Computational Geometry 48 (2015) 688–702
+
+this range is in either Wnα −1 or Wnα . This extends the tiled interval to t 2 , covering at least half of [t 2 + 1, p 2 ]. Point t 2 + 1 is
+a normal point of Wnα −1 , so the invariant is maintained.
+One step of greedy incremental tiling covers at least one half of the larger untiled side; the second step either covers at
+least half of the other untiled side or covers half of the same side and this is larger than half of the other side. Collectively,
+the two newly tiled normal ranges cover at least half of the space untiled before this two-step round of greedy incremental
+tiling, and the tiled portion of r is still a contiguous interval. Thus, a rectangle r can be (1 − η)-approximately tiled with
+2 log( η1 ) horizontal (vertical) striplets. ✷
+Combining the implications of Lemma 7 with Corollary 2 for Side_Length_Map transformation, we obtain the following.
+Theorem 6. Given
+
+= 12 , 0 < η < 1, and δ =
+
+mates A with constant probability such that
+
+1
+2
+
+1
+, our KMP_SD
+log U +1
+A
+≤ est( A ) ≤ 32 A
+log U
+
+algorithm with the Side_Length_Map transformation approxilog U , and achieves space complexity O (log2 U · log log U ) bits,
+
+amortized time to process a rectangle O (log η1 · log U · log log U ), and time taken to process a query at any time O (1).
+7.2.3. An alternative approximation approach for Side_Length_Map transformation
+We now give an alternative approach which provides a nice trade-off between processing time per rectangle and approximation quality of our algorithm with the Side_Length_Map transformation, without affecting its space complexity and
+query time (compare Theorem 7 below with Corollary 2). Let D ≥ 2 and each bucket Bi contains all rectangles in ϒ with
+height in the range [ D i , D i +1 ]. Replace any rectangle x ∈ Bi by appropriate horizontal normal striplets of height μ · D i , where
+D
+0 < μ ≤ 1. According to this process, any rectangle x ∈ Bi is replaced by O ( μ
+) normal rectangles, which increases the proD
+cessing time per rectangle of our algorithm by O ( μ
+) factor. Moreover, we have a total number of
+
+results in an approximation factor of O
+
+log U
+log D
+
+log U
+log D
+
+buckets, which
+
+. Note that we again obtain an ( , δ)-approximation for our algorithm if
+
+only one bucket is ﬁlled by all the rectangles in ϒ . Therefore,
+Theorem 7. Given
+
+O
+
+log U
+log D
+
+= 12 , D ≥ 2, δ =
+
+1
+log U
+log D
+
+, and 0 < μ ≤ 1, our KMP_SD algorithm with the Side_Length_Map transformation
+
+-approximates A with constant probability and achieves space complexity O (log2 U · log log U ) bits, amortized time to
+
+D
+process a rectangle O ( μ
+· log U · log log U ), and time taken to process a query at any time O(1).
+
+8. A SPECT _R ATIO _M AP approximations
+8.1. One bucket
+Aspect_Ratio_Map permits eﬃciently estimating the area of a stream of bounded aspect ratio rectangles. We ﬁrst describe the special case of a stream of squares ϒ = {x0 , x1 , . . . , xm−1 } and then we extend the result to include bounded
+rectangles with aspect ratios other than 1. The normalization (Step 4 of our KMP_SD algorithm) uses only one bucket B that
+(0,+)
+contains normal rectangles of aspect ratio 1 (namely, normal squares in Wn
+). We use the following result to transform
+each square x ∈ ϒ into a set of normal squares that approximately cover x to within an arbitrary constant factor of area.
+Lemma 8. Given an a × a square x and η , 0 < η ≤ 1, there is an internal a × a square x that consists of at most c /η normal squares
+(of possibly various sizes), for some positive constant c, such that a(1 − η) ≤ a ≤ a.
+Proof. First, consider the case ηa/12 ≥ 1. Let λ be a power of 2 with ηa/12 ≤ λ < ηa/6. Tile the four edges of x with
+normal λ × λ-squares. If an edge of x is not aligned with a normal boundary with respect to λ, then remove the part of x
+tiled by the normal λ × λ-squares overlapping the edge. This requires at most 4a/λ ≤ 48/η of them. Let x be the largest
+square inside x that can be completely tiled with (2λ) × (2λ)-normalized squares. Completely tile the in-between area
+x − x using at most three layers of λ × λ squares between the edges of x and x , which requires at most 3 · 48/η = 144/η
+squares for all the layers. Then, we recursively tile the edges of x with (2λ) × (2λ)-normalized squares and deﬁne internally
+the largest square x consisting of only (4λ) × (4λ)-normalized squares. The recursion will have at most log a steps. At
+each recursive step, the normalized squares that we use double in edge length, thus halving the number of normalized
+squares that we need to tile in-between areas. Therefore, the total number of resulting normalized squares will be at most
+2 · 144/η ≤ 288/η .
+Since x ⊆ x, we have that a ≤ a. At most three layers of λ × λ squares tile the area x − x . Consequently, a − a ≤ 6λ < ηa.
+If ηa/12 < 1 we take x = x , and hence a = a , where we recursively decompose x into normalized squares of increasing
+size, starting with λ = 1. We require at most 2 · 3 · 4a ≤ 24a < 288/η such squares. Therefore, by setting c = 288, we obtain
+the desired bound. ✷
+
+G. Sharma et al. / Computational Geometry 48 (2015) 688–702
+
+701
+
+Similar to Section 7.1, we have E max = E sum due to the use of only one bucket. Moreover, for each square xi ∈ ϒ , let xi
+be the respective square given by Lemma 8. Suppose that the set ϒ = {x0 , x1 , . . . , xm−1 } has total area A . Replace each xi
+with c /η normal squares that cover the respective xi (Lemma 8), and project each such normal square to a range through
+the Aspect_Ratio_Map transformation (Section 6). Running Hits on these ranges returns an ( , δ) estimate of A , which is
+an estimate of A, where 0 < , δ < 1.
+We have from Lemma 3 that | A | = γ | A | with 1 ≤ γ ≤ (2c v − 1)(2ch − 1) for the Aspect_Ratio_Map transformation (due
+1
+to the normalization on the height and width of the rectangles). From Lemma 8, we have that c v , ch ≤ 1−
+η . Therefore, for
+0 < η < 12 ,
+
+1
+
+γ
+
+≥
+
+1−η
+1+η
+
+2
+
+= 1−
+
+2η
+1+η
+
+2
+
+≥ (1 − 2η)2 .
+
+As the estimate est( A ) returned by our algorithm is the same estimate computed by Hits (Theorem 4) and A = γ A , we
+have that γ1 · (1 − ) A < est( A ) < (1 + ) A with probability more than 1 − δ (which is the probability in the approximation
+of Hits). Now similar to Theorem 5 setting the values of
+and η such that 2
+(1 − ) A. Substituting
+by /2 and η by /8, we obtain the following result.
+
+= 8η =
+
+(0 < η <
+
+1
+),
+8
+
+we obtain est( A ) =
+
+Theorem 8. For a stream ϒ of squares, given 0 < , δ < 1, our KMP_SD algorithm with the Aspect_Ratio_Map transformation ( , δ)-approximates the area of A with space complexity O ( 12 log U log 1δ ) bits, amortized time taken to process a square
+
+O( 1 log U log 1δ ), and time taken to process a query for A at any time O(1).
+8.1.1. Proof of Theorem 3 for Aspect_Ratio_Map transformation
+Theorem 8 also applies to bounded aspect ratio rectangles. One can convert each bounded aspect ratio rectangle of
+aspect ratio h (h a constant) to a stream of at most h + 1 (or 1/(h + 1) if h < 1) squares that cover the rectangle area (h + 1
+rectangles are due to the alignment into coordinates that are multiples of 2 and they are possibly overlapping). Thus, we
+can use the approach above with a constant factor increase in time. This completes the proof of Theorem 3 for our KMP_SD
+algorithm with the Aspect_Ratio_Map transformation for bounded aspect ratio rectangles.
+8.2. Many buckets
+We now analyze our KMP_SD algorithm with the Aspect_Ratio_Map transformation for the general case of arbitrary
+input rectangles.
+8.2.1. Proof of Theorem 1 for Aspect_Ratio_Map transformation
+The proof of Theorem 1 for Aspect_Ratio_Map in many buckets case is similar to the proof of Theorem 1 for
+Side_Length_Map in many buckets case given in Section 7.2.1. We project each bucket Bi to Z2n (as described in Section 6)
+and apply a range-eﬃcient algorithm for F 0 . Let ϒi denote the original rectangles in ϒ that are projected to bucket Bi ,
+and let ϒi denote the normal rectangles assigned to Bi (according to their aspect ratio). The only difference here is γ ≤ 49
+(Lemma 3) and χ = 2n + 1 = log U + 1 is the number of buckets due to the total number of normal aspect ratios.
+8.2.2. Improving the constants in the approximation
+The asymptotic notation O ( log U ) (Theorem 1) hides a constant factor of 98 for the Aspect_Ratio_Map transformation
+while setting = 12 (Corollary 2), due to the fact that for each xi we use some internal normalized square. Analogous to
+Section 7.2.2, we can improve the constants and bring them down to 2 by tiling each xi with poly-log number of normal
+rectangles as speciﬁed by the lemma below, which has the side effect of increasing the time complexity by a poly-log factor
+but that can be traded-off for the enhanced accuracy. Note that we need O (log2 U ) normal rectangles of possibly different
+aspect ratios to completely tile a rectangle r.
+Lemma 9. A rectangle r can be (1 − η)-approximately tiled with 4 log2 ( η12 ) normal rectangles, for 0 < η ≤ 12 .
+Proof. We know from Lemma 7 that a rectangle r can be (1 − η)-approximately tiled with 2 log η1 horizontal (vertical)
+with the aim to
+√ striplets. The proof follows from extending the above
+√
+√ result on one dimension to two dimensions
+( 1 − η)-approximately tile each dimension. Rather than 1 − η , we employ 1 − η2 , as 1 − η2 ≥ 1 − η for 0 < η ≤ 12 . ✷
+Similar to Section 7.2.2, combining the implications of Lemma 9 with Corollary 2, we obtain the following.
+Theorem 9. Given
+
+= 12 , 0 < η ≤ 12 , and δ =
+
+imates A with constant probability such that
+
+1
+, our KMP_SD
+log U +1
+1
+A
+≤ est( A ) ≤ 32
+2 log U
+2 1
+
+algorithm with the Aspect_Ratio_Map transformation approxA log U , and achieves space complexity O (log2 U · log log U )
+
+bits, amortized time to process a rectangle O (log η2 · log U · log log U ), and time taken to process a query at any time O (1).
+
+702
+
+G. Sharma et al. / Computational Geometry 48 (2015) 688–702
+
+9. Concluding remarks
+Based on two deterministic transformations, we presented randomized approximation algorithms for the discrete version
+of the classical KMP in the streaming model with poly-log bounds on time and space complexity, with approximation factor
+1 ± for bounded side length rectangles and for bounded aspect ratio rectangles and O ( log U ) for general rectangles.
+Observe that our algorithm itself does not depend on χ (only its performance and a small dependence on the value of
+χ in terms of the number of estimates saved). Therefore, even if rectangles are mostly fat or mostly satisfy the properties, there will be performance beneﬁts. Our technique will give an O (( log U )d−1 )-approximation for the general case of
+d-dimensional KMP.
+For future work, it would be interesting to explore techniques that will reduce the current approximation factor
+O( log U ) for general rectangles to O(1) or 1 ± , using deterministic transformations. Similarly, as the algorithm of Tirthapura and Woodruff [13] has space as well as processing time per rectangle
+
+d
+
+log( mU
+δ )
+
+O (1)
+
+for a discrete d-dimensional
+
+space, it would be interesting to see whether O (d · log U )-approximation algorithms are possible for the general case of
+d-dimensional KMP. Moreover, it would be interesting to evaluate our algorithm experimentally in a real-time setting.
+Acknowledgements
+We are indebted to Srikanta Tirthapura for helpful suggestions for the problem. We are thankful to the anonymous
+reviewer for suggesting us the technique to simplify the proof in Section 4.1 and the approach to obtain Theorem 7.
+References
+[1] G. Sharma, C. Busch, R. Vaidyanathan, S. Rai, J.L. Trahan, An eﬃcient transformation for Klee’s measure problem in the streaming model, in: CCCG,
+2012, pp. 83–88.
+[2] V. Klee, Can the measure of ∪[ai , b i ] be computed in less than O(n log n) steps?, Am. Math. Mon. 84 (4) (1977) 284–285.
+[3] J. Bentley, Algorithms for Klee’s rectangle problems, unpublished notes, Computer Science Department, Carnegie Mellon University, 1978.
+[4] M.L. Fredman, B. Weide, On the complexity of computing the measure of ∪[ai , b i ], Commun. ACM 21 (7) (1978) 540–544.
+[5] B.S. Chlebus, On the Klee’s measure problem in small dimensions, in: SOFSEM, 1998, pp. 304–311.
+[6] E.Y. Chen, T.M. Chan, Space-eﬃcient algorithms for Klee’s measure problem, in: CCCG, 2005, pp. 27–30.
+[7] T.M. Chan, A (slightly) faster algorithm for Klee’s measure problem, Comput. Geom. Theory Appl. 43 (3) (2010) 243–250.
+[8] J. Vahrenhold, An in-place algorithm for Klee’s measure problem in two dimensions, Inf. Process. Lett. 102 (4) (2007) 169–174.
+[9] M.H. Overmars, C.-K. Yap, New upper bounds in Klee’s measure problem, SIAM J. Comput. 20 (6) (1991) 1034–1045.
+[10] J. van Leeuwen, D. Wood, The measure problem for rectangular ranges in d-space, J. Algorithms 2 (3) (1981) 282–300.
+[11] N. Alon, Y. Matias, M. Szegedy, The space complexity of approximating the frequency moments, in: STOC, 1996, pp. 20–29.
+[12] A. Pavan, S. Tirthapura, Range-eﬃcient counting of distinct elements in a massive data stream, SIAM J. Comput. 37 (2) (2007) 359–379.
+[13] S. Tirthapura, D.P. Woodruff, Rectangle-eﬃcient aggregation in spatial data streams, in: PODS, 2012, pp. 283–294.
+[14] http://www.opengeospatial.org/.
+[15] G. Kuper, L. Libkin, J. Paredaens, Constraint Databases, 1st edition, Springer, 2010.
+[16] M. Benedikt, L. Libkin, Exact and approximate aggregation in constraint query languages, in: PODS, 1999, pp. 102–113.
+[17] K. Bringmann, T. Friedrich, Approximating the volume of unions and intersections of high-dimensional geometric objects, Comput. Geom. Theory Appl.
+43 (6–7) (2010) 601–610.
+[18] J.A. Orenstein, T.H. Merrett, A class of data structures for associative searching, in: PODS, 1984, pp. 181–190.
+[19] H. Sun, C.K. Poon, Two improved range-eﬃcient algorithms for F0 estimation, Theor. Comput. Sci. 410 (11) (2009) 1073–1080.
+[20] Z. Bar-Yossef, R. Kumar, D. Sivakumar, Reductions in streaming algorithms, with an application to counting triangles in graphs, in: SODA, 2002,
+pp. 623–632.
+[21] T.H. Cormen, C. Stein, R.L. Rivest, C.E. Leiserson, Introduction to Algorithms, 2nd edition, McGraw–Hill Higher Education, 2001.
+[22] K. Bringmann, An improved algorithm for Klee’s measure problem on fat boxes, Comput. Geom. Theory Appl. 45 (5–6) (2012) 225–233.
+[23] P. Indyk, D. Woodruff, Tight lower bounds for the distinct elements problem, in: FOCS, 2003, pp. 283–289.
+[24] M.W. Bern, D. Eppstein, S.-H. Teng, Parallel construction of quadtrees and quality triangulations, Int. J. Comput. Geom. Appl. 9 (6) (1999) 517–532.
+
+

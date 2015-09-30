@@ -1,0 +1,1002 @@
+j o u r n a l o f i n f o r m a t i o n s e c u r i t y a n d a p p l i c a t i o n s 2 0 ( 2 0 1 5 ) 6 1 e7 3
+
+Available online at www.sciencedirect.com
+
+ScienceDirect
+journal homepage: www.elsevier.com/locate/jisa
+
+Mining a high level access control policy
+in a network with multiple firewalls
+ Hachana a,b,*, Nora Cuppens-Boulahia a, Frederic Cuppens a
+Safaa
+a
+b
+
+Dept. LUSSI, Institut Telecom-Mines/Telecom Bretagne, France
+
+LIAS Labs, Ecole
+Nationale Superieure de Mecanique et d'Aerotechnique, France
+
+article info
+
+abstract
+
+Article history:
+
+A policy mining approach that aims to automatically extract a high level of abstraction
+
+Available online 11 November 2014
+
+policy from the rules configured on a firewall has been recently proposed (Hachana et al.,
+2013). This technique is likely to considerably facilitate firewall management. However,
+
+Keywords:
+
+protecting the information system of a business organization usually requires the
+
+Access control
+
+enforcement of more than one firewall. In this paper, we augment the policy mining
+
+Network security
+
+approach by an additional processing for a network access control policy mining. We
+
+Policy mining
+
+develop the problem of integration of Net-RBAC (Hachana, 2014) policies resulting from
+
+Role mining
+
+policy mining over several firewalls in order to mine a high level network policy. Moreover,
+
+Multiple firewalls
+
+we show how to verify security properties related to the deployment consistency over the
+
+Net-RBAC
+
+firewalls. We illustrate the network policy mining approach by a realistic example, and we
+experimentally evaluate the performance of our merger algorithms.
+© 2014 Elsevier Ltd. All rights reserved.
+
+1.
+
+Introduction
+
+Today's corporations rely entirely on their information systems, usually connected to the Internet. Network access
+control, mainly ensured by firewalls, has become a paramount
+necessity. Yet, the management of manually configured firewall rules is complex, error prone, and costly for large networks. Using high abstract models for the definition and
+update of the access control policies is much more efficient
+and safer than manipulating the firewall configuration at low
+level using the constructor languages directly. The Network
+Role Based Access Control (Net-RBAC) model is adapted to the
+specification of network access control policies. Moreover,
+there exist safe automatic methods to deploy a policy modeled
+with Net-RBAC on firewalls (Preda et al., 2010). Still, the biggest
+challenge to adopt such a model is the initial definition of the
+
+high level policy, especially when a configuration of the firewalls already exists. For most security administrators, it is not
+worth throwing away the deployed filtering rules and starting
+a new policy definition from scratch. Providing a bottom-up
+approach that automatically extracts instances of the NetRBAC policy from the deployed rules on a firewall is likely to
+highly promote the usage of this model. Recently, Hachana
+et al. have proposed such a policy mining technique (Hachana
+et al., 2013). They have defined a generic algorithm based on
+matrix factorization, that could adapt most of the existing
+data mining and role mining techniques (Hachana et al.;
+Fuchs and Meier, 2011) to extract from firewall rules the corresponding policy modeled with Net-RBAC. Nevertheless,
+large and medium networks are usually protected by more
+than one firewall, and the policy mining algorithm in Hachana
+et al. (2013) has been designed for a single firewall. In order to
+provide a complete automatic bottom-up framework for
+
+vigne
+, France.
+* Corresponding author. Institut Telecom-Mines/Telecom Bretagne, 2 Rue de la Chataigneraie, 35510 Cesson Se
+E-mail address: safaa.hachana@telecom-bretagne.eu (S. Hachana).
+http://dx.doi.org/10.1016/j.jisa.2014.10.010
+2214-2126/© 2014 Elsevier Ltd. All rights reserved.
+
+62
+
+j o u r n a l o f i n f o r m a t i o n s e c u r i t y a n d a p p l i c a t i o n s 2 0 ( 2 0 1 5 ) 6 1 e7 3
+
+network policy mining, we still need a further processing of
+policy mining performed on each firewall into a global
+network policy. Proceeding in this modular way has several
+benefits. We can individually examine and analyze the
+configuration of each firewall apart, and detect intra-firewall
+misconfigurations. This could be performed on a regular
+basis to check the current configuration, without necessarily
+running the bottom-up process for the whole network.
+Moreover, we can verify consistency of deployment between
+the firewalls. For instance, we can check the accessibility of a
+permission over all the firewalls on the path before we add it
+to the final network policy.
+In this paper, we handle the problem of integration of NetRBAC policies resulting from policy mining over several firewalls to mine a high level network policy. We propose a twostaged process. In the first stage, we unify the hierarchies of
+the abstract entities of all the firewalls. We assimilate the
+problem to the general mathematic problem of partially ordered set merging. In the second stage, we build the effective
+deployed network policy rules. We integrate the highly
+abstracted rules from the firewalls while checking several
+security properties. We detect irrelevance anomalies consisting of rules that never apply because they are enforced in a
+firewall that is not on the path between the source and the
+destination. We also detect inaccessibility anomalies due to
+inconsistency between the configuration of firewalls on the
+path of the same flow. The correctly deployed rules are
+aggregated into the network policy, whereas the detected
+anomalies are reported.
+Paper organization. Section 2 reviews the related work
+about policy mining techniques and the Net-RBAC model for
+network security policy expression. Then, it introduces the
+problem of Net-RBAC policies integration, and explains the
+followed methodology to solve it. Section 3 proposes an algorithm that tackles abstract entities integration. Section 4
+presents a methodology for network access control rules
+mining through abstract rules integration while verifying
+accessibility and relevance properties in the deployed policy.
+Section 5 illustrates the network policy mining approach by a
+realistic example. Section 6 presents experimental results.
+Section 7 provides a comparison with related work. Section 8
+concludes the paper.
+
+2.
+A bottom-up framework to mine a model
+based network security policy
+2.1.
+
+Firewall policy mining
+
+Policy mining (Hachana et al., 2013) is inspired from the intense
+research realized in the role mining field recently. Role mining
+is the discipline of automating the extraction of the Role Based
+Access Control (RBAC) (Ferraiolo et al., 2001) roles from the
+already deployed set of direct authorizations or access control
+list (ACL) in a system, by using data mining tools. Several role
+mining techniques are proposed in the literature, with
+different assumptions and optimization objectives (Hachana
+et al.; Fuchs and Meier, 2011). However, traditional role mining techniques cannot be directly applied to firewall rules.
+This is because the targeted model, RBAC, is not well suited for
+
+application to network security. Indeed, the RBAC model is
+centered on the role (Fuchs et al., 2011), so the rules are
+modeled with the pattern: [allow role r to access to privilege p],
+where a privilege is a combination of an operation over and
+object. On the other side, a typical network access control rule
+follows the pattern: [allow source_host sh to send service of type s
+to destination_host dh] where sh is an IP address or a panel of
+addresses that send packets of service s defined by: protocol,
+source_port, and destination_port, to dh that is also an IP
+address or a panel of addresses. The three entities are
+semantically at the same level of importance from the
+network access control perspective. As the RBAC model does
+not allow to emphasize this ternary relation, Net-RBAC is an
+extension of the RBAC model defined to meet network access
+control policy specification requirements (Cuppens et al.,
+2004). Net-RBAC considers a three tuple security rules [allow
+user u to perform operation op on object ob] (Hachana, 2014). It
+retains the concept of role to structure the users, and generalizes it by adding two new abstract entities: activity that
+structures the operations, and view that structures the objects.
+The fact that the three concrete entities are structured induces the definition of the abstract rules. An abstract rule is of
+the form [role r is permitted to perform activity a over view v]. The
+concrete access control rule involving a given user u, operation op and object ob exists if u is assigned to a role r, op is
+assigned to an activity a, and ob is assigned to a view v, and the
+triplet (r, a, v) belongs to the relation of abstract rules RAV. The
+model can be easily used to express network access control
+policies if we assimilate the source_host to user, the service to
+operation and the destination_host to object, in the terminology
+of Net-RBAC (Cuppens et al., 2004).
+Policy mining is an extension of role mining to extract a
+high level policy modeled with Net-RBAC from a firewall
+configuration. The method presented in Hachana et al. (2013)
+is based on two phases (see Fig. 2). First, in a preprocessing
+phase, the firewall rules are flattened, i.e. transformed into a
+non-order sensitive and a positive only set of rules. This is a
+prerequisite for the following step. There are solutions in
+literature that perform this transformation, such as the
+approach presented in (Tongaonkar, 2004) that is based on a
+Directed Acyclic Graph (DAG) representation of the rules,
+followed by DAG pruning. Then, the flattened firewall rules
+are parsed, and the different instances of source_hosts, services and destination_hosts are saved respectively in the sets
+of users U, operations OPS, and objects OBJ. The relation of
+concrete rules UOO is built as an m Â n Â k 3-dimensional
+Boolean matrix for m users, n operations and k objects. The
+matrix is initiated with zeroes, and for each firewall rule
+where user i is allowed to perform operation j on object l, the
+cell {ijl} in UOO is set to 1. These relations constitute the concrete level of the Net-RBAC policy. The second phase (see
+Fig. 2) is the factorization of the concrete rules relation UOO to
+extract the abstract rules relation RAV, in addition to the
+structures of roles, activities and views. Policy mining problem is assimilated to a three-dimensional matrix factorization
+problem where the traditional role mining is usually assimilated to a problem of factorization of a two-dimensional matrix of user-to-permission into user-to-role and role-topermission assignment relations. The output of policy mining is the assignment of the initial source_hosts, services and
+
+j o u r n a l o f i n f o r m a t i o n s e c u r i t y a n d a p p l i c a t i o n s 2 0 ( 2 0 1 5 ) 6 1 e7 3
+
+63
+
+Definition 2. Net-RBAC: Network Role Based Access Control model
+A Net-RBAC configuration denoted NetRC ¼ (ROLES, UR, ACTIVITIES, OPA, VIEWS, OBV, RAV) is characterized by:
+
+Fig. 1 e Network architecture using two firewalls and a
+screened subnet.
+
+destination_hosts to structures of respectively roles, activities
+and views, and the equivalent abstract rules involving these
+structures.
+The problem handled by policy mining is formalized as:
+Definition 1. Policy Mining Problem
+Let U be a set of users, OPS a set of operations, OBJ a set of objects, and UOO a user-operation-object assignment relation. Infer the
+unknown Net-RBAC configuration NetRC ¼ (RAV, ROLES, UR, ACTIVITIES, OPA, VIEWS, OBV), under the following assumptions:
+1. An underlying Net-RBAC configuration exists
+2. Exceptions (may) exist.
+By exceptions we mean that direct user-operation-object
+assignment may still be allowed in the Net-RBAC configuration. This may be necessary in some cases: a compromise with
+the solution performance, a flexibility required by an organization, or a tip to discard noise and errors in the initial set of
+rules.
+
+ U, ROLES, OPS, ACTIVITIES, OBJ, and VIEWS which are the sets
+of users, roles, operations, activities, objects and views
+ UR4U Â ROLES, a many-to-many mapping user-to-role
+assignment relation
+ assigned usersðRÞ ¼ fu2Ujðu; RÞ2URg, the mapping of role R
+onto a set of users
+ OPA4OPS Â ACTIVITIES, a many-to-many mapping operationto-activity assignment relation
+ assigned operationsðAÞ ¼ fop2OPSjðop; AÞ2ADg, the mapping
+of activity A onto a set of operations
+ OBV4OBJ Â VIEWS, a many-to-many mapping object-to-view
+assignment relation
+ assigned objectsðVÞ ¼ fobj2OBJjðobj; VÞ2OBVg, the mapping
+of view V onto a set of objects
+ RAV4ROLES Â ACTIVITIES Â VIEWS, a many-to-many-tomany mapping of role-to-activity-to-view assignment relation.
+
+2.2.
+
+Network policy mining from multiple firewalls
+
+The policy mining technique presented above has been
+designed for the management of a single firewall. Most of the
+organizations deploy their network access control policy over
+multiple firewalls to enhance the overall performance, and
+also to define security zones in the network topology by
+distributed check points.
+Obviously, gathering the rules from all the firewalls
+involved in a given policy into one set, and then performing
+policy mining as in the preceding section is unfeasible. It may
+distort the intended access control policy for many reasons.
+The rules are order sensitive, so merging rules from different
+firewalls raises the problem of ordering them. Moreover, the
+
+Fig. 2 e Policy mining framework to extract Net-RBAC network security policy from the configurations of multiple firewalls.
+
+64
+
+j o u r n a l o f i n f o r m a t i o n s e c u r i t y a n d a p p l i c a t i o n s 2 0 ( 2 0 1 5 ) 6 1 e7 3
+
+filtering effect of a rule depends on the location of the firewall
+of enforcement in the topology.
+For instance, we analyze the architecture in Fig. 1. Let's
+suppose that the policy intends to allow http traffic coming
+from Internet to reach the secured Bastion_Host, and prevent
+it from reaching directly the internal network. Yet, http traffic
+that is relayed by the Bastion_Host is allowed to reach the
+internal hosts. One possibility to implement this policy is to
+enforce in the exterior firewall Ext_FW the following rule:
+r1: allow -src any -service http -dest any
+and to enforce in the interior firewall Int_FW the following
+couple of rules:
+r2: allow -src Bastion_Host -service http -dest any
+r3: deny -src any -service http -dest any
+When we gather the rules from the two firewalls, if we put
+the rules from Ext_FW before the rules from Int_FW, rule r1
+will shadow both rules r2 and r3 which become useless. Thus
+in the policy obtained, any http traffic from the Internet can
+reach the internal network threatening its security. If we put
+the rules from Int_FW before, then r3 will shadow r1 and no
+traffic will reach the perimeter network at all. If the deny rule
+r3 is not explicit, then the internal network will be exposed to
+external http traffic. In all these cases, the resulting policy
+from the merger is different from the enforced one.
+The use of any in a firewall instead of a specific list of
+destinations is very usual in practice. Administrators may
+make such a choice for simplicity when they know that, in a
+network topology, the following firewall will block the traffic
+undesirable to reach the next zone. From policy mining
+perspective, where we aim to a generic bottom-up approach to
+be run over the already existing configurations of the firewalls,
+we do not make either assumptions about the choices of the
+administrators or about any possible unintended error or
+misconfiguration problem in the firewalls. There is no way to
+handle exhaustively all the possible cases of interactivity
+problems between the firewalls with reasonable cost. For
+complete network security policy mining, we run the policy
+mining process as described in the previous section on the
+configuration of each firewall apart first. This modular
+approach allows individual analysis of each firewall configuration by structuring its rules into a Net-RBAC state. This
+could be performed on a regular basis to check the current
+configuration, without necessarily running the bottom-up
+process for the whole network. In a second step, we extend
+the process of policy mining for one firewall to handle multiple firewalls as the framework in Fig. 2 shows. We define a
+new phase that automatically analyzes and integrates the
+resulting Net-RBAC policies from the firewalls into one global
+policy for the network.
+
+3.
+
+Integrating abstract entities
+
+In Net-RBAC, abstract entities are defined both by the permissions and by the concrete entities assigned to them. From
+
+the latter perspective, each role (resp. view) is a set of source_hosts (resp. destination_hosts) presented as: IP_address,
+range of IP addresses, or a subnet identifier with IP/netmask.
+Similarly, activities are sets of services. Each service is characterized by some or all of these fields: [protocol, protocol
+related options, (such as the type for ICMP and the acknowledgment value for TCP) destination port(s), source port(s)].
+Besides, a set of abstract entities may be hierarchical,
+depending on the initial set of rules and on the factorization
+objectives in the mining process. Net-RBAC supports abstract
+entities hierarchy, generalizing role hierarchies defined in
+RBAC.
+Thus, a set of abstract entities may be considered as a
+partially ordered set (poset), with regard to the inclusion relation. In network application, a role r1 is included in a role r2 if
+and only if all the source_hosts assigned to r1 are also
+assigned to r2. In this case, r1 is a sub-role of r2, and r2 is a
+senior-role to r1. An activity a1 is a sub-activity of a2 if and
+only if each service si from a1 is included in a service sj
+belonging to a2. A service s1 is included in a service s2 if and
+only if s1 is characterized by the same fields and each of the
+fields of s1 is included or equal in its corresponding field of s2.
+The characteristics of a service are viewed as an indivisible
+element.
+To obtain a homogeneous policy for the network, we have
+to build unified hierarchies of roles, activities and of views
+from the abstract entities mined in each firewall. We compare
+the elements assigned to each abstract entity to detect hierarchical relationships and also exact matching entities so we
+avoid redundancies in the global policy. It is a posets merging
+problem.
+We handle only the roles in this section, the process being
+the same for the activities and the views. Algorithm 1 integrates the roles of one firewall into the network policy roles.
+The inputs are the roles of a firewall on the one hand, and the
+current global roles on the other hand. For consistency with
+the outputs of policy mining, we adopt the Boolean matrices
+representation of data as follows. Given m users, and n roles
+(i.e.,jUj ¼ l, jROLESj ¼ n), the user-to-role UR mapping is represented as an l Â n Boolean matrix where a 1 in cell {ij} indicates the assignment of role j to user i. The role-to-role RH
+mapping is represented as an n Â n Boolean matrix where a 1
+in cell {ij} indicates the role i is a sub-role of the role j. If the set
+of roles is flat, RH will be a diagonal matrix. Thus, the inputs to
+algorithm 1 are the matrices FUR, FRH, NUR, NRH that represent the relations of respectively: firewall-user-to-role
+assignment, firewall roles' hierarchy, current network-userto-role assignment, and current network roles' hierarchy.
+The set of roles in FUR and NUR must be defined over the same
+set of users U. We assume that we have complete and correct
+information about the ordering within both the initial sets of
+roles.
+Algorithm 1 merges the two sets of roles and identifies the
+redundancies of roles between the firewalls along with the
+inheritance relationships. The intermediary matrix K is built
+to bookkeep the relations between the roles from the two sets
+while the algorithm is running (line 1). The rows of K represent
+the roles of the firewall and the columns represent the roles of
+the network policy previously integrated from other firewalls.
+
+j o u r n a l o f i n f o r m a t i o n s e c u r i t y a n d a p p l i c a t i o n s 2 0 ( 2 0 1 5 ) 6 1 e7 3
+
+65
+
+Table 1 e Characterization of the relations between two rules.
+E1=E2
+any
+0
+!1
+0
+any
+
+E1QE2
+
+E1 ¼ E2
+
+any
+0
+0
+!1
+any
+
+any
+3
+!0
+!0
+any
+
+E1∩E2 ¼ ∅
+
+Kij value will designate the relation between the role fRi1 from
+the set FUR and the role nRj from the set NUR. For clarity, the
+relations between the roles are represented in K with symbols:
+nh for not handled yet, d for unrelated with inheritance relation, l in Kij means fRi is a sub-role of nRj, and h means fRi is a
+senior-role of nRj. Finally, r stands for redundancy. When we
+compare two roles, we transfer their resulting order on their
+senior-roles and sub-roles to avoid unnecessary comparisons
+(lines 7, 8, 14, 17, 20). To find the indices in matrix K of the roles
+in the crossing of the two sets such as the senior-roles of a given
+role fRi in FUR and sub-roles of a given nRj role in NRH (e.g. line 17),
+we leverage some of the properties of initial matrices. Indeed,
+in FRH, the column i provides the indices of the sub-roles of fRi
+and the row i provides the senior-roles of fRi. The same holds
+for nRj in NUR. Thus, a simple Boolean multiplication2 between
+row i of FRH and column j of NRH provides the indices in K of
+the cells that correspond to relations between the sub-roles of
+fRi in the firewall and the senior-roles of nRj in the current
+network policy which are required in lines 8 and 17 of the
+algorithm. Likewise, a direct multiplication of column j of NRH
+with row i of FRH provides the indices in K of the senior-roles
+of fRi and the sub-roles of nRj (lines 7 and 14), and a multiplication of column i of FRH with transpose of column j in NRH
+provides indices of relations between sub-roles of nRi and subroles of nRj (line 20).
+The output of algorithm 1 is the updated set of network
+roles NUR' after the integration of the roles UR, and their NRH'
+updated hierarchy relation. The set of users is still the same,
+and the set of roles is augmented by the number of firewall
+roles not redundant with roles already in the network policy
+(maxn;m m' m þ n).
+Theorem 1. Correctness. Algorithm 1 calculates the relationships
+between roles from both input sets correctly.
+PROOF. A role fRi is calculated to be a sub-role of nRj only if
+the users of fRi are included in the set of users of nRj by direct
+comparison (line 13) or nRj is a super-role of a senior-role of fRi
+(lines 7, 14). A role fRi is calculated to be a senior-role of nRj
+only if the users of nRj are included in the set of users of fRi by
+direct comparison (line 16) or nRj is a sub-role of a sub-role of
+fRi (lines 8, 17). Redundancy is detected only by direct comparison (line 6). Finally, only the partially overlapping roles
+(line 22), the disjoint roles (line 19), and the respective subroles of two disjoint roles (line 20) are not related by the inheritance relation according to the algorithm.
+
+1
+
+In algorithm 1 we abbreviate assigned_users(R) by R.
+A Boolean matrix multiplication between Boolean matrices
+A2f0; 1gnÂk and B2f0; 1gkÂm is denoted A5B ¼ C where
+k
+C2f0; 1gnÂm and cij ¼ ∨ ∧ail blj .
+2
+
+l¼1
+
+!1
+0
+0
+0
+0
+
+E1∩E2sfE1; E2; ∅g
+any
+0
+0
+0
+!1
+
+Disjoint
+Exact Match
+Inclusion
+Generalization
+Partial Overlap
+
+Theorem 2. Completeness. Algorithm 1 discovers all the redundancies and the inheritance relationships between roles from the
+two input sets.
+PROOF. The two embedded for loops (lines 2 and 3) ensure
+that all the cells of K that are not handled will be processed.
+We need to handle the relation between two roles only once
+since two roles can be related by one and only one from the
+following relationships: ri = rj or ri Q rj, or ri ¼ rj, or no inheritance relationship in case the roles are disjoint or
+partially overlapping. All the cases of redundancy are
+detected first by direct comparison (line 6). The switch case
+structure (line 6 to 21) considers all of the remaining
+possibilities.
+Computational Complexity. Algorithm 1 complexity is
+calculated by the number of comparisons of roles necessary to
+establish the inheritance relation. It depends on the inputs.
+The maximum number of comparisons is n Â m if both the two
+sets are flat. The algorithm is more efficient when the inheritance tree is dense in the two sets. The best complexity is
+deterministic when each input set is a chain, i.e. a totally ordered set.
+
+4.
+
+Integrating abstract rules
+
+The target network policy from mining is a unified set of rules
+independent from the topology except for routing decisions
+that take part in the high level security purposes. The rules are
+checked to be relevantly and consistently deployed in the
+network. In this phase, we integrate the abstract rules
+resulting from policy mining on each firewall into one global
+set of rules.
+The inputs of algorithm 2 represent the abstract rules of
+each firewall extracted by policy mining. We have substituted
+in the rules the redundant entities between the different
+firewalls by the unified entity names identified in the previous
+stage of abstract entities integration. Besides, the algorithm
+requires the routing paths and the position of the firewalls in
+the topology. For each rule in each firewall, algorithm 2 checks
+the relevance and accessibility properties before adding the
+rule to the network policy. A rule is relevant if the firewall
+where it is implemented is on the path between the role and
+the view zones. Otherwise, the rule is reported as irrelevant
+since it never applies, and is discarded from the final mined
+network policy (line 5). If the rule is relevant, algorithm 2
+verifies the accessibility of the rule on the whole path. If one or
+several other firewalls on the path between the role and the
+view zones block the traffic of the rule, then the rule is not
+properly enforced in the network. It is also discarded from the
+
+66
+
+j o u r n a l o f i n f o r m a t i o n s e c u r i t y a n d a p p l i c a t i o n s 2 0 ( 2 0 1 5 ) 6 1 e7 3
+
+mined network policy, and reported as an inaccessibility
+anomaly. There are two cases: partial and total inaccessibility.
+If the traffic is wholly blocked at a firewall this means total
+inaccessibility. If a subset of the traffic is accessible along the
+path, we derive that sub-rule and we add it to the final policy,
+and we report the main rule as inaccessible.
+
+role1∩role2 ¼ ∅) because they can never match the same
+packet.
+In all the remaining categories, there is a dependency between the two rules, i.e. packets exist that may be matched
+by both of them. This means that each couple of respective
+abstract entities in the three fields of the rules (role1-to-
+
+Verifying the accessibility of a rule from a given firewall in
+the other firewalls on the path is not a straightforward operation. The handled rule may be supported in the other firewalls
+under different forms: an exact matching rule, or divided into
+several rules that may be border overlapping. This springs from
+the multiple ways to implement the same concrete rules on the
+firewalls and the many ways to cluster these rules by policy
+mining. So, we have to compare it to all the other rules in each
+firewall on the path until it is covered, or otherwise it is inaccessible. Any pair of compared rules matches one and only one
+of these relationships considered by algorithm 2:
+
+role2, activity1-to-activity2, view1-to-view2) is overlapping.
+2. Exact matching: all of the three fields are exactly matching.
+The two rules make up a redundancy between the
+firewalls.
+3. Totally overlapping: each of the three entities in one rule
+are included in the corresponding entity in the other rule.
+Depending on the order of the two compared rules, this
+relationship can be inclusion or generalization.
+4. Partially overlapping: at least one pair of entities is borderoverlapping and the remaining pairs are totally or partially
+overlapping.
+
+1. Independent: two rules are totally disjoint if and only if one
+or more of the corresponding fields are totally disjoint (e.g.
+
+The algorithm compares each pairwise of abstract entities
+(role1-to-role2, activity1-to-activity2, view1-to-view2) as sets of
+
+j o u r n a l o f i n f o r m a t i o n s e c u r i t y a n d a p p l i c a t i o n s 2 0 ( 2 0 1 5 ) 6 1 e7 3
+
+concrete entities, and counts the number of occurrences of each
+symbol in the table of reference (Table 1).
+Algorithm 2 uses cache_rj_FWk to cumulate the coverage
+of the rj rule by rules from the FWk firewall that is also
+crossed by the traffic of rj. Moreover, to avoid comparing two
+rules more than once during all the execution, algorithm 2
+also uses cache_rl_FWi to bookkeep the compared rules
+coverage with the current rj rule. All the caches of the algorithm are initialized to an empty rule with three empty
+fields. To allow a good readability, algorithm 2 considers that
+there is one path between the role and view zones of a given
+rule (line 3). In practice, if the function get_path returns
+several paths, all the paths are addressed subsequently. The
+rule is reported to be irrelevant only if the firewall where it is
+enforced does not belong to any of the paths. The accessibility of the rule is checked for each path apart. Moreover, we
+add to the structure of the rule a context_path that specifies
+the list of the crossed firewalls before we add it to the
+network policy. Likewise, algorithm 2 does not show how we
+handle the differentiation between partial and total inaccessibility although it is supported in our implementation
+(Sections 5 and 6). In that respect, we add a further control
+after having compared the rule to all the other rules in a
+given firewall (line 30) so that if cache_rj_FWk does not cover
+rj, but is not empty, rj may be partially accessible. We create
+a new rule corresponding to cache_rj_FWk and we insert it in
+the firewall rules in order to check its accessibility later
+within the second main for loop (line 11). The outputs of
+algorithm 2 are the network policy rules with the pattern
+(role, activity, view, and optionally context_path), checked to
+be relevant and accessible, and the report of irrelevant and
+inaccessible rules.
+Theorem 3. Correctness. All the rules in the final network policy
+are accessible and relevant.
+PROOF. In algorithm 2, a rule is added to the network policy
+only in line 38. This clause is within the else flow of control of
+the if line 4, which guarantees that the relevance of the rule
+has been checked. Moreover, adding the rule demands one
+condition: that the Boolean variable Path_Accessibility be true.
+This variable is initialized to true after checking that the rule is
+relevant (line 7). It is set to false if the rule is not accessible on
+any firewall on the path (line 34) within the for loop that
+checks accessibility on the path of the rule (line 8). It cannot be
+set to true again for the same rule, which guarantees the
+accessibility of the added rule.
+Theorem 4. Completeness. All the firewalls abstract rules that are
+relevant and accessible are added to the final policy.
+PROOF. The main for loop (line 1) ensures that all the firewalls are processed. For each firewall, algorithm 2 processes
+the rules one by one in an embedded for loop (line 11) to check
+their relevance and then their accessibility. The accessibility
+of a rule in another firewall on the path is confirmed if the
+traffic of the rule is permitted by one or multiple rules. The
+comparison between two rule belongs at least to one of them
+which can be proved by mandatory counting. The categories
+are exclusive: a rule fits at most one of them. There is no need
+to compare with the rules of firewalls that have been already
+handled in the main for loop, since all the rules of these
+
+67
+
+firewalls have been previously compared with all the rules of
+firewalls on the same paths, and the comparison results are in
+the corresponding caches. To ensure that the caches of the
+other firewalls are complete, the algorithm finishes the comparison with all the rules even if the boolean variable
+FW_Accessibility is set to true. After processing a given rule,
+algorithm 2 removes its sub-rules from firewalls which are
+located in the same path (lines 17, 23). Indeed if the rule is
+totally inaccessible, all the sub-rules are also totally inaccessible, and if it is added to the network policy, they are taken
+into consideration as well in an aggregated form.
+Computational Complexity. Time complexity of algorithm 2
+is determined by the number of rules comparison. Only rules
+from firewalls involved in the same path at least for one rule
+are compared. The worst case complexity is O(c Â nc), when all
+the firewalls are on one path, with c the number of firewalls,
+and n the average number of rules on each firewall. Considering that c is a bounded number and that n approaches infinity, this complexity is polynomial. The best time
+complexity is deterministic when every rule crosses only one
+firewall.
+
+5.
+
+Example
+
+To illustrate our approach, we consider an access control
+policy for the architecture given in Fig. 3. The traffic of the
+customers and of the employees are separated through two
+independent screened networks using four firewalls
+(Elizabeth and Zwicky, 2000). Employees are allowed to surf
+on the Internet, and to remotely connect to their work stations only throughout perimeter_network_2. Some of the
+traffic must be relayed by the proxy Bastion_Host. The servers
+of the organization are provided with public interfaces
+through the perimeter_network_1. Administration and saving
+backups of the servers are monitored from the private internal network.
+
+Fig. 3 e Network topology with two separated screened
+networks.
+
+68
+
+j o u r n a l o f i n f o r m a t i o n s e c u r i t y a n d a p p l i c a t i o n s 2 0 ( 2 0 1 5 ) 6 1 e7 3
+
+Fig. 4 e Abstract rules resulting from policy mining on each firewall.
+
+Fig. 5 e Network policy rules resulting from the integration of the firewalls policies.
+
+j o u r n a l o f i n f o r m a t i o n s e c u r i t y a n d a p p l i c a t i o n s 2 0 ( 2 0 1 5 ) 6 1 e7 3
+
+Fig. 4 shows the abstract rules resulting from policy
+mining (Hachana et al., 2013) on each of the four firewalls.
+These are the inputs of the policy integration process. We do
+not present the original concrete rules nor the concrete entities to abstract entities assignment of each firewall apart.
+We are solely interested in the subsequent phase of firewall
+policies integration for network policy mining. Naming the
+roles, activities and views derives from the appreciation of
+the security administrator and is not automatically generated by policy mining. Fig. 6 shows the results of merging the
+abstract entities with algorithm 1. On the left side, we can see
+the unified sets of roles and activities, and the concrete entities assigned to them. In this example, the roles happen to
+be exactly the same as the activities, so we represent only
+one set. The right side shows the unified hierarchy relationships of roles/views, and activities. We can note that any is an
+exception considered as an indivisible element. The results
+of rule merging with algorithm 2 are in Fig. 5. In the report,
+we can see that rule 7 from FW_Ext1 is detected to be
+
+69
+
+irrelevant since the firewall is not on the path from the
+Bastion_host to the Internet. Likewise, rule 3 in FW_Ext2 is
+totally inaccessible because FW_Int2 is also crossed by the
+traffic, and blocks all of it. Rule 2 in FW_Int2 is partially
+accessible because FW_Ext2, which is on the same path,
+permits all the traffic between the source and the destination
+but for the Command Channel FTP passive mode. The rule is
+reported to be partially inaccessible, and a new rule (rule 2 in
+Fig. 5) with the maximal traffic allowed by both firewalls is
+created and added to the network policy rules.
+
+6.
+
+Experimental results
+
+We have implemented a proof of concept framework for the
+whole network policy mining process. The scenario of our
+experiments is: we generate a random Net-RBAC configuration, we divide it into multiple firewalls, and we perform
+policy mining on the set of concrete rules of each firewall
+
+70
+
+j o u r n a l o f i n f o r m a t i o n s e c u r i t y a n d a p p l i c a t i o n s 2 0 ( 2 0 1 5 ) 6 1 e7 3
+
+Fig. 6 e Network unified abstract entities and their hierarchies.
+
+apart. Then we run the algorithms 2 and 1 to obtain a network
+Net-RBAC configuration in a reverse engineering process.
+We have first implemented a random Net-RBAC configuration generator that takes as input the number of users, operations, objects, roles, activities and views, in addition to the
+density of the concrete-to-abstract entities assignments and
+the density of the abstract rules, and then randomly generates
+the matrices UR, OPA, OBV and RAV of an Net-RBAC
+
+configuration. The probability to have 1 in a cell is equal to
+density. We have generated four data sets with increasing
+sizes and with the density parameters set to 0.1.
+To simulate the enforcement of the Net-RBAC rules on
+multiple firewalls, we have devised an algorithm that takes
+the desired number of firewalls and the density of each firewall, then it picks randomly a subset of abstract rules from the
+Net-RBAC configuration to assign it to each firewall. For
+
+j o u r n a l o f i n f o r m a t i o n s e c u r i t y a n d a p p l i c a t i o n s 2 0 ( 2 0 1 5 ) 6 1 e7 3
+
+71
+
+Fig. 7 e Experimental results with the policy merger algorithms.
+
+consistency, the algorithm ensures that the rules between a
+given role and a given view are assigned together to firewalls
+to simulate the firewall positioning in the topology. A relation
+that simulates the routes is generated from the repartition of
+network rules into firewalls. For each tuple of role and view,
+the relation routes supplies the set of firewalls between them.
+We have adapted the Singular Value Decomposition SVD algorithm to perform policy mining on the concrete rules of
+each firewall.
+Fig. 7(a) shows that the execution time of algorithm 1 tends
+to rise with the increasing number of abstract entities corresponding to each of the four Net-RBAC configurations divided
+into four firewalls. The execution time fluctuates slightly according to the hierarchy size of the abstract entities, but remains low.
+For Fig. 7(b), we have subsequently divided each of the four
+data sets into 2, 4, 12 and then 20 firewalls. We have plotted
+the execution time of algorithm 2 in terms of the number of
+abstract rules. For the same Net-RBAC configuration, the
+execution time tends to rise with the number of firewalls
+because the average number of firewalls on a route increases
+and the number of comparisons for accessibility verification
+with it. Likewise, the execution time increases with the
+number of abstract entities. In the fourth data set, the number
+of abstract rules averages 21,000, corresponding to around
+180,000 concrete rules, and the execution time takes few
+hours, whereas it takes only few seconds for data set 3 with
+2598 abstract rules, corresponding to 11,892 concrete rules.
+
+7.
+
+Related work
+
+Different approaches in literature have addressed firewall
+management problems. Penetration testing and offline
+simulation based query tools aim at analyzing the behavior of
+already configured firewalls. They are intrusive and/or they
+require an active interaction with the user whose queries and
+envisaged scenarios may be neither exhaustive nor precise.
+They are usually difficult to conduct. Formal approaches have
+been usually leveraged in rules misconfiguration detection
+
+through structural analysis. For instance, (Jeffrey and Samak,
+2009) describes a model checking method for the analysis of
+the combined behavior of multiple firewalls. This methodology allows the verification of rules reachability property and
+the detection of rules cyclicity anomaly. Nielson et al. (Nielson
+et al., 2002) have proposed a calculus computation control
+flow test for authentication and authorization validation in
+firewall implementation. All the above approaches aim at
+analyzing the behavior of already configured firewalls.
+Fitzgerald et al. (Fitzgerald et al., 2007) have provided a
+descriptive logic based on a Netfileter ontology that allows to
+define a formally proven conflict free firewall policy in a topdown manner. Cuppens et al. (2004) have suggested to express network security policies using the OrBAC model, and
+provided a top-down approach to automatically deploy it in
+the network. This model is similar to Net-RBAC in structuring
+the three concrete entities, but is augmented with other features such as the concepts of organization and context.
+Regarding bottom-up approaches, some solutions have
+tried to refactor the rules deployed on a firewall by rewriting
+them in a more readable and optimized way. In particular,
+refactoring may involve aggregating the rules. For example in
+Marmorstein and Kearns (2006), Marmorstein et al. has proposed a solution to aggregate firewall rules by classifying each
+of the source_hosts and destination_hosts into homogeneous
+groups. In Tongaonkar et al. (2007), Tongaonkar et al. have
+extended this work by classifying the services as well. Abdin
+et al. 2010 have proposed to apply data mining techniques
+combined with specific heuristics to perform a similar work of
+aggregation but in a different usage context. They do not
+process on the firewall rules, but on the logs of the firewalls.
+They try to extract the effective firewall rules through aggregating the logs and compare them to the original rules. These
+solutions of aggregation of firewall rules do not target a well
+defined model of higher level policy, and thus they may produce too much unstructured output to be useful.
+What we propose is a bottom-up approach to reach a
+standard model based level of abstraction. This model guarantees portability, interoperability, integration of the network
+security policy in the global organization policy, and facilitates
+
+72
+
+j o u r n a l o f i n f o r m a t i o n s e c u r i t y a n d a p p l i c a t i o n s 2 0 ( 2 0 1 5 ) 6 1 e7 3
+
+the information transmission to new security administrators. It
+allows to correct and update the configuration of the policy at
+high level, then deploys it on the firewalls in a cyclic manner.
+Moreover, we leverage different existing tools from other areas
+of research that have a sound theoretical background. Indeed,
+the last years have showed the raise of role mining, the bottomup approach to extract policies modeled with RBAC from the
+deployed user-to-permission assignments in an organization.
+Several solutions have been proposed in this field (Hachana et
+al. 2012 Fuchs and Meier, 2011). Ene et al. (2008) have applied a
+standard role mining solution on two firewall sets. To get a 2dimensional input data matrix, they have merged two dimensions of the firewall rules which are source_hosts and
+destination_hosts into one dimension considering them to be
+the permissions in the RBAC model, while they have clustered
+the services into roles. This initiative did not have much impact
+because it is not adapted to network security. To the best of our
+knowledge, policy mining (Hachana et al., 2013) has been the
+only model based bottom-up approach that specifically
+handled firewall rules in the context of network security.
+However, it has considered mining a single firewall policy. In
+this paper, we have extended this approach for multi-firewall
+management. For that, we have proposed a methodology
+based on Net-RBAC policies integration.
+Shafiq et al. (2005) have dealt with the issue of integration of
+roles from multiple RBAC policies. However, the algorithm
+presented is very sophisticated and inherently includes additional features of RBAC such as separation of duties, that do not
+tally with network security application as modeled in the policy mining process. In this paper, we have presented a different
+approach that may be used to integrate RBAC roles as well as
+Net-RBAC roles, activities and views. We have shown that the
+abstract entities integration issue maps with the partially ordered sets (Poset) merging problem that is a general mathematic problem. Chen et al. (2003) have considered poset
+merging as a generalization of the list merging problem. They
+have proposed a low complexity solution to merge two chains
+from a poset. However they left the problem of decomposition
+of the two posets to merge into chains un-handled. In this
+paper, we have proposed a new algorithm that does not require
+this decomposition. Algorithm 1 may be used to integrate RBAC
+roles as well as Net-RBAC roles, basing on the users assignment
+or as well as on the permissions assignment to them.
+Al-Shaer and Hamed (2004) have proposed a modeling for
+the interaction between inter-firewall rules based on rule
+comparison in order to automatically reveal conflicts at rule
+insertion, removal, and modification. They have modeled the
+rules as k-tuples of concrete entities, and defined five categories of relationships between rules. Nevertheless, we have
+noted that some rules may match both categories partially
+disjoint and correlated definitions, whereas these categories are
+assumed to be disjoint in their anomaly detection automate
+design. In this paper, algorithm 2 is grounded on a new definition of the interaction categories for the comparison of rules
+that we use for accessibility verification.
+Besides, the emerging Software-Defined Networking (SDN)
+architecture has presented recently as the new alternative to
+the traditional approach for network configuration at device
+level. SDN abstracts the underlying infrastructure from the
+network control. The network control becomes then directly
+
+programmable and independent from the forwarding functions. It mainly bases on the OpenFlow protocol (McKeown
+et al., 2008), an industrial standard. SDN technology promises a high flexibility of the network, but at the price of new
+security concerns. As it is, the OpenFlow protocol is not recommended in highly sensitive networks (Shin et al., 2013). We
+expect a critical analysis of the security challenges posed by
+SDNs to be performed soon, for the exploration of potential
+new defensive capabilities. In particular, the management of
+firewalls and other access control devices is likely to change
+within SDN architecture. For instance, SDN can allow administrators to route all the traffic through one central firewall. The bottom-up approach for firewall management
+proposed in this paper may bring a substantial contribution
+for firewalls deployed in an SDN, as it motivates for the same
+paradigm of management at high level of abstraction.
+Nevertheless, a challenge may reveal in the cases where it
+becomes impossible to determine where the security devices
+are deployed in the topology. The rule merger algorithm 2
+would need to be amended to communicate with the network
+control level in order to remain able to verify the relevance
+and the accessibility security properties. This may require
+new high abstraction level modeling of the paths and the relationships between roles and views. For example, the
+concept of proximity as defined in proxRBAC model may be
+leveraged for such usage (Gupta et al., 2012).
+
+8.
+
+Conclusion & perspectives
+
+We have proposed in this paper an integration process of NetRBAC policies of multiple firewalls involved in the same
+network security defense. This process aims at completing the
+bottom-up approach framework that allows to mine a
+network policy modeled with the Net-RBAC model from the
+rules enforced in several firewalls. In this view, we have
+shown that it is necessary to run policy mining on each firewall apart, and integrate the policies obtained only after. We
+have proposed a methodology based on unifying the roles,
+activities and views hierarchies of the network policy through
+defining a poset merging algorithm. Then, we have proposed a
+solution to build the network high level policy rules while
+verifying relevance and accessibility properties. We have
+illustrated the whole process with a realistic example. The
+proof of concept platform has shown the feasibility of our
+integration process and the algorithms performance.
+In addition to the high practical interest for network security management, the abstract entities integration algorithm could be used for poset merging in general. The policy
+integration solution could be extended to augmented versions
+of the Net-RBAC or OrBAC to support stateful firewalls.
+
+references
+
+Abedin M, Nessa S, Khan L, Al-Shaer E, Awad M. Analysis of
+firewall policy rules using traffic mining techniques. Int J
+Internet Protocol Technology 2010;5:1e2.
+
+j o u r n a l o f i n f o r m a t i o n s e c u r i t y a n d a p p l i c a t i o n s 2 0 ( 2 0 1 5 ) 6 1 e7 3
+
+Al-Shaer E, Hamed H. Modeling and management of firewall
+policies. Netw Service Manag IEEE Trans 2004;1(1):2e10.
+Chen P, Ding G, Seiden S. On poset merging. Tech. rep. Louisiana
+State University, Dpt of Computer Science & Dpt of
+Mathematics; 2003.
+ge A. A formal
+Cuppens F, Cuppens-Boulahia N, Sans T, Mie
+approach to specify and deploy a network security policy. In:
+Dimitrakos T, Martinelli F, editors. Formal aspects in security
+and trust. Springer; 2004. p. 203e18.
+Elizabeth DBC, Zwicky D. Simon Cooper, building internet
+firewalls. 2nd ed. O'Reilly Media; 2000.
+Ene A, Horne W, Milosavljevic N, Rao P, Schreiber R, Tarjan RE.
+Fast exact and heuristic methods for role minimization
+problems. In: Proceedings of the 13th ACM symposium on
+Access control models and technologies SACMAT'08. ACM;
+2008. p. 1e10.
+Ferraiolo DF, Sandhu R, Gavrila S, Kuhn DR, Chandramouli R.
+Proposed NIST standard for role-based access control,
+standard. NIST; 2001.
+Fitzgerald WM, Micheal SNF, Foghlu O. Confident firewall policy
+configuration management using description logic. In: 12th
+Nordic Workshop on Secure IT Systems; 2007. p. 11e2.
+Fuchs L, Meier S. The role mining process model - underlining the
+need for a comprehensive research perspective. In:
+Proceedings of the 6th International Conference on
+Availability Reliability and Security ARES'11. IEEE; 2011.
+p. 35e42.
+Fuchs L, Pernul G, Sandhu RS. Roles in information security e a
+survey and classification of the research area. Comput Secur
+2011;30(8):748e69.
+Gupta A, Kirkpatrick M, Bertino E. A formal proximity model for
+RBAC systems. In: 8th International Conference on
+Collaborative Computing: networking, Applications and
+Worksharing CollaborateCom 2012; 2012. p. 1e10.
+Hachana S, Cuppens F, Cuppens-Boulahia N, Atluri V. Policy
+mining: a bottom-up approach toward a model based firewall
+management. In: Proceedings of the 9th International
+Conference on Information Systems Security (ICISS 2013).
+Springer Verlag; 2013. p. 133e47.
+
+73
+
+Hachana S, Cuppens-Boulahia N, Cuppens F. Role mining to assist
+authorization governance: how far have we gone? Int J Secur
+Softw Eng (IJSSE) 2012;3(4).
+Hachana S. Policy mining: a bottom-up approach for network
+
+security management. Ph.D. thesis. France: Ecole
+Nationale
+rieure de Me
+canique et d’Ae
+rotechnique; July 2014.
+Supe
+Jeffrey A, Samak T. Model checking firewall policy configurations.
+In: IEEE International Symposium on Policies for Distributed
+Systems and Networks: POLICY 2009; 2009. p. 60e7.
+Marmorstein RM, Kearns P. Firewall analysis with policy-based
+host classification. In: Proceedings of the 20th conference on
+Large Installation System Administration LISA'06. Berkeley,
+CA, USA: USENIX Association; 2006. p. 41e51.
+McKeown N, Anderson T, Balakrishnan H, Parulkar G, Peterson L,
+Rexford J, et al. Openflow: enabling innovation in campus
+networks. ACM SIGCOMM Comput Commun Rev
+2008;38(2):69e74.
+Nielson F, Nielson HR, Hansen RR. Validating firewalls using flow
+logics. Theor Comput Sci 2002;283(2):381e418.
+Preda S, Cuppens-Boulahia N, Cuppens F, Garcı´a-Alfaro J,
+Toutain L. Model-driven security policy deployment: property
+oriented approach. In: Massacci F, Wallach DS, Zannone N,
+editors. International Symposium on Engineering Secure
+Software and Systems ESSoS 2010, vol. 5965. Springer; 2010.
+p. 123e39.
+Shafiq B, Joshi J, Bertino E, Ghafoor A. Secure interoperation in a
+multidomain environment employing RBAC policies. IEEE
+Trans Knowledge Data Eng 2005;17(11):1557e77.
+Shin S, Porras P, Yegneswaran V, Fong M, Gu G, Tyson M. Fresco:
+modular composable sec. In: 20th Network and Distributed
+System Security Symposium NDSS 2013; 2013.
+Tongaonkar A, Inamdar N, Sekar R. Inferring higher level policies
+from firewall rules. In: Proceedings of the 21st Large
+Installation System Administration Conference LISA '07; 2007.
+Tongaonkar AS. Fast pattern-matching techniques for packet
+filtering, the graduate school in partial fulfillment of the
+requirements for the degree of master of science in computer
+science. Stony Brook University; May 2004.
+
+

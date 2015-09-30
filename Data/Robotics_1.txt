@@ -1,0 +1,998 @@
+Robotics and Autonomous Systems 73 (2015) 102–110
+
+Contents lists available at ScienceDirect
+
+Robotics and Autonomous Systems
+journal homepage: www.elsevier.com/locate/robot
+
+Soft exosuit for hip assistance
+Alan T. Asbeck, Kai Schmidt, Conor J. Walsh ∗
+Biodesign Lab, School of Engineering and Applied Sciences, Harvard University, Cambridge, MA, USA
+The Wyss Institute for Biologically-Inspired Engineering, Cambridge, MA, USA
+
+highlights
+• Soft exosuit to actuate hip extension.
+• Applies 30% of thenominal biological torques during walking at 1.25 m/s.
+• New spooled-webbing actuator.
+
+article
+
+info
+
+Article history:
+Available online 16 October 2014
+Keywords:
+Exosuit
+Wearable robotics
+Walking assistance
+
+abstract
+Exoskeletons comprised of rigid load-bearing structures have been developed for many years, but a new
+paradigm is to create ‘‘exosuits’’ that apply tensile forces to the body using textiles and utilize the body’s
+skeletal structure to support compressive forces. Exosuits are intended to augment the musculature by
+providing small to moderate levels of assistance at appropriate times in the walking cycle. They have a
+number of substantial benefits: with their fabric construction, exosuits eliminate problems of needing to
+align a rigid frame precisely with the biological joints and their inertia can be extremely low. In this paper,
+we present a fully portable hip-assistance exosuit that uses a backpack frame to attach to the torso, onto
+which is mounted a spooled-webbing actuator that connects to the back of the users thigh. The actuators,
+powered by a geared brushless motor connected to a spool via a timing belt, wind up seat-belt webbing
+onto the spool so that a large travel is possible with a simple, compact mechanism. Designed to be worn
+over the clothing, the webbing creates a large moment arm around the hip that provides torques in the
+sagittal plane of up to 30% of the nominal biological torques for level-ground walking. Due to its soft
+design, the system does not restrict the motion of the hip in the ab- and adduction directions or rotation
+about the leg axis. Here we present the design of the system along with some initial measurements of the
+system in use during walking on level ground at 1.25 m/s, where it creates a force of up to 150 N on the
+thigh, equivalent to a torque of 20.5 Nm to assist hip extension.
+© 2014 Elsevier B.V. All rights reserved.
+
+1. Introduction
+A large number of lower limb exoskeletons have been developed over the years, usually with the purpose of assisting or augmenting human walking. For individuals needing to carry heavy
+loads such as soldiers or recreational backpackers, the promise of
+a mechanical assist is welcoming, potentially reducing muscle fatigue, metabolic expenditure, or injury rates. For individuals needing assistance with walking such as the elderly or paraplegic, or
+patients requiring gait rehabilitation, such devices could potentially restore walking function.
+
+∗ Corresponding author at: Biodesign Lab, School of Engineering and Applied
+Sciences, Harvard University, Cambridge, MA, USA.
+E-mail addresses: aasbeck@gmail.com (A.T. Asbeck),
+kschmidt@seas.harvard.edu (K. Schmidt), walsh@seas.harvard.edu (C.J. Walsh).
+http://dx.doi.org/10.1016/j.robot.2014.09.025
+0921-8890/© 2014 Elsevier B.V. All rights reserved.
+
+Many previous exoskeletons have comprised of rigid loadbearing structures, designed to transmit forces to the ground
+while tracking or applying torques to the wearer’s joints at points
+along the structure. Some of these use the exoskeleton to support
+the weight of a hiker’s backpack [1–4], while others support a
+paraplegic’s bodyweight [5–10].
+An alternative approach that has been applied to assist walking
+is to apply torques to the user’s joints in parallel with the musculature, but without transmitting a load to ground. In particular,
+devices have been constructed to augment the strength of the hip
+and knee in healthy individuals [11,12]. Many other such devices
+are powered orthoses [13–15] that are designed to support disabled individuals by providing assistance at both the hip and knee
+to compensate for reduced muscle strength. These systems are also
+rigid, and may require an ankle–foot orthosis to be used with them
+to provide stability for the ankle joint and prevent migration of the
+
+A.T. Asbeck et al. / Robotics and Autonomous Systems 73 (2015) 102–110
+
+rigid components that can often have significant weight. Two previous devices for assisting the hip in flexion used pneumatic actuators [16–18] along with rigid plastic orthoses to secure to the leg
+and pelvis such that a pin joint was approximately colocated with
+the hip. Several other devices have been made to provide assistance
+to the ankle alone, both for plantarflexion and dorsiflexion [19,20].
+These units offer the potential to increase power generation capability at the ankle to support forward propulsion in addition to
+ensuring sufficient toe clearance from the ground during swing.
+A more recent rigid exoskeleton is the Honda Walking Assist
+Device with Stride Management System [21,22], which actuates
+the hip joint in both flexion and extension. This device consists of
+a hybrid soft–rigid waist belt and struts that extend partially down
+the thigh, where they attach with narrow straps. It is powered by
+a motor approximately colocated with the wearers hip joint in the
+sagittal plane and includes a passive joint just above the motor to
+permit small amount of hip ab-/adduction. It functions differently
+from the previously-discussed examples, in that it only applies
+small forces and serves primarily to regulate the cadence of the
+wearer. Humans are known to walk most efficiently at a certain
+cadence (steps per minute) for a given forward velocity, and the
+Honda system applies small torques to the hips to entice the user
+into walking at that cadence.
+As an alternative to rigid exoskeletons, a new paradigm is to create ‘‘exosuits’’ that are comprised of fabrics and utilize the body’s
+skeletal structure to support compressive forces. Exosuits are used
+to augment the musculature by providing small amounts of assistance at crucial times in the walking cycle, as opposed to being
+able to apply large torques or support significant weight. These systems have a number of substantial benefits: with their fabric construction, exosuits eliminate problems of needing to align a rigid
+frame precisely with the biological joints and their inertia can be
+extremely low. These two features virtually eliminate resistance
+to motion, thus permitting close to natural kinematics. Furthermore, exosuits can be light and sleek, permitting them to be worn
+constantly; thus enabling rehabilitation or strength augmentation
+to occur for longer periods of time throughout the day. However,
+while these systems do offer potential benefits over rigid exoskeletons, there are limitations related to controllability and maximum
+applied force and thus much research remains to characterize them
+and understand their capabilities.
+While the concept of an exosuit is relatively new, a number of
+designs have already been developed. Wehner et al. [23] created a
+pneumatically-powered system that assists ankle plantarflexion,
+and uses a garment of cloth and webbing to secure to the legs,
+waist, and shoulders. Asbeck et al. [24] developed a Bowden-cabledriven biologically inspired exosuit that assists both ankle plantarflexion and hip flexion with a single actuator for each leg. This
+is achieved with a multi-articular exosuit architecture that transmits forces from the waist and thigh through the knee and to the
+back of the calf, where it connects to the heel via the Bowden cable.
+Kawamura et al. [25] made a pneumatically-powered exosuit to assist hip flexion, with the device attaching to the wearer with a wide
+waist belt and a brace that crosses the knee. In addition to assisting
+walking, several other exosuits have been developed that support
+the back and torso while the wearer is lifting heavy loads [26–28].
+The system described in this paper is a new example of a soft
+exosuit that uses the body’s bone structure to support compressive
+forces and does not provide kinematic restrictions to the joints. The
+design assists hip extension, and is shown in Fig. 1.
+In this paper, we focus on the design of the exosuit. In the following sections, we present an overview of the system, model how
+it applies torques to the body, and compute the requirements for
+the actuators. We describe and perform analysis for a new spooledwebbing actuator. We also present preliminary measurements of
+the system in use during walking on level ground, demonstrating
+its functionality.
+
+103
+
+Fig. 1. Top, exosuit to assist hip extension described in this paper. Two actuator
+units are mounted on a backpack frame, and connect to cloth thigh braces with
+webbing. Bottom, overview of device operation. Starting at 90% in the gait cycle,
+which extends from one heelstrike to the next, the actuator units retract the
+webbing. This produces a force on the thigh that increases until 6% in the gait cycle.
+The actuator units then spool out the webbing so the force decreases, reaching zero
+at 20% in the gait cycle. At other times in the gait cycle, the webbing is slack so that
+no force is applied to the leg.
+
+2. System overview
+Our design (Fig. 1) utilizes a backpack frame to attach to the
+torso, and uses geared motors to retract webbing ribbon connected
+to a thigh brace on each leg. The actuators wind up the webbing
+ribbon onto a spool, which permits large (>25 cm) travel with a
+simple mechanism. The bottom of Fig. 1 shows how the device
+functions during the walking cycle. The actuators retract the
+webbing just before heelstrike, which in conjunction with the leg’s
+motion creates forces pulling the thigh back. The force peaks just
+after heelstrike, concurrent with the wearer extending their hip to
+support themselves on the newly-planted leg. The actuators then
+extend the webbing again, so that there is no force in the webbing
+for the majority of the gait cycle.
+This actuation scheme is unique in that the ribbon is wound on
+top of itself, increasing the spool diameter as the ribbon retracts.
+Mechanisms that wind or unwind a thin ribbon from a spool with
+an actuator have been used in several applications previously,
+including retracting seat belts, reading audio and video magnetic
+tapes, mopping floors, and deploying drip system tubing [29–32].
+
+104
+
+A.T. Asbeck et al. / Robotics and Autonomous Systems 73 (2015) 102–110
+
+For comparison, many devices wind up a thin cable around a spool,
+but the cable typically travels down the length of the spool as it
+winds, instead of solely winding on top of itself as it does in our
+actuators. We use webbing instead of a thin cable so the device is
+comfortable if the wearer is seated or if their leg is at large (>90°)
+angles in flexion. In these scenarios, a narrow cable would dig into
+the body, while the 2′′ wide webbing will press in only a small
+amount due to its much larger contact area. The webbing further
+forms a wide attachment to the thigh brace, helping distribute
+forces around the thigh.
+The webbing path between the backpack and thigh brace creates a large moment arm around the hip, providing torques in the
+sagittal plane of up to 30% of the nominal biological hip torques
+for level-ground walking. A key feature of this soft design is that it
+does not restrict the motion of the hip in the ab- and adduction directions or in rotation about the leg axis. The webbing also permits
+the force to be measured inside the actuator unit, since it extends
+directly from it to the thigh attachment. Measuring forces internally permits the unit to be compact and robust, with no wiring
+or sensors outside of the actuation units. The system also includes
+two footswitches that are used to estimate the wearer’s cadence
+and phase through gait.
+The prototype device is capable of applying forces to the leg
+of up to 150 N at walking speeds up to 1.79 m/s (4 mph). The
+device utilizes the backpack frame to transmit torques to the torso,
+pushing forward and downward on the lower back with forces up
+to 188 N and pulling back on the shoulders with forces up to 50 N.
+The entire device weighs 7.57 kg including batteries to last for 2.8 h
+of use. The bulk of the weight is on the torso, with each thigh brace
+providing minimal inertia to the leg with a weight of 0.17 kg.
+3. Calculations
+In this section we present a simple model of the system and
+perform calculations to determine the necessary velocity of the
+ribbon at the motor in order for the actuators to achieve sufficient
+forces necessary to apply a scaled version of the nominal hip
+moment during walking on level ground at 1.43 m/s (3.2 mph). It
+should be noted that these values depend on the compliance of the
+body and suit in addition to the leg’s motion.
+3.1. System modeling
+A diagram of the system is shown in Fig. 2. This shows the backpack frame worn on the user’s torso and the webbing ribbon extending downward to the thigh brace. Within the leg, a number of
+springs are shown, representing the compliance of the tissue between the surface of the leg and the underlying bone. The muscle,
+fat, and other tissue in the leg will compress as they transfer forces
+to the femur bone, which is the only rigid component in the leg.
+Additional springs are shown at the waist and the shoulder, where
+the body also has some compliance. We model the total effective
+stiffness of all of these locations as they interact with the system together as the stiffness kbody . The compliance of the ribbon itself can
+be ignored since it is comparatively inextensible, with a stiffness of
+600,000 N/m for a 25 cm length (Young’s modulus = 2.41 GPa).
+The top right of the diagram in Fig. 2 shows a geometric model of
+the wearer’s leg and how the exosuit attaches to it. The pivot point
+of the hip in the sagittal plane is shown by a large black dot. The leg
+extends downward from this point at an angle θhip with respect to
+vertical (shown in the figure as positive), and the leg bone forms an
+angle ψ with respect to the webbing ribbon. The pivot point of the
+hip is assumed to be horizontal from the bottom of the actuators
+where the webbing exits, and the distance between these two
+
+Fig. 2. Left, diagram of person wearing the system, showing the forces exerted
+on the wearer by the device. The wearer’s body compresses at the thigh, waist,
+and shoulder, the behavior of which is represented by the lumped stiffness kbody .
+Right, model used to calculate the required motor displacement in order to apply a
+specified moment Mhip at the hip as the hip moves.
+
+points is denoted a. The distance between the hip pivot point and
+the point at which the ribbon would intersect the femur bone, if it
+continued through the leg tissue, is denoted l. As the user walks,
+the perpendicular moment arm r between the ribbon and the hip
+joint will vary due to θhip changing. The force on the webbing, F ,
+and the moment arm r, combine to form the moment exerted on
+the hip, Mhip .
+The bottom right of the diagram shows the distances related
+to the ribbon travel. In each case, these distances are along the
+ribbon, which will change orientation as the wearer walks. xm is
+the position of the ribbon at the actuator, with positive out of
+the actuator (downward and to the right in the figure). xhip is the
+position of the ribbon at the virtual point where it connects to the
+femur, also with positive downward and to the right, with xhip = 0
+when the hip is furthest in extension. In between, xs is the length
+of the simulated spring representing the compliance of the leg
+tissue kbody . While in reality the leg tissue is compressing, this is
+equivalent to an extension spring extending backward from the
+femur, and it is drawn as such in the model for simplicity. For each
+of these positions, we ignore constant offsets since we are only
+concerned with the net travel of the tissue and actuator.
+The length of ribbon between the actuator and femur is defined
+as:
+lribbon =
+
+
+
+a2 + l2 − 2al cos π /2 + θhip
+
+
+
+
+
+(1)
+
+The travel of the ribbon needed to follow the hip motion (xhip ) is
+
+√
+
+a function of this distance. Subtracting
+0) = 0, we get:
+xhip = lribbon −
+
+
+
+a2 + l 2
+
+a2 + l2 so that xhip (θhip =
+
+(2)
+
+To calculate the external moment Mhip that the hip exosuit is
+capable of applying to the person, it is necessary to determine the
+angle ψ between the thigh and the webbing.
+
+A.T. Asbeck et al. / Robotics and Autonomous Systems 73 (2015) 102–110
+
+105
+
+Fig. 3. Measured stiffness of the suit-human system, determined by retracting the
+webbing while holding the hip in a fixed vertical position and measuring the force
+at the actuator unit. Three cycles of a sine wave actuation profile are shown with
+thin black lines. Also shown is a quadratic line of best fit to the rising edge (thicker
+dashed line).
+
+Mhip = rF
+
+(3)
+
+r = l sin(ψ)
+
+ψ = arccos
+⇒
+
+F =
+
+
+
+(4)
+l2 + l2ribbon − a2
+2 l lribbon
+
+Mhip
+l sin(ψ)
+
+.
+
+
+(5)
+(6)
+
+Beyond modeling the geometric changes as the hip moves during walking, the stiffness of the body must be taken into account.
+Intuitively, in addition to tracking the hip’s motion, to apply forces
+the motor must retract the ribbon additionally to compress the
+thigh tissue.
+Experiments discussed in Section 3.2 found that the body
+stiffness can be approximated by a second-order equation:
+F (xs ) = p1 x2s + p2 xs .
+
+(7)
+
+For a force to be applied to the webbing, it must displace the
+suit-human spring kbody :
+F = p1 x2s + p2 xs ≡
+
+⇒
+
+xs =
+
+−p 2
+2p1
+
+Mhip
+
+
+
++
+
+(8)
+
+l sin(ψ)
+p2
+2p1
+
+2
+
+
++
+
+Mhip
+p1 l sin(ψ)
+
+
+
+.
+
+(9)
+
+Finally, the motor position xm can be calculated from the sum
+of the hip motion and the spring motion. According to the defined
+coordinate frame, the motor position xm that is required to track
+and apply forces to the hip can be calculated by:
+xm = xhip − xs .
+
+(10)
+
+We use this modeled motor position to determine requirements
+for the actuator units, and as a basis for generating motor trajectories in practice.
+3.2. Measurements of suit-human stiffness
+To determine the actual value of the lumped stiffness kbody , a
+set of experiments were performed using the assembled device.
+This and other human-subjects experiments in this paper were approved by the Harvard Institutional Review Board. For the protocol,
+the wearer stood with the measured leg forward with their feet
+
+Fig. 4. Top, biological hip moment profile vs. approximated profile, which is used
+for the simulation after scaling by 31%. Hip extension moments are positive, which
+corresponds to the muscles pulling the leg towards the posterior. Middle, resulting
+position profiles of the hip (xhip ), spring (xs ), and motor (xm ) during ground level
+walking. Here flexion positions are positive, which corresponds to the leg angled
+towards the front of the body or the motor spooling out the ribbon. The spring
+position is plotted with the spring extending being positive. Bottom, hip speed (vhip )
+and motor speed (vm ) that is necessary both to track and to actuate the hip. All
+graphs are shown as a function of percentage through the gait cycle, which extends
+from one heel strike to the next.
+
+40 cm apart as shown in the inset in Fig. 3, and the actuator was
+commanded to retract the ribbon 16.5 cm and then release it following a sinusoidal profile at 0.5 Hz. The ribbon displacement was
+determined experimentally so that a force of approximately 200 N
+would be applied to the wearer. This was repeated three times, and
+the results plotted in Fig. 3 with an offset removed where no force
+was applied to the body.
+The rising portion of the curve (corresponding to when the
+actuator was pulling) was fitted to a quadratic equation, also
+plotted in Fig. 3, resulting in the line of best fit:
+F (xs ) = p1 x2s + p2 xs
+
+(11)
+
+p1 = 8899.7,
+
+(12)
+
+p2 = 99.546
+
+where xs is in meters and F in Newtons.
+3.3. Simulations
+Using the model of the system and the measured body stiffness,
+we next compute the required actuator travel in order to apply a
+scaled version of the nominal hip moment to the body.
+We begin with the nominal biological sagittal hip moment
+for level-ground walking, duplicated from [33]. This is plotted in
+Fig. 4(top) with respect to the percentage through the gait cycle,
+which extends from one heel strike to the next for a given foot.
+The biological moment begins slightly before heel strike to decelerate the leg, and peaks just after heel strike to prevent the leg from
+collapsing as it accepts the weight of the body. We next form an approximated hip moment which is smoothed relative to the nominal
+moment and is limited to positive (extensor) torques, also shown
+in Fig. 4(top). This curve was constructed by selecting seven points
+
+106
+
+A.T. Asbeck et al. / Robotics and Autonomous Systems 73 (2015) 102–110
+
+along the nominal moment profile to match the starting point,
+peak, end point, and several relevant points in between, then interpolating and smoothing with a low-pass filter. It differs slightly
+from the nominal moment between 90% and 100% in the gait cycle
+to avoid rapid changes in force which an actuator would have difficulty following, and because a smooth moment profile will feel
+more comfortable to the wearer. Since the exosuit is designed to
+apply a partial assistance torque to the wearer, we then scale the
+smoothed approximation by 31% for use in subsequent calculations. This scaling corresponds to a peak force of 145 N at the leg
+for a 76 kg individual. When the smoothed approximation is scaled
+by 31%, it is close in magnitude to the unscaled biological moment
+between 90% and 100% in the gait cycle. We use this scaled approximation as Mhip in our model. Using this along with the nominal biological hip angle (not shown), also from [33], and plugging them
+into Eqs. (1)–(8), we generate positions xhip , xs , and xm , with offsets
+removed so that xhip reaches 0 when the hip is furthest back and xs
+is zero when no force is applied. These are shown in Fig. 4(middle).
+In these calculations, we use a = 0.32 m, l = 0.266 m, and we assume a gait period of 1.15 s which was empirically measured with
+a subject walking on a treadmill at 1.25 m/s (2.8 mph).
+In Fig. 4(middle), the hip position xhip starts at a large positive
+value at heel strike (the leg is forward, in flexion) and decreases
+until around halfway through the gait cycle when the leg is furthest
+back, in extension, and then increases in value again. If the motor
+were to perfectly track the hip’s motion, applying no force to
+the ribbon, then the motor trajectory would follow this profile as
+well. Instead, the motor must retract the ribbon additionally (more
+negative values of xm in the plot) to generate force across the body’s
+compliance. As indicated on the far left of the plot, the difference
+in height between the hip position xhip and the motor position xm
+is the amount the spring is extended (xs ). In the center of the gait
+cycle, when the applied moment is zero, the simulation shows the
+motor tracking the hip (xm = xhip ), as indicated in the figure.
+In addition to the solid lines in the figure, a possible alternate
+path for the motor position is shown in a red dashed line. This
+line is above the hip position, which corresponds to slack in the
+ribbon. Slack in the ribbon guarantees that the force is zero during
+35%–85% in the gait cycle; if the actuators were tracking the leg
+imperfectly, antagonistic forces could be applied to the leg during
+that time. When operating the device in practice, we use a motor
+trajectory similar to this that creates slack in the ribbon.
+In Fig. 4(bottom), the resulting velocities of the ribbon at the
+hip (vhip ) and motor (vm ) are plotted. The motor velocity at around
+90% in the gait cycle shows that a speed of 0.95 m/s is required to
+compress the body’s compliance and apply the specified moment
+to the hip. For comparison, if the body was extremely stiff, the
+actuators would have to follow a path very close to that of the hip
+itself, and thus have a velocity of vhip . To track the hip’s motion, this
+would require a speed of 0.67 m/s, which occurs at around 70% in
+the gait cycle when no force is on the ribbon. During the period
+when force is applied to the ribbon, the maximum speed of the leg
+is only 0.32 m/s, a value much slower than 0.95 m/s. In summary,
+a major effect of the body’s compliance is to increase the required
+motor speed for applying forces by more than a factor of two.
+One interesting point is how to optimize the positioning of
+the ribbon with respect to the hip joint. The simulation assumed
+relatively large distances between the actuator and the hip joint
+(a = 0.32 m) and the distance down the leg (l = 0.266 m). It is
+interesting to consider what would happen if these distances were
+varied. This analysis is illustrated in Fig. 5, which shows the peak
+force F and peak motor velocity vm required to achieve the approximated moment profile in Fig. 4 as distances a and l are varied.
+According to the measured stiffness data, the body’s compliance
+requires 12 cm of ribbon travel to achieve 145 N of force. This
+displacement would likely be similar if the distances a and l
+
+Fig. 5. Peak force F (top) and peak motor velocity vm (bottom) required to produce
+the approximated hip moment shown in Fig. 4 after it is scaled as distances a and l
+are varied. As the distance between the ribbon and the hip joint increases (a and l
+increase), the required peak force goes down. The required motor velocity decreases
+up to a certain point due to the motor being more able to compress the body’s
+compliance. For large values of a and l, the peak motor velocity increases due to
+the necessity of tracking the leg at 70% in the gait cycle. The values of a and l used
+in the device are shown by an asterisk in each plot.
+
+were changed, since the combined stiffness of the leg, waist, and
+shoulder is largely independent of the strap’s positioning on the
+leg. For small values of a and l, in the bottom left corner of the plots,
+larger ribbon forces are required because the moment arm about
+the hip has been reduced. The motor velocities are also increased,
+because the larger forces require additional displacement of the
+body’s compliance, and it must occur in the same amount of time as
+before. The motor would then be much faster than needed in order
+to track the hip’s motion, which would be slower by a factor of two
+due to the smaller moment arm. Thus, smaller values of a and l
+result in a higher peak motor power and a mismatch in required
+motor speeds at different points in the gait cycle.
+For larger values of a and l, the force decreases monotonically
+as the radius between the ribbon and hip joint increases. The peak
+motor velocity also decreases as a and l increase, but only up to a
+point. In the top right corner of the plot, with large values of a and l,
+higher motor velocities are again needed, but now in order to track
+the hip’s motion at around 70% in the gait cycle. In this region, the
+motor power during the pull phase is reduced, but the motor may
+be required to move faster than desired. The minimum required
+motor velocity corresponds to a ribbon position which results
+in near-equal speeds for compressing the body’s compliance and
+tracking the joint’s motion.
+The values of a and l used in our device are close to this
+point, and were prevented from being any larger due to practical
+concerns. The thigh brace was made tall (20 cm) to distribute the
+force broadly over the wearer’s thigh, which limited the maximum
+possible value of l. Similarly, the value of a was restricted to prevent
+the device from protruding too far from the wearer.
+For the device we constructed, we chose a maximum speed
+of 0.75 m/s to design towards, slightly slower than the 0.95 m/s
+predicted by the simulation, in order that the peak force delivered
+to the body might be slightly higher than would be possible with
+a 0.95 m/s peak speed. This slower speed means that the position
+
+A.T. Asbeck et al. / Robotics and Autonomous Systems 73 (2015) 102–110
+
+107
+
+Fig. 6. Left, assembled actuation unit, and center, view of the inside. Right, diagram
+of the pulley system, which measures the ribbon force F indirectly by measuring Fr .
+1 - spool; 2 - idler; 3 - feeder system; 4 - cantilever load cell (Phidgets 20 kg Micro
+Load Cell); 5 - timing pulley; 6 - Maxon EC 4-pole 30 motor plus 32 mm gearbox.
+
+and force pulse will be slightly more spread out as compared to
+the simulated one. This speed is still capable of tracking the hip’s
+motion, however, which only requires a speed of 0.67 m/s.
+4. Mechanical design
+Following our determination of the required ribbon speed at the
+motor, we can design the actuator accordingly. We first present
+the overall design of the actuator unit, and then discuss the ribbon
+spool and the electrical design.
+4.1. Overall design
+A rendering of the actuator unit is shown in Fig. 6. The unit
+consists of a geared motor (6) connected to the spool (1) that winds
+up the webbing ribbon via a timing belt (5). After exiting the spool,
+the ribbon passes over an idler pulley connected to two cantileverstyle load cells (4) before exiting the unit through a feeder system
+(3) comprised of two additional idlers. In addition to guiding the
+ribbon, this system of idlers and load cells is used to detect the force
+in the ribbon, as shown in the far right of Fig. 6. The ribbon passes
+over the instrumented idler at an angle β on each side, so that when
+the ribbon pulls with force F , a horizontal force Fr is induced on the
+instrumented idler. By measuring this force with a load cell on each
+side of the idler, the ribbon force can be computed via
+F =
+
+Fr
+2 sin(β)
+
+(13)
+
+where Fr is the sum of the readings from the two load cells. The load
+cells achieve an accurate reading of the ribbon force because the
+friction in the feeder system is low, and the ribbon does not contact
+anything between the feeder and where it attaches to the leg.
+
+rspool (φ) =
+
+4.2. Ribbon spool
+The actuator functions by winding up webbing onto a spool, depicted in Fig. 7(top). The spool has a minimum usable radius rs,min , a
+maximum radius rs,max , and the webbing has thickness twebbing . The
+webbing exiting the spool is at position xm and pulls with force F ,
+as previously discussed. The shape of the webbing in the spool is
+an Archimedes’ spiral [34], with radius r a function of the angle
+the webbing forms around the spool φ . In general, an Archimedes
+spiral has the equation
+r (φ) = αφ.
+
+Fig. 7. Top, diagram of the spool depicting the relevant variables. Middle, plot of
+how the spool radius varies as a function of the number of rotations of the spool
+for various ribbon thicknesses. Data are normalized to be fractions of the maximum
+spool radius rmax . Bottom, webbing speed and force as a function of spool radius in
+our actuators.
+
+(14)
+
+In our situation, we have α = twebbing /(2π ), the spool has
+a minimum radius rs,min , and we denote the radius at which the
+webbing exits the spool rspool , resulting in
+
+twebbing
+2π
+
+φ + rs,min .
+
+(15)
+
+If the spool rotates at angular velocity ω =
+velocity of the webbing exiting the spool is
+
+v = rspool ω =
+
+twebbing
+
+φ
+
+φ
+
++ rspool,min
+
+dφ
+,
+dt
+
+φ
+
+2π
+dt
+dt
+and the arc length between rs,min and rspool is
+s(φspool ) =
+
+twebbing
+4π
+
+
+
+the linear
+
+(16)
+
+
+(φspool + c ) 1 + (φspool + c )2
+
+
+
+
++ ln (φspool + c ) + 1 + (φspool + c )2
+
+
+− c 1+
+
+c2
+
++ ln c +
+
+
+
+1+
+
+
+c2
+
+(17)
+
+108
+
+A.T. Asbeck et al. / Robotics and Autonomous Systems 73 (2015) 102–110
+
+approximately 18 cm of ribbon travel, which is more than enough
+to actuate the hip during level-ground walking. This means that the
+change in radius during walking (and hence velocity) is less than
+5% throughout the gait cycle. The minimum and maximum values
+of our spool radius correspond to 1.98 wraps around the spool and
+35.8 cm of ribbon travel. This travel gives extra room for adjusting
+the device to different sizes of individual as well as permitting the
+actuators to feed out enough ribbon to permit the wearer to bring
+their knee to their chest, which requires 25 cm of ribbon.
+The gear reduction can be computed after the spool radius is
+determined. The encoder on the motor is limited to 12,000 rpm =
+1256.6 rad/s. With the output spool at its minimum radius of
+2.75 cm, and a required ribbon velocity of 0.75 m/s, the output
+spool must have an angular velocity of ω = v/rspool = 27.27 rad/s.
+This gives a required gear reduction of 46.07:1 between the
+motor and output spool. We choose a gearbox of 23:1 and use a
+timing belt to give another 2:1 reduction to achieve 46:1 for the
+combination.
+To compute the expected ribbon force at the output of the
+actuator, we estimate the efficiency of the drive train components.
+The Maxon 32 mm 23:1 gearbox has a quoted efficiency of 75%,
+the timing belt is assumed to have an efficiency of 95%, and the
+other idler pulleys and friction with the feeder have an assumed
+efficiency of 90%–95%. This combines to make a total mechanical
+efficiency of 64.1%–67.7%. With a motor torque of 0.14 N m, this
+leads to a torque at the minimum spool radius of 4.128 N m and a
+force on the ribbon of 150 N. The final ribbon speed and force are
+plotted as a function of spool radius in Fig. 7(bottom).
+
+Fig. 8. Electronics block diagram.
+
+where
+c=
+
+2π
+twebbing
+
+rs,min .
+
+(18)
+
+These equations are derived by taking the arc length of an
+Archimedes’ spiral from [34], substituting in the appropriate
+variables for our application, and subtracting the equivalent arc
+length of the center of the spool (r < rs,min ).
+Since the spool will change radius as it winds up or feeds out
+the ribbon, the velocity of the ribbon and torque produced by the
+actuator will change slightly over time. Fig. 7(middle) examines
+how the radius changes for a generic spool as a function of several
+parameters. The x-axis of this plot shows the rotations of a sample
+spool, with a fully-wound spool at radius rs,max having N turns,
+and each tick mark to the left of that corresponding to one fewer
+winding of ribbon around the spool. On the vertical axis, the
+radius of the spool is plotted as a fraction of the maximum spool
+radius. The plot shows results for several different thicknesses of
+ribbon: the top line shows a very thin ribbon of thickness 0.01rs,max
+while the bottom line shows a thick ribbon (relative to the spool
+maximum radius) of 0.1rs,max . For the thinnest ribbon shown, the
+radius varies by only 5% over five rotations of the spool, while for
+the thickest ribbon shown it varies by 50%. Since the velocity of
+the ribbon exiting the spool is proportional to the spool radius for
+a constant angular velocity, this graph can also be used directly
+to understand the variation in velocity with a spooled ribbon. For
+most systems, a thin ribbon is desired so the velocity and torque
+will not vary significantly (<10%) during operation.
+4.2.1. Parameters for our system
+Our device uses seatbelt webbing for the ribbon, which has
+a thickness of twebbing = 1.26 mm. We chose a spool radius
+with rs,min = 2.75 cm and rs,max = 3 cm. The minimum radius
+is large enough to provide space inside the spool to secure the
+webbing to the spool, and so that the ribbon velocity is relatively
+constant. The size also minimizes the inertia of the spool. With
+these numbers, twebbing = 0.042rs,max , which would be located on
+Fig. 7(middle) just above the twebbing = 0.05rs,max line. The spool
+radius is large enough that one rotation of the spool corresponds to
+
+4.3. Electronics overview
+A block diagram of the electronics is shown in Fig. 8. An Aurora
+PC104 realtime computer running Matlab xPC Target is the primary
+controller. The PC104 reads in the amplified load cell signals and
+the footswitches, and sends an analog position control signal to an
+mbed LCP1768 microcontroller which acts as a communications
+module. This in turn runs a position controller, and uses a CAN
+bus to transmit desired motor currents to the Roboteq SBL1360
+motor controllers. To complete the feedback loop, the motor
+controllers transmit the motor encoder readings back to the mbed
+communications module, which then converts them to an analog
+signal and sends them back to the PC104 for logging.
+5. Results
+For preliminary walking experiments, we used footswitches
+to segment the gait, and a position controller to move the
+ribbon spool through a trajectory at specified times in the gait
+cycle. Following our calculations of xm in Section 3.3, we form
+a position trajectory profile by using a triangular pulse with a
+similar amplitude as xm (12.3 cm actual vs. 11.8 cm xm ) and similar
+timing, but with the motor acceleration- and velocity-limited to
+3500 rotations/s2 and 12,000 rpm, respectively. The resulting
+profile extends from 80% to 25% in the gait cycle. The controller
+maintains a buffer of the last 5 footstrike times and computes the
+average gait period. It assumes the wearer is walking at a constant
+velocity, and uses the average gait period to estimate when they
+are at 80% in the gait cycle. At that point, the motor executes the
+position-controlled motor trajectory, which creates a force in the
+ribbon through the compliance of the body. This scheme depends
+on the wearer walking at a constant cadence in order to have the
+motor’s pull line up well with the biological hip moment. Even so,
+this simple control scheme is useful for determining the behavior
+of the device.
+Results from an individual wearing the system while walking at
+1.25m/s (2.8 mph) are shown in Fig. 9. In this figure, we compare
+
+A.T. Asbeck et al. / Robotics and Autonomous Systems 73 (2015) 102–110
+
+Fig. 9. Results for one leg for a subject walking at 1.25m/s (2.8 mph). Top, graph of
+motor position xm used in the experiment, and simulated xhip and xs . Bottom, graph
+of measured force in the ribbon with standard deviation as compared to simulated
+force using the model.
+
+simulated data with measured data to validate the model. For
+the simulated data, we use the reference hip angle θhip from [33],
+lengths a and l measured on the subject, and the actual motor
+trajectory xm . These are used with the model developed in Section 3
+to calculate the resulting webbing force and hip position. In
+the figure, the top graph shows the actual motor trajectory xm
+along with the simulated hip position xhip and spring length xs .
+The bottom plot shows the simulated force as compared to the
+measured force and its standard deviation.
+As shown in the bottom graph, in practice the device achieves
+9% less force (133 N vs. 146 N) despite 0.5 mm additional cable
+travel as compared to the simulation. This difference is likely due to
+additional torso lean which occurs during walking, especially when
+the force is applied at the shoulder. The measured force also drops
+off faster than the simulated force; this is likely due to the fact that
+the model did not include the hysteresis in the body-suit stiffness
+curve. In general, though, the model fits the measured data well.
+The resulting assistive pulses of force feel natural due to their
+being aligned well with the nominal biological torques. During the
+period of force application, the leg is approximately at a constant
+angle of Ψ = 35°, which also can be seen from the approximately
+constant position of xhip in Fig. 9 from 90% to 15% in the gait cycle.
+At this angle, the thigh brace pulls up along the leg as well as
+backward. This does result in some translation of the thigh brace
+vertically along the leg, but this motion is minimal due to the
+conical shape of the thigh just above the knee. If the thigh brace
+is initially wrapped snugly around the thigh, there is no motion
+between the skin and thigh brace, making it comfortable to wear
+during actuation for the level of force we propose to apply.
+6. Conclusion
+In conclusion, we have modeled and designed an exosuit that
+effectively applies moments to the hip joint, contributing up to
+30% of the nominal biological moment for walking. The design
+does not restrict the hip’s motion with rigid linkages, but relies
+on the bone structure to support compressive forces across the
+
+109
+
+joint. Substantial forces can be applied to the leg through the
+soft interface, and the limiting factor is not the comfort of the
+system but the available motor power. The soft interface does
+have substantial compliance, which requires higher motor speeds
+compared to a rigid system. Compared to classical exoskeletons,
+the system is lighter and less restrictive to the wearer’s motion.
+In addition, it can be put on and taken off very rapidly or simply
+disengaged from the wearer while assistance is not required. While
+having these advantages, the system is limited in the amount of
+assistance that can be applied to the wearer and uses a single motor
+that only assists unidirectionally (in that it assists hip extension
+but not flexion). However, we believe this will be sufficient for
+improving walking economy.
+For the current control strategy, we assumed that an appropriate torque profile to apply to the hip was a scaled version of the biological joint moment, but further work is required to validate this.
+For assistive applications such as hiking or load carriage, it may be
+beneficial to provide the wearer with as much power as possible.
+For rehabilitation, individuals may require moment profiles specific to their particular injury. If a scaled biological joint moment is
+indeed best, increasing the speed and bandwidth of the actuation
+system would be useful to duplicate this moment more precisely,
+since the device currently provides a smoothed version of the biological moment. At force levels higher than those used currently,
+matching the biological moment may be especially important. Increasing the bandwidth of the actuators could also permit using
+force-control instead of a position-control scheme. Improving the
+control scheme will be a major thrust of future work, so the system
+can adapt on a per-step basis to changes in gait. Adding additional
+sensors such as gyroscopes to estimate the hip angle over time may
+be useful. Further testing of the system is also necessary to determine its effect on gait, both kinematically and metabolically.
+In future work, the system will be made significantly lighter and
+smaller, so that it can be packaged compactly to fit onto a hiking
+backpack or orthosis supporting the trunk. Further optimization
+will also be performed to select the vertical height of the actuators
+with respect to the hip joint to maximize the overall efficiency.
+The current design allows a person to sit down while wearing
+the device, but positioning the actuators lower may improve the
+stiffness and increase the moments transmitted to the joints.
+Alternately, for some applications a lower-profile unit that could be
+worn under clothing may be beneficial. In all of these situations, the
+ability to provide moments at the hip through a compliant, nonrestrictive mechanism should be very useful.
+Acknowledgments
+This material is based upon work supported by the Defense
+Advanced Research Projects Agency (DARPA), Warrior Web Program (Contract No. W911QX-12-C-0084). The views and conclusions contained in this document are those of the authors and
+should not be interpreted as representing the official policies, either expressly or implied, of DARPA or the U.S. Government.
+This work was also partially funded by the Wyss Institute for
+Biologically Inspired Engineering at Harvard University.
+References
+[1] A. Chu, H. Kazerooni, A. Zoss, On the biomimetic design of the Berkeley
+lower extremity exoskeleton (bleex), in: Robotics and Automation, 2005. ICRA
+2005. Proceedings of the 2005 IEEE International Conference on, IEEE, 2005,
+pp. 4345–4352.
+[2] H. Kazerooni, R. Steger, The Berkeley lower extremity exoskeleton, J. Dyn. Syst.
+Meas. Control 128 (2006) 14.
+[3] C. Walsh, K. Endo, H. Herr, A quasi-passive leg exoskeleton for load-carrying
+augmentation, Int. J. Humanoid Robot. 4 (03) (2007) 487–506.
+[4] E. Garcia, J.M. Sater, J. Main, Exoskeletons for human performance augmentation (EHPA): A program summary, J. Robot. Soc. Japan 20 (8) (2002) 44–48.
+
+110
+
+A.T. Asbeck et al. / Robotics and Autonomous Systems 73 (2015) 102–110
+
+[5] A. Esquenazi, M. Talaty, A. Packel, M. Saulino, The ReWalk powered
+exoskeleton to restore ambulatory function to individuals with thoracic-level
+motor-complete spinal cord injury, Am. J. Phys. Med. Rehabil. 91 (11) (2012)
+911–921.
+[6] P.D. Neuhaus, J.H. Noorden, T.J. Craig, T. Torres, J. Kirschbaum, J.E. Pratt, Design
+and evaluation of Mina: A robotic orthosis for paraplegics, in: Rehabilitation
+Robotics (ICORR), in: 2011 IEEE International Conference on, IEEE, 2011,
+pp. 1–8.
+[7] H. Yano, S. Kaneko, K. Nakazawa, S. Yamamoto, A. Bettoh, A new concept of
+dynamic orthosis for paraplegia: the weight bearing control (wbc) orthosis,
+Prosthet. Orthot. Int. 21 (3) (1997) 222–228.
+[8] B.J. Ruthenberg, N.A. Wasylewski, J.E. Beard, An experimental device for
+investigating the force and power requirements of a powered gait orthosis,
+J. Rehabil. Res. Dev. 34 (1997) 203–214.
+[9] Y. Ohta, H. Yano, R. Suzuki, M. Yoshida, N. Kawashima, K. Nakazawa, A
+two-degree-of-freedom motor-powered gait orthosis for spinal cord injury
+patients, Proc. Inst. Mech. Eng., Part H: J. Eng. Med. 221 (6) (2007) 629–639.
+[10] K.A. Strausser, T.A. Swift, A.B. Zoss, H. Kazerooni, B.C. Bennett, Mobile
+Exoskeleton for Spinal Cord Injury: Development and Testing, ASME, 2011.
+[11] H. Kawamoto, Y. Sankai, Power assist system HAL-3 for gait disorder
+person, in: Computers Helping People with Special Needs, Springer, 2002,
+pp. 196–203.
+[12] A. Dollar, H. Herr, Lower extremity exoskeletons and active orthoses:
+Challenges and state-of-the-art, IEEE Trans. Robot. 24 (1) (2008) 144–158.
+[13] H.A. Quintero, R.J. Farris, C. Hartigan, I. Clesson, M. Goldfarb, A powered lower
+limb orthosis for providing legged mobility in paraplegic individuals, Top.
+Spinal Cord Injury Rehabil. 17 (1) (2011) 25–33.
+[14] M. Arazpour, A. Chitsazan, S.W. Hutchins, F.T. Ghomshe, M.E. Mousavi, E.E.
+Takamjani, G. Aminian, M. Rahgozar, M.A. Bani, Design and simulation of a
+new powered gait orthosis for paraplegic patients, Prosthet. Orthot. Int. 36 (1)
+(2012) 125–130.
+[15] M.L. Audu, C.S. To, R. Kobetic, R.J. Triolo, Gait evaluation of a novel hip
+constraint orthosis with implication for walking in paraplegia, IEEE Trans.
+Neural Syst. Rehabil. Eng. 18 (6) (2010) 610–618.
+[16] B.G. do Nascimento, C.B.S. Vimieiro, D.A.P. Nagem, M. Pinotti, Hip orthosis
+powered by pneumatic artifcial muscle: Voluntary activation in absence of
+myoelectrical signal, Artif. Organs 32 (4) (2008) 317–322.
+[17] C. Vimieiro, B.G. do Nascimento, D.A.P. Nagem, M. Pinotti, Development of a
+hip orthosis using pneumatic artificial muscles, in: Technology Meets Surgery
+International, Sao Paulo, Brazil, 2005.
+[18] C.L. Lewis, D.P. Ferris, Invariant hip moment pattern while walking with a
+robotic hip exoskeleton, J. Biomech. 44 (2011) 789–793.
+[19] J.A. Blaya, H. Herr, Adaptive control of a variable-impedance ankle–foot
+orthosis to assist drop-foot gait, IEEE Trans. Neural Syst. Rehabil. Eng. 12 (1)
+(2004) 24–31.
+[20] G.S. Sawicki, D.P. Ferris, Powered ankle exoskeletons reveal the metabolic
+cost of plantar flexor mechanical work during walking with longer steps at
+constant step frequency, J. Exp. Biol. 212 (1) (2009) 21–31.
+[21] K. Yasuhara, K. Shimada, T. Koyama, T. Ido, K. Kikuchi, Y. Endo, Walking assist
+device with stride management system, Honda R&D Tech. Rev. 21 (2) (2009).
+[22] Honda walking assist device with stride management system,
+http://corporate.honda.com/innovation/walk-assist/, 2013
+(accessed 20.12.13).
+[23] M. Wehner, B. Quinlivan, P.M. Aubin, E. Martinez-Villalpando, M. Bauman, L.
+Stirling, K. Holt, R. Wood, C. Walsh, Design and evaluation of a lightweight soft
+exosuit for gait assistance, in: Robotics and Automation, 2013. Proceedings.
+ICRA’13. 2013 IEEE International Conference on, IEEE, 2013.
+[24] A.T. Asbeck, R. Dyer, A. Larusson, C.J. Walsh, Biologically-inspired soft exosuit,
+in: Rehabilitation Robotics (ICORR), in: 2013 IEEE International Conference on,
+IEEE, 2013.
+[25] T. Kawamura, K. Takanaka, T. Nakamura, H. Osumi, Development of an orthosis
+for walking assistance using pneumatic artificial muscle: A quantitative
+assessment of the effect of assistance, in: Rehabilitation Robotics (ICORR),
+2013 IEEE International Conference on, IEEE, 2013, pp. 1–6.
+[26] T. Tanaka, Y. Satoh, S. Kaneko, Y. Suzuki, N. Sakamoto, S. Seki, Smart suit:
+Soft power suit with semi-active assist mechanism-prototype for supporting
+waist and knee joint, in: Control, Automation and Systems, 2008. ICCAS 2008.
+International Conference on, IEEE, 2008, pp. 2002–2005.
+
+[27] Y. Imamura, T. Tanaka, Y. Suzuki, K. Takizawa, M. Yamanaka, Motion-based
+design of elastic belts for passive assistive device using musculoskeletal model,
+in: Robotics and Biomimetics (ROBIO), 2011 IEEE International Conference on,
+IEEE, 2011, pp. 1343–1348.
+[28] H. Kobayashi, H. Nozaki, Development of anteversion posture support
+system, in: Robotics and Biomimetics, 2008. ROBIO 2008. IEEE International
+Conference on, IEEE, 2009, pp. 682–686.
+[29] J.G. Fontaine, Retracting device for automobile seat belts, US Patent 3,199,804
+(10 Aug 1965).
+[30] E.E. Paananen, L.C. Csengery, R.J. Barry, Magnetic tape drive, US Patent
+3,764,087 (9 Oct 1973).
+[31] H. Koselka, B.A. Wallach, D. Gollaher, Autonomous floor mopping apparatus,
+US Patent 6,741,054 (25 May 2004).
+[32] H. Zhu, C. Butts, M. Lamb, P. Blankenship, An implement to install and retrieve
+surface drip irrigation laterals, Appl. Eng. Agric. 20 (1) (2004) 17–24.
+[33] A.N. Lay, C.J. Hass, R.J. Gregor, The effects of sloped surfaces on locomotion: a
+kinematic and kinetic analysis, J. Biomech. 39 (9) (2006) 1621–1628.
+[34] E.W. Weisstein, Archimedes’ spiral,
+http://mathworld.wolfram.com/ArchimedesSpiral.html, 2014 (accessed Jan
+2014).
+
+Alan T. Asbeck received the S.B. degree in electrical engineering in 2002 and the S.B. and M.Eng. degrees in
+physics and electrical engineering, respectively, from the
+Massachusetts Institute of Technology, MA, in 2003. He
+received the Ph.D. degree in electrical engineering from
+Stanford University, CA, in 2010. He is currently a Postdoctoral Researcher at the Wyss Institute for Biologically
+Inspired Engineering at Harvard University in Cambridge,
+MA. His research interests include mechanism design,
+wearable and bio-inspired robotics, and rapid prototyping.
+
+Kai Schmidt received his Bachelor’s degree in Mechanical
+Engineering from the Technical University of Berlin, Germany, in October 2011. He subsequently pursued his Master’s degree in Mechanical Engineering at the Technical
+University Berlin, finishing in January 2014. Kai Schmidt
+is currently a research fellow at the Wyss Institute for Biologically Inspired Engineering at Harvard University. His
+research interests include mechanical design, robotics and
+control.
+
+Conor James Walsh received his B.A.I and B.A. degrees in
+Mechanical and Manufacturing engineering from Trinity
+College Dublin, Ireland in 2003 and an M.S. degree and
+Ph.D. in Mechanical Engineering from the Massachusetts
+Institute of Technology in 2006 and 2010 with a minor
+in entrepreneurship through the Sloan School of Management and also a Certificate in Medical Science through the
+Harvard-MIT Division of Health Sciences and Technology.
+During his time at MIT, he received the Whitaker Health
+Sciences Fund Fellowship as well as numerous other design, entrepreneurship and mentoring awards. He is an Assistant Professor in the Harvard School of Engineering and Applied Sciences and a
+core faculty member at the Wyss Institute for Biologically Inspired Engineering at
+Harvard University. His research efforts are at the intersection of science, engineering and medicine with a focus on developing smart medical devices for diagnostic,
+therapeutic, and assistive applications.
+
+

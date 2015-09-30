@@ -1,0 +1,2317 @@
+Artiﬁcial Intelligence 175 (2011) 1985–2009
+
+Contents lists available at ScienceDirect
+
+Artiﬁcial Intelligence
+www.elsevier.com/locate/artint
+
+Characterizing strong equivalence for argumentation frameworks
+Emilia Oikarinen a,∗ , Stefan Woltran b
+a
+b
+
+Aalto University, Department of Information and Computer Science, P.O. Box 15400, FI-00076 Aalto, Finland
+Vienna University of Technology, Institute of Information Systems, Favoritenstraße 9–11, A-1040 Vienna, Austria
+
+a r t i c l e
+
+i n f o
+
+a b s t r a c t
+
+Article history:
+Received 3 December 2010
+Received in revised form 20 May 2011
+Accepted 27 June 2011
+Available online 2 July 2011
+
+Since argumentation is an inherently dynamic process, it is of great importance to
+understand the effect of incorporating new information into given argumentation frameworks. In this work, we address this issue by analyzing equivalence between argumentation
+frameworks under the assumption that the frameworks in question are incomplete,
+i.e. further information might be added later to both frameworks simultaneously. In
+other words, instead of the standard notion of equivalence (which holds between two
+frameworks, if they possess the same extensions), we require here that frameworks
+F and G are also equivalent when conjoined with any further framework H. Due
+to the nonmonotonicity of argumentation semantics, this concept is different to (but
+obviously implies) the standard notion of equivalence. We thus call our new notion strong
+equivalence and study how strong equivalence can be decided with respect to the most
+important semantics for abstract argumentation frameworks. We also consider variants of
+strong equivalence in which we deﬁne equivalence with respect to the sets of arguments
+credulously (or skeptically) accepted, and restrict strong equivalence to augmentations H
+where no new arguments are raised.
+© 2011 Elsevier B.V. All rights reserved.
+
+Keywords:
+Abstract argumentation
+Semantics
+Equivalence
+
+1. Introduction
+
+In Artiﬁcial Intelligence, the area of argumentation (see [5] for an excellent summary) has become one of the central
+issues during the last decade with abstract argumentation frameworks (AFs, for short) as introduced by Dung [13] being the
+most popular formalization on the conceptual level of argumentation. In a nutshell, such frameworks formalize statements
+(in general, such statements can be inferential structures themselves) together with a relation denoting conﬂicts between
+them, and the semantics gives an abstract handle to solve these inherent conﬂicts between statements by selecting admissible subsets of them. A number of papers compared and investigated properties of the different semantics which have
+been proposed for such frameworks (see, e.g. [2] and the references therein). However, the concept of equivalence between
+two frameworks has not received that much attention yet, although the inherent nonmonotonicity of argumentation makes
+equivalence a subtle property. Let us have some motivating examples to illustrate this.
+To start with, consider the following two argumentation frameworks F = ({a, b, c }, {(a, b), (b, c ), (c , a)}) and G =
+({a, b, c }, {(b, a), (a, c ), (c , b)}) which can be represented as follows:
+
+F: a
+
+*
+
+b
+
+c
+
+G: a
+
+b
+
+c
+
+Corresponding author.
+E-mail addresses: emilia.oikarinen@aalto.ﬁ (E. Oikarinen), woltran@dbai.tuwien.ac.at (S. Woltran).
+
+0004-3702/$ – see front matter
+doi:10.1016/j.artint.2011.06.003
+
+© 2011
+
+Elsevier B.V. All rights reserved.
+
+1986
+
+E. Oikarinen, S. Woltran / Artiﬁcial Intelligence 175 (2011) 1985–2009
+
+F and G might stem from modeling the same scenario but where a different notion of attack was assumed in constructing
+F and G, i.e. the abstract arguments in F and G refer to the same original statements.1 Likewise, it might be the case
+that F and G formalize different argument scenarios which are subject of some comparison, and we have a given bijection
+between the original arguments in the different scenarios (reﬂected by using common names for arguments in F and G).
+However, for both situations we assume that new information is incorporated to F and G in the same manner.
+The frameworks F and G are equivalent under most of the known semantics. Let us use the preferred semantics here,
+which selects maximal conﬂict-free and self-defending sets of arguments (a formal deﬁnition is given in Section 2). Then,
+both frameworks have the same unique preferred extension, namely the empty set. However, if we add a new argument
+which attacks b, the situation becomes different:
+
+a
+
+c
+
+b
+
+F ∪ H:
+
+a
+
+c
+
+b
+
+G ∪ H:
+d
+
+d
+
+In fact, if we let H = ({b, d}, {(d, b)}), the AF on the left can be considered as the “union” of F and H , thus denoted by
+F ∪ H , slightly abusing notation. The AF on the right is then G ∪ H . However, F ∪ H and G ∪ H are not equivalent as {c , d}
+is the unique preferred extension of F ∪ H and {a, d} is the unique preferred extension of G ∪ H .
+However, it is not even necessary to add a new argument to make this implicit difference between F and G explicit.
+Consider now H = ({a, b}, {(a, b)}). Then F ∪ H and G ∪ H are given as
+
+F∪H : a
+
+b
+
+c
+
+G∪H : a
+
+b
+
+c
+
+and we obtain that F ∪ H = F has the empty set as preferred extension, while {a} is now the preferred extension of G ∪ H .
+This leads us towards deﬁnitions for stronger variants of equivalence. As a central notion we want to study in this paper,
+we deﬁne strong equivalence2 as the relation between argumentation frameworks F and G which holds, if F and G are
+equivalent under any extensions of the two AFs, i.e., if for each further AF H , F ∪ H and G ∪ H are equivalent. The study of
+such an equivalence notion is motivated by the following observations:
+
+• Implicit vs. explicit information: as we have seen in the example above, the two frameworks store different information.
+However, the semantics do not make this difference visible, unless the AFs are suitably extended, i.e. some new information is added. Strong equivalence can thus be understood as a property which decides whether two argumentation
+frameworks provide the same implicit information.
+• Replacement property: in classical logics, the replacement theorem states that a subformula φ can be faithfully replaced
+in any theory T by a subformula ψ , in case φ and ψ are equivalent. By a faithful replacement we mean here, that
+the models of T are not changed by this replacement, i.e. T is equivalent to T [φ/ψ]. Again, our example shows that
+argumentation does not satisfy the replacement property (the same holds for other nonmonotonic formalisms). For
+illustration, let T be the framework F ∪ H used above. In case, we want to replace the subframe work F of T by the AF
+G, we have already observed that this replacement changes the (preferred) extensions, although F and G are equivalent
+w.r.t. that semantics. However, the replacement property is a central condition for simpliﬁcations. Strong equivalence
+yields such a replacement property for argumentation frameworks, by deﬁnition. Strong equivalence thus gives us a
+handle on local simpliﬁcations, i.e. simplifying parts of a framework without looking at the entire framework.
+• Dynamics of argumentation: the process of argumentation is dynamic and evolving with time [25]. In other words, during
+an argumentation process it is natural that new arguments are raised, which then attack or are attacked by already
+existing arguments. As well, it might be the case that we learn that two existing arguments are in an attack-relation,
+which we were not aware of before. This all leads to the necessity to understand the semantics also for incomplete
+argumentation frameworks. Strong equivalence provides new theoretical insight w.r.t. this aspect, which, we believe,
+complements results about the revision of AFs [11,17].
+Indeed, these observations are not exclusive to argumentation; the study of different equivalence notions has already
+received attention in other (nonmonotonic) formalisms for knowledge representation, see e.g. [16,20,22,26,27,29].
+However, for abstract argumentation we are not aware of such results.
+The main contributions of our work are summarized as follows:
+
+• We provide characterizations how to decide strong equivalence with respect to the semantics as deﬁned by Dung [13],
+as well as semi-stable [9], ideal [14], and eager semantics [10]. Our results show that strong equivalence w.r.t. admissible, preferred, ideal, semi-stable, and respectively, eager semantics coincides, while the remaining semantics (stable,
+
+1
+In the concrete example this seems a bit awkward since changing the notion of attack unlikely results in inverting attacks. However, later we will often
+compare frameworks which have only a slight difference in their attacks (see, for instance, Example 3).
+2
+We follow terminology as used in other KR formalisms, in particular, logic programming [20].
+
+E. Oikarinen, S. Woltran / Artiﬁcial Intelligence 175 (2011) 1985–2009
+
+1987
+
+grounded, and complete) yield different notions of strong equivalence. In the case of self-loop free AFs, our results
+are even stronger; here, strong equivalence for all considered semantics reduces to syntactical equivalence (i.e., the
+compared AFs have to be exactly the same).
+• We then study some variants of strong equivalence. In particular, we consider strong equivalence when deﬁned over
+credulously and, respectively, skeptically accepted arguments. Interestingly, in nearly all semantics this concept reduces
+to the corresponding standard notion of strong equivalence.
+• Finally, we weaken the concept of strong equivalence by considering only augmentation of frameworks which do not
+add any new arguments to the compared frameworks (an example for such an augmentation was the AF H above).
+While this restriction – which we call local equivalence – has no effect for admissible, preferred, ideal, semi-stable, and
+eager semantics, it leads to some subtleties for the other semantics.
+The paper is organized as follows. In Section 2, we introduce the necessary background for abstract argumentation frameworks and the semantics we consider here. As well, we investigate the relationship between the semantics in terms of
+standard equivalence. Section 3, which is the main part of this work, contains our characterization theorems for strong
+equivalence. In Section 4, we look at the notion of strong equivalence when deﬁned with respect to acceptability, and in
+Section 5 we introduce the aforementioned concept of local equivalence. We conclude the paper with a discussion of related
+work and give pointers to open problems.
+A preliminary version [23] of this paper appeared in the Proceedings of the 12th International Conference on Principles
+of Knowledge Representation and Reasoning.
+2. Preliminaries
+We consider a ﬁxed countable set U of arguments. An argumentation framework (AF) is a pair ( A , R ) where A ⊆ U is
+a ﬁnite set of arguments and R ⊆ A × A represents the attack-relation. For an AF F = ( B , S ) we use A ( F ) to refer to B
+and R ( F ) to refer to S. When clear from the context, we often write a ∈ F (instead of a ∈ A ( F )) and (a, b) ∈ F (instead
+of (a, b) ∈ R ( F )). Moreover, for two AFs F and G, we deﬁne the union F ∪ G and intersection F ∩ G as expected, i.e.,
+F ∪ G = ( A ( F ) ∪ A (G ), R ( F ) ∪ R (G )) and F ∩ G = ( A ( F ) ∩ A (G ), R ( F ) ∩ R (G )). We write F \ G to denote ( A ( F ), R ( F ) \ R (G )).
+For an AF F = ( A , R ) and S ⊆ A, we say that
+(i) S is conﬂict-free in F if there are no a, b ∈ S such that (a, b) ∈ R;
+(ii) a ∈ A is defeated by S in F if there is b ∈ S such that (b, a) ∈ R; and
+(iii) a ∈ A is defended by S in F if for each b ∈ A with (b, a) ∈ R, b is defeated by S in F .
+Note that an argument a with (a, a) ∈ F cannot be defended by a set which is conﬂict-free in F .
+Semantics for argumentation frameworks are given via a function σ which assigns to each AF F = ( A , R ) a set S ⊆ 2 A
+of extensions. We consider here σ ∈ {s, a, p, c, g, i, ss, e} for stable, admissible, preferred, complete, grounded, ideal, semistable, and respectively, eager extensions [9,10,13,14].
+Deﬁnition 1. Let F = ( A , R ) be an AF and S ⊆ A.
+
+•
+•
+•
+•
+•
+•
+
+S is a stable extension of F , i.e., S ∈ s( F ), if S is conﬂict-free in F and each a ∈ A \ S is defeated by S in F .
+S is an admissible extension of F , i.e., S ∈ a( F ), if S is conﬂict-free in F and each a ∈ S is defended by S in F .
+S is a preferred extension of F , i.e., S ∈ p( F ), if S ∈ a( F ) and for each T ∈ a( F ), S ⊂ T .
+S is a complete extension of F , i.e., S ∈ c( F ), if S ∈ a( F ) and for each a ∈ A defended by S in F , a ∈ S holds.
+S is a grounded extension of F , i.e., S ∈ g( F ), if S ∈ c( F ), and for each T ∈ c( F ), T ⊂ S.
+S is an ideal extension of F , i.e., S ∈ i( F ), if S ∈ a( F ), S ⊆ T ∈p( F ) T , and for each U ∈ a( F ), such that U ⊆ T ∈p( F ) T ,
+S ⊂ U.
+• S is a semi-stable extension of F , i.e., S ∈ ss( F ), if S ∈ a( F ), and for each T ∈ a( F ), R + ( S ) ⊂ R + ( T ), where R + (U ) =
+U ∪ {b | (a, b) ∈ R , a ∈ U }.
+• S is an eager extension of F , i.e., S ∈ e( F ), if S ∈ a( F ), S ⊆ T ∈ss( F ) T , and for each U ∈ a( F ), such that U ⊆ T ∈ss( F ) T ,
+S ⊂ U.
+It is well known that for σ ∈ {a, p, c, g, i, ss, e}, and any AF F , σ ( F ) = ∅ (recall that we deal with ﬁnite AFs); only stable
+semantics may yield an empty set of extensions. Let us also ﬁx here that for the empty AF F 0 = (∅, ∅) we have σ ( F 0 ) = {∅}
+for all considered semantics σ .
+We continue to recall certain properties of the considered semantics. For σ ∈ {g, i, e}, and any AF F , σ ( F ) contains
+exactly one extension. Moreover, the grounded extension of an argumentation framework F = ( A , R ) is alternatively given
+by the least ﬁxed point of the operator Γ F : 2 A → 2 A , where Γ F ( S ) = {a ∈ A | a is defended by S in F }.
+The following holds for any AF F , cf. [10]: Let g( F ) = {G }, i( F ) = { I } and e( F ) = { E }. Then, G ⊆ I ⊆ E. Also the following
+relations hold, for each AF F :
+
+1988
+
+E. Oikarinen, S. Woltran / Artiﬁcial Intelligence 175 (2011) 1985–2009
+
+Table 1
+Relations between equivalence in different semantics.
+
+⇒
+
+s
+
+a
+
+s
+a
+p
+c
+g
+i
+ss
+e
+
+trivial
+Ex3, 7
+Ex3, 7
+Ex3, 7
+Ex3, 4, 7
+Ex3, 4, 7
+Ex7
+Ex4, 7
+
+Ex2, 5,
+trivial
+Ex2, 5
+Ex2
+Ex2, 4,
+Ex2, 4
+Ex2, 5,
+Ex2, 4,
+
+6, 7
+
+5
+6
+6
+
+p
+
+c
+
+g
+
+i
+
+ss
+
+e
+
+Ex6, 7
+Yes
+trivial
+Yes
+Ex4
+Ex4
+Ex6
+Ex4, 6
+
+Ex1, 5, 6, 7
+Ex1
+Ex1, 5
+trivial
+Ex4, 5
+Ex1, 4
+Ex1, 5, 6
+Ex1, 4, 6
+
+Ex1, 6, 7
+Ex1
+Ex1
+Yes
+trivial
+Ex1
+Ex1, 6
+Ex1, 6
+
+Ex5, 6, 7
+Yes
+Ex5
+Yes
+Ex5
+trivial
+Ex5, 6
+Ex6
+
+Ex7
+Ex3
+Ex3
+Ex3
+Ex3, 4
+Ex3, 4
+trivial
+Ex4
+
+Ex5, 7
+Ex3
+Ex3, 5
+Ex3
+Ex3, 5
+Ex3
+Ex5
+trivial
+
+s( F ) ⊆ ss( F ) ⊆ p( F ) ⊆ c( F ) ⊆ a( F ).
+
+(1)
+
+In case s( F ) = ∅, s( F ) = ss( F ) holds [9] for ﬁnite AFs. Moreover, the ideal extension as well as the eager extension of F is
+also always a complete one [10,14].
+When comparing frameworks, the picture becomes more opaque. Interestingly, we only have a few relations between
+the different semantics.
+Proposition 1. For any AFs F , G, we have
+1.
+2.
+3.
+4.
+5.
+
+a( F ) = a( G ) ⇒ p( F ) = p( G ) ;
+a( F ) = a(G ) ⇒ i( F ) = i(G );
+c( F ) = c(G ) ⇒ p( F ) = p(G );
+c( F ) = c(G ) ⇒ g( F ) = g(G );
+c( F ) = c(G ) ⇒ i( F ) = i(G ).
+
+Proof. 1), 3) and 4) follow directly from deﬁnitions. In fact, since preferred extensions are subset-maximal admissible (resp.
+complete) extensions we get θ( F ) = θ(G ) ⇒ p( F ) = p(G ), for any AFs F , G, and θ ∈ {a, c}. Similarly, 4) follows from the fact
+that the grounded extension is the subset-minimal complete extension.
+Due to the more involved deﬁnition of the ideal extension, we give a more detailed proof for the remaining relations
+2) and 5). Let σ ∈ {a, c}, and assume σ ( F ) = σ (G ), i( F ) = i(G ) for AFs F , G. Let S be the ideal extension of F . We know
+S ∈ σ ( F ) (recall that an ideal extension is also complete). Since i( F ) = i(G ), S is not the ideal extension of G. However,
+S ∈ σ (G ) holds by assumption σ ( F ) = σ (G ). Thus there exists a T ∈ σ (G ) such that S ⊂ T ⊆ X ∈p(G ) X . Since, σ ( F ) = σ (G ),
+T ∈ σ ( F ) as well. Moreover, by 1) + 3) we have p( F ) = p(G ), and thus
+Y ∈p ( F ) Y =
+X ∈p(G ) X . But then S cannot be the
+ideal extension of F , since we have found a T ∈ σ ( F ) such that S ⊂ T ⊆ Y ∈p( F ) Y . ✷
+Concerning the eager semantics, we mention the following (weaker) relation which follows quite easily by deﬁnition.
+Proposition 2. For any AFs F , G, we have that a( F ) = a(G ) and ss( F ) = ss(G ) jointly imply e( F ) = e(G ).
+None of the other relations hold (even if we restrict ourselves to comparisons between AFs which are given over the
+same arguments) as witnessed by the following collection of counterexamples. Table 1 summarizes these observations and
+is to be read as follows: For line σ and column σ , a “Yes” entry refers to the results from Proposition 1 indicating that
+σ ( F ) = σ (G ) ⇒ σ ( F ) = σ (G ) holds for any AFs F , G; while an entry of the form “Exn” indicates that there exists AFs F , G
+such that σ ( F ) = σ (G ), but σ ( F ) = σ (G ); such AFs can be found in the indicated Example n given below.
+Our ﬁrst example shows that equivalence w.r.t. complete and grounded semantics cannot be concluded from equivalence
+w.r.t. any of the other considered semantics. In other words, there exist AFs F and G, such that σ ( F ) = σ (G ) and θ( F ) =
+θ(G ), where σ ∈ {s, ss, a, p, i, e} and θ ∈ {g, c}.
+Example 1. Let F and G be the following AFs:
+
+a
+
+b
+
+a
+
+b
+
+We have a( F ) = a(G ) = {∅, {b}} and s( F ) = ss( F ) = s(G ) = ss(G ) = {{b}}. However, ∅ is a complete extension of F (since
+each argument faces at least one attack), while this is not the case for G (where b is thus defended by the empty set),
+i.e. {b} is the only complete extension of G. As well, we observe that ∅ is the grounded extension of F and {b} is the
+θ( F ) = θ(G ) for σ ∈ {s, ss, a} and θ ∈ {g, c}. By Proposition 1,
+grounded extension of G. Thus, we have σ ( F ) = σ (G )
+and respectively by the fact that ss( F ) = ss(G ) and a( F ) = a(G ) jointly imply e( F ) = e(G ) by Proposition 2, we can extend
+this observation to cover ideal, preferred and eager semantics, as well.
+
+E. Oikarinen, S. Woltran / Artiﬁcial Intelligence 175 (2011) 1985–2009
+
+1989
+
+The next example shows that equivalence in terms of admissible extensions cannot be derived from equivalence w.r.t.
+a( F ) = a(G ), for σ ∈ {s, p, i, c, g, ss, e}.
+any other of the semantics, i.e. we have σ ( F ) = σ (G )
+Example 2. Let F and G be the following AFs:
+
+a
+
+b
+
+c
+
+d
+
+e
+
+a
+
+b
+
+c
+
+d
+
+e
+
+One can verify that S = {a, c , e } is the grounded extension of F as well as of G. Since both F and G are acyclic, we have
+a( F ) = a( G ) .
+
+σ ( F ) = σ (G ) = { S } for σ ∈ {s, p, i, c, g, ss, e}. However, {a, c } ∈ a( F ), but {a, c } ∈/ a(G ). Thus, σ ( F ) = σ (G )
+We now show that for
+
+σ ∈ {a, p, c, g, i} and θ ∈ {s, ss, e}, σ ( F ) = σ (G ) ⇒ θ( F ) = θ(G ) does not hold in general.
+
+Example 3. Let F and G be as follows:
+
+a
+
+b
+
+c
+
+a
+
+c
+
+b
+
+We have a( F ) = c( F ) = a(G ) = c(G ) = {∅, {a}, {b}}. However, s( F ) = {{b}} and s(G ) = {{a}, {b}}. Hence, via Proposition 1,
+we thus obtain σ ( F ) = σ (G )
+s( F ) = s(G ), for σ ∈ {a, c, p, g, i}. Since s( F ) = ∅ = s(G ), we obtain ss( F ) = {{b}} and ss(G ) =
+{{a}, {b}}. Our observations thus immediately extend to semi-stable semantics but also to eager semantics. The latter is due
+to the fact that e( F ) = {{b}} and e(G ) = {∅}. In conclusion, we obtain that σ ( F ) = σ (G )
+θ( F ) = θ(G ) for σ ∈ {a, p, c, g, i}
+and θ ∈ {s, ss, e}, as desired.
+
+θ( F ) = θ(G ) for
+We reuse the AF G from the previous example to show σ ( F ) = σ (G )
+(a few such counter examples have already been covered by examples above).
+
+σ ∈ {g, i, e} and θ ∈ {s, ss, p, a, c}
+
+Example 4. Let F and G be as follows:
+
+a
+
+b
+
+c
+
+a
+
+c
+
+b
+
+We observe that p( F ) = s( F ) = ss( F ) = {{b}, {c }}, p(G ) = s(G ) = ss(G ) = {{a}, {b}}; and furthermore, a( F ) = c( F ) =
+{∅, {b}, {c }}, a(G ) = c(G ) = {∅, {a}, {b}}. On the other hand, e( F ) = e(G ) = i( F ) = i(G ) = g( F ) = g(G ) = {∅}. This yields the
+desired counter examples.
+Next, we present an example due to Dunne [15], in particular to show that p( F ) = p(G ) (and likewise g( F ) = g(G )) does
+e( F ) = e(G ). In overall, one can check that the example
+not imply i( F ) = i(G ). As well, this example shows ss( F ) = ss(G )
+states σ ( F ) = σ (G )
+θ( F ) = θ(G ), for σ ∈ {p, g, s, ss} and θ ∈ {a, c, i, e}.
+Example 5. Let F and G be as follows:
+
+a
+
+c
+
+d
+
+b
+
+a
+
+c
+
+d
+
+b
+
+We have g( F ) = g(G ) = {∅}, p( F ) = p(G ) = s( F ) = s(G ) = ss( F ) = ss(G ) = {{a, d}, {b, d}}. However, i( F ) = e( F ) = {∅} and
+i(G ) = e(G ) = {{d}} since {d} is admissible for G, and not for F . Thus {d} is not a complete extension of F , but it is a
+complete extension of G (recall that the ideal and respectively eager extension is always a complete extension as well).
+As a further example we provide frameworks to show that ss( F ) = ss(G )
+p( F ) = p(G ) and e( F ) = e(G )
+In general, this example yields σ ( F ) = σ (G )
+θ( F ) = θ(G ), for σ ∈ {s, ss, e} and θ ∈ {p, a, c, g, i}.
+
+i( F ) = i(G ).
+
+Example 6. Consider here F and G are given as follows:
+
+a
+
+b
+
+c
+
+a
+
+b
+
+c
+
+We have ss( F ) = s( F ) = e( F ) = ss(G ) = s(G ) = e(G ) = {{b}}, while, for θ ∈ {p, a, c}, {a} ∈ θ( F ) \ θ(G ), and moreover, g( F ) =
+i( F ) = {∅} = {{b}} = g(G ) = i(G ). Thus, the desired relations follow.
+
+1990
+
+E. Oikarinen, S. Woltran / Artiﬁcial Intelligence 175 (2011) 1985–2009
+
+The ﬁnal example shows that stable equivalence is not comparable with equivalence w.r.t. any of the other considered
+semantics. In particular, to ﬁll Table 1 we have to compare stable equivalence to semi-stable equivalence.
+Example 7. Let F , G, and H be as follows
+
+a
+
+b
+
+a
+
+b
+
+a
+
+b
+
+For σ ∈ {p, c, g, i, ss, e}, we have σ ( F ) = σ (G ) = {{b}} and σ ( H ) = {∅}; and moreover, a( F ) = a(G ) = {∅, {b}} and a( H ) =
+{∅}. For the stable semantics we, in turn, get s( F ) = s( H ) = ∅ and s(G ) = {{b}}. Hence, for σ ∈ {a, p, c, g, i, ss, e}, σ ( F ) =
+σ (G ) s( F ) = s(G ) and s( F ) = s( H ) σ ( F ) = σ ( H ).
+3. Strong equivalence
+As a ﬁrst novel notion to compare AFs we consider the following concept which we call strong equivalence (w.r.t. a given
+semantics σ ).
+Deﬁnition 2. Two AFs F and G are strongly equivalent to each other w.r.t. a semantics
+H , σ ( F ∪ H ) = σ (G ∪ H ) holds.
+
+σ , in symbols F ≡σs G, iff for each AF
+
+By deﬁnition, we have that F ≡σs G implies σ ( F ) = σ (G ), i.e. standard equivalence between F and G w.r.t. σ . However,
+no matter which of the considered semantics we choose for σ , the converse direction does not hold in general.
+Example 8. Recall the frameworks from the introduction
+
+F = {a, b, c }, (a, b), (b, c ), (c , a)
+
+and
+
+G = {a, b, c }, (a, c ), (c , b), (b, a) .
+Then σ ( F ) = σ (G ) = {∅}, for σ ∈ {a, p, c, g, i, ss, e}. For the case of stable extensions we have s( F ) = s(G ) = ∅. Consider
+H = ({b, d}, {(d, b)}), with d being a fresh argument different from a, b, c. Then, {c , d} is the only stable extension of F ∪ H ,
+/ a(G ∪ H ). Inspecting the relations in (1), we can conclude σ ( F ∪ H ) = σ (G ∪ H ), for σ ∈ {s, ss, p, c, a}.
+while {c , d} ∈
+By deﬁnition, F ≡σs G. It remains to check ideal, grounded, and respectively, eager strong-equivalence. In fact, we have
+θ( F ∪ H ) = {{c , d}} = {{a, d}} = θ(G ∪ H ) for θ ∈ {p, c, ss}. By deﬁnition of the ideal, grounded, and eager extension, the
+remaining non-equivalences follow now easily.
+Let us mention at this point, that the notion of conﬂict-freeness is not responsible for the behavior observed above. In
+fact, for AFs F , H , and a set S of arguments, the following propositions are equivalent: (i) S is conﬂict-free in both F and H ;
+(ii) S is conﬂict-free in F ∪ H . We thus can immediately conclude that for AFs F , G with A ( F ) = A (G ), the following holds:
+F and G have the same set of conﬂict-free sets iff F ∪ H and G ∪ H have the same set of conﬂict-free sets for any AF H .
+In the subsequent sections, we provide characterizations for strong equivalence w.r.t. the different semantics we consider.
+For all cases we will provide syntactical criteria which we call kernels. The idea is that (syntactical) equivalence of kernels
+characterizes strong equivalence w.r.t. the considered semantics.
+3.1. Strong equivalence w.r.t. stable semantics
+Our ﬁrst goal is to identify attacks which do not contribute when computing stable extensions of an AF F . Indeed, we
+need to ﬁnd attacks which do not contribute in the evaluation of F , no matter how F is extended. Since stable semantics
+are solely based on conﬂict-free sets and attacks, a good candidate for such “useless” attacks are pairs (a, b) where also
+(a, a) is contained in the attack-relation.
+Deﬁnition 3. For an AF F = ( A , R ), we deﬁne the s-kernel of F as F sκ = ( A , R sκ ) where
+
+R sκ = R \ (a, b) a = b, (a, a) ∈ R .
+A few properties are clear by deﬁnition and are implicitly used later on: for each AF F and each a ∈ A ( F ), A ( F ) = A ( F sκ ),
+R ( F ) ⊇ R ( F sκ ), and (a, a) ∈ F iff (a, a) ∈ F sκ .
+Example 9. Let F = ({a, b}, {(a, a), (a, b)}). We have s( F ) = ∅. However, also for F sκ = ({a, b}, {(a, a)}), we have s( F sκ ) = ∅.
+As another example, consider G = ({a, b}, {(a, a), (a, b), (b, a)}). Here, s(G ) = {{b}}. Note that also G sκ = ({a, b}, {(a, a), (b, a)})
+possesses {b} as its only stable extension.
+
+E. Oikarinen, S. Woltran / Artiﬁcial Intelligence 175 (2011) 1985–2009
+
+1991
+
+Indeed, the above observation follows a general principle, which we show next.
+Lemma 1. For any AF F , s( F ) = s( F sκ ).
+Proof. First observe that, for each set S, S is conﬂict-free in F iff S is conﬂict-free in F sκ . Moreover, for each such conﬂictfree set S and each a ∈ A, a is defeated by S in F iff a is defeated by S in F sκ . For the only-if direction of this statement,
+note that whenever a is defeated by S in F , there exists an argument b ∈ S, such that (b, a) ∈ F . Since b ∈ S and S is
+/ F . By deﬁnition, then also (b, a) ∈ F sκ . The if-direction follows from the observation that
+conﬂict-free in F , we get (b, b) ∈
+R ( F sκ ) ⊆ R ( F ). The claim follows now easily. ✷
+The next technical lemma shows that the notion of an s-kernel is robust w.r.t. composition of AFs.
+Lemma 2. Let F and G be AFs, such that F sκ = G sκ . Then, ( F ∪ H )sκ = (G ∪ H )sκ for all AFs H .
+Proof. Suppose F sκ = G sκ and let (a, b) ∈ ( F ∪ H )sκ . We show (a, b) ∈ (G ∪ H )sκ . Since (a, b) ∈ ( F ∪ H )sκ we know that
+(a, a) ∈
+/ F ∪ H . Thus, (a, a) ∈
+/ F sκ , (a, a) ∈
+/ G sκ (by assumption F sκ = G sκ ), and (a, a) ∈
+/ H sκ . Now, since (a, b) ∈ ( F ∪ H )sκ ,
+sκ
+sκ
+sκ
+sκ
+(a, b) ∈ F or (a, b) ∈ H . In case (a, b) ∈ H , (a, b) ∈ (G ∪ H ) follows since (a, a) ∈
+/ G sκ (thus, (a, a) ∈
+/ G ∪ H ). In case
+(a, b) ∈ F sκ , we get by assumption F sκ = G sκ , that (a, b) ∈ G sκ , and since (a, a) ∈
+/ H sκ , (a, b) ∈ (G ∪ H )sκ follows. The other
+direction is symmetric. ✷
+We proceed with our ﬁrst main theorem and show that syntactical equivalence of s-kernels characterizes strong equivalence between F and G w.r.t. stable semantics.
+Theorem 1. For any AFs F and G: F sκ = G sκ iff F ≡ss G.
+Proof. Suppose F sκ = G sκ and let H , S such that S ∈ s( F ∪ H ). We show S ∈ s(G ∪ H ). By Lemma 1, S ∈ s(( F ∪ H )sκ ) and
+we get S ∈ s((G ∪ H )sκ ) from Lemma 2. Thus, S ∈ s(G ∪ H ), again by Lemma 1. By symmetry and deﬁnition of strong
+equivalence, we get F sκ = G sκ implies F ≡ss G.
+For the converse direction, suppose F sκ = G sκ . We show F ≡ss G. First, we consider the case A ( F sκ ) = A (G sκ ). This
+implies A ( F ) = A (G ) by the deﬁnition of an s-kernel. W.l.o.g. let a ∈ A ( F ) \ A (G ). We use B = ( A ( F ) ∪ A (G )) \ {a}, and c as
+a fresh argument. Consider
+
+H = B ∪ {c }, (c , b) b ∈ B
+
+.
+
+Suppose now, a is contained in some S ∈ s( F ∪ H ). Then, we are done since a cannot be contained in any S ∈ s(G ∪ H ),
+/ A (G ∪ H ). Otherwise, we extend H to H = H ∪ ({a}, ∅). Then, {a, c } is the unique stable extension of G ∪ H . On
+since a ∈
+the other hand, observe that F ∪ H = F ∪ H , hence by assumption, a is not contained in any S ∈ s( F ∪ H ) or s( F ∪ H ) is
+empty. In both cases, we get F ≡ss G.
+Now suppose A ( F sκ ) = A (G sκ ). Then, we have R ( F sκ ) = R (G sκ ). W.l.o.g. assume there exists some (a, b) ∈ R ( F sκ ) \
+R (G sκ ). We deﬁne
+
+H = A ( F ), (a, c ) c ∈ A ( F ) \ {a, b} .
+Let a = b (thus (a, a) ∈ R ( F ) and (a, a) ∈
+/ R (G )). Then, {a} ∈
+/ s( F ∪ H ) (since {a} is not conﬂict-free in F ∪ H ) and {a} ∈ s(G ∪ H )
+(since a attacks all other arguments in G ∪ H ). Hence, in what follows we can assume that any self-loop is either contained
+in both R ( F sκ ) and R (G sκ ) or in none of them. Let us thus now consider a = b. Since (a, b) ∈ F sκ , it holds that (a, b) ∈ F ,
+(a, a) ∈
+/ F , and, furthermore, we now can assume that (a, a) ∈
+/ G. Now, {a} ∈ s( F ∪ H ) (since a attacks all other arguments)
+/ s(G ∪ H ) (since b is not defeated by {a} in G ∪ H ; recall that (a, b) ∈
+/ R (G sκ ) and since (a, a) ∈
+/ R (G ), we also have
+and {a} ∈
+(a, b) ∈
+/ R (G )). Thus, F ≡ss G follows. ✷
+3.2. Strong equivalence w.r.t. admissible, preferred, ideal, semi-stable, and eager semantics
+We now provide a slightly more restrictive notion of a kernel, which turns out to serve as a uniform characterization
+for strong equivalence w.r.t. ﬁve different semantics. The idea behind the forthcoming notion of kernel comes from the
+observation that an attack (a, b) becomes irrelevant with respect to admissible semantics, if both the arguments a and b are
+self-attacking (neither can be defended regardless of the presence of the attack (a, b)) or if a is self-attacking and b defends
+itself against a (that is, there is attack (b, a) in the AF). The same idea turns out to work for preferred, ideal, semi-stable,
+and eager semantics as well.
+Deﬁnition 4. For an AF F = ( A , R ), we deﬁne the a-kernel of F as F aκ = ( A , R aκ ) where R aκ is given as
+
+R \ (a, b) a = b, (a, a) ∈ R , (b, a), (b, b) ∩ R = ∅ .
+
+1992
+
+E. Oikarinen, S. Woltran / Artiﬁcial Intelligence 175 (2011) 1985–2009
+
+The following properties also hold for the notion of an a-kernel: For each AF F and each argument a, A ( F ) = A ( F aκ ),
+R ( F ) ⊇ R ( F aκ ), and (a, a) ∈ F iff (a, a) ∈ F aκ .
+We start by showing that the notion of s-kernels following Deﬁnition 3 is too weak to capture equivalence w.r.t. admissible extensions.
+Example 10. Recall AF F = ({a, b}, {(a, a), (a, b)}) from Example 9. We clearly have a( F ) = {∅}. However, for F sκ =
+({a, b}, {(a, a)}), we now have a( F sκ ) = {∅, {b}}. For another example, consider G = ({a, b}, {(a, a), (a, b), (b, a)}), which has
+as an a-kernel G aκ = ({a, b}, {(a, a), (b, a)}). One can check that a(G ) = {∅, {b}} = a(G aκ ).
+Concerning the relationship between an s-kernel and an a-kernel, we obviously have F sκ ⊆ F aκ for each AF F . A stronger
+relation between the two notions is as follows:
+Lemma 3. For any AFs F , G, F aκ = G aκ implies F sκ = G sκ .
+Proof. Assuming F aκ = G aκ , we have to show that (a, b) ∈ F sκ iff (a, b) ∈ G sκ . We only show one direction of the “iff”statement, since the other is analogous.
+So let (a, b) ∈ F sκ . For a = b, (a, b) ∈ G sκ follows immediately by the observation that for, any argument a and any AF H ,
+(a, a) ∈ H sκ iff (a, a) ∈ H aκ iff (a, a) ∈ H ; and by assumption F aκ = G aκ .
+Let now a = b. From (a, b) ∈ F sκ , we obtain (a, b) ∈ F aκ (by F sκ ⊆ F aκ ), (a, b) ∈ G aκ (by the assumption F aκ = G aκ ), and
+/ F sκ and we already know that then (a, a) ∈
+/ G sκ (thus
+thus (a, b) ∈ G (since G aκ ⊆ G). Now, since (a, b) ∈ F sκ , we get (a, a) ∈
+sκ
+also (a, a) ∈
+/ G ). Then, (a, b) ∈ G implies (a, b) ∈ G by deﬁnition. ✷
+We now give the two important properties a notion of a kernel has to fulﬁll (cf. Lemmas 1 and 2 for the stable case).
+Lemma 4. For any AF F , σ ( F )=σ ( F aκ ) (σ ∈ {a, p, i, ss, e}).
+Proof. We ﬁrst note that for each S, S is conﬂict-free in F iff S is conﬂict-free in F aκ . In the proof of Lemma 1, we already
+have shown that for any S conﬂict-free in F , each argument a is defeated by S in F iff it is defeated by S in F sκ . Since
+F sκ ⊆ F aκ , the same holds for F aκ .
+We now prove the result for σ = a. We have to show that for each S conﬂict-free in F , an argument b is defended by
+S in F iff b is defended by S in F aκ . a( F ) = a( F aκ ) then follows by deﬁnition. First, suppose b is defended by S in F , i.e.
+for each (a, b) ∈ F , a is defeated by S in F . a is then defeated by S in F aκ by our observation from above. Since F aκ ⊆ F ,
+we obtain that for each (a, b) ∈ F aκ , a is defeated by S in F aκ . Thus b is defended by S in F aκ . So, suppose b is defended
+by S in F aκ , i.e. for each (a, b) ∈ F aκ , a is defeated by S in F aκ . We already know that each such a is defeated by S in F
+/ F aκ , and thus
+as well. We thus have to consider attacks (a, b) ∈ F \ F aκ . Since b is defended by S in F aκ , we know (b, b) ∈
+(b, b) ∈
+/ F . But then, (b, a) ∈ F has to hold (since (a, b) was removed in the construction of F aκ ). Thus b remains defended
+by S in F , i.e. b defends itself in this case. This concludes the proof for a( F ) = a( F aκ ); the cases of preferred and ideal
+semantics follow by Proposition 1.
+To show ss( F ) = ss( F aκ ), observe that for each c, such that (c , c ) ∈
+/ F , (c , a) ∈ F iff (c , a) ∈ F aκ . Hence, for each S which
++
+aκ +
+is conﬂict-free in F , we get ( R ( F )) ( S ) = ( R ( F )) ( S ). Since we already know a( F ) = a( F aκ ), ss( F ) = ss( F aκ ) follows by
+deﬁnition of semi-stable extensions. Finally, e( F ) = e( F aκ ) follows from the already obtained results that a( F ) = a( F aκ ) and
+ss( F ) = ss( F aκ ) and Proposition 2. ✷
+Lemma 5. If F aκ = G aκ , then ( F ∪ H )aκ = (G ∪ H )aκ for all AFs H .
+Proof. First note that F aκ = G aκ implies A ( F aκ ) = A ( F ) = A (G ) = A (G aκ ). It is thus suﬃcient to show R (( F ∪ H )aκ ) =
+R ((G ∪ H )aκ ).
+Hence, suppose F aκ = G aκ holds and let (a, b) ∈ ( F ∪ H )aκ . We show (a, b) ∈ (G ∪ H )aκ (the other direction is symmetric
+and thus omitted).
+If (a, b) is also contained in the s-kernel ( F ∪ H )sκ , we conclude as follows. We get F sκ = G sκ by Lemma 3; moreover,
+by Lemma 2, ( F ∪ H )sκ = (G ∪ H )sκ . Thus (a, b) ∈ (G ∪ H )sκ and (a, b) ∈ (G ∪ H )aκ follows immediately (since I sκ ⊆ I aκ for
+any AF I ).
+/ F ∪ H , (b, a) ∈
+/ F ∪ H.
+For the other case, i.e. (a, b) ∈ ( F ∪ H )aκ \ ( F ∪ H )sκ , we get by deﬁnition that (a, a) ∈ F ∪ H , (b, b) ∈
+Recall that by assumption F aκ = G aκ the following holds, for any argument c: (c , c ) ∈ F ∪ H iff (c , c ) ∈ F aκ ∪ H aκ iff
+(c , c ) ∈ G aκ ∪ H aκ iff (c , c ) ∈ G ∪ H . Thus, (a, a) ∈ G ∪ H and (b, b) ∈
+/ G ∪ H . Now since (b, a) ∈
+/ F ∪ H , (b, a) ∈
+/ F aκ ∪ H , and
+aκ
+/ G ∪ H . Since (b, b) ∈
+/ G ∪ H , we can conclude that (b, a) ∈
+/ G ∪ H . Recall that (a, b) ∈ ( F ∪ H )aκ . If
+by assumption (b, a) ∈
+(a, b) ∈ F aκ then (a, b) ∈ G aκ . Since {(b, a), (b, b)} ∩ H = ∅, (a, b) ∈ (G ∪ H )aκ follows. If (a, b) ∈
+/ F aκ then (a, b) ∈ H . Since
+aκ
+{(b, a), (b, b)} ∩ (G ∪ H ) = ∅, (a, b) ∈ (G ∪ H ) follows, as well. ✷
+
+E. Oikarinen, S. Woltran / Artiﬁcial Intelligence 175 (2011) 1985–2009
+
+1993
+
+The following characterization theorem using the notion of an a-kernel captures strong equivalence w.r.t. admissible
+semantics. Moreover, the a-kernel captures strong equivalence w.r.t. semi-stable, preferred, ideal, and eager semantics, as
+well.
+Theorem 2. The following propositions are equivalent for all AFs F and G:
+(a)
+(b)
+(c)
+(d)
+(e)
+(f)
+
+F aκ = G aκ ,
+F ≡as G,
+F ≡ss
+s G,
+p
+F ≡s G,
+F ≡is G,
+F ≡es G.
+
+Proof. (a) ⇒ (b) and (a) ⇒ (c): Similar as in the proof of Theorem 1 using Lemmas 4 and 5.
+(b) ⇒ (d), (b) ⇒ (e), and (b) & (c) ⇒ (f): Suppose F ≡as G, and let H be any AF. By deﬁnition, a( F ∪ H ) = a(G ∪ H ), and
+by Proposition 1, θ( F ∪ H ) = θ(G ∪ H ), for θ ∈ {p, i}. Thus F ≡θs G follows. Now let F ≡as G and F ≡ss
+s G jointly hold and
+consider an AF H . We have θ( F ∪ H ) = θ(G ∪ H ) for θ ∈ {a, ss} and by Proposition 2, we get e( F ∪ H ) = e(G ∪ H ). F ≡es G
+follows.
+(c) ⇒ (a), (d) ⇒ (a), (e) ⇒ (a), and (f) ⇒ (a): Let θ ∈ {p, i, ss, e} and suppose F aκ = G aκ . We show F ≡θs G. In case
+θ( F aκ ) = θ(G aκ ) we are done (by Lemma 4, we get θ( F ) = θ(G ) and thus F ≡θs G). In what follows, we thus assume
+θ( F ) = θ(G ).
+First consider the case A ( F aκ ) = A (G aκ ). By deﬁnition of an a-kernel then A ( F ) = A (G ). W.l.o.g. let a ∈ A ( F ) \ A (G ).
+/ A (G ), we have a ∈
+/ S for each S ∈ θ(G ), and thus, since θ( F ) = θ(G ), a ∈
+/ S for each S ∈ θ( F ). Let H = ({a}, ∅).
+Since a ∈
+Clearly, F ∪ H = F and thus θ( F ∪ H ) = θ( F ). On the other hand, a ∈ S for any S ∈ θ(G ∪ H ). This can be seen as follows:
+First, a ∈ S for any S ∈ p(G ∪ H ), since a is not attacked in G ∪ H . Hence, a ∈ S for any S ∈ ss(G ∪ H ) (since ss( I ) ⊆ p( I )
+for any AF I ). Moreover, we have {a} ∈ a(G ∪ H ) and a ∈ S ∈p(G ∪ H ) S. Thus a has to be contained in the ideal extension of
+G ∪ H . Since each AF has its eager extension being a superset of its ideal extension, a is contained in the eager extension of
+G ∪ H , as well.
+Now suppose A ( F aκ ) = A (G aκ ), i.e. A ( F ) = A (G ). Thus w.l.o.g. there exists some (a, b) ∈ R ( F aκ ) \ R (G aκ ). Let B = A ( F ) \
+{a, b}.
+First, assume a = b. We deﬁne
+
+H = A ( F ), (a, c ), (c , c ) c ∈ B
+and obtain ( F ∪ H )aκ = ( A ( F ), {(a, a)} ∪ {(c , c ) | c ∈ B }) and (G ∪ H )aκ = ( A ( F ), {(a, c ), (c , c ) | c ∈ B }). Thus, ∅ is the only
+preferred extension of ( F ∪ H )aκ (since it is the only conﬂict-free set here) and {a} is the only preferred extension of G ∪ H
+(since a attacks all its attackers and a does not attack itself by the assumption). We obtain p(( F ∪ H )aκ ) = p((G ∪ H )aκ ).
+Note that for an AF which possesses a unique preferred extension S, S has to be also the ideal and eager extension (the
+latter follows from the fact that S is also the unique semi-stable extension in case the AF is ﬁnite, which we have assumed).
+Hence, θ(( F ∪ H )aκ ) = θ((G ∪ H )aκ ), and by Lemma 4, θ( F ∪ H ) = θ(G ∪ H ) (for θ ∈ {p, i, ss, e}).
+Hence, in what follows we can assume that any self-loop is either contained in both R ( F aκ ) and R (G aκ ) or in none of
+them. Let us thus now consider a = b, for the attack (a, b) ∈ R ( F aκ ) \ R (G aκ ). We continue our proof by different cases for
+/ R ( F aκ ), we deﬁne
+the presence of attack (a, a). If (a, a) ∈
+
+H = A ( F ), (b, a), (b, b) ∪ (a, c ), (c , c ) c ∈ B
+
+.
+
+It can be checked that p( F ∪ H ) = {{a}} and p(G ∪ H ) = {∅}. By the same observation as above, θ( F ∪ H ) = θ(G ∪ H ), for
+θ ∈ {p, i, ss, e}. If (a, a) ∈ R ( F aκ ), we proceed as follows. Since (a, b) ∈ F aκ , it holds that (b, b) ∈
+/ R ( F aκ ) and (b, a) ∈
+/ R ( F aκ ) .
+We deﬁne
+
+H = A ( F ), (b, c ), (c , c ) c ∈ B
+and obtain θ( F ∪ H ) = {∅} while θ(G ∪ H ) = {{b}} (θ ∈ {p, i, ss, e} again by using the fact that we have unique preferred
+extensions for both frameworks). Hence, in all cases there is an AF H , such that θ( F ∪ H ) = θ(G ∪ H ). By deﬁnition of strong
+equivalence, we arrive at F =θs G (for θ ∈ {p, i, ss, e}). ✷
+3.3. Strong equivalence w.r.t. grounded semantics
+We next consider the grounded semantics. The following simple example shows that we need again a different kernel,
+since the grounded extension of F aκ or F sκ is not necessarily the same as that of F .
+Example 11. Recall G = ({a, b}, {(a, a), (a, b), (b, a)}) from Example 9. Observe that g(G ) = {∅}, since there is an attack for
+both a and b. However, G aκ = G sκ = ({a, b}, {(a, a), (b, a)}) and g(G aκ ) = g(G sκ ) = {{b}}.
+
+1994
+
+E. Oikarinen, S. Woltran / Artiﬁcial Intelligence 175 (2011) 1985–2009
+
+To obtain a characterization for the grounded semantics, we ﬁrst notice that similarly to the admissible semantics, an
+attack (a, b) becomes irrelevant if both a and b are self-attacking. On the other hand, if there is an attack (b, a) and b is
+self-attacking, the attack (a, b) becomes irrelevant as well. In this case, the minimality condition of the grounded semantics
+makes the self-defense of a against b irrelevant, and thus the attack (a, b) can be removed without affecting the semantics.
+Deﬁnition 5. For an AF F = ( A , R ), we deﬁne the g-kernel of F as F gκ = ( A , R gκ ) where R gκ is deﬁned as
+
+R \ (a, b) a = b, (b, b) ∈ R , (a, a), (b, a) ∩ R = ∅ .
+As for our previous kernels, these properties also hold for g-kernels: A ( F ) = A ( F gκ ), R ( F ) ⊇ R ( F gκ ), and, (a, a) ∈ F iff
+(a, a) ∈ F gκ , for each AF F and each argument a.
+As regards to the relation of the g-kernel to our other kernels, we notice that F gκ is incomparable with both F aκ
+and F sκ in general. For instance, for AF G in Example 11, we have G gκ = ({a, b}, {(a, a), (a, b)}) and G aκ = G sκ =
+({a, b}, {(a, a), (b, a)}). Thus both G gκ G aκ = G sκ and G aκ = G sκ G gκ .
+However, there is an interesting symmetry between a-kernels and g-kernels. In fact, for any AF F and a, b which are
+not both self-attacking, (a, b) ∈ F \ F aκ iff (b, a) ∈ F \ F gκ . In case both a and b are self-attacking, (a, b) ∈ F \ F aκ iff
+(a, b) ∈ F \ F gκ .
+In the following lemmas we show that also g-kernels satisfy similar properties as we have shown for other kernels
+before.
+Lemma 6. For any AF F , g( F ) = g( F gκ ).
+Proof. Again, we ﬁrst notice that for each S, S is conﬂict-free in F iff S is conﬂict-free in F gκ . Next, we show Γ F (∅) =
+Γ F gκ (∅), i.e. the set of unattacked arguments coincides for F and F gκ . The ⊆-inclusion is clear, since F gκ contains less
+/ F gκ and thus (a, a) ∈
+/ F . But then, by deﬁnition of g-kernels,
+attacks than F . Thus let a ∈ Γ F gκ (∅). Then, in particular (a, a) ∈
+gκ
+gκ
+(b, a) ∈ F iff (b, a) ∈ F . Since there is no (b, a) ∈ F there is thus no (b, a) ∈ F . a ∈ Γ F (∅) follows.
+We now show that for all i, Γ F ( S i ) = Γ F gκ ( S i ) where S 0 = ∅ and S i = Γ F ( S i −1 ). By deﬁnition of the grounded semantics
+g( F ) = g( F gκ ) then follows. We already showed the claim for i = 0, so assume that Γ F ( S k ) = Γ F gκ ( S k ) holds for all k < i,
+and we show Γ F ( S i ) = Γ F gκ ( S i ).
+⊆: Let a ∈ Γ F gκ ( S i ). Then a is defended by S i in F gκ , thus (a, a) ∈
+/ F gκ and (a, a) ∈
+/ F . Since (a, a) ∈
+/ F , it holds that
+gκ
+(b, a) ∈ F iff (b, a) ∈ F . Since all the attackers b of a are defeated by S i in F gκ , each b is defeated by S i in F as well (recall
+F gκ ⊆ F ), and we get a ∈ Γ F ( S i ).
+/ Γ F gκ ( S i ). Since a ∈
+/ Γ F gκ ( S i ), there is (b, a) ∈ F gκ such that b is not
+For the ⊇-relation, let a ∈ Γ F ( S i ) but assume a ∈
+gκ
+gκ
+/ F and furthermore (a, a) ∈
+/ F gκ .
+defeated by S i in F . Recall that if (b, a) ∈ F , then (b, a) ∈ F . Since a ∈ Γ F ( S i ), (a, a) ∈
+/ F and also (c , c ) ∈
+/ F gκ .
+Since (b, a) ∈ F and a is defended by S i in F , there is c ∈ S i such that (c , b) ∈ F . Since c ∈ S i , (c , c ) ∈
+gκ
+gκ
+/ F , we must have (b, b) ∈ F and (b, c ) ∈ F (recall that (c , c ) ∈
+/ F ). Now, (b, c ) ∈ F , because (c , c ) ∈
+/ F.
+Because (c , b) ∈
+Recalling that S i = Γ F ( S i −1 ) = Γ F gκ ( S i −1 ) and c ∈ S i , we notice that c is defended by S i −1 in F gκ , and thus b is defeated by
+S i −1 ⊆ S i in F gκ . But then, a is defended by S i in F gκ ; a contradiction to the assumption a ∈
+/ Γ F gκ ( S i ) . ✷
+Lemma 7. If F gκ = G gκ , then ( F ∪ H )gκ = (G ∪ H )gκ for all AFs H .
+Proof. Recall the symmetry between a-kernels and g-kernels we discussed above. In fact, let for an AF F = ( A , R ) denote
+by F → the framework obtained from F by switching the orientation of all attacks in R. One can check that then F gκ =
+(( F → )aκ )→ .
+Assume now F gκ = G gκ . Then, (( F → )aκ )→ = ((G → )aκ )→ , i.e. ( F → )aκ = (G → )aκ , and by Lemma 5 ( F → ∪ H )aκ = (G → ∪
+H )aκ for all AFs H . Thus also ( F → ∪ H → )aκ = (G → ∪ H → )aκ for all AFs H . We obtain that (( F ∪ H )→ )aκ = ((G ∪ H )→ )aκ
+for all AFs H , and thus also ((( F ∪ H )→ )aκ )→ = (((G ∪ H )→ )aκ )→ for all AFs H . Using our observation from above again,
+we conclude that ( F ∪ H )gκ = (G ∪ H )gκ for all AFs H . ✷
+We proceed to show that g-kernels characterize strong equivalence w.r.t. the grounded extensions.
+g
+
+Theorem 3. For any AFs F and G: F gκ = G gκ iff F ≡s G.
+Proof. The only if-direction is similar as in the proof of Theorem 1, now using Lemmas 6 and 7.
+For the if-direction, suppose F gκ = G gκ . In case g( F gκ ) = g(G gκ ) we are done since, by Lemma 6, g( F ) = g(G ) which
+g
+obviously implies F ≡s G. In what follows, we thus assume g( F ) = g(G ).
+First consider the case A ( F gκ ) = A (G gκ ). By deﬁnition this holds, iff, A ( F ) = A (G ). W.l.o.g. let a ∈ A ( F ) \ A (G ). Since
+a∈
+/ A (G ), we have a ∈
+/ S for S ∈ g(G ) = g( F ). Let H = ({a}, ∅). Clearly, F ∪ H = F and thus g( F ∪ H ) = g( F ). On the other
+g
+hand, a ∈ S for S ∈ g(G ∪ H ), since there is no attack on a in G ∪ H . Consequently, F ≡s G.
+
+E. Oikarinen, S. Woltran / Artiﬁcial Intelligence 175 (2011) 1985–2009
+
+1995
+
+Now suppose A ( F gκ ) = A (G gκ ), i.e. A ( F ) = A (G ). Thus w.l.o.g. there exists some (a, b) ∈ R ( F gκ ) \ R (G gκ ). Let c ∈ U
+be a new argument not contained in A ( F ) and B = A ( F ) \ {a, b}. Assuming a = b, i.e., (a, a) ∈ F and (a, a) ∈
+/ G, let H =
+( B ∪ {c }, {(c , d) | d ∈ B }). Then, {c } is the grounded extension of F ∪ H (c is defended by ∅ in F ∪ H ; no other argument
+is defended by {c } in F ∪ H ) {c , a} is the grounded extension of G ∪ H (c is defended by ∅ in G ∪ H and a is defended
+by {c } in G ∪ H ). Hence, in the following we assume that any self-loop is either contained in both F and G or in none of
+them.
+/ R ( F ); or (a, a) ∈
+/ R ( F ) and (b, a) ∈
+/ R ( F ). If
+Let us thus now consider a = b. Since (a, b) ∈ R ( F gκ ), (a, b) ∈ R ( F ) and (b, b) ∈
+(b, b) ∈
+/ R ( F ), then also (b, b) ∈
+/ R (G ). Moreover, since (a, b) ∈
+/ R (G gκ ), also (a, b) ∈
+/ R (G ). Again, let c ∈ U be a new argument
+not contained in A ( F ) and B = A ( F ) \ {a, b}. We take
+
+H = A ( F ) ∪ {c }, (a, a), (b, a) ∪ (c , d) d ∈ B
+
+.
+
+Now, {c } ∈ c( F ∪ H ) and ∅ ∈
+/ c( F ∪ H ). Thus, g( F ∪ H ) = {{c }}. On the other hand, {c } ∈
+/ c(G ∪ H ) and thus {c } ∈
+/ g( G ∪ H ) .
+In fact, we have g(G ∪ H ) = {{b, c }}.
+If (b, b) ∈ R ( F ), then (b, b) ∈ R (G ), (a, a) ∈
+/ R ( F ), (a, a) ∈
+/ R (G ), and (b, a) ∈
+/ R ( F ). We take
+
+H = A ( F ) ∪ {c , e }, (c , d) d ∈ B ∪ (b, e ) ,
+where e is a new argument not contained in A ( F ) ∪ {c }. Now, g( F ∪ H ) = {{a, c , e }} while g(G ∪ H ) = {{a, c }} if (b, a) ∈
+/ G,
+g
+and g(G ∪ H ) = {{c }} if (b, a) ∈ G. Thus F ≡s G follows. ✷
+3.4. Strong equivalence w.r.t. complete semantics
+Finally, we consider the complete semantics. The following examples summarizes the observation that the kernels introduced for the other semantics are again too weak to capture equivalence w.r.t. complete extensions.
+Example 12. We consider again AF G = ({a, b}, {(a, a), (a, b), (b, a)}) from Example 9. With respect to G aκ = G sκ =
+({a, b}, {(a, a), (b, a)}) and G gκ = ({a, b}, {(a, a), (a, b)}) one may observe that c(G aκ ) = c(G sκ ) = {{b}} and c(G gκ ) = {∅}, but
+c(G ) = {∅, {b}}.
+We notice that w.r.t. complete extensions, only the attacks (a, b) for which both arguments are self-attacking are irrelevant, since neither a will defend any argument attacked by b (a cannot be contained in a conﬂict-free set) nor there is need
+to defend b against a (again, since b cannot be contained in a conﬂict-free set).
+Deﬁnition 6. For an AF F = ( A , R ), we deﬁne the c-kernel of F as F cκ = ( A , R cκ ) where
+
+R cκ = R \ (a, b) a = b, (a, a), (b, b) ∈ R .
+Concerning the relationship between a c-kernel and the other notions of kernels introduced, F sκ ⊆ F aκ ⊆ F cκ and F gκ ⊆
+F cκ hold for any F (recall that F gκ is incomparable with both F sκ and F aκ ). Similarly to Lemma 3 there is also a stronger
+relation between the notions.
+Lemma 8. For any AFs F and G, F cκ = G cκ implies F τ = G τ , τ ∈ {sκ , aκ , gκ }.
+Proof. Suppose F cκ = G cκ and let (a, b) ∈ F τ . We show that (a, b) ∈ G τ . By the assumption F cκ = G cκ and the properties
+of kernels, we have (a, a) ∈ F τ iff (a, a) ∈ F cκ iff (a, a) ∈ G cκ iff (a, a) ∈ G τ . Thus, for a = b we are done. Assume now that
+a = b.
+First, let τ = aκ and (a, b) ∈ F aκ . Then, (a, a) ∈
+/ F aκ or jointly (b, b) ∈
+/ F aκ and (b, a) ∈
+/ F aκ . From (a, b) ∈ F aκ , we obtain
+(a, b) ∈ F cκ (by F aκ ⊆ F cκ ), (a, b) ∈ G cκ (by the assumption F cκ = G cκ ). Thus (a, b) ∈ G, since G cκ ⊆ G. Suppose (a, a) ∈
+/ F aκ .
+aκ
+aκ
+We already know (a, a) ∈
+/ G (thus also (a, a) ∈
+/ G ). Then, (a, b) ∈ G implies (a, b) ∈ G by deﬁnition. Suppose (a, a) ∈ F aκ .
+aκ
+cκ
+Then, (b, b) ∈
+/ F and thus (b, b) ∈
+/ F . But then, (b, a) ∈
+/ F aκ implies (b, a) ∈
+/ F cκ . By assumption (b, a) ∈
+/ G cκ we already
+know that (b, b) ∈
+/ G aκ , thus (b, b) ∈
+/ G. But then, (b, a) ∈
+/ G. Hence, we have (a, b) ∈ G but neither (b, b) ∈ G nor (b, a) ∈ G,
+and (a, b) ∈ G aκ follows. The converse direction is done essentially in the same way.
+The result for τ = gκ can be shown analogously bearing in mind the symmetry between a-kernels and g-kernels as
+discussed in Section 3.3. Hence, F cκ = G cκ implies both F aκ = G aκ and F gκ = G gκ . The remaining case τ = sκ follows then
+from Lemma 3. ✷
+In fact, there is stronger relationship between a-, g- and c-kernels as illustrated by the following example.
+
+1996
+
+E. Oikarinen, S. Woltran / Artiﬁcial Intelligence 175 (2011) 1985–2009
+
+Example 13. Consider here F and G are given as follows:
+
+a
+
+b
+
+c
+
+a
+
+b
+
+c
+
+We have
+
+F cκ = G cκ = {a, b, c }, (a, b), (b, a), (b, b), (c , c )
+but also
+
+F aκ = G aκ = {a, b, c }, (a, b), (b, b), (c , c )
+as well as
+
+F gκ = G gκ = {a, b, c }, (b, a), (b, b), (c , c ) .
+Note however that F aκ = F gκ .
+Lemma 9. For any AFs F and G: F cκ = G cκ iff jointly F aκ = G aκ and F gκ = G gκ .
+Proof. The only-if direction is by Lemma 8. For the other direction, suppose F cκ = G cκ . W.l.o.g. let (a, b) ∈ F cκ \ G cκ . Hence,
+(a, b) ∈ F and (a, a) ∈
+/ F or (b, b) ∈
+/ F . If (a, a) ∈
+/ F , (a, b) ∈ F aκ by construction. Moreover, we have G aκ ⊆ G cκ and thus
+aκ
+aκ
+aκ
+(a, b) ∈
+/ G . Hence, F = G . For the other case, i.e. if (b, b) ∈
+/ F , (a, b) ∈ F gκ follows by construction. We also have
+G gκ ⊆ G cκ and thus (a, b) ∈
+/ G gκ . Therefore in this case, F gκ = G gκ . ✷
+We continue with properties of c-kernels which we then use to show that c-kernels characterize strong equivalence w.r.t.
+complete semantics.
+Lemma 10. For any AF F , c( F ) = c( F cκ ).
+Proof. Again, notice that for each S, S is conﬂict-free in F iff S is conﬂict-free in F cκ . We show that for each conﬂict-free
+set S and each argument a ∈ A, a is defended by S in F iff a is defended by S in F cκ .
+Suppose a is defended by S in F , i.e. for each (b, a) ∈ F there exists a c ∈ S, such that (c , b) ∈ F . First, observe that for
+/ F holds, and thus for each c ∈ S, (c , b) ∈ F implies (c , b) ∈ F cκ . On the other hand, (b, a) ∈ F cκ only if
+each c ∈ S, (c , c ) ∈
+(b, a) ∈ F . Hence, for each (b, a) ∈ F cκ there exists a c ∈ S, such that (c , b) ∈ F cκ . Suppose a is defended by S in F cκ . Then
+(a, a) ∈
+/ F cκ by deﬁnition of defense. We thus get that each (b, a) ∈ F is also contained in F cκ , by deﬁnition of a c-kernel.
+However, for each such b we know by the assumption that b is defeated by S in F cκ , since there exists a c ∈ S such that
+(c , b) ∈ F cκ . Since (c , b) ∈ F cκ implies (c , b) ∈ F , b is defeated by S in F as well. ✷
+Lemma 11. If F cκ = G cκ , then ( F ∪ H )cκ = (G ∪ H )cκ for all AFs H .
+Proof. First note that F cκ = G cκ implies A ( F cκ ) = A ( F ) = A (G ) = A (G cκ ). It is thus suﬃcient to show R (( F ∪ H )cκ ) =
+R ((G ∪ H )cκ ).
+Hence, suppose F cκ = G cκ holds and let (a, b) ∈ ( F ∪ H )cκ . We show (a, b) ∈ (G ∪ H )cκ (the other direction is symmetric
+and thus omitted).
+If (a, b) is contained in the a-kernel ( F ∪ H )aκ , we conclude as follows. We get F aκ = G aκ by Lemma 8; moreover, by
+Lemma 4, ( F ∪ H )aκ = (G ∪ H )aκ . Thus (a, b) ∈ (G ∪ H )aκ and (a, b) ∈ (G ∪ H )cκ follows immediately (since I aκ ⊆ I cκ for any
+AF I ). If (a, b) is contained in the g-kernel we reason similarly, i.e. we use F gκ = G gκ , Lemma 6, and get (a, b) ∈ (G ∪ H )gκ ,
+from which (a, b) ∈ (G ∪ H )cκ follows.
+/ ( F ∪ H )aκ , and (a, b) ∈
+/ ( F ∪ H )gκ . However, this cannot be the case. In
+It remains to assume that (a, b) ∈ ( F ∪ H )cκ , (a, b) ∈
+cκ
+fact, since (a, b) ∈ ( F ∪ H ) , we have (a, b) ∈ ( F ∪ H ), and moreover, (a, a) ∈
+/ ( F ∪ H ) or (b, b) ∈
+/ ( F ∪ H ). But (a, a) ∈
+/ (F ∪ H)
+ensures (a, b) ∈ ( F ∪ H )aκ , and respectively, (b, b) ∈
+/ ( F ∪ H ) ensures (a, b) ∈ ( F ∪ H )gκ . ✷
+The main theorem for the case of complete semantics follows now quite easily.
+Theorem 4. For any AFs F and G: F cκ = G cκ iff F ≡cs G.
+Proof. The only-if direction can be shown via Lemmas 10 and 11 and we just sketch the if-direction. Suppose F cκ = G cκ .
+p
+By Lemma 9, we have F aκ = G aκ or F gκ = G gκ . In case F aκ = G aκ , we get by Theorem 2, F ≡s G, i.e. there exists an AF
+g
+gκ
+gκ
+H , such that p( F ∪ H ) = p(G ∪ H ). In case, F = G
+we get by Theorem 3, F ≡s G, i.e. there exists an AF H , such that
+g( F ∪ H ) = g(G ∪ H ). In both cases, Proposition 1 yields c( F ∪ H ) = c(G ∪ H ), i.e. F ≡cs G. ✷
+
+E. Oikarinen, S. Woltran / Artiﬁcial Intelligence 175 (2011) 1985–2009
+
+1997
+
+3.5. Summary of results for strong equivalence
+We summarize our results for strong equivalence. In particular, the following theorem shows the relation between the
+different semantics w.r.t. the way they behave for the property of strong equivalence. Most notable is Relation (2) below,
+which connects strong equivalence of complete, grounded, and many admissibility-based semantics in a precise way.
+Theorem 5. The following relations hold for all AFs F , G, and σ ∈ {a, p, i, ss, e},
+(1) F ≡σs G ⇒ F ≡ss G,
+g
+(2) F ≡cs G ⇐⇒ ( F ≡σs G and F ≡s G ).
+Proof. Relation (1) is by Lemma 3 and Theorems 1 and 2. Relation (2) is by Lemma 9 and Theorems 2, 3, and 4.
+
+✷
+
+None of the other relations hold, as we sketch next.
+Example 14. Consider the following frameworks:
+
+F:
+
+a
+
+b
+
+G:
+
+H:
+
+a
+
+b
+
+I:
+
+a
+a
+
+b
+b
+
+We have F aκ = F sκ = G aκ = G sκ = G gκ = G while F gκ = H . Thus, F aκ = G aκ (similarly for F sκ = G sκ ) does not imply F gκ =
+g
+G gκ , i.e., F ≡σs G does not imply F ≡s G for σ ∈ {s, a, p, i, ss, e} (Theorems 1–3). On the other hand, F cκ = F and G cκ = G,
+σ
+and therefore F ≡s G does not imply F ≡cs G for σ ∈ {s, a, p, i, ss, e} (Theorems 1, 2 and 4). Moreover, H gκ = H aκ = H cκ = H
+g
+and H sκ = I . Using our observations on kernels of F , we get that F ≡s H does not imply F ≡σs H for σ ∈ {s, a, p, i, ss, e, c}
+(Theorems 1–4). Finally, observe that I sκ = I aκ = I and recall that H aκ = H and H sκ = I . Thus, H ≡ss I does not imply
+H ≡σs I for σ ∈ {a, p, i, ss, e} (Theorems 1 and 2).
+An inspection of the deﬁnitions of kernels shows that self-loops play a crucial role. In fact, the following observation is
+quite straightforward:
+Lemma 12. For any self-loop free AF F , F = F sκ = F aκ = F cκ = F gκ .
+Thus for self-loop free AFs the concept of strong equivalence collapses to syntactic equivalence for all considered semantics.
+Theorem 6. For any self-loop free AFs F and G, we have F = G iff F ≡σs G, σ ∈ {s, a, p, i, ss, e, c, g}.
+4. Strong equivalence in terms of consequences
+An alternative approach to “strong” notions of equivalence between argumentation frameworks is to deﬁne such a concept in terms of consequences. To this end, let for an AF F , credσ ( F ) = S ∈σ ( F ) S be the set of credulous consequences
+of F (w.r.t. semantics σ ), and skeptσ ( F ) = S ∈σ ( F ) S the set of skeptical consequences of F (w.r.t. σ ). Recall that an AF not
+necessarily has a stable extension. Thus, in case s( F ) = ∅, we just set3 skepts ( F ) = A ( F ).
+
+Deﬁnition 7. Let ρ ∈ {cred, skept}. We call AFs F and G strongly
+each AF H , ρ σ ( F ∪ H ) = ρ σ (G ∪ H ) holds.
+
+ρ -equivalent w.r.t. semantics σ , in symbols F ≡σs;ρ G, iff for
+
+We observe that for admissible semantics strong skept-equivalence is trivial, i.e. skepta ( F ) = skepta (G ) holds for any AFs
+F , G (basically since ∅ ∈ a( H ), for every AF H ). In all remaining cases, the concepts from Deﬁnition 7 coincide with strong
+equivalence as deﬁned in Deﬁnition 2.
+Theorem 7. For any AFs F , G, and σ ∈ {s, p, c, g, i, ss, e}, the following propositions are equivalent:
+(1) F ≡σs G;
+(2) F ≡σs;cred G;
+3
+
+Another reasonable deﬁnition for this case would be skepts ( F ) = ∅.
+
+1998
+
+E. Oikarinen, S. Woltran / Artiﬁcial Intelligence 175 (2011) 1985–2009
+
+(3) F ≡σs;skept G.
+Also, (1) iff (2) for σ = a.
+Proof. The assertion clearly holds for σ ∈ {g, i, e}, since each AF possesses a unique grounded, ideal, and respectively eager
+extension. Also, it is clear that (1) implies (2), and (1) implies (3), for any of the considered semantics. We now show (2)
+implies (1) for σ ∈ {s, a, p, c, ss}, and (3) implies (1) for σ ∈ {s, p, c, ss}.
+For the case A ( F ) = A (G ) we can use similar arguments as in previous proofs. In what follows, let us thus assume
+A ( F ) = A (G ). Moreover, let θ ∈ {s, a} and F ≡θs G, i.e. there exists an AF H , such that θ( F ∪ H ) = θ(G ∪ H ). W.l.o.g. let
+S ∈ θ( F ∪ H ) \ θ(G ∪ H ). Observe that S = ∅ holds: for θ = a, this is obvious; for θ = s, this would yield that F ∪ H is the
+empty AF, i.e. A ( F ∪ H ) = ∅. But by the assumption A ( F ) = A (G ), we get A ( F ∪ H ) = A (G ∪ H ), and thus G ∪ H had to be
+the empty AF, as well; a contradiction to our assumption F ≡ss G.
+Consider now the following AF K
+
+A( F ∪ H ) ∪ S ,
+
+a, a , a , a , a , b
+
+b ∈ S \ {a} ∪ (b, b) b ∈ A ( F ∪ H ) \ S
+
+a∈ S
+
+where S = {a | a ∈ S } is a set of disjoint fresh arguments. Let F † = F ∪ H ∪ K and G † = G ∪ H ∪ K .
+For the case θ = s, i.e., where we had S and H such that S ∈ s( F ∪ H ) \ s(G ∪ H ), one can now show s( F † ) = { S } and
+s(G † ) = ∅. We obtain creds ( F † ) = S = ∅ = creds (G † ). F ≡ss;cred G follows by deﬁnition (since F † = F ∪ ( H ∪ K ) and G † =
+
+G ∪ ( H ∪ K )). This shows that (2) implies (1) for stable semantics. Moreover, we have skepts ( F † ) = S = A (G † ) = skepts (G † )
+since S ⊂ A (G † ) holds by deﬁnition of K , which contains at least one fresh argument a ∈
+/ S. Thus, we also have F ≡ss;skept G.
+This shows that (3) implies (1) for stable semantics.
+In the case θ = a, we have a( F † ) = { S , ∅} and a(G † ) = {∅}. Therefore, we also have p( F † ) = ss( F † ) = { S } and S ∈ c( F † ),
+while p(G † ) = ss(G † ) = c(G † ) = {∅}. Thus, for σ ∈ {a, p, c, ss}, we have credσ ( F † ) = S = ∅ = credσ (G † ), and thus F ≡σs;cred G.
+This shows that (2) implies (1) for those semantics; in fact, since we assumed F ≡as G, we had implicitly assumed also
+p
+ss
+c
+†
+F ≡s G and F ≡ss
+s G (by Theorem 2) as well as F ≡s G (by relation (2) in Theorem 5). Moreover, we have skept ( F ) =
+p
+p
+ss
+σ
+†
+†
+†
+skept ( F ) = S = ∅ = skept (G ) = skept (G ), and thus F ≡s;skept G, for σ ∈ {p, ss} showing that (3) implies (1) for those
+two semantics. It remains to show F ≡cs;skept G. For the moment, our construction does not guarantee ∅ ∈
+/ c( F † ) and thus
+c
+c
+†
+†
+skept ( F ) = skept (G ) still might hold. Consider a further AF L = ( S ∪ {c , d}, {(c , d)} ∪ {(d, s) | s ∈ S }). Then, a(G † ∪ L ) =
+{∅, {c }}, and since c is not attacked, c(G † ∪ L ) = {{c }}. On the other hand, c( F † ∪ L ) = { S ∪ {c }}, since c defends all elements
+from S and S remains admissible in F † ∪ L. We obtain skeptc ( F † ∪ L ) = S ∪ {c } = {c } = skeptc (G † ∪ L ). ✷
+5. Local equivalence
+So far, we have considered an arbitrary context for equivalence, i.e. we put no restriction on the AFs H which are
+considered to be conjoined with the AFs F and G under comparison. In this section, we weaken this requirement by
+considering only AFs H which do not introduce any new arguments, but only attacks between existing arguments.4 We call
+the resulting equivalence notion local equivalence.
+Deﬁnition 8. Two AFs F and G are called locally (strongly) equivalent to each other w.r.t. a semantics
+iff for each H with A ( H ) ⊆ A ( F ) ∪ A (G ), σ ( F ∪ H ) = σ (G ∪ H ).
+
+σ , in symbols F ≡lσ G,
+
+As a ﬁrst observation, we recall the proof of Theorem 2 and notice that for the ﬁve semantics related to a-kernel, strong
+and local equivalence coincide.
+Theorem 8. For any AFs F , G: F ≡lσ G iff F ≡σs G for σ ∈ {a, p, i, ss, e}.
+Proof. If F ≡σs G, then F ≡lσ G. Assume that F ≡σs G. Then, there is an AF H such that σ ( F ∪ H ) = σ (G ∪ H ). By inspecting
+the proof of Theorem 2 we notice that we can always ﬁnd H such that A ( H ) ⊆ A ( F ) ∪ A (G ) holds, and therefore F ≡lσ G,
+for σ ∈ {a, p, i, ss, e}. ✷
+For the remaining semantics, we observe certain differences. We start with the case of stable semantics in which strong
+and local equivalence almost coincide. The following example illustrates the case in which two AFs are locally equivalent,
+but not strongly equivalent w.r.t. stable semantics.
+
+4
+Such a situation might occur if the notion of conﬂict is changed and the abstract framework has to re-instantiated, see e.g. [19] for a discussion about
+different notions of conﬂicts.
+
+E. Oikarinen, S. Woltran / Artiﬁcial Intelligence 175 (2011) 1985–2009
+
+1999
+
+Example 15. Consider AFs
+
+F:
+
+a
+
+b
+
+G:
+
+b
+
+Here, s( F ) = s(G ) = ∅, but from A ( F ) = A (G ) it immediately follows that F sκ = G sκ , i.e., F ≡ss G. On the other hand, we
+/ H,
+observe that all H such that A ( H ) ⊆ {a, b} yield s( F ∪ H ) = s(G ∪ H ). In fact, for AFs H such that (a, b) ∈ H and (a, a) ∈
+we obtain s( F ∪ H ) = s(G ∪ H ) = {{a}}; for the remaining AFs H over {a, b}, we get s( F ∪ H ) = s(G ∪ H ) = ∅. F ≡ls G follows.
+The following result in fact includes a generalization of the situation discussed in the example above.
+Theorem 9. For any AFs F , G: F ≡ls G iff
+
+• F ≡ss G or
+• both s( F ) = s(G ) = ∅ and there is a ∈ ( A ( F ) \ A (G )) ∪ ( A (G ) \ A ( F )) such that (a, a) ∈
+/ F ∪ G and for all b ∈ ( A ( F ) ∪ A (G )) \ {a},
+(a, b) ∈
+/ F ∪ G and (b, b) ∈ F ∩ G.
+Proof. If-direction: By deﬁnition F ≡ss G implies F ≡ls G for all AFs F and G. Assume s( F ) = s(G ) = ∅ and there is w.l.o.g.
+a ∈ A ( F ) \ A (G ) such that (a, a) ∈
+/ F and for all b ∈ ( A ( F ) ∪ A (G )) \ {a} it holds that (a, b) ∈
+/ F and (b, b) ∈ F ∩ G. From the
+assumption (b, b) ∈ F ∩ G for all b ∈ ( A ( F ) ∪ A (G )) \ {a}, it follows that A ( F ) = A (G ) ∪ {a}.
+Consider an arbitrary AF H such that A ( H ) ⊆ A ( F ). Since (b, b) ∈ F ∩ G for all b ∈ A (G ) and H can only involve arguments
+from A ( F ), the only possible conﬂict-free sets for F ∪ H and G ∪ H are ∅ and {a}. If there is b ∈ A (G ) not defeated by {a}
+in H , then b is not defeated by {a} in neither F ∪ H nor G ∪ H (since (a, b) ∈
+/ F for all b ∈ A (G ) and a ∈
+/ A (G )), and
+s( F ∪ H ) = s(G ∪ H ) = ∅. On the other hand, if each b ∈ A (G ) is defeated by {a} in H , then each b ∈ A (G ) is defeated by {a}
+in both F ∪ H and G ∪ H , and s( F ∪ H ) = s(G ∪ H ) = {{a}} follows.
+Only-if direction: Assume ﬁrst A ( F ) = A (G ) and F ≡ss G. W.l.o.g. let (a, b) ∈ F sκ \ G sκ . We notice that for H =
+( A ( F ), {(a, c ) | c ∈ A ( F ) \ {a, b}}) used in the proof of Theorem 1 it holds A ( H ) ⊆ A ( F ) and s( F ∪ H ) = s(G ∪ H ).
+Assume then A ( F ) = A (G ). W.l.o.g. let a ∈ A ( F ) \ A (G ). If s( F ) = s(G ), then F ≡ls G follows by deﬁnition. Thus, we can
+/ A ( G ), a ∈
+/ S for each S ∈ s(G ) = s( F ). Similarly to the proof
+assume s( F ) = s(G ). Consider ﬁrst the case s( F ) = ∅. Since a ∈
+of Theorem 1, we use H = ({a}, ∅) and s( F ∪ H ) = s(G ∪ H ) follows.
+Thus, let us assume s( F ) = s(G ) = ∅. We use B = ( A ( F ) ∪ A (G )) \ {a}.
+
+• If (a, a) ∈ F , we consider H = ( B ∪ {a}, {(a, b) | b ∈ B }). Now {a} ∈ s(G ∪ H ) while {a} ∈
+/ s( F ∪ H ).
+• If (a, a) ∈
+/ F and there is b ∈ B such (b, b) ∈
+/ F or (b, b) ∈
+/ G, we take H = ( B , {(b, c ) | c ∈ B \ {b}}).
+If (b, b) ∈
+/ F , then {a, b} ∈ s( F ∪ H ) while {a, b} ∈
+/ s(G ∪ H ).
+/ G, then {b} ∈ s(G ∪ H ) while {b} ∈
+/ s( F ∪ H ).
+If (b, b) ∈ F and (b, b) ∈
+• If (a, a) ∈
+/ F and (b, b) ∈ F ∩ G for each b ∈ ( A ( F ) ∪ A (G )) \ {a}, assume there is b ∈ B such that (a, b) ∈ F . We consider
+H = A ( F ) ∪ A (G ), (a, c ) c ∈ A ( F ) ∪ A (G ) \ {b} ,
+and notice that {a} ∈ s( F ∪ H ) while {a} ∈
+/ s(G ∪ H ) (since b is not defeated by {a} in G ∪ H ).
+Thus in each case we have found an AF H such that A ( H ) ⊆ A ( F ) ∪ A (G ) and s( F ∪ H ) = s(G ∪ H ). F ≡ls G then follows.
+
+✷
+
+The remaining two semantics, grounded and complete, yield a more cumbersome characterization. We present them in
+the following two subsections. Afterwards, we provide a summary of all obtained results on local equivalence.
+5.1. Local equivalence w.r.t. grounded semantics
+We proceed with the grounded semantics where we observe a gap between strong and local equivalence. For instance,
+if one considers AFs F and G such that A ( F ) = A (G ) and g( F ) = g(G ) = {∅}, one may notice that g( F ∪ H ) = g(G ∪ H ) = {∅}
+g
+always holds for any AF H such that A ( H ) ⊆ A ( F ) and F ≡l G thus follows. One the other hand, above conditions do not
+g
+
+yield at all that F gκ and G gκ coincide, thus F ≡s G is not guaranteed.
+We start this section with some additional notation and lemmas that will help us to characterize the special cases inbetween strong and local equivalence under grounded semantics. First, we introduce the notion of an induced subframework:
+let F = ( A , R ) be an AF and B ⊆ U a set of arguments. Then, F | B = ( A ∩ B , R | B ) where R | B = R ∩ ( B × B ).
+Deﬁnition 9. Given an AF F = ( A , R ) and an argument a ∈ A, F a∗ is the subframework induced by the arguments other than
+a and those attacked by a, that is, F a∗ = F | A \ R + (a) where R + (a) = {a} ∪ {b | (a, b) ∈ R }.
+
+Now, one may notice that arguments defended by a in F are unattacked in F a∗ . The motivation behind this kind of “reduction” lies in the observation that if the sets of unattacked arguments of two self-loop free AFs coincide, and their reducts
+
+2000
+
+E. Oikarinen, S. Woltran / Artiﬁcial Intelligence 175 (2011) 1985–2009
+
+w.r.t. each unattacked argument are the same, then these frameworks are locally equivalent w.r.t. grounded semantics (see
+Example 16 below). This observation generalizes to AFs with self-loops via the g-kernels of reducts.
+Example 16. Consider AFs
+
+F:
+
+a
+
+c
+
+b
+
+G:
+
+d
+
+a
+
+c
+
+b
+
+d
+
+Now, F gκ = F = G = G gκ and thus F
+G. We notice that Γ F (∅) = ΓG (∅) = {a} and F a∗ = G a∗ = ({c , d}, {(c , d), (d, c )}). One
+g
+can now check that given any AF H such that A ( H ) ⊆ {a, b, c , d}, g( F ∪ H ) = g(G ∪ H ) holds, and thus F ≡l G.
+g
+≡s
+
+The following lemma states a rather straight-forward observation between the complete and grounded extensions of an
+AF F and its reduction w.r.t. the unattacked arguments.
+Lemma 13. For any AF F with set of unattacked arguments S = Γ F (∅), it holds that5 g( F ) = { S ∪ T | T ∈ g(
+
+a∈ S
+
+F a∗ )}.
+
+Proof. Given an AF F = ( A , R ) and S = Γ F (∅), let us consider the set R + ( S ) = S ∪ {b | (a, b) ∈ R and a ∈ S } and the subframework F | A \ R + ( S ) . Indeed, the arguments defended by S in F are exactly those unattacked in F | A \ R + ( S ) . By recalling
+the deﬁnition for the grounded extension as the least ﬁxed point of the Γ -operator, it is thus straightforward to see that
+g( F ) = { S ∪ T | T ∈ g( F | A \ R + ( S ) )}. Thus it is suﬃcient to show F | A \ R + ( S ) = a∈ S F a∗ . First, we observe that
+
+R + ( S ) = S ∪ b (a, b) ∈ R , a ∈ S =
+
+{a} ∪ b ∈ A (a, b) ∈ R
+a∈ S
+
+A \ R +(S ) = A \
+
+R + (a)
+
+and
+
+a∈ S
+
+A \ R + (a) .
+
+=
+
+a∈ S
+
+R + (a)
+
+=
+
+a∈ S
+
+Moreover,
+
+F a∗ =
+a∈ S
+
+( F | A \ R + (a) ) = F |
+a∈ S
+
+a∈ S ( A \ R
+
++ (a))
+
+= F | A \(
+
+a∈ S
+
+R + (a))
+
+= F | A\R + ( S ) .
+
+✷
+
+Even though ( F ∩ G )gκ = F gκ ∩ G gκ does not hold in general, the following lemma states a useful special case in which
+the equivalence holds.
+Lemma 14. For an AF F and S = Γ F (∅) = ∅, it holds that
+
+F a∗
+
+gκ
+
+a∈ S
+
+gκ
+
+F a∗
+
+=
+
+.
+
+a∈ S
+
+Proof. Let us consider AF F with S = Γ F (∅). First, we notice that
+
+F a∗
+
+A
+
+gκ
+
+=
+
+a∈ S
+
+A
+a∈ S
+
+F a∗
+
+gκ
+
+A F a∗ = A
+
+=
+a∈ S
+
+F a∗
+a∈ S
+
+F a∗
+
+=A
+
+gκ
+
+,
+
+a∈ S
+
+since A ( F ∩ G ) = A ( F ) ∩ A (G ) and g-kernelization does not affect the set of arguments involved.
+Let us consider an arbitrary attack (b, c ) ∈ a∈ S ( F a∗ )gκ . Thus (b, c ) ∈ ( F a∗ )gκ for each a ∈ S. Furthermore, for each a ∈ S,
+(b, c ) ∈ F a∗ and either (c , c ) ∈
+/ F a∗ or (c , b), (b, b) ∈
+/ F a∗ . But then (b, c ) ∈ a∈ S F a∗ , and (c , c ) ∈
+/ a∈ S F a∗ or (c , b), (b, b) ∈
+/
+∗
+∗
+gκ
+follows.
+a∈ S F a . Thus, (b , c ) ∈ ( a∈ S F a )
+For the other direction, consider an arbitrary attack (b, c ) ∈ ( a∈ S F a∗ )gκ . Then (b, c ) ∈ a∈ S F a∗ and (c , c ) ∈
+/ a∈ S F a∗ or
+∗
+∗
+∗
+(c , b), (b, b) ∈
+/ a∈ S F a . Thus for each a ∈ S, we have (b, c ) ∈ F a , and (b, c ) ∈ a∈ S F a then follows. Moreover, there is a ∈ S
+/ F a∗ or (c , b), (b, b) ∈
+/ F a∗ . Assume ﬁrst (c , c ) ∈
+/ F a∗ . Since (b, c ) ∈ F a∗ , a attacks neither b nor c. Thus, the
+such that (c , c ) ∈
+case in which (c , c ) ∈ F and (c , c ) ∈
+/ F a∗ is impossible. Then (c , c ) ∈
+/ F must hold and then (c , c ) ∈
+/ F a∗ for all a ∈ S. On the
+∗
+other hand, if (c , b), (b, b) ∈
+/ F a , then, by the same arguments, (c , b), (b, b) ∈
+/ F , and (c , b), (b, b) ∈
+/ F a∗ for all a ∈ S follows.
+Thus (b, c ) ∈ ( F a∗ )gκ holds for all a ∈ S and (b, c ) ∈ a∈ S ( F a∗ )gκ then follows. ✷
+Finally, the following lemma provides us a result analogous to Lemma 7 in the speciﬁc case in which one considers
+frameworks under the reduction introduced in Deﬁnition 9 and contexts H which do not introduce new arguments.
+
+5
+
+In case S = ∅, we consider
+
+a∈ S
+
+F a∗ as the empty AF (∅, ∅). Recall that the empty AF has the empty set as its grounded extension.
+
+E. Oikarinen, S. Woltran / Artiﬁcial Intelligence 175 (2011) 1985–2009
+
+2001
+
+Lemma 15. Let F , G, and H be AFs such that A ( H ) ⊆ A ( F ) = A (G ) and Γ F (∅) = ΓG (∅) = S. If ( F a∗ )gκ = (G a∗ )gκ for all a ∈ S, then
+(( F ∪ H )a∗ )gκ = ((G ∪ H )a∗ )gκ for all a ∈ T where Γ F ∪ H (∅) = ΓG ∪ H (∅) = T ⊆ S.
+Proof. Note that A ( F ) = A (G ) and ( F a∗ )gκ = (G a∗ )gκ jointly imply that the set of arguments attacked by a ∈ S in F is the
+same as the set of arguments attacked by a in G. Consider arbitrary a ∈ T = Γ F ∪ H (∅) = ΓG ∪ H (∅) and (b, c ) ∈ (( F ∪ H )a∗ )gκ .
+By deﬁnition a = b and a = c.
+First, assume b = c. Since (b, b) ∈ (( F ∪ H )a∗ )gκ , (b, b) ∈ ( F ∪ H )a∗ and (b, b) ∈ F ∪ H follow. If (b, b) ∈ F , then (b, b) ∈ F a∗
+and also (b, b) ∈ ( F a∗ )gκ = (G a∗ )gκ . Now, (b, b) ∈ G ∪ H , (b, b) ∈ (G ∪ H )a∗ , and (b, b) ∈ ((G ∪ H )a∗ )gκ follow. On the other hand,
+if (b, b) ∈ H , then (b, b) ∈ G ∪ H . Again, (b, b) ∈ (G ∪ H )a∗ (since b is not attacked by a in H nor in F , and the set of arguments
+attacked by a is the same in F and G, b is not attacked by a in G as well) and (b, b) ∈ ((G ∪ H )a∗ )gκ .
+Next, assume b = c. Since (b, c ) ∈ (( F ∪ H )a∗ )gκ , (c , c ) ∈
+/ ( F ∪ H )a∗ or (c , b), (b, b) ∈
+/ ( F ∪ H )a∗ . In case (b, c ) ∈ F , we have
+(b, c ) ∈ F a∗ , and furthermore, (b, c ) ∈ ( F a∗ )gκ . Then, by assumption (b, c ) ∈ (G a∗ )gκ . Thus (b, c ) ∈ G ∪ H . Moreover, since (b, c ) ∈
+G a∗ , neither b nor c are attacked by a in G. Furthermore, (c , c ) ∈
+/ G a∗ or (c , b), (b, b) ∈
+/ G a∗ (thus (c , c ) ∈
+/ G or (c , b), (b, b) ∈
+/ G).
+/ H or (c , b), (b, b) ∈
+/ H,
+Since (b, c ) ∈ (( F ∪ H )a∗ )gκ , we know that neither b nor c is attacked by a in H as well. Also, (c , c ) ∈
+/ G ∪ H or (c , b), (b, b) ∈
+/ G ∪ H (here we recall that since ( F a∗ )gκ = (G a∗ )gκ , for all d: (d, d) ∈ F a∗ iff
+and moreover (c , c ) ∈
+(d, d) ∈ G a∗ ). We conclude that neither b nor c is attacked by a in G ∪ H , (b, c ) ∈ (G ∪ H )a∗ , and (b, c ) ∈ ((G ∪ H )a∗ )gκ .
+Otherwise, we have (b, c ) ∈ H . Then, (b, c ) ∈ G ∪ H is clear. Since (b, c ) ∈ (( F ∪ H )a∗ )gκ , neither b nor c is attacked
+by a in F ∪ H . Since the set of arguments attacked by a in F is the same as the set of arguments attacked by a in G,
+/ ( F ∪ H )a∗ or
+neither b nor c is attacked by a in G ∪ H . Again, (b, c ) ∈ (G ∪ H )a∗ follows. Since (b, c ) ∈ (( F ∪ H )a∗ )gκ , (c , c ) ∈
+(c , b), (b, b) ∈
+/ ( F ∪ H )a∗ . In case (c , c ) ∈
+/ ( F ∪ H )a∗ , we have (c , c ) ∈
+/ F ∪ H , then (c , c ) ∈
+/ G ∪ H and (c , c ) ∈
+/ (G ∪ H )a∗ follow (recall
+/ ( F ∪ H )a∗ , by the above arguments, also (b, b) ∈
+/ (G ∪ H )a∗
+that F a∗ and G a∗ have the same self-loops). In case (c , b), (b, b) ∈
+holds. Furthermore, (b, b) ∈
+/ G and (b, b) ∈
+/ G a∗ . Since (b, b) ∈
+/ G a∗ and (c , b) ∈
+/ (G a∗ )gκ (recall (c , b) ∈
+/ ( F a∗ )gκ = (G a∗ )gκ ), we must
+have (c , b) ∈
+/ G a∗ . Thus, (c , c ) ∈
+/ (G ∪ H )a∗ or (c , b), (b, b) ∈
+/ (G ∪ H )a∗ , and (b, c ) ∈ ((G ∪ H )a∗ )gκ then follows. The other direction
+is symmetrical. ✷
+Before the characterization theorem, we notice that there are still further special cases of locally equivalent AFs
+w.r.t. grounded semantics.
+Example 17. Consider AFs F and G such that the only argument unattacked in both frameworks is a, that is, Γ F (∅) =
+ΓG (∅) = {a}:
+
+F:
+
+a
+
+b
+
+c
+
+d
+
+G:
+
+a
+
+b
+
+c
+
+d
+
+g
+
+Now F ≡s G, since F gκ = G gκ . Let us argue that F and G are locally equivalent w.r.t. grounded semantics. Consider arbitrary
+H such that A ( H ) ⊆ {a, b, c , d}. If a is attacked in H , then g( F ∪ H ) = g(G ∪ H ) = {∅}. In case a is unattacked in H , there
+are two possibilities. Either c is not defended by {a} in both F ∪ H and G ∪ H (thus g( F ∪ H ) = g(G ∪ H ) = {{a}}), or c
+g
+is defended by {a} in both F ∪ H and G ∪ H (thus g( F ∪ H ) = g(G ∪ H ) = {{a, c }}). We can thus conclude that F ≡l G.
+∗
+gκ
+∗
+gκ
+Furthermore, one may notice that F and G do not satisfy the condition ( F a ) = (G a ) in contrast to the frameworks in
+Example 16. Indeed, F a∗ = ( F a∗ )gκ = ({b, c , d}, {(b, b), (b, c ), (c , d), (d, d)}) and G a∗ = (G a∗ )gκ = ({b, c , d}, {(b, b), (b, c ), (d, d)}).
+We call cases similar to F a∗ and G a∗ in the above example pathological, based on their structure containing self-loops for
+all arguments (except potentially one).
+Deﬁnition 10. An AF F is self-loop pathological if (a, a) ∈ F for all a ∈ A ( F ), and b-pathological if (b, b) ∈
+/ F and (a, a) ∈ F for
+all a = b.
+Now one may notice that F a∗ and G a∗ in Example 17 are both c-pathological. Interestingly, in the characterization of local
+equivalence w.r.t. stable semantics (see Theorem 9) the special case involves AFs such that one is an a-pathological AF and
+the other a self-loop pathological AF over the same set of arguments except the argument a.
+In the forthcoming characterization theorem for local equivalence w.r.t. the grounded semantics, we have to take into
+account frameworks similar to those in Example 16 and the pathological cases. General conditions AFs F and G need to
+satisfy in order to be locally equivalent w.r.t. grounded semantics are (i) A ( F ) = A (G ) and (ii) Γ F (∅) = ΓG (∅) = S. If (ii) is
+not satisﬁed, then g( F ) = g(G ). In case (i) is not satisﬁed, then H = ({a}, ∅), where a is an argument not appearing in both
+F and G serves as a counter example. Together with conditions (i) and (ii), the condition (iii) ( F a∗ )gκ = (G a∗ )gκ for all a ∈ S
+characterizes the frameworks similar to those in Example 16 in the general case with potential self-loops. The conditions
+regarding pathological cases are more speciﬁc (see the second item in the following theorem) and involve frameworks in
+which exactly one argument is unattacked.
+Finally, we would like to mention that in the version of the result which appeared in [23], the deﬁnition of b-pathological
+frameworks was too restrictive. The frameworks F a∗ and G a∗ in Example 17 are examples of c-pathological frameworks, which
+do not satisfy the condition “c is unattacked” required in [23, Deﬁnition 11]. The relaxed deﬁnition of b-pathological AFs of
+
+2002
+
+E. Oikarinen, S. Woltran / Artiﬁcial Intelligence 175 (2011) 1985–2009
+
+this paper and the condition “(d, b) ∈ F a∗ iff (d, b) ∈ G a∗ for all d” used below are necessary to obtain a full characterization
+of AFs locally equivalent w.r.t. grounded semantics.
+g
+
+Theorem 10. For AFs F , G: F ≡l G iff jointly A ( F ) = A (G ), Γ F (∅) = ΓG (∅) = S, and
+
+• ( F a∗ )gκ = (G a∗ )gκ for all a ∈ S, or
+• in case S = {a}:
+– A ( F a∗ ) = A (G a∗ ), both F a∗ and G a∗ are b-pathological for some b, and (d, b) ∈ F a∗ iff (d, b) ∈ G a∗ for all d; or
+– both F a∗ and G a∗ are self-loop pathological.
+
+Proof. If-direction: Let us assume A ( F ) = A (G ) and Γ F (∅) = ΓG (∅) = S. If S = ∅, then Γ F ∪ H (∅) = ΓG ∪ H (∅) = ∅ for any AF H
+g
+such that A ( H ) ⊆ A ( F ) and g( F ∪ H ) = g(G ∪ H ) = {∅}. Consequently F ≡l G then follows.
+∗
+gκ
+∗
+gκ
+for all a ∈ S. Consider arbitrary H such that A ( H ) ⊆ A ( F ), and Γ F ∪ H (∅) =
+Next, assume S = ∅ and ( F a ) = (G a )
+ΓG ∪ H (∅) = T ⊆ S. If T = ∅, then g( F ∪ H ) = g(G ∪ H ) = {∅}. Thus, assume T = ∅. By Lemma 15, (( F ∪ H )a∗ )gκ = ((G ∪ H )a∗ )gκ
+for all a ∈ T . Using Lemma 14 together with this observation, we obtain:
+
+( F ∪ H )a∗
+a∈ T
+
+gκ
+
+( F ∪ H )a∗
+
+=
+
+gκ
+
+a∈ T
+
+(G ∪ H )a∗
+
+=
+
+gκ
+
+(G ∪ H )a∗
+
+=
+
+a∈ T
+
+gκ
+
+.
+
+a∈ T
+
+Thus, g( a∈ T ( F ∪ H )a∗ ) = g( a∈ T (G ∪ H )a∗ ) and g( F ∪ H ) = g(G ∪ H ) then follows by Lemma 13. Thus g( F ∪ H ) = g(G ∪ H )
+g
+for all H with A ( H ) ⊆ A ( F ) and F ≡l G follows.
+So, suppose S = {a} and assume ﬁrst A ( F a∗ ) = A (G a∗ ) and both F a∗ and G a∗ are b-pathological for some b ∈ A ( F ). Then the
+only argument which is not self-attacking in F a∗ and G a∗ is b. Let us consider H with A ( H ) ⊆ A ( F ). Since A ( F ) = A (G ) and
+A ( F a∗ ) = A (G a∗ ), the set of arguments attacked by a in F is the same as the set of arguments attacked by a in G, Now, if a is
+attacked in H , then g( F ∪ H ) = g(G ∪ H ) = {∅}. In case a is not attacked in H , there are two possibilities: either a defends
+b in both F ∪ H and G ∪ H (recall that (d, b) ∈ F a∗ iff (d, b) ∈ G a∗ implies that the attackers of b are the same in F ∪ H and
+G ∪ H ) and g( F ∪ H ) = g(G ∪ H ) = {{a, b}}, or b is not defended by a in neither and g( F ∪ H ) = g(G ∪ H ) = {{a}}.
+Finally, we assume that both F a∗ and G a∗ are self-loop pathological. Now, all arguments in F and G other than a and those
+attacked by a are self-attacking, and given an H with A ( H ) ⊆ A ( F ), there are two possibilities: g( F ∪ H ) = g(G ∪ H ) = {{a}}
+g
+(in case a is not attacked in H ) or g( F ∪ H ) = g(G ∪ H ) = {∅} (in case a is attacked in H ). Thus F ≡l G follows.
+Only-if direction: Let us assume A ( F ) = A (G ). W.l.o.g. there is a ∈ A ( F ) \ A (G ). Now, for AF H = ({a}, ∅) we have g( F ∪
+H ) = g( G ∪ H ) .
+Thus let A ( F ) = A (G ) and assume Γ F (∅) = ΓG (∅). Thus there is an argument a which occurs in Γ F (∅) or ΓG (∅), but not
+in both. W.l.o.g. let a ∈ Γ F (∅) \ ΓG (∅). In this case, we consider AF
+
+H = A ( F ), (a, c ) c ∈ A ( F ) \ {a} .
+The grounded extension of F ∪ H is {a} while G ∪ H has each argument attacked, and therefore g(G ∪ H ) = {∅}.
+Hence, let us consider the case Γ F (∅) = ΓG (∅) = S with S = ∅ (if S = ∅, then the conditions are trivially satisﬁed). We
+assume that there exists a ∈ S such that ( F a∗ )gκ = (G a∗ )gκ (thus F a∗ = G a∗ ).
+Consider ﬁrst the case A ( F a∗ ) = A (G a∗ ), i.e., the set of arguments attacked by a in F is different to the set of arguments
+/ G, we take
+attacked by a in G (recall A ( F ) = A (G )). W.l.o.g. let b be an argument attacked by a in F but not in G. If (b, b) ∈
+
+H = A ( F ), (a, c ), (c , b) c ∈ A ( F ) \ {a, b} .
+Now, g(G ∪ H ) = {{a, b}} and g( F ∪ H ) = {{a}}. Next, assume that (b, b) ∈ G. If there is d = b not attacked by a nor by itself
+in F , we take
+
+H = A ( F ), (b, d) ∪ (a, c ) c ∈ A ( F ) \ {a, b, d}
+and notice that g( F ∪ H ) = {{a, d}} and g(G ∪ H ) = {{a}}. If there is no such d in F , then S = {a} and, moreover, F a∗ is
+self-loop pathological. In this case G a∗ cannot be self-loop pathological, and there is d = b not attacked by a nor by itself
+in G. We take
+
+H = A ( F ), (a, b), (b, d) ∪ (a, c ) c ∈ A ( F ) \ {a, b, d} .
+Now, it holds g( F ∪ H ) = {{a}} and g(G ∪ H ) = {{a, d}} (recall (d, d) ∈ F ).
+So suppose A ( F a∗ ) = A (G a∗ ) and R (( F a∗ )gκ ) = R ((G a∗ )gκ ). W.l.o.g. assume (b, c ) ∈ ( F a∗ )gκ \ (G a∗ )gκ . We notice that neither b
+nor c is attacked by a in F ∪ G, since {b, c } ⊆ A ( F a∗ ) = A (G a∗ ).
+/ (G a∗ )gκ . This implies (b, b) ∈ F a∗ and (b, b) ∈
+/ G a∗ , and furthermore
+Assume ﬁrst b = c, that is, (b, b) ∈ ( F a∗ )gκ and (b, b) ∈
+(b, b) ∈ F . Since (b, b) ∈
+/ G a∗ and b ∈ A (G a∗ ), we have (b, b) ∈
+/ G as well. For
+
+H = A ( F ), (a, d), (d, b) d ∈ A ( F ) \ {a, b}
+we have g( F ∪ H ) = {{a}} and g( F ∪ H ) = {{a, b}}. Thus, from now on we can assume (b, b) ∈ F a∗ iff (b, b) ∈ G a∗ .
+
+E. Oikarinen, S. Woltran / Artiﬁcial Intelligence 175 (2011) 1985–2009
+
+2003
+
+Assume b = c. Since (b, c ) ∈ ( F a∗ )gκ , (b, c ) ∈ F a∗ and (c , c ) ∈
+/ F a∗ or (c , b), (b, b) ∈
+/ F a∗ . Furthermore, (b, c ) ∈ F and (c , c ) ∈
+/F
+/ F . If (c , c ) ∈
+/ F , then (c , c ) ∈
+/ G and (b, c ) ∈
+/ G since (b, c ) ∈
+/ (G a∗ )gκ (regardless whether b is self-attacking or
+or (c , b), (b, b) ∈
+not). We take
+
+H = A ( F ), (c , b) ∪ (a, d) d ∈ A ( F ) \ {a, b, c }
+and have g( F ∪ H ) = {{a}} and g(G ∪ H ) = {{a, c }}.
+Finally, if (c , c ) ∈ F (and thus (c , c ) ∈ G), then (c , b), (b, b) ∈
+/ F . Furthermore, (b, b) ∈
+/ G and (b, c ) ∈
+/ G by the same arguments as above. If there is a d ∈ A ( F a∗ ) = A (G a∗ ) such that d = b and d = c, and d is not self-attacking, we can take
+
+H = A ( F ), (c , d) ∪ (a, e ) e ∈ A ( F ) \ {a, b, c , d}
+and notice that g(G ∪ H ) = {{a, b}} (if (c , b) ∈
+/ G) or g(G ∪ H ) = {{a}} (if (c , b) ∈ G), and g( F ∪ H ) = {{a, b, d}}.
+Otherwise, either A ( F a∗ ) = {b, c } or (d, d) ∈ F a∗ and (d, d) ∈ G a∗ for all d ∈ A ( F a∗ ) \ {b, c }. In either case, S = {a} and both
+F a∗ and G a∗ are b-pathological. Thus there is either (d, b) ∈ F a∗ \ G a∗ for d ∈ A ( F a∗ ) \ {b, c } (recall here that (c , b) ∈
+/ F a∗ ), or
+(d, b) ∈ G a∗ \ F a∗ for d ∈ A ( F a∗ ) \ {b}. W.l.o.g. let (d, b) ∈ G a∗ \ F a∗ . Then we take
+
+H = A ( F ), (a, e ) e ∈ A ( F ) \ {a, b, d}
+and have g(G ∪ H ) = {{a}} and g( F ∪ H ) = {{a, b}}. If (d, b) ∈ F a∗ \ G a∗ , the situation is symmetrical, with the exception that
+d = c cannot hold.
+g
+Thus we have found in every case an AF H such that A ( H ) ⊆ A ( F ) ∪ A (G ) and g( F ∪ H ) = g(G ∪ H ) and F ≡l G
+follows. ✷
+5.2. Local equivalence w.r.t. complete semantics
+Finally we address the complete semantics. Our ﬁrst observation hereby is as follows: for any AFs F and G (i) F ≡lc G
+p
+
+implies F ≡s G; and (ii) F ≡cs G implies F ≡lc G. While (ii) is clear from deﬁnition, (i) follows from Proposition 1 and
+Theorem 8. Moreover, both implications can be shown to be strict.
+Example 18. For the ﬁrst implication, consider the AFs
+
+F:
+
+a
+
+b
+
+G:
+
+a
+
+b
+p
+
+Now, it holds F aκ = G aκ . Thus, by Theorems 2 and 8, we have F ≡l G. On the other hand, c( F ) = {∅, {b}} = {{b}} = c(G ),
+and hence, F ≡lc G.
+Example 19. For the other implication, consider the AFs
+
+F:
+
+a
+
+b
+
+c
+
+G:
+
+a
+
+b
+
+c
+
+We have F cκ = G cκ and thus, by Theorem 4, F ≡cs G. On the other hand, F ≡lc G can be veriﬁed as follows. First, we have
+c( F ) = {{b}} = c(G ). Since we are interested in local strong equivalence, there are only two attacks, (b, b) and (a, b), we
+can properly add via an AF H with A ( H ) ⊆ A ( F ) ∪ A (G ). If (b, b) ∈ H , c( F ∪ H ) = {∅} = c(G ∪ H ) is clear. If (a, b) ∈ H ,
+F ∪ H = G ∪ H . In both cases, we have c( F ∪ H ) = c(G ∪ H ) and F ≡lc G follows.
+These observations suggest that we require a kernel which lies inbetween the notions of a-kernel and c-kernel. Recalling
+the AFs in Example 19, we provide the following deﬁnition.
+Deﬁnition 11. For an AF F = ( A , R ), we deﬁne the c-local-kernel of F as F clκ = ( A , R clκ ) where
+
+R clκ = R \ (a, b) a = b, (a, a) ∈ R , (b, b) ∈ R or (b, a), (c , b) ∈ R for some c = a
+
+.
+
+We observe that F aκ ⊆ F clκ ⊆ F cκ holds for any AF F and for each set of arguments S, S is conﬂict-free in F iff S is
+conﬂict-free in F clκ . Moreover, there is a stronger relationship between c-local-kernel and a-kernel.
+Lemma 16. For any AFs F and G, F clκ = G clκ implies F aκ = G aκ .
+Proof. Suppose F clκ = G clκ and let (a, b) ∈ F aκ . We show that (a, b) ∈ G aκ . By the assumption F clκ = G clκ and the properties
+of kernels, we have (a, a) ∈ F aκ iff (a, a) ∈ F clκ iff (a, a) ∈ G clκ iff (a, a) ∈ G aκ . Thus, for a = b we are done.
+/ F aκ or jointly (b, b) ∈
+/ F aκ and (b, a) ∈
+/ F aκ . From (a, b) ∈ F aκ , we obtain (a, b) ∈ F clκ
+Assume thus a = b. Then, (a, a) ∈
+aκ
+clκ
+clκ
+clκ
+clκ
+(by F ⊆ F ), (a, b) ∈ G
+(by the assumption F
+= G ), and (a, b) ∈ G (since G clκ ⊆ G). Suppose (a, a) ∈
+/ F aκ . We
+
+2004
+
+E. Oikarinen, S. Woltran / Artiﬁcial Intelligence 175 (2011) 1985–2009
+
+already know (a, a) ∈
+/ G aκ (thus also (a, a) ∈
+/ G ). Then, (a, b) ∈ G implies (a, b) ∈ G aκ by deﬁnition. Suppose (a, a) ∈ F aκ .
+/ F aκ and (b, a) ∈
+/ F aκ . From (b, b) ∈
+/ F aκ , we get (b, b) ∈
+/ F clκ , (b, b) ∈
+/ G clκ , and (b, b) ∈
+/ G. Moreover, since
+Then, (b, b) ∈
+(b, b) ∈
+/ F clκ , we have (b, b) ∈
+/ F , thus (b, a) ∈
+/ F aκ yields (b, a) ∈
+/ F . Hence, (b, a) ∈
+/ F clκ , (b, a) ∈
+/ G clκ and since (b, b) ∈
+/ G,
+(b, a) ∈
+/ G. By deﬁnition, (a, b) ∈ G aκ thus has to hold.
+The converse direction is done essentially by the same arguments, and thus F clκ = G clκ implies F aκ = G aκ . ✷
+Next, we proceed to show that the c-local-kernel has similar properties as the other kernels.
+Lemma 17. For any AF F , c( F ) = c( F clκ ).
+Proof. ⊆: Let S ∈ c( F ). We show S ∈ c( F clκ ). First, consider an argument b ∈ S. Now, b is defended by S in F , i.e. for each
+(a, b) ∈ F there exists a c ∈ S, such that (c , a) ∈ F . For each c ∈ S, (c , c ) ∈
+/ F has to hold; thus, for each c ∈ S, (c , a) ∈ F
+implies (c , a) ∈ F clκ . On the other hand, (a, b) ∈ F clκ only if (a, b) ∈ F . Hence, for each (a, b) ∈ F clκ there exists a c ∈ S, such
+that (c , a) ∈ F clκ . Thus b is defended by S in F clκ .
+Now consider an argument b ∈ A ( F ), such that b ∈
+/ S. Then b is not defended by S in F . If (b, b) ∈ F , then (b, b) ∈ F clκ ,
+clκ
+/ F , then there exists an (a, b) ∈ F , such that either a ∈ S or a is not
+and b cannot be defended by S in F . If (b, b) ∈
+/ F , and thus (a, b) ∈ F clκ . Hence, b remains defeated by S in F clκ . Otherwise,
+defeated by S. In case a ∈ S, we have (a, a) ∈
+we have that (c , a) ∈ F clκ , only if (c , a) ∈ F . Hence, if a is not defeated by S in F , then a is not defeated by S in F clκ . We
+arrive at S ∈ c( F clκ ).
+⊇: Let S ∈ c( F clκ ). We show S ∈ c( F ). First consider an argument b ∈ S. Now, b is defended by S in F clκ , i.e. for each
+(a, b) ∈ F clκ there exists a c ∈ S, such that (c , a) ∈ F clκ . Consider any (a, b) ∈ F . If (a, b) ∈ F clκ , we are done, since each
+(c , a) ∈ F clκ is also contained in F . Thus b remains defended by S in F . If (a, b) ∈
+/ F clκ , we know by deﬁnition, that in
+particular (b, a) ∈ F . Thus against each such a, b defends itself in F (recall b ∈ S).
+/ S. Then, b is defeated by some a ∈ S in F clκ , or, for some (a, b) ∈ F clκ , a is
+Finally, consider b ∈ A ( F ), such that b ∈
+undefeated by S in F clκ . If b is defeated by some a ∈ S in F clκ , then b is defeated by a in F . If for some (a, b) ∈ F clκ , a
+is undefeated by S in F clκ , we have to check those (c , a) ∈ F , such that (c , a) ∈
+/ F clκ . For such c, (c , c ) ∈ F has to hold by
+/ S. This shows that a remains undefeated by S in F . S ∈ c( F ) follows. ✷
+deﬁnition of a c-local kernel, and thus c ∈
+Lemma 18. If F clκ = G clκ , then ( F ∪ H )clκ = (G ∪ H )clκ for all AFs H with A ( H ) ⊆ A ( F ) ∪ A (G ).
+Proof. Note that F clκ = G clκ implies A ( F clκ ) = A ( F ) = A (G ) = A (G clκ ). Thus, we can restrict ourselves to AFs H , with
+A ( H ) ⊆ A ( F ). For each such H , we have to show R (( F ∪ H )clκ ) = R ((G ∪ H )clκ ). So, suppose F clκ = G clκ holds and let
+(a, b) ∈ ( F ∪ H )clκ for an AF H , such that A ( H ) ⊆ A ( F ). We show (a, b) ∈ (G ∪ H )clκ (the other direction is symmetric and
+thus omitted).
+If (a, b) is contained in the a-kernel ( F ∪ H )aκ , we conclude as follows. We get F aκ = G aκ by Lemma 16; moreover,
+by Lemma 4, ( F ∪ H )aκ = (G ∪ H )aκ . Thus (a, b) ∈ (G ∪ H )aκ , and (a, b) ∈ (G ∪ H )clκ follows immediately (since I aκ ⊆ I clκ
+for any AF I ). This relation holds in particular for each loop (a, a), thus we note that (a, a) ∈ ( F ∪ H )clκ iff ((a, a) ∈ F or
+(a, a) ∈ H ) iff ((a, a) ∈ G or (a, a) ∈ H ) iff (a, a) ∈ (G ∪ H )clκ .
+/ ( F ∪ H )aκ . By deﬁnitions of the involved kernels, we observe
+So, assume now that (a, b) ∈ ( F ∪ H )clκ and (a, b) ∈
+(a, a), (b, a) ∈ F ∪ H , but there exists no other attack (c , b) in F ∪ H , for c = a. From the latter, we get for such (c , b),
+(c , b) ∈
+/ F clκ ∪ H and, thus by assumption, (c , b) ∈
+/ G clκ ∪ H .
+clκ
+∪ H . By assumption, then (a, b) ∈ G clκ ∪ H . Hence, there exists no attack (c , b)
+Let us ﬁrst suppose that (a, b) ∈ F
+in G (for c = a). Moreover, since we already know (c , b) ∈
+/ G clκ ∪ H , there exists no such attack (c , b) in H as well. Thus,
+clκ
+(a, b) ∈ (G ∪ H ) .
+/ F clκ ∪ H and (a, b) ∈ ( F ∪ H )clκ . Then, (a, b) ∈
+/ H and thus (a, b) ∈ F . However, since (a, b) ∈
+/ F clκ
+So suppose (a, b) ∈
+there must exist some (c , b) ∈ F with c = a. On the other hand, since (a, b) ∈ ( F ∪ H )clκ there exists no (c , b) ∈ F ∪ H , a
+contradiction. ✷
+As it was the case for local equivalence w.r.t. stable and grounded semantics, there is also a certain pattern of frameworks
+here, which has to be taken into account additionally.
+Example 20. Consider the following AFs
+
+F:
+
+a
+
+b
+
+c
+
+G:
+
+a
+
+b
+
+c
+
+Now F clκ = F = G = G clκ . However, the frameworks are locally equivalent w.r.t. complete semantics. Consider an arbitrary
+H ⊆ {a, b, c }. If (b, b) ∈ H , then ∅ is the only complete extension of both F ∪ H and G ∪ H . If (b, b) ∈
+/ H , then we notice that
+b defends itself against all its possible attackers and thus ∅ and {b} are the complete extensions of both F ∪ H and G ∪ H .
+To characterize these frameworks, we deﬁne the concept of a framework saturated w.r.t. an argument b. In this kind of
+a framework, the argument b is an attacked argument that is defended by any non-empty conﬂict-free set.
+
+E. Oikarinen, S. Woltran / Artiﬁcial Intelligence 175 (2011) 1985–2009
+
+2005
+
+Deﬁnition 12. Given an AF F and an argument b ∈ A ( F ), F is b-saturated iff
+
+•
+•
+•
+•
+
+(b, b) ∈
+/ F,
+(a, b) ∈ F for some a = b,
+(a, a) ∈ F for each a ∈ A ( F ) such that (a, b) ∈ F , and
+(d, a) ∈ F for each a, d ∈ A ( F ) such that (a, b) ∈ F and (d, d) ∈
+/ F.
+
+The following lemma states a result for speciﬁc cases of locally equivalent AFs under the complete semantics; the full
+characterization theorem follows afterwards.
+Lemma 19. Given AFs F and G, if F aκ = G aκ and Γ F (∅) = ΓG (∅), then F ≡lc G.
+Proof. Assume Γ F (∅) = ΓG (∅) and F aκ = G aκ . Then A ( F ) = A (G ), (a, a) ∈ F iff (a, a) ∈ G, and a( F ∪ H ) = a(G ∪ H ) for each
+AF H such that A ( H ) ⊆ A ( F ) (by Theorems 2 and 8).
+We will show c( F ∪ H ) = c(G ∪ H ) for each AF H , such that A ( H ) ⊆ A ( F ). Consider an arbitrary S ∈ c( F ∪ H ). We need
+to show that a ∈ A ( F ) is defended by S in G ∪ H iff a ∈ S. Since c( F ∪ H ) ⊆ a( F ∪ H ) = a(G ∪ H ), S ∈ a(G ∪ H ), i.e., each
+a ∈ S is defended by S in G ∪ H . Thus, we consider arbitrary a ∈ A ( F ) \ S, and show that a is not defended by S in G ∪ H .
+/ S ∈ c( F ∪ H ), a is not defended by S in F ∪ H . If (a, a) ∈ F ∪ H , then (a, a) ∈ G ∪ H (recall that F aκ = G aκ implies
+Since a ∈
+/ F ∪ H and
+that (a, a) ∈ F iff (a, a) ∈ G for all a ∈ A ( F )) and a is not defended by S in G ∪ H either. Thus, assume (a, a) ∈
+(a, a) ∈
+/ G ∪ H . Now, there is attack (c , a) ∈ F ∪ H (c = a) such that either (i) c ∈ S, or (ii) c is not defeated by S in F ∪ H ,
+/ S for all (d, c ) ∈ F ∪ H .
+i.e., d ∈
+
+/ F ∪ H and (c , c ) ∈
+/ G ∪ H . Then, (c , a) ∈ F aκ , and recalling
+(i) Since c ∈ S and S ∈ a( F ∪ H ) = a(G ∪ H ), it follows that (c , c ) ∈
+F aκ = G aκ , also (c , a) ∈ G aκ ⊆ G. Thus (c , a) ∈ G ∪ H and a is not defended by S in G ∪ H .
+/ S, there is at least one attack against c in F ∪ H . Moreover, since Γ F (∅) = ΓG (∅), the same applies to G ∪ H
+(ii) In case c ∈
+/ S for all (d, c ) ∈ F ∪ H , and there is
+(if c is unattacked in both F and G, then c is attacked in H ). Let us assume that d ∈
+e ∈ S such that (e , c ) ∈ G ∪ H . Thus (e , c ) ∈ G. Since S ∈ a(G ∪ H ) = a( F ∪ H ), we know (e , e ) ∈
+/ F ∪ H and (e , e ) ∈
+/ G ∪ H.
+Then (e , c ) ∈ G aκ = F aκ , and (e , c ) ∈ F ∪ H . But this is contradictory to the assumption that c is not defeated by S in
+F ∪ H . Thus, there is no e ∈ S such that (e , c ) ∈ G and therefore it follows that a is not defended by S in G ∪ H .
+The other direction follows by symmetry. Thus, c( F ∪ H ) = c(G ∪ H ) for each AF H such that A ( H ) ⊆ A ( F ), and F ≡lc G
+follows. ✷
+Now we are ready to state the characterization theorem for the complete semantics.
+Theorem 11. For any AFs F , G: F ≡lc G iff
+
+• F clκ = G clκ or
+• F aκ = G aκ , Γ F (∅) = ΓG (∅), and both F and G are b-saturated for some b ∈ A ( F ) = A (G ).
+Proof. If-direction: In case F clκ = G clκ , by Lemmas 17 and 18 we are done. Otherwise both F and G are b-saturated,
+Γ F (∅) = ΓG (∅), and F aκ = G aκ . By Lemma 19, F ≡lc G then follows.
+p
+Only-if direction: First assume F aκ = G aκ . Then, we obtain F ≡l G by Theorems 2 and 8. Hence, there exists an AF H
+such that A ( H ) ⊆ A ( F ) ∪ A (G ) and p( F ∪ H ) = p(G ∪ H ). By Proposition 1, c( F ∪ H ) = c(G ∪ H ), i.e., F ≡lc G.
+Let us thus assume F aκ = G aκ . If Γ F (∅) = ΓG (∅), then c( F ) = c(G ) and F ≡lc G follows. Thus the last case to consider
+
+is F aκ = G aκ , F clκ = G clκ , Γ F (∅) = ΓG (∅), and at most one out of F and G is b-saturated. Since F and G possess the same
+self-loops; F clκ and G clκ then possess the same self-loops as well. W.l.o.g. let (a, b) ∈ F clκ \ G clκ (a = b). Since (a, b) ∈
+/
+G clκ , G aκ ⊆ G clκ and F aκ = G aκ , we have (a, b) ∈
+/ F aκ . From this observation, we can conclude from the deﬁnition of
+kernels, (a, a), (a, b), (b, a) ∈ F , (b, b) ∈
+/ F , and there is no c = a with (c , b) ∈ F . Moreover, we know (a, a) ∈ G and (b, b) ∈
+/ G.
+Furthermore, we also know (b, a) ∈ G. There are two reasons for (a, b) ∈
+/ G clκ : (a, b) ∈
+/ G or (a, b) ∈ G and there exists a c = a
+such that (c , b) ∈ G.
+In the ﬁrst case, it can be the case that b is not attacked in G. Then we take
+
+H = A ( F ), (b, d) d ∈ A ( F ) \ {b}
+and now it holds ∅ ∈ c( F ∪ H ), but c(G ∪ H ) = {{b}}.
+Otherwise (regardless whether (a, b) ∈ G or not), b is attacked by some c = a in G, i.e. (c , b) ∈ G. Now, (c , b) ∈
+/ G aκ
+aκ
+aκ
+aκ
+aκ
+(recall that F = G
+and (c , b) ∈
+/ F since b is not attacked in F except by a). Together with F = G this implies that
+{(b, c ), (c , c )} ⊆ F and {(b, c ), (c , c )} ⊆ G. Now, if A ( F ) = A (G ) = {a, b, c }, then both F and G are b-saturated, a contradiction
+/ {a, b, c } not attacking itself. Since F aκ = G aκ , d is
+to our assumption. Thus there exists (in F or G) a distinct argument d ∈
+
+2006
+
+E. Oikarinen, S. Woltran / Artiﬁcial Intelligence 175 (2011) 1985–2009
+
+indeed not self-attacking in both F and G, and moreover, (d, b) ∈
+/ F (since a is the only attacker of b in F ) and (d, b) ∈
+/G
+/ G). If (d, a) ∈
+/ F , we use
+(since F aκ = G aκ and (d, d) ∈
+
+H = A ( F ), (d, e ) e ∈ A ( F ) \ {a, b} .
+Then {d} ∈ c( F ∪ H ) but {d} cannot be a complete extension of G ∪ H , since b is defended by {d} (recall (a, b) ∈
+/ G).
+/ F , then F is b-saturated (recall that a is the
+On the other hand, if (d, a) ∈ F for all d ∈ A ( F ) \ {a, b, c } such that (d, d) ∈
+/G
+only attacker of b in F ). Then, G is not b-saturated, and for some attacker c of b in G, there is d ∈ A ( F ) such that (d, d) ∈
+/ G for some attacker c of b in G. Now, we can use
+and (d, c ) ∈
+
+H = A ( F ), (d, e ) e ∈ A ( F ) \ {a, b, c } .
+Then {d} ∈ c(G ∪ H ) but {d} cannot be a complete extension of F ∪ H , since b is defended by {d} (recall (d, a) ∈ F for all
+/ F and a is the only attacker of b in F ).
+d ∈ A ( F ) \ {a, b, c } such that (d, d) ∈
+Hence, in all the cases we have found an AF H , such that A ( H ) ⊆ A ( F ) and c( F ∪ H ) = c(G ∪ H ). Consequently, F ≡lc G
+follows. ✷
+Finally, let us mention here, that the result presented in Theorem 11 corrects the corresponding result from [23], which
+did not handle correctly certain special cases illustrated by the following example.
+Example 21. Consider the following AFs
+
+e
+
+d
+F:
+
+G:
+
+e
+a
+
+b
+
+d
+
+c
+
+a
+
+b
+
+c
+
+Now both F and G are b-saturated w.r.t. Deﬁnition 12, whereas they do not meet the condition “(a, a) ∈ F for all a ∈
+/
+Γ F (∅) ∪ {b}” required by [23, Deﬁnition 10]. One may now easily verify c( F ∪ H ) = c(G ∪ H ) for all contexts H such that
+A ( H ) ⊆ {a, b, c , d, e }. Indeed, it follows by Theorem 11 that F and G are locally equivalent w.r.t. complete semantics.
+5.3. Summary of results for local equivalence
+In the following we give a summary of our results for local equivalence. We emphasize that the relations here are exactly
+the same as for strong equivalence as summarized in Theorem 5.
+Theorem 12. The following relations hold for all AFs F , G, and σ ∈ {a, p, i, ss, e},
+(1) F ≡lσ G ⇒ F ≡ls G,
+
+g
+
+(2) F ≡lc G ⇔ ( F ≡lσ G and F ≡l G ).
+Proof. (1) Assume F ≡lσ G. Then F ≡σs G by Theorem 8, and F ≡ss G by Theorem 5, and F ≡ls G follows.
+(2) ⇒: Assume F ≡lc G. Consider an arbitrary AF H such that A ( H ) ⊆ A ( F ) ∪ A (G ). Since F ≡lc G, we have c( F ∪ H ) =
+g
+
+c(G ∪ H ). By Proposition 1, g( F ∪ H ) = g(G ∪ H ) and since H was arbitrary, F ≡l G follows. Also, p( F ∪ H ) = p(G ∪ H ) by
+p
+≡l
+
+σ ∈ {a, p, i, ss, e} follows.
+g
+⇐: Assume F ≡lσ G for σ ∈ {a, p, i, ss, e} and F ≡l G. From the latter, we obtain by Theorem 10 that Γ F (∅) = ΓG (∅)
+holds. From Γ F (∅) = ΓG (∅) and F aκ = G aκ (holds by Theorems 2 and 8 and the assumption that F ≡lσ G), F ≡lc G directly
+follows by Lemma 19. ✷
+Proposition 1, and F
+
+G follows. By Theorems 2 and 8, F ≡lσ G for
+
+We sketch next that none of the other relations hold.
+Example 22. Recall AFs F , G, H , and I from Example 14:
+
+F:
+
+a
+
+b
+
+G:
+
+H:
+
+a
+
+b
+
+I:
+
+a
+a
+
+b
+b
+
+By recalling that F ≡σs G for σ ∈ {a, p, i, ss, e} and F ≡ss G, and noticing that A ( F ) = A (G ), we get F ≡lσ G and F ≡ls G. On
+g
+the other hand, F ≡l G since g( F ) = {∅} = {{b}} = g(G ). Since all arguments in F and H are attacked, g( F ) = g( H ) = {∅} and
+
+E. Oikarinen, S. Woltran / Artiﬁcial Intelligence 175 (2011) 1985–2009
+
+2007
+
+g
+
+F ≡l H follows. However, F ≡lc H since c( F ) = c( H ), F ≡lσ H since F ≡σs H , and F ≡ls H since F ≡ss H and A ( F ) = A ( H ).
+Finally H ≡ls I since H ≡ss I , whereas H ≡lσ I since H ≡σs I . The observation H ≡lc I follows by Theorem 12.
+Similarly to strong equivalence, self-loops are in a crucial role with local equivalence. In fact, for self-loop free AFs, the
+concept of local equivalence collapses to syntactic equivalence for all but grounded semantics (see Example 16 for self-loop
+g
+free AFs F and G such that F = G and F ≡l G).
+Theorem 13. For any self-loop free AFs F and G, F = G iff F ≡lσ G for σ ∈ {s, a, p, c, i, ss, e}.
+For the problem of local grounded equivalence, it turns out that also in the case of self-loop free AFs certain “semantical”
+tests have to be done. In fact, the following result follows easily from Theorem 10.
+g
+Theorem 14. For any self-loop free AFs F and G, F ≡l G iff jointly A ( F ) = A (G ), Γ F (∅) = ΓG (∅) = S, and F a∗ = G a∗ for all a ∈ S.
+
+6. Discussion
+We studied strong equivalence in the context of abstract argumentation and provided characterizations how to decide
+strong equivalence with respect to the most important semantics for argumentation frameworks. In particular, we showed
+that strong equivalence w.r.t. admissible, preferred, ideal, semi-stable, and respectively, eager semantics coincides, while
+stable, grounded, and complete semantics yield mutually different notions of strong equivalence. This is, however, only true
+for argumentation frameworks which possess self-loops. For self-loop free frameworks we were able to show that strong
+equivalence w.r.t. all considered semantics amounts to syntactical equivalence. This strengthens the assumption that abstract
+argumentation frameworks provide a very “compact” KR formalism. In other words, in terms of strong equivalence there is
+no room for redundancy in such (self-loop free) frameworks.
+We also considered strong equivalence when deﬁned over credulously and respectively skeptically accepted arguments,
+and showed that in all but admissible semantics these concepts reduce to the corresponding standard notion of strong
+equivalence. Finally, we weakened the concept of strong equivalence by considering only augmentation of AFs which do not
+add any new arguments to the compared frameworks. We believe that our main results (which are given by Theorems 5, 7
+and 12) provide an interesting new classiﬁcation for the considered semantics.
+Understanding dynamics in argumentation is essential for revising argumentation theories [17]. Indeed, we provided here
+a somewhat orthogonal access for understanding the semantics of dynamically evolving AFs (neither arguments nor attacks
+are withdrawn). Our results indicate that dynamically equivalent knowledge is very close to symbolic equivalence in terms
+of AFs. In our setting, “evolving” refers to the union of a given AF by a further AF which carries the additional information.
+It is argued in [12] that a union of AFs does not necessarily take into account the implicit knowledge of its parts, and thus
+union is not considered as a suitable operation for merging AFs seen as individual agents. However, strongly equivalent
+AFs have the same extensions regardless of the additional knowledge provided, and thus strong equivalence can indeed be
+understood as a property deciding whether two AFs provide the same implicit information.
+There is further work which is related to our investigations. Rotstein et al. [24] introduced dynamics to abstract argumentation via the so-called dynamic argumentation frameworks (DAFs). Given an associated set of evidence, DAFs are reduced
+to AFs in the classical sense. Evidence update and erasure are used to change the instance of the DAF. Attack reﬁnement and
+abstraction [6,7] is viewed as an addition or respectively removal of a single attack from the set of arguments of the original
+AF. Cayrol et al. [11] carefully analyzed the situation when a single new argument a is introduced. In other words, given an
+AF F it can be combined with H such that A ( H ) = A ( F ) ∪ {a}, a ∈
+/ A ( F ), and R ( H ) ⊆ {(b, a), (a, b) | b ∈ A ( F )}. Under these
+assumptions, the relationship between the set of extensions of the original AF F and its change F ∪ H is then analyzed.
+Note that in our proofs, it was also often suﬃcient to add only one new argument (to ﬁnd a counter example for strong
+equivalence), but we required also new attacks between existing arguments. Nonetheless, there might be certain common
+aspects in the work by Cayrol et al. and strong equivalence between AFs.
+´
+Recent work by Lonc and Truszczynski
+[21] investigates equivalence relations on graphs in a very general setting. Their
+methods could provide an alternative way to derive some of the results provided here, in particular Theorem 6. For other
+results in this paper, the results in [21] seem not to be directly applicable, since these techniques rely on self-loop free
+graphs and deal with unrestricted extensions of graphs.
+Our future goal is to obtain deeper insight to the dynamics of AFs by considering further variants of equivalence obtained
+by parameterizing the augmented AFs. A general parameterization scheme would cover the cases studied in this work as
+special cases. Other interesting special cases can be seen to arise. For instance, one could consider generalizations of the
+setting as Cayrol et al. [11], i.e., allow the context AF H to attack F through new arguments only, or H to contain new
+arguments which can be attacked by arguments from F only. Recent work by Baumann and Brewka [4] studies such form
+of expansions, as well.
+It is subject of ongoing work to extend our analysis for strong equivalence to other semantics proposed for abstract
+argumentation. In fact, recent work [18] provides characterization for stage [28] and cf2-semantics [3]. Interestingly, it turns
+out that strong equivalence w.r.t. stage semantics coincides with strong equivalence w.r.t. stable semantics as given in this
+
+2008
+
+E. Oikarinen, S. Woltran / Artiﬁcial Intelligence 175 (2011) 1985–2009
+
+paper. Moreover, for cf2-semantics strong equivalence collapses with syntactic equivalence (even in the presence of selfloops) and thus is the most sensitive semantics in terms of redundant attacks. Further semantics to explore are in particular
+resolution-based semantics [1].
+Another direction of future work is to consider strong equivalence with respect to labelings [8] rather than with respect
+to extensions. This would lead to an even more careful notion of equivalence, since labeling – roughly speaking – indicate
+different reasons why an argument is not contained in an extension. However, since our characterizations based on extensions already provide very strict requirements for the argumentation frameworks under comparison, we do not expect
+signiﬁcant further insight from such notions of strong equivalence.
+Acknowledgements
+This work was supported by the Vienna Science and Technology Fund (WWTF), grant ICT08-028.
+The authors want to thank Gerd Brewka, Ringo Baumann, and the anonymous referees from the Conference on Principles
+of Knowledge Representation and Reasoning (KR’10) as well as from the Artiﬁcial Intelligence Journal for their comments
+which helped to improve previous versions of this paper.
+References
+[1] Pietro Baroni, Paul E. Dunne, Massimiliano Giacomin, On the resolution-based family of abstract argumentation semantics and its grounded instance,
+Artiﬁcial Intelligence 175 (3–4) (2011) 791–813.
+[2] Pietro Baroni, Massimiliano Giacomin, Semantics of abstract argument systems, in: Iyad Rahwan, Guillermo R. Simari (Eds.), Argumentation in Artiﬁcial
+Intelligence, Springer, 2009, pp. 25–44.
+[3] Pietro Baroni, Massimiliano Giacomin, Giovanni Guida, SCC-recursiveness: A general schema for argumentation semantics, Artiﬁcial Intelligence 168 (1–
+2) (2005) 162–210.
+[4] Ringo Baumann, Gerhard Brewka, Expanding argumentation frameworks: Enforcing and monotonicity results, in: Pietro Baroni, Federico Cerutti, Massimiliano Giacomin, Guillermo R. Simari (Eds.), Proceedings of the 3rd International Conference on Computational Models of Argument, COMMA, 2010,
+in: Frontiers Artiﬁcial Intelligence Appl., vol. 216, IOS Press, 2010, pp. 75–86.
+[5] Trevor J.M. Bench-Capon, Paul E. Dunne, Argumentation in artiﬁcial intelligence, Artiﬁcial Intelligence 171 (10–15) (2007) 619–641.
+[6] Guido Boella, Souhila Kaci, Leendert van der Torre, Dynamics in argumentation with single extensions: Abstraction principles and the grounded extension, in: Claudio Sossai, Gaetano Chemello (Eds.), Proceedings of the 10th European Conference on Symbolic and Quantitative Approaches to Reasoning
+with Uncertainty, ECSQARU, 2009, in: Lecture Notes in Comput. Sci., vol. 5590, Springer, 2009, pp. 107–118.
+[7] Guido Boella, Souhila Kaci, Leendert van der Torre, Dynamics in argumentation with single extensions: Attack reﬁnement and the grounded extension,
+in: Carles Sierra, Cristiano Castelfranchi, Keith S. Decker, Jaime S. Sichman (Eds.), Proceedings of the 8th International Joint Conference on Autonomous
+Agents and Multiagent Systems (AAMAS 2009), vol. 2, IFAAMAS, 2009, pp. 1213–1214.
+[8] Martin Caminada, On the issue of reinstatement in argumentation, in: Michael Fisher, Wiebe van der Hoek, Boris Konev, Alexei Lisitsa (Eds.), Proceedings of the 10th European Conference on Logics in Artiﬁcial Intelligence, JELIA, 2006, in: Lecture Notes in Comput. Sci., vol. 4160, Springer, 2006,
+pp. 111–123.
+[9] Martin Caminada, Semi-stable semantics, in: Paul E. Dunne, Trevor J.M. Bench-Capon (Eds.), Proceedings of the 1st International Conference on Computational Models of Argument, COMMA, 2006, in: Frontiers Artiﬁcial Intelligence Appl., vol. 144, IOS Press, 2006, pp. 121–130.
+[10] Martin Caminada, Comparing two unique extension semantics for formal argumentation: Ideal and eager, in: Proceedings of the 19th Belgian–Dutch
+Conference on Artiﬁcial Intelligence, BNAIC, 2007, 2007, pp. 81–87.
+[11] Claudette Cayrol, Florence Dupin de Saint-Cyr, Marie-Christine Lagasquie-Schiex, Change in abstract argumentation frameworks: Adding an argument,
+J. Artiﬁcial Intelligence Res. 38 (2010) 49–84.
+[12] Sylvie Coste-Marquis, Caroline Devred, Sébastien Konieczny, Marie-Christine Lagasquie-Schiex, Pierre Marquis, On the merging of Dung’s argumentation
+systems, Artiﬁcial Intelligence 171 (10–15) (2007) 730–753.
+[13] Phan Minh Dung, On the acceptability of arguments and its fundamental role in nonmonotonic reasoning, logic programming and n-person games,
+Artiﬁcial Intelligence 77 (2) (1995) 321–358.
+[14] Phan Minh Dung, Paolo Mancarella, Francesca Toni, Computing ideal sceptical argumentation, Artiﬁcial Intelligence 171 (10–15) (2007) 642–674.
+[15] Paul E. Dunne, The computational complexity of ideal semantics, Artiﬁcial Intelligence 173 (18) (2009) 1559–1591.
+[16] Thomas Eiter, Michael Fink, Stefan Woltran, Semantical characterizations and complexity of equivalences in answer set programming, ACM Trans.
+Comput. Log. 8 (3) (2007), 53 p.
+[17] Marcelo A. Falappa, Gabriele Kern-Isberner, Guillermo R. Simari, Belief revision and argumentation theory, in: Iyad Rahwan, Guillermo R. Simari (Eds.),
+Argumentation in Artiﬁcial Intelligence, Springer, 2009, pp. 341–360.
+[18] Sarah Alice Gaggl, Stefan Woltran, Strong equivalence for argumentation semantics based on conﬂict-free sets, in: Liu Weiru (Ed.), Proceedings of the
+11th European Conference on Symbolic and Quantitative Approaches to Reasoning with Uncertainty, ECSQARU, 2011, in: LNAI, vol. 6717, Springer,
+2011, pp. 38–49.
+[19] Nikos Gorogiannis, Anthony Hunter, Instantiating abstract argumentation with classical logic arguments: Postulates and properties, Artiﬁcial Intelligence 175 (9–10) (2011) 1479–1497.
+[20] Vladimir Lifschitz, David Pearce, Agustín Valverde, Strongly equivalent logic programs, ACM Trans. Comput. Log. 2 (4) (2001) 526–541.
+´
+[21] Zbigniew Lonc, Mirosław Truszczynski,
+On graph equivalences preserved under extensions, Discrete Math. 311 (12) (2011) 966–977.
+[22] Emilia Oikarinen, Tomi Janhunen, Achieving compositionality of the stable model semantics for Smodels programs, Theory Pract. Log. Program. 8 (5–6)
+(2008) 717–761.
+[23] Emilia Oikarinen, Stefan Woltran, Characterizing strong equivalence for argumentation frameworks, in: Fangzhen Lin, Ulrike Sattler, Miroslaw
+Truszczynski (Eds.), Proceedings of the 12th International Conference on Principles of Knowledge Representation and Reasoning, KR, 2010, AAAI Press,
+2010, pp. 123–133.
+[24] Nicolás D. Rotstein, Martín O. Moguillansky, Marcelo A. Falappa, Alejandro Javier García, Guillermo Ricardo Simari, Argument theory change: Revision
+upon warrant, in: Philippe Besnard, Sylvie Doutre, Anthony Hunter (Eds.), Proceedings of the 2nd International Conference on Computational Models
+of Argument, COMMA, 2010, in: Frontiers Artiﬁcial Intelligence Appl., vol. 172, IOS Press, 2008, pp. 336–347.
+[25] Nicolas D. Rotstein, Martin O. Moguillansky, Alejandro J. Garcia, Guillermo R. Simari, An abstract argumentation framework for handling dynamics, in:
+Proceedings of the 12th International Workshop on Non-Monotonic Reasoning, NMR, 2008, 2008, pp. 131–139.
+
+E. Oikarinen, S. Woltran / Artiﬁcial Intelligence 175 (2011) 1985–2009
+
+2009
+
+´
+[26] Mirosław Truszczynski,
+Strong and uniform equivalence of nonmonotonic theories – an algebraic approach, Ann. Math. Artif. Intell. 48 (3–4) (2006)
+245–265.
+[27] Hudson Turner, Strong equivalence for causal theories, in: Vladimir Lifschitz, Ilkka Niemelä (Eds.), Proceedings of the 7th International Conference on
+Logic Programming and Nonmonotonic Reasoning, LPNMR’04, in: Lecture Notes in Comput. Sci., vol. 2923, Springer, 2004, pp. 289–301.
+[28] Bart Verheij, Two approaches to dialectical argumentation: Admissible sets and argumentation stages, in: Ch. Meyer John-Jules, Linda C. van der Gaag
+(Eds.), Proceedings of the 8th Dutch Conference on Artiﬁcial Intelligence, NAIC’96, 1996, pp. 357–368.
+[29] Stefan Woltran, A common view on strong, uniform, and other notions of equivalence in answer-set programming, Theory Pract. Log. Program. 8 (2)
+(2008) 217–234.
+
+

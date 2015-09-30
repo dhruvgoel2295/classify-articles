@@ -1,0 +1,1356 @@
+Image and Vision Computing 40 (2015) 38–48
+
+Contents lists available at ScienceDirect
+
+Image and Vision Computing
+journal homepage: www.elsevier.com/locate/imavis
+
+Computation of graph edit distance: Reasoning about optimality
+and speed-up☆,☆☆
+Francesc Serratosa
+Universitat Rovira i Virgili, Tarragona, Spain
+
+a r t i c l e
+
+i n f o
+
+Article history:
+Received 2 December 2014
+Received in revised form 12 June 2015
+Accepted 13 June 2015
+Available online 25 June 2015
+Keywords:
+Error-tolerant graph matching
+Bipartite graph matching algorithm
+Fast Bipartite
+Square Fast Bipartite
+Hungarian method
+Jonker–Volgenant solver
+
+a b s t r a c t
+Bipartite graph matching has been demonstrated to be one of the most efﬁcient algorithms to solve error-tolerant
+graph matching. This algorithm is based on deﬁning a cost matrix between the whole nodes of both graphs and
+solving the nodes' correspondence through a linear assignment method (for instance, Hungarian or Jonker–
+Volgenant methods). Recently, two versions of this algorithm have been published called Fast Bipartite and
+Square Fast Bipartite. They compute the same distance value than Bipartite but with a reduced runtime if some
+restrictions on the edit costs are considered. In this paper, we do not present a new algorithm but we compare
+the three versions of Bipartite algorithm and show how the violation of the theoretically imposed restrictions
+in Fast Bipartite and Square Fast Bipartite do not affect the algorithm's performance. That is, in practice, we
+show that these restrictions do not affect the optimality of the algorithm and so, the three algorithms obtain similar distances and recognition ratios in classiﬁcation applications although the restrictions do not hold. Moreover,
+we conclude that the Square Fast Bipartite with the Jonker–Volgenant solver is the fastest algorithm.
+© 2015 Elsevier B.V. All rights reserved.
+
+1. Introduction
+Attributed graphs have been used in some pattern recognition ﬁelds
+such as object recognition [1–3] scene view alignment [4–6] multiple object alignment [7,8], object characterization [9,10] interactive methods
+[11,12] image registration [13], tracking [14] among a great amount of
+other applications. Interesting reviews of techniques and applications
+are [15,16] and [17]. Error-tolerant graph-matching algorithms compute
+the correspondences between nodes of two Attributed Graphs that minimises some kind of objective function. One of the most widely used
+methods to evaluate an Error-correcting graph isomorphism is the
+Graph Edit Distance [18–21]. The basic idea behind the Graph Edit Distance is to deﬁne a dissimilarity measure between two graphs based on
+the minimum amount of required distortion to transform one graph
+into the other. To this end, a number of distortion or edit operations,
+consisting of insertion, deletion and substitution of both nodes and
+edges are deﬁned. Then, for every pair of graphs (Gp and Gq), there is a sequence of edit operations that transforms one graph into the other. To
+quantitatively evaluate which sequence is the best, edit cost functions
+are introduced. The basic idea is to assign a penalty cost to each edit operation according to the amount of distortion introduced in the transformation. Unfortunately, the time and space complexity to compute the
+minimum of these objective functions is very high. For this reason, almost
+☆ This research is supported by the Spanish projects DPI2013-42458-P and TIN201347245-C2-2-R.
+☆☆ This paper has been recommended for acceptance by Cheng-Lin Liu.
+E-mail address: francesc.serratosa@urv.cat.
+
+http://dx.doi.org/10.1016/j.imavis.2015.06.005
+0262-8856/© 2015 Elsevier B.V. All rights reserved.
+
+20 years ago appeared the Graduated Assignment algorithm [22] that
+computes a sub-optimal solution of the Error-Tolerant Graph Matching
+problem in O(n6), being n the number of nodes of both graphs.
+Other methods different from graph edit distance have been presented in which the ﬂexibility to cope with any kind of domains in
+node and edges and different structures is reduced but also their computational cost. One example are the spectral methods [23,24], which
+are based on the eigendecomposition of the adjacency or Laplacian matrix of a graph. In this framework, graphs are unlabelled or only allow
+severely constrained label alphabets. Other common constraints include
+restrictions to ordered graphs [25], planar graphs [26,27], boundedvalence graphs [28], trees [29] and graphs with unique node labels
+[30]. Finally, a general optimisation framework based on a graduated
+non-convexity and concavity procedure (GNCCP) [31] has been applied
+to solve the error-tolerant graph matching. They present a comparison
+to well-know methods like [22] showing good achievements.
+The Graph Edit Distance is applicable to a wide range of real-world
+applications since any type of attributes can be used. In recent years, a
+number of methods addressing the high computational complexity of
+graph edit distance computation have been proposed. Probabilistic relaxation labelling [32,33] adopts a Bayesian perspective on Graph Edit
+Distance and iteratively applies edit operations to improve a maximum
+a posteriori criterion. As an alternative to this hill climbing approach, genetic algorithms have been proposed for optimization in [34]. In [35] a
+randomized construction of initial mappings is followed by a local
+search procedure. In [36], a linear programming method for computing
+the edit distance of graphs with unlabelled edges is reported. And also,
+dominant sets have been applied to sub-optimally compute the edit
+
+F. Serratosa / Image and Vision Computing 40 (2015) 38–48
+
+39
+
+Table 1
+Basic features of BP, FBP and SFBP algorithms.
+1st ref.
+
+Algorithm
+
+Linear solver
+
+Computational Cost
+
+Restrictions
+
+Symmetric runtime
+
+[39]
+[40]
+[41]
+[42]
+
+BP
+
+Hungarian
+Jonker–Volgenant
+Hungarian
+Jonker–Volgenant
+Hungarian
+Jonker–Volgenant
+
+O((n + m)3)
+
+No
+
+No
+
+FBP
+SFBP
+
+Insertion and deletion costs
+O(max(n, m)3)
+
+distance [37]. Finally, in [38] the graph edit distance is approximated by
+the Hausdorff distance.
+Recently, a new algorithm called Bipartite (BP) [39] and two other
+versions of this algorithm have appeared that are called Fast Bipartite
+[41] (FBP) and Square Fast Bipartite [42] (SFBP). Note, this algorithm
+solves the error-tolerant graph-matching problem between attributed
+and undirected graphs. Therefore, it has not any relation between
+matching graphs that are classiﬁed as bipartite. These three algorithms
+have a cubic computational cost with respect to the number of nodes
+and are implemented in two main steps. In the ﬁrst one, a cost matrix
+is deﬁned and in a second one, a linear solver on this matrix is applied
+to ﬁnd the ﬁnal distance and node correspondence. Due to BP, FBP or
+SFBP do not consider the structural information globally but only locally,
+the obtained distance tends to be larger than the exact one. Some
+methods [43,44] improve this distance and obtain a new correspondence starting from the correspondence computed by BP, FBP or SFBP
+at the expense of increasing the runtime.
+Table 1 summarises the main properties and differences of these algorithms extracted from [41] and [42]. Two linear solvers have been
+used; the Hungarian method [45,46] and the Jonker–Volgenant solver
+[48], which was published later. It is not guaranteed that both methods
+obtain exactly the same correspondence, although there is a clear tendency of obtaining similar assignations. Therefore, the distance obtained
+by the three algorithms through the Hungarian method can be different
+of the distance obtained by the same algorithms but through the
+Jonker–Volgenant solver. The Hungarian method is usually slower
+than the Jonker–Volgenant solver but always converges. The Jonker–
+Volgenant is faster but it has convergence problems in some cost matrices. In this way, the Hungarian method always converges while applied
+to the cost matrices deﬁned by BP and FBP algorithms but the Jonker–
+Volgenant method not always ﬁnishes on the cost matrix deﬁned by
+FBP. The Computational Cost of FBP and SFBP is slightly lower than BP
+but in the expense of introducing some restrictions on the edit costs
+[41,42]. In Table 1, n and m represent the order of both graphs. Finally,
+it was shown in [41] that the real runtime of these solvers clearly
+depends on the cost matrix and so, the runtime of comparing two
+graphs depends on the order of presentation of these graphs. We call
+this property a non-symmetric runtime. In this way, it is worth to
+consider the number of nodes of the graphs to decide in which order
+the graphs are introduced into the matching algorithm.
+In some classiﬁcation applications or tests on databases, it would be
+useful to set some edit costs such that the edit costs restrictions theoretically imposed to FBP and SFBP do not hold with the aim of increasing
+the recognition ratio. The aim of this paper is to present a real comparison of the three methods and to show to which extend the fact of not
+holding the edit cost restrictions affects on the runtime, optimality
+and recognition ratio. That is, we want to show the applicability of
+these algorithms on real graph problems not only from the runtime
+point of view but also from the recognition ratio point of view. To do
+so, we performed two types of experiments. The ﬁrst ones are applied
+on synthetic graphs and we want to discover which is the increase of
+the obtained graph edit distance when we move away from the edit
+cost restrictions. The second ones are applied to public graph databases
+and we want to show the relation between edit costs (although they
+may violate the restrictions), recognition ratio and run time.
+
+No convergence
+Yes
+
+The outline of the paper is as follows: in the next section, we deﬁne
+the Attributed graphs and the Graph Edit Distance. In Section 3, we comment the two most well known linear assignment solvers. In Section 4,
+we summarise algorithms BP, FBP and SFBP and also the Hungarian and
+Jonker–Volgenant linear solvers. In Section 5, we move on the experimental part to present a comparison of the applicability of these three
+algorithms. Section 6 concludes the paper.
+2. Attributed graphs and Graph Edit Distance
+In this section, we ﬁrst deﬁne Attributed graphs and Error-tolerant
+graph matching and then we explain the Graph Edit Distance.
+2.1. Attributed graphs
+An Attributed Graph is deﬁned as a triplet G = (Σν, Σe, γv, γe), where
+Σv = {va | a = 1, …, n} is the set of vertices and Σe = {eab|a, b ∈ 1, …, n} is
+the set of edges. Functions γv : Σv → Δv and γe : Σe → Δe assign attribute
+values in any domain to vertices and edges. The order of graph G is n.
+We call E(va) to the number of neighbours of node va, that is, the number of outgoing edges. Finally, we deﬁne the neighbours of a node va,
+N
+
+N
+
+named Na, on an attributed graph G, as another graph Na ¼ ðΣv a ; Σe a ;
+Na
+a
+γN
+v ; γe Þ . The deﬁnition of the neighbours of a node is needed to
+deﬁne two different local sub-structures in Section 4. Na has the structure of an attributed graph but it is only composed of nodes connected
+N
+
+N
+
+to va by an edge. Formally, Σv a ¼ fvb jeab ∈Σe g, Σe a ¼ ∅ (empty set)
+and
+
+a
+γN
+v ðvb Þ
+
+¼ γv ðvb Þ,
+
+N
+∀vb ∈Σv a .
+
+2.2. Error-correcting graph isomorphism
+Let Gp = (Σpv, Σpe , γpv, γpe ) and Gq = (Σqv, Σqe , γqv, γqe ) be two Attributed
+graphs of initial order n and m. To allow maximum ﬂexibility in the
+matching process, graphs are extended with null nodes to be of order
+^ p ⊆ Σp and Σ
+^ q ⊆ Σq respecn + m. We refer to null nodes of Gp and Gq by Σ
+v
+
+v
+
+v
+
+v
+
+tively. We assume that null nodes have indices a ∈ [n + 1, …, n + m}
+and i ∈ [m + 1, …, n + m} for graphs Gp and Gq, respectively. Let T be
+a set of all possible bijections between two vertex sets Σpv and Σqv. We de^ p ⊆ Σp and Σ
+^ q ⊆ Σq . Isomorphism
+ﬁne the non-existent or null edges as Σ
+e
+
+e
+
+e
+
+e
+
+f p,q : Σ pv → Σ qv, assigns one vertex of Gp to only one vertex of Gq. The
+
+Fig. 1. Example of the local sub-structures: Degree centrality and Clique centrality.
+
+40
+
+F. Serratosa / Image and Vision Computing 40 (2015) 38–48
+
+Mean Cost(FBP) / Mean Cost(BP) using Hungarian. (a): Clique centrality, (d): Degree centrality
+
+Mean Cost(SFBP) / Mean Cost(BP) using Hungarian. (b): Clique centrality, (e): Degree centrality
+
+Mean Cost(SFBP) / Mean Cost(BP) using Jonker-Volgenant. (c): Clique centrality, (f): Degree centrality
+Fig. 2. Cost ratios of FBP and SFBP versus BP. n = 20 and m = 20.
+
+isomorphism between edges, denoted by f p,q
+e , is deﬁned accordingly to the isomorphism of their terminal nodes. That is, f ep,q(e pab ) =
+q
+q
+p
+q
+p
+^ p and vq ; vq ∈
+e ⇒ f p,q(v p) = v ∧ f p,q(v ) = v where vp ; vp ∈ Σ −Σ
+ij
+
+q
+^ q.
+Σv −Σ
+v
+q
+⊆ Σe .
+
+a
+
+i
+
+b
+
+j
+
+a
+
+b
+
+v
+
+v
+
+i
+
+j
+
+^ p ⊆ Σp and Σ
+^q
+We deﬁne the non-existent or null edges by Σ
+e
+e
+e
+
+2.3. Graph Edit Distance between graphs
+One of the most widely used methods to evaluate an errorcorrecting graph isomorphism is the Graph Edit Distance [1,20]. The dissimilarity is deﬁned as the minimum amount of required distortion to
+transform one graph into the other. To this end, a number of distortion
+or edit operations, consisting of insertion, deletion and substitution of
+both nodes and edges are deﬁned. Edit cost functions are introduced
+to quantitatively evaluate the edit operations. The basic idea is to assign
+a penalty cost to each edit operation according to the amount of
+
+distortion that it introduces in the transformation. Deletion and insertion operations on nodes (on edges) are transformed to assignations
+of a non-null node (non-null edge) of the ﬁrst or second graph to a
+null node (null edge) of the second or ﬁrst graph. Substitutions simply
+indicate node-to-node (edge-to-edge) assignations. Using this transformation, given two graphs G p and Gq, and a bijection between their
+nodes, f p,q, the graph edit cost is given by:
+À p q p;q
+Á
+EditCost
+X
+X G ; G ; f ; KÀ v ; K eq Á¼ X
+p
+p
+p
+^ p C vs va ; vi þ
+^p Kv þ
+^p
+vp ∈Σ
+vp ∈Σ −Σ
+vp ∈Σ −Σ
+v
+v
+a
+q
+^q
+vqi ∈Σv −
+Σ
+v
+
+X
+C es epab ; eqij
+p
+^p
+epab ∈Σe −Σ
+e
+q
+^q
+eq ∈Σ −Σ
+ij
+
+e
+
+e
+
+a
+
+þ
+
+X
+
+ij
+
+p
+
+e
+
+^q
+vqi ∈Σ
+v
+
+Ke þ
+
+^
+epab ∈Σe −Σ
+e
+^q
+eq ∈Σ
+p
+
+v
+
+v
+
+Kvþ
+
+v
+a
+q
+^q
+vqi ∈Σv −Σ
+v
+
+X
+
+Ke
+p
+
+^
+epab ∈Σ
+e
+q
+^q
+eqij ∈Σe −Σ
+e
+
+ð1Þ
+
+F. Serratosa / Image and Vision Computing 40 (2015) 38–48
+
+41
+
+Mean Cost(FBP) / Mean Cost(BP) using Hungarian. (a): Clique centrality, (d): Degree centrality
+
+Mean Cost(SFBP) / Mean Cost(BP) using Hungarian. (b): Clique centrality, (e): Degree centrality
+
+Mean Cost(SFBP) / Mean Cost(BP) using Jonker-Volgenant. (c): Clique centrality, (f): Degree centrality
+Fig. 3. Cost ratios of FBP and SFBP versus BP. n = 20 and m = 10.
+
+q
+
+q
+
+Where f p,q(vpa) = vi and fep,q(epai) = eij where Cvs and Ces are functions
+that represent the cost of substituting the involved nodes or edges. Conq
+stant Kv is the cost of deleting node vpa of G p or inserting node vi of Gq.
+
+Table 2
+The six combinations to detect the optimality of FBP and SFBP.
+Figure (a)
+
+Figure (b)
+
+Figure (c)
+
+Figure (d)
+
+Figure (e)
+
+Figure (f)
+
+DhFBP; c
+
+c
+DSFBP;
+h
+
+c
+DSFBP;
+jv
+
+DhFBP; d
+
+d
+DSFBP;
+h
+
+d
+DSFBP;
+jv
+
+c
+DBP;
+jv
+
+d
+DBP;
+h
+
+d
+DBP;
+h
+
+d
+DBP;
+jv
+
+c
+DBP;
+h
+
+c
+DBP;
+h
+
+Clique centrality
+Hungarian
+
+Degree centrality
+Jonker–Volg.
+
+Hungarian
+
+Jonker–Volg.
+
+c
+d
+and DFBP,
+since, in the experiments perNote, we have not evaluated combinations DFBP,
+jv
+jv
+formed in [42], FBP with Jonker–Volgenant had convergence problems. In fact, this was the
+reason why SFBP was published in [42].
+
+Likewise for the edges, Ke is the cost of assigning edge epab of Gp to a
+non-existing edge of Gq or assigning edge eqab of Gq to a non-existing
+edge of Gp. Note that we have not considered the cases in which two
+null nodes or null edges are mapped, this is because this cost is zero
+by deﬁnition.
+The Graph Edit Distance is deﬁned as the minimum cost under any
+bijection in T:
+À
+Á
+È
+À
+ÁÉ
+p;q
+EditDist Gp ; Gq ; K v ; K e ¼ min f p;q ∈T EditCost Gp ; Gq ; f ; K v ; K e
+
+ð2Þ
+
+We say the optimal correspondence, f p,q*, is one of the correspondences (may be not unique) that obtains the minimum cost,
+
+f
+
+p;q Ã
+
+È
+À
+ÁÉ
+p;q
+¼ argmin f p;q ∈T EditCost Gp ; Gq ; f ; K v ; K e
+
+ð3Þ
+
+42
+
+F. Serratosa / Image and Vision Computing 40 (2015) 38–48
+
+FBPÞ
+TimeðSFBPÞ
+Fig. 4. Left: Timeð
+TimeðBPÞ using Degree centrality and Hungarian. Right: TimeðBPÞ using Clique centrality and Jonker–Volgenant. In both ﬁgures: n = 20 and m = 20.
+
+Graph Edit Distance has been deﬁned on any kind of attributes domain on nodes and edges in [1] and [20]. Moreover, in its original
+form, costs of inserting nodes or edges do not have to be the same
+than deleting them. We have assumed equivalent and constant costs
+for deleting and inserting nodes or edges, Kv and Ke because in this
+case, we assure that Eq. (2) is symmetric with respect to the order of
+presentation of graphs. Moreover, if we force Kv and Ke to be nonnegative constants and we deﬁne Cvs and Ces to be distance functions
+such that 0 ≤ Cvs ≤ 2 · Kv and 0 ≤ Ces ≤ 2 · Ke, then the Edit distance fulﬁls
+the distance function restrictions [20].
+
+was developed for integer costs. When it is used for real (ﬂoating point)
+costs, sometimes the algorithm takes an extremely long time. This
+drawback is emphasised when the cost matrix has a high number of
+cells with equivalent values. Similar to the Hungarian method, it is supposed that the input cost matrix is square. Usually, the implemented
+codes accept non-square matrices because they convert the nonsquare matrices to square matrices and ﬁll the extended cells with
+zero values. Although extending the non-square matrices to square
+matrices makes the Jonker–Volgenant algorithm to be applicable to a
+higher amount of problems, it also increases the non-convergence
+problems.
+
+3. Linear assignment problem
+4. Edit distance computation through BP, FBP and SFBP
+The Linear Assignment problem considers the task of ﬁnding an optimal assignment of the elements of a set A to the elements of another
+set B, where both sets have the same cardinality k = |A| = |B|. Let us assume there is a k X k cost matrix C. The matrix element Ci,j corresponds
+to the cost of assigning the i-th element of A to the j-th element of B. An
+optimal assignment is the one that minimises the sum of the
+assignment costs and so, the linear assignment problem can be stated
+as ﬁnding the permutation P that minimises ∑ki = 1Ci,P(i). Munkres'
+algorithm [45] solves the assignation problem in O(k3), in the worst
+case. It is a reﬁnement of an earlier version by Kuhn [46] and is also
+referred to as Kuhn–Munkres or Hungarian algorithm. The algorithm
+repeatedly ﬁnds the maximum number of independent optimal assignments and in the worst case the maximum number of operations needed by the algorithm is O(k3). Since this local exploration is performed
+through columns (or rows), in cases the cost matrix is not symmetric,
+the real run time drastically depends on the order of exploration
+(columns or rows). Later, an algorithm to solve this problem applied
+to non-square matrices were presented [47].
+The Jonker–Volgenant algorithm [48] has received signiﬁcant
+attention recently due to, although the theoretical computational cost
+is similar to the Hungarian method, O(k3), it is highly effective in
+practice. This is because in a ﬁrst step, the algorithm computes a large
+number of initial assignments and in a second step, only few shortest
+paths are needed to obtain the optimal solution. The original algorithm
+
+Table 3
+Average runtime in mS (Ke = Kv = 12).
+
+n = 20
+and m = 20
+n = 20
+and m = 10
+
+BP
+FBP
+SFBP
+BP
+FBP
+SFBP
+
+These three algorithms return a sub-optimal value of the edit distance (Eq. (2)) and the sub-optimal correspondence (Eq. (3)). To do
+so, the ﬁrst step of these algorithms is to obtain a cost matrix. We call,
+C BP, C FBP and C SFBP the cost matrices of the three algorithms (explained
+at the end of this section). The second step is to apply a linear solver such
+as the Hungarian method or the Jonker–Volgenant method (Section 3)
+to these matrices and to obtain the correspondence f p,q*. And the third
+step is to compute the Edit distance cost given this correspondence
+and both graphs, EditDistance(G p, G q) = EditCost(G p, G q, f p,q* ).
+With the aim of explaining the cost matrix, we deﬁne values Ca,i, Ca,ε
+and Cε,i as follows:
+Ca,i represents the cost of mapping two nodes and their local substructures. It is deﬁned as:
+p
+^ p and vq ∈Σq −Σ
+^ q.
+Ca,i = Cvs(vap, viq) + Ccs(vap, viq); vpa ∈Σv −Σ
+v
+v
+v
+i
+Ca,ε represents the cost of deleting a node from Gp and its local substructures. It is deﬁned as:
+p
+^ p and vq ∈ Σ
+^ q.
+Ca,ε = Kv + Ccd(vap, viq); vpa ∈ Σv −Σ
+v
+v
+i
+Cε,i represents the cost of inserting a node from Gq and its local substructures. It is deﬁned as:
+^ p and vq ∈ Σq −Σ
+^ q.
+Cε,i = Kv + Cci(vap, viq); vpa ∈ Σ
+v
+v
+v
+i
+
+Table 4
+Average runtime in mS (Ke = Kv = 20).
+
+Degree centrality
+
+Clique centrality
+
+Degree centrality
+
+Clique centrality
+
+Hungarian
+
+Jonker–Volg.
+
+Hungarian
+
+Jonker–Volg.
+
+Hungarian
+
+Jonker–Volg.
+
+Hungarian
+
+Jonker–Volg.
+
+4
+3
+2
+5
+3
+3
+
+4
+--2
+3
+--1
+
+572
+348
+349
+199
+186
+170
+
+554
+--246
+120
+--94
+
+4
+3
+3
+5
+3
+3
+
+4
+--2
+4
+--2
+
+596
+348
+351
+215
+187
+185
+
+591
+--249
+145
+--95
+
+n = 20
+and m = 20
+n = 20
+and m = 10
+
+BP
+FBP
+SFBP
+BP
+FBP
+SFBP
+
+F. Serratosa / Image and Vision Computing 40 (2015) 38–48
+
+Note function EditDistance is computed through the BP algorithm on
+both sets of nodes. Having deﬁned these costs, the cost matrix for
+Bipartite [39] is
+
+Table 5
+Average Speedup of FBP and SFBP versus BP.
+
+n = 20
+m = 20
+n = 20
+m = 10
+
+FBP
+SFBP
+FBP
+SFBP
+
+Degree centrality
+
+Clique centrality
+
+Hungarian
+
+Jonker–Volg.
+
+Hungarian
+
+Jonker–Volg.
+
+1.33
+1.60
+1.66
+1.66
+
+--2
+--2.33
+
+1.67
+1.66
+1.10
+1.16
+
+--2.31
+--1.40
+
+43
+
+That is, the whole values on the cost matrices depend on two disjoint
+costs. The ﬁrst one only depends on the nodes and the second one
+depends on the rest of the local sub-structure. As commented in
+Section 2, Cvs is a distance function deﬁned through the node attribute
+values and Kv gauges the importance of deleting or inserting nodes in
+the matching process. Finally, Ccs is the cost involved by the substitution
+of two the local sub-structure and also Ccd and Cci are the costs to delete
+and insert it, respectively. These costs depend on the type of substructure associated to the node. In this paper, we propose the most
+used local sub-structures, viz, the degree centrality and the clique centrality. The degree centrality is composed of the set of neighbouring
+edges and the clique centrality is composed of the set of neighbouring
+edges and also the neighbouring nodes. Fig. 1 shows these two local
+sub-structures.
+Other sub-structures have been presented in [49,51,54]. In this
+paper, the costs are deﬁned as follows:
+The degree centrality: The local sub-structure is composed by only
+the edges connected to the node. The distance between these substructures is based on counting the number of edges. Attributes on
+edges are not taken into consideration. That is,
+
+Matrix C BP is composed of four quadrants. Each quadrant represents
+a different Edit distance operation. Quadrant Q1 denotes the combinap
+^ p by vq ∈ Σq −Σ
+^ q and their
+tion of costs of substituting nodes vp ∈Σ −Σ
+a
+
+v
+
+v
+
+i
+
+v
+
+v
+
+local sub-structures. The diagonal of quadrant Q2 denotes the whole
+costs of deleting nodes vpa and its local sub-structures. That this, the subp
+^ p by vq ∈ Σ
+^ q. Similarly, the diagonal of quadrant Q3
+stitution of vp ∈ Σ −Σ
+a
+
+v
+
+v
+
+v
+
+i
+
+denotes the whole costs of inserting nodes vqi and its adjacent vertices.
+^ p by vq ∈ Σq −Σ
+^ q . Q4 quadrant is ﬁlled
+That is, the substitution of vp ∈ Σ
+a
+
+v
+
+i
+
+v
+
+v
+
+with zero values since the substitution between null elements has a
+zero cost.
+The cost matrix for Fast Bipartite [41] is composed of only one quadrant and if m ≠ n it is not square. Nevertheless, this is not a problem for
+the linear assignation methods since they ﬁll with zeros the non-square
+matrices to make it square [47].
+
+ À Á
+À
+Á
+À Á
+p
+^ p and vq ∈ Σq −Σ
+^ q:
+C cs vpa ; vqi ¼ K e Á E vpa −E vqi ; vpa ∈ Σv −Σ
+v
+v
+v
+i
+À
+Á
+À Á
+p
+^ p and vq ∈ Σ
+^ q:
+C cd vpa ; vqi ¼ K e Á E vpa ; vpa ∈ Σv −Σ
+v
+v
+i
+À
+Á
+À Á
+^ p and vq ∈ Σq −Σ
+^ q:
+C ci vpa ; vqi ¼ K e Á E vqi ; vpa ∈ Σ
+v
+v
+v
+i
+q
+
+q
+
+The clique centrality: The neighbour nodes of vap and vi are Nap and Ni
+q
+(Section 2). Thus, the distance between Nap and Ni is deﬁned as the distance between two graphs (Eqs. (1) and (2)). Yet, we have to consider
+q
+that in the deﬁnition of the neighbour structures Nap and Ni , there are
+no edges. Besides, edges that connect the central node with the
+neighbouring nodes in the local sub-structure have to be taken into
+consideration in the cost value. To solve these two requirements, costs
+are deﬁned as follows,
+
+The Square Fast Bipartite [42] deﬁnes two square matrices and uses
+one of them depending on the order of the involved graphs. Whether
+m ≥ n, the cost matrix is:
+
+À
+Á
+À
+Á
+p
+^ p and vq ∈ Σq −Σ
+^q:
+C cs vpa ; vqi ¼ EditDistance Npa ; Nqi ; K v þ K e ; 0 ; vpa ∈ Σv −Σ
+v
+v
+v
+i
+
+À
+Á
+À Á
+p
+^ p and vq ∈ Σ
+^ q:
+C cd vpa ; vqi ¼ ðK v þ K e Þ Á E vpa ; vpa ∈ Σv −Σ
+v
+v
+i
+À
+Á
+À Á
+^ p and vq ∈ Σq −Σ
+^ q:
+C ci vpa ; vqi ¼ ðK v þ K e Þ Á E vqi ; vpa ∈ Σ
+v
+v
+v
+i
+Whether m ≤ n, the cost matrix is:
+
+Table 6
+Main features of the ﬁve databases with respect to of Cvs.
+
+Letter high
+Letter med
+Letter low
+Grec
+Coil Rag
+
+Max{Cvs}
+
+Min{Cvs}
+
+Mean{Cvs}
+
+Std{Cvs}
+
+¼ 12 Max
+K theor
+v
+
+4.95
+4.68
+4.09
+823.2
+1.38
+
+0
+0
+0
+0
+0
+
+1.69
+1.71
+1.61
+246.5
+0.82
+
+0.83
+0.83
+0.82
+128.5
+0.36
+
+2.46
+2.34
+2.04
+411.6
+0.69
+
+Finally, FBP and SFBP have the restriction that Edit costs have to be
+deﬁned such that the Edit distance is a distance function [42]. Thus
+three restrictions have to hold. 1) Insertion and deletion costs have to
+
+44
+
+F. Serratosa / Image and Vision Computing 40 (2015) 38–48
+
+Fig. 5. Histograms of node substitution costs for the ﬁrst four databases. The red line indicates the mean value. In the case of the Letter datasets, it represents the average mean of the three
+datasets (they are almost similar).
+
+q
+
+q
+
+be symmetric. 2) Cvs(vpa, vi ) and Ces(epab, eij) have to be deﬁned as a
+q
+q
+distance measure. 3) Cvs(vpa, vi ) ≤ 2 · Kv and Ces(epab, eij) ≤ 2 · Ke. Note,
+2 · Kv (and 2 · Ke) is the cost of inserting and deleting nodes (and edges).
+5. Practical experimentation
+As commented in the introduction, we performed two types of experiments. The ﬁrst ones are applied on synthetic graphs and we want
+to discover which is the speedup of FBP and SFBP with respect to BP
+given several values of Kv and Ke. We also study the graph edit distance
+obtained by the three algorithms. The main aim is to analyse the values
+of Kv and Ke such that FBP and SFBP are faster than BP while keeping
+similar values of the Graph Edit Distance. The second ones are applied
+on public graph databases and we want to show the relation between
+substitution, deletion and insertion edit costs, recognition ratio and
+runtime. The Matlab code of these algorithms is available at [53].
+5.1. Analysing sub-optimality with respect to edit cost restrictions
+Algorithms BP and FBP are non-symmetric runtime algorithms but
+SFBP is symmetric [42] (summarised on last column of Table 1). In our
+implementation (and also in the implementation in [42]) the fastest option is the one such that the order of G p is higher than the order of Gq
+(n ≥ m) while searching for mapping f p,q*. Since we want to compute
+the fastest option, we experimented on two combinations: n = 20
+and m = 20 and also n = 20 and m = 10. Tests have been executed
+on an I7 processor, Windows and Matlab 2014a. Nodes have only one
+attribute that is a real number from 0 to 99 and in average each node
+is connected to half of the other ones by an unattributed edge. The
+node attributes and the node connections have an equal distribution.
+The whole costs and runtimes we show are the average of 1000 executions (1000 pairs of graphs). Cost Cvs(vpa, vqi ) is the Euclidean distance
+q
+between the attributes of the involved nodes, Ces(epab, eij) = 0 (edges
+are unatributed) and constants Kv and Ke are parameters of the tests.
+LocStruct
+ðK v ; K e Þ ¼ mean
+EditDistðGp ; Gq ; K v ; K e Þ
+We name DMatchAlg;
+LinearSolver
+p
+q
+∀G →G
+
+where: MatchAlg is the used matching algorithm: {BP, FBP, SFBP}.
+LinearSolver is the linear solver: {h, jv} (h: Hungarian andjv: Jonker–
+Volgenant).LocStruct is the used local structure: {c, d} (c: Clique centrality and d: Degree centrality). That is, we averaged the Edit Distance of
+1000 tests given a speciﬁc combination of insertion and deletion
+
+constants Kv and Ke and also the combination of the three methods:
+Matching algorithm, Local structure and Linear solver.
+Figs. 2 and 3 show the increase of the distance obtained by matching
+methods FBP and SFBP with respect to BP. In Fig. 2 the order of graphs is
+n = 20 and m = 20 and in Fig. 3 the order is n = 20 and m = 10. Note
+that we do not want to validate the quality of BP since, this quality has
+been tested in [39]. Moreover, if we would like to obtain the exact distance, we would have to use a A* algorithm with a huge runtime.
+More sub-optimal the method is, higher the obtained distance is. Therefore, in our case, we consider algorithms FBP and SFBP perform similarly
+than BP if this increase is zero. In this experiments, we do not want to
+compare the local sub-structures methods (clique versus degree centralities) since this comparison was performed in [51] together with
+other more complex local sub-structures. We neither want to compare
+Hungarian method versus Jonker–Volgenant since this comparison
+can be seen in [42]. But we want to know, how much the distance increases when the Edit costs restrictions are violated. That is, we want
+to know the quality of the obtained distance when we cannot insure
+q
+|γv(vpa) − γv(vi )| ≤ 2 · Kv, given the speciﬁc deﬁnition of our attributed
+graphs. Table 2 shows the ratios we used to validate the increase of suboptimality. In the whole experiments, we divided the mean distance
+obtained by FBP or SFBP to the mean distance obtained by BP. A ratio
+higher than one means FBP or SFBP obtains a higher value than BP
+and so it is more sub-optimal than BP. Therefore, lower these values
+are, better FBP or SFBP perform.
+Figs. 2 and 3 show us that when Kv and Ke are very low, distances obtained by FBP or SFBP tend to be much higher than the ones obtained
+through BP. Therefore, if our application forces us to impose these so
+small costs, then FBP and SFBP cannot be used. Note these curves depend on Ke. This is because when Ke decreases, FBP and SFBP consider
+the same number of substituted nodes and their local structures. Contrarily, BP can consider that it is cheaper to delete and insert a node
+and its local structure than substituting them. Although edges do not
+have attributes these operations applied on the local structures depend
+on Ke. Nevertheless, we can consider the sub-optimality problems in
+these tests are solved at value Kv = 12 approximately (the ratio
+is ≈ 1). We name this threshold Kvprac. Note that from the theoretical
+point of view, the minimum acceptable value is Kv = 50 since
+p
+
+q
+
+theor
+
+|γv(va ) − γv(vi )| b 2 · Kv = 100. We name this threshold Kv
+
+.
+
+theor
+1
+.
+Therefore, in these experiments we have obtained K prac
+v ≈ 4 Á Kv
+This reduction is really important since it shows that the practical
+
+F. Serratosa / Image and Vision Computing 40 (2015) 38–48
+
+minimum value is 25% lower than the theoretical threshold and so FBP
+and SFBP have more opportunities to be used in practical situations. Finally, in the Jonker–Volgenant plots in Fig. 3, values seem to be random
+and this is because the maximum difference between these values is
+lower than 0.01.
+
+45
+
+Fig. 4 shows the ratio of runtime given two different combinations of
+executions. Note that both plots have an opposite point of view. We
+have taken only two examples two show that the ratio of runtime can
+increase or decrease when Kv ≤ Kvprac. But we are not interested on computing the matching algorithm in the domain 0 ≤ Kv ≤ Kvprac since we
+
+Fig. 6. Recognition ratio and runtime of ﬁve databases given 6 different values of Kv (Ke = Kv).
+
+46
+
+F. Serratosa / Image and Vision Computing 40 (2015) 38–48
+
+Fig. 6 (continued).
+
+realised the obtained correspondences where much sub-optimal than
+BP but we want to compute FBP or SFBP in the domain Kv N Kvprac. In
+the whole 12 experiments shown in Figs. 2 and 3 we realised that the
+runtime ratio keeps ﬂat when Kv N Kvprac and Ke N Kvprac.
+Tables 3 and 4 show the average runtime in seconds of the previously commented experiments. In Table 3 we set Ke = Kv = Kvprac = 12 and
+in Table 4 we set Ke = Kv = 20. Several aspects of these tables can be
+commented. First of all, the difference between both tables is really
+low. As commented before, when Kv N Kvprac we have a constant runtime.
+Note the large difference on the runtime between clique and degree
+centralities. Through these experiments, we know degree centrality
+makes the graph-matching algorithm much faster than clique centrality. Nevertheless, to analyse if it is worth to use clique or degree centralities although this runtime gap, in the next section, we show the
+differences in the recognition ratio while performing experiments in
+real databases. Moreover, FBP and SFBP runtime is almost similar and
+both are lower than BP. Finally, Jonker–Volgenant tends to be faster
+than Hungarian but FBP with Jonker–Volgenant have convergence
+problems (marked with — in Table 3 and 4) and the algorithm does
+not ﬁnd the solution in some pairs of graphs.
+From Tables 3 and 4, we conclude that the fastest combination is
+SFBP and Jonker–Volgenant in both local structures: clique and degree
+and also when the order of both graphs is equivalent or the ﬁrst graph
+is larger than the second one. Remember that the case where the ﬁrst
+
+graph is smaller than the second one is not explored since in [41] they
+arrived at the conclusion that this parameterization is always slower
+than the inverse case. To ﬁnish this section, we show in Table 5 the
+TimeðBPÞ
+TimeðBPÞ
+Speedup of FBP and SFBP versus BP. That is, Timeð
+FBPÞ and TimeðSFBPÞ. The
+
+runtime values are the average of values in Tables 3 and 4. We realise
+the maximum Speedup is achieved in the cases where the runtime
+was minimum.
+5.2. Analysing runtime and recognition ratio on public graph databases
+In these experiments, we compare BP versus SFBP and we do not use
+FBP since the synthetic experiments showed us that it obtains similar
+classiﬁcation, runtime and Edit costs than SFBP. Moreover, we only
+have used Jonker–Volgenant solver and the Hungarian method was
+discarded since we have deducted Jonker–Volgenant is faster than Hungarian and always converges applied on BP and SFBP. Besides, in [50],
+Jonker–Volgenant is reported to be faster than Hungarian. We have
+used the following ﬁve public graph databases: Letter high, Letter
+med, Letter low, Grec and Coil Rag. The most common features and
+details of these databases are summarised in [52]. For instance, the
+number of graphs in the test, reference and validation sets, the average
+and maximum number of nodes and edges or the type and number of
+attributes on nodes and edges.
+
+F. Serratosa / Image and Vision Computing 40 (2015) 38–48
+
+Given a database, if we want to assure BP returns the same distance
+q
+than SFBP, condition Cvs(vpa, vi ) ≤ 2 · Kv has to hold for all pairs of graphs
+composed of a graph in the test set Gp and a graph in the reference set Gp
+and for all pairs of nodes in these graphs vpa ∈ Gp and vqi ∈ Gq. For this
+reason, we analysed these ﬁve datasets from the point of view of the
+substitution Edit cost. Table 6 shows the main features with respect to
+Cvs and Fig. 5 shows the histogram of node substitution costs Cvs of the
+whole dataset (red vertical line indicates the mean) of the ﬁrst four
+databases (Coil Rag has a similar distribution).
+Fig. 6 shows the recognition ratio using 3-NN and classiﬁcation
+runtime of ﬁve datasets. The horizontal axis is the node insertion
+1
+and deletion cost Kv. We have considered 6 different values of Kv: 16
+MeanfC vs g , 18 MeanfC vs g , 14 MeanfC vs g , 12 MeanfC vs g , Mean{Cvs} (red
+line) and Kvtheor. Note, only in the last case in which Kv = Kvtheor, the
+Edit cost restriction imposed to SFBP holds. For simplicity reasons, in
+the whole experiments Ke = Kv. From the classiﬁcation runtime plots,
+we reinforce the conclusion we extracted in the experiments with synthetic graphs, which is that Clique centrality is really much slower than
+Degree centrality and also that BP is slower than SFBP. Moreover, we
+cannot deduct any relation between Kv and the graph-matching
+runtime. The recognition ratio plots show a concave function through
+the axis Kv = Ke. We call Kvmax RR the value of Kv such that the maximum
+recognition ratio is achieved. In [54], an optimisation method is presented to achieve this maximum. The most important knowledge that we
+want to extract from these plots is the value of Kvprac. As commented
+in the previous section, it is the value of Kv such that from this value
+to zero, SFBP becomes so sub-optimal that obtains lower recognition
+ratio than BP. Horizontal blue line (dashed red line) indicates the values
+of Kv such that BP obtains higher recognition ratio than SFBP using
+Degree (Clique) centrality. The right end of these lines indicates Kprac
+.
+v
+We realise in the whole cases these horizontal lines do not have values
+RR
+in Kvmax RR. A blue circle (red square) indicates Kmax
+achieved using
+v
+Degree (Clique) centrality. The main conclusion of these experiments
+is that in the tested datasets Kvprac ≤ Kvmax RR ≤ Kvtheor. Therefore, it is
+worth to use SFBP instead of BP when Kv is validated such that the recognition ratio obtains the maximum value since SFBP achieves similar
+recognition ratio results than BP but with a reduced runtime. Note
+that in Fig. 6, we show the recognition ratio but not the mean cost
+given different values of Kv and the four combinations of algorithms.
+In fact, we cannot deduct a relation between these two metrics. That
+is, forcing the cost to be closer to the optimal one does not imply an increase of recognition ratio. Therefore, if we deduct the maximum recognition ratio is achieved at the same point Kv for both algorithms BP and
+SFBP, we cannot deduct that, given this speciﬁc Kv, the costs are similar.
+When Kv is very low, BP algorithm deletes and inserts almost the
+whole nodes but the SFBP algorithm can delete a maximum of |n − m|
+nodes if n N m or insert them, otherwise. Therefore, SFBP has a maximum number of |n − m| nodes to be deleted or inserted independently
+of Kv. Note that SFBP with Clique centrality obtains a larger recognition
+ratio than BP in databases Letter Medium, GREC and COIL RAG in the
+case that Kv is very low. This is because, in these extreme conditions,
+SFBP keeps substituting min(n, m) nodes (that most of these substitutions might be correct) but BP substitutes almost non of them.
+6. Conclusions
+Fast Bipartite and Square Fast Bipartite are two new versions of
+Bipartite algorithm that have recently presented to solve the errortolerant graph matching. They obtain the same distance than Bipartite
+with reduced runtime if the insertion and deletion Edit costs on nodes
+and edges are deﬁned such that they are larger than half of the maximum value of substitution costs on nodes and edges. This theoretical
+restriction could reduce the applicability of these algorithms since in
+some recognition applications, the best recognition rate could appear
+in values that are lower than half of the maximum of substitution
+
+47
+
+costs. The aim of this paper is to show that, in practice, considering
+insertion and deletion costs lower than this theoretical value does not
+affect on the optimality of the algorithms nor the recognition ratio.
+In the practical validation, we have seen that the maximum recognition ratio is achieved in insertion and deletion cost values that are lower
+than the theoretical threshold. Therefore, the best results are obtained
+when the theoretical restriction does not hold. This fact could discourage to use these new algorithms. Nevertheless, we have seen that the insertion and deletion costs where the optimality of these algorithms
+decreases are really much smaller than the values where the recognition ratio is maximised. Therefore, Bipartite, Fast Bipartite and Square
+Fast Bipartite obtain the same Edit distance and node correspondence
+in the insertion and deletion values where the recognition ratio is
+maximised. Considering these experiments, we conclude that we can
+use these new algorithms using the cost values where the recognition
+ratio is maximised because there is a considerable speedup.
+References
+[1] A. Sanfeliu, R. Alquézar, J. Andrade, J. Climent, F. Serratosa, J. Vergés, Graph-based
+representations and techniques for image processing and image analysis, Pattern
+Recogn. 35 (3) (2002) 639–650.
+[2] L. He, et al., Graph matching for object recognition and recovery, Pattern Recogn. 37
+(7) (2004) 1557–1560.
+[3] F. Serratosa, X. Cortés, A. Solé-Ribalta, Component retrieval based on a database of
+graphs for hand-written electronic-scheme digitalisation, Expert Syst. Appl. 40
+(2013) 2493–2502.
+[4] T. Caetano, et al., Learning graph matching, IEEE Trans. Pattern Anal. Mach. Intell. 31
+(6) (2009) 1048–1058.
+[5] M. Williams, R. Wilson, E. Hancock, Multiple graph matching with Bayesian inference, Pattern Recogn. Lett. 18 (1997) 1275–1281.
+[6] J. Konc, D. Janežič, A Branch and Bound Algorithm for Matching Protein Structures,
+Adaptive and Natural Computing Algorithms 2007, pp. 399–406.
+[7] A. Solé-Ribalta, F. Serratosa, Graduated assignment algorithm for multiple graph
+matching based on a common labelling, Int. J. Pattern Recognit. Artif. Intell. 27 (1)
+(2013) 1–27.
+[8] A. Solé, F. Serratosa, Models and algorithms for computing the common labelling of
+a set of attributed graphs, Comput. Vis. Image Underst. 115 (7) (2011) 929–945.
+[9] M. Ferrer, E. Valveny, F. Serratosa, K. Riesen, H. Bunke, Generalized median graph
+computation by means of graph embedding in vector spaces, Pattern Recogn. 43
+(4) (2010) 1642–1655.
+[10] A. Sanfeliu, F. Serratosa, R. Alquézar, Second-order random graphs for modelling sets
+of attributed graphs and their application to object learning and recognition, Int. J.
+Pattern Recognit. Artif. Intell. 18 (3) (2004) 375–396.
+[11] X. Cortés, F. Serratosa, An interactive method for the image alignment problem based
+on partially supervised correspondence, Expert Syst. Appl. 42 (1) (2015) 179–192.
+[12] F. Serratosa, X. Cortés, Interactive graph-matching using active query strategies, Pattern Recogn. 48 (4) (2015) 1360–1369.
+[13] G. Sanromà, R. Alquézar, F. Serratosa, A new graph matching method for point-set
+correspondence using the EM Algorithm and Softassign, Comput. Vis. Image
+Underst. 116 (2) (2012) 292–304.
+[14] F. Serratosa, R. Alquézar, N. Amézquita, A probabilistic integrated object recognition
+and tracking framework, Expert Syst. Appl. 39 (2012) 7302–7318.
+[15] Donatello Conte, Pasquale Foggia, Carlo Sansone, Mario Vento: thirty years of graph
+matching in pattern recognition, IJPRAI 18 (3) (2004) 265–298.
+[16] P. Foggia, G. Percannella, M. Vento, Graph matching and learning in pattern recognition in the last 10 years, Int. J. Pattern Recognit. Artif. Intell. 28 (1) (2014).
+[17] Edwin R. Hancock, Richard C. Wilson, Pattern analysis with graphs: parallel work at
+Bern and York, Pattern Recogn. Lett. 33 (7) (2012) 833–841.
+[18] A. Sanfeliu, K.-S. Fu, A distance measure between attributed relational graphs for
+pattern recognition, IEEE Trans. Syst. Man Cybern. 13 (3) (1983) 353–362.
+[19] X. Gao, et al., A survey of graph edit distance, Pattern. Anal. Applic. 13 (1) (2010)
+113–129.
+[20] A. Solé, F. Serratosa, A. Sanfeliu, On the graph edit distance cost: properties and applications, Int. J. Pattern Recognit. Artif. Intell. 26 (5) (2012) 1–20.
+[21] H. Bunke, G. Allermann, Inexact graph matching for structural pattern recognition,
+Pattern Recogn. Lett. 1 (4) (1983) 245–253.
+[22] S. Gold, A. Rangarajan, A graduated assignment algorithm for graph matching, Trans.
+PAMI 18 (4) (1996) 377–388.
+[23] S. Umeyama, An eigendecomposition approach to weighted graph matching problems, IEEE Trans. Pattern Anal. Mach. Intell. 10 (1988) 695–703.
+[24] R. Wilson, E. Hancock, B. Luo, Pattern vectors from algebraic graph theory, IEEE
+Trans. Pattern Anal. Mach. Intell. 27 (2005) 1112–1124.
+[25] X. Jiang, H. Bunke, Optimal quadratic-time isomorphism of ordered graphs, Pattern
+Recogn. 32 (1999) 1273–1283.
+[26] J. Hopcroft, J. Wong, Linear time algorithm for isomorphism of planar graphs, Proceedings of 6th Annual ACM Symposium on Theory of, Computing 1974, pp. 172–184.
+[27] M. Neuhaus, H. Bunke, An error-tolerant approximate matching algorithm for attributed planar graphs and its application to ﬁngerprint classiﬁcation, Proceedings of International Workshop on Structural, Syntactic, and Statistical Pattern Recognition
+2004, pp. 180–189.
+
+48
+
+F. Serratosa / Image and Vision Computing 40 (2015) 38–48
+
+[28] E. Luks, Isomorphism of graphs of bounded valence can be tested in polynomial
+time, J. Comput. Syst. Sci. 25 (1982) 42–65.
+[29] A. Torsello, D. Hidovic-Rowe, M. Pelillo, Polynomial-time metrics for attributed
+trees, IEEE Trans. Pattern Anal. Mach. Intell. 27 (2005) 1087–1099.
+[30] P. Dickinson, H. Bunke, A. Dadej, M. Kraetzl, Matching graphs with unique node
+labels, Pattern. Anal. Applic. 7 (2004) 243–254.
+[31] Z.-Y. Liu, H. Qiao, GNCCP — Graduated Non Convexity and Concavity Procedure, IEEE
+Trans. Pattern Anal. Mach. Intell. (2014). http://dx.doi.org/10.1109/TPAMI.2013.223.
+[32] R. Wilson, E. Hancock, Structural matching by discrete relaxation, IEEE Trans. Pattern
+Anal. Mach. Intell. 19 (1997) 634–648.
+[33] R. Myers, R. Wilson, E. Hancock, Bayesian graph edit distance, IEEE Trans. Pattern
+Anal. Mach. Intell. 22 (2000) 628–635.
+[34] A. Cross, R. Wilson, E. Hancock, Inexact graph matching using genetic search, Pattern
+Recogn. 30 (1997) 953–970.
+[35] S. Sorlin, C. Solnon, Reactive tabu search for measuring graph similarity, Proceedings
+of International Workshop on Graph-Based, Representations 2005, pp. 172–182.
+[36] D. Justice, A. Hero, A binary linear programming formulation of the graph edit distance, IEEE Trans. Pattern Anal. Mach. Intell. 28 (2006) 1200–1214.
+[37] N. Rebagliati, A. Solé, M. Pelillo, F. Serratosa, Computing the graph edit distance
+using dominant sets, Int. Conf. Pattern Recog. (ICPR) (2012) 1080–1083 (Japan).
+[38] A. Fischer, C.Y. Suen, V. Frinken, K. Riesen, H. Bunke, Approximation of graph edit
+distance based on Hausdorff matching, Pattern Recogn. 48 (2) (2015) 331–343.
+[39] K. Riesen, H. Bunke, Approximate graph edit distance computation by means of bipartite graph matching, Image Vis. Comput. 27 (7) (2009) 950–959.
+[40] S. Fankhauser, K. Riesen, H. Bunke, Speeding Up Graph Edit Distance Computation
+through Fast Bipartite Matching, GbRPR (2011) 102–111.
+[41] F. Serratosa, Fast computation of Bipartite Graph Matching, Pattern Recogn. Lett. 45
+(2014) 244–250.
+
+[42] F. Serratosa, Speeding up Fast Bipartite Graph Matching trough a new cost matrix,
+Int. J. Pattern Recognit. Artif. Intell. 29 (2) (2015).
+[43] K. Riesen, H. Bunke, A. Fischer, Improving approximate graph edit distance using
+genetic algorithms, Syntactic and Structural Pattern Recognition2014. 63–72.
+[44] K. Riesen, A. Fischer, H. Bunke, Combining bipartite graph matching and beam
+search for graph edit distance approximation, ANNPR (2014) 117–128.
+[45] J. Munkres, Algorithms for the assignment and transportation problems, J. Soc. Ind.
+Appl. Math. 5 (1957) 32–38.
+[46] H. Kuhn, The Hungarian method for the assignment problem, Nav. Res. Logist. Q. 2
+(1955) 83–97.
+[47] F. Bourgeois, J. Lassalle, An extension of the Munkres algorithm for the assignment
+problem to rectangular matrices, Commun. ACM 14 (12) (1971) 802–804.
+[48] R. Jonker, T. Volgenant, A shortest augmenting path algorithm for dense and sparse
+linear assignment problems, Computing 38 (1987) 325–340.
+[49] B. Gaüzère, S. Bougleux, K. Riesen, L. Brun, Approximate Graph Edit Distance Guided
+by Bipartite Matching of Bags of Walks, Syntactic and Structural Pattern Recognition2014. 73–82.
+[50] S. Fankhauser, K. Riesen, H. Bunke, P. Dickinson, Suboptimal graph isomorphism
+using bipartite matching, Int. J. Pattern Recognit. Artif. Intell. 26 (6) (2012) 1–26.
+[51] X. Cortés, F. Serratosa, C. Moreno, On the Inﬂuence of Node Centralities on Graph
+Edit Distance for Graph Classiﬁcation, Graph based Representations in Pattern
+Recognition, GbRPR 2015, Beijing, China, LNCS 90692015. 231–241.
+[52] K. Riesen, H. Bunke, IAM graph database repository for graph based pattern recognition and machine learning, in: N. da Vitoria Lobo, et al., (Eds.), Structural, Syntactic,
+and Statistical Pattern Recognition, Springer 2008, pp. 287–297.
+[53] http://deim.urv.cat/~francesc.serratosa/SW/.
+[54] X. Cortés, F. Serratosa, Learning graph-matching substitution costs based on the
+optimality of the oracle's, Pattern Recogn. Lett. 56 (2015) 22–29.
+
+

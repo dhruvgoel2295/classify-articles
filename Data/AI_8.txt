@@ -1,0 +1,2413 @@
+Artiﬁcial Intelligence 175 (2011) 1790–1814
+
+Contents lists available at ScienceDirect
+
+Artiﬁcial Intelligence
+www.elsevier.com/locate/artint
+
+Dynamics of argumentation systems: A division-based method ✩
+Beishui Liao a,b,∗ , Li Jin a,b , Robert C. Koons c
+a
+b
+c
+
+Center for the Study of Language and Cognition, Zhejiang University, 310028 China
+Department of Philosophy, Zhejiang University, 310028 China
+Department of Philosophy, University of Texas, Austin, TX 78712-1180, United States
+
+a r t i c l e
+
+i n f o
+
+a b s t r a c t
+
+Article history:
+Received 14 November 2010
+Received in revised form 22 March 2011
+Accepted 30 March 2011
+Available online 6 April 2011
+Keywords:
+Dynamics of argumentation
+Semantics of argumentation
+Computational complexity
+Abstract argumentation frameworks
+
+The changing of arguments and their attack relation is an intrinsic property of a variety of
+argumentation systems. So, it is very important to eﬃciently ﬁgure out how the status of
+arguments in a system evolves when the system is updated. However, unlike other areas
+of argumentation that have been deeply explored, such as argumentation semantics, proof
+theories, and algorithms, etc., dynamics of argumentation systems has been comparatively
+neglected. In this paper, we formulate a general theory (called a division-based method)
+to cope with this problem based on a new concept: the division of an argumentation
+framework. When an argumentation framework is updated, it is divided into three parts:
+an unaffected, an affected, and a conditioning part. The status of arguments in the
+unaffected sub-framework remains unchanged, while the status of the affected arguments
+is computed in a special argumentation framework (called a conditioned argumentation
+framework, or brieﬂy CAF) that is composed of an affected part and a conditioning
+part. We have proved that under a certain semantics that satisﬁes the directionality
+criterion (complete, preferred, ideal, or grounded semantics), the extensions of the updated
+framework are equal to the result of a combination of the extensions of an unaffected subframework and sets of the extensions of a set of assigned CAFs. Due to the eﬃciency of the
+division-based method, it is expected to be very useful in various kinds of argumentation
+systems where arguments and attacks are dynamics.
+© 2011 Elsevier B.V. All rights reserved.
+
+1. Introduction
+In order to handle the uncertainty, incompleteness, and inconsistency of information, various kinds of quantitative approaches (probabilities, fuzzy rules, etc.) and qualitative ones (answer set programming, defeasible logic, and argumentation,
+etc.) have been proposed. Among them, argumentation is gaining momentum in recent ﬁfteen years [30,3,12,29], with extensive research in various aspects, including semantics [62,16,8,17,9,33,10,11,52], proof theories and algorithms [22,31–34,
+18,63,53], and computational complexity [28,36,25,35,37,39,38]. The key point of current research is to determine sets of
+justiﬁed arguments (extensions) from a set of conﬂicting arguments. Despite the differences, they all used argumentation
+frameworks that are static [13], while paying little attention to the dynamics of an argumentation system, i.e., how the
+extensions of an argumentation system change with the changing of arguments and their attack relation.
+The changing of arguments and their attack relation is an intrinsic property of a variety of argumentation systems [45,
+12,15], especially argumentation-based autonomous agents within a dynamic environment, including belief revision [40,19,
+20,61,55,42], deliberation [2,7,54,44,48], decision-making [46,43,5,6,51], and negotiation [57,47,1,59,4]. The existing research
+✩
+
+*
+
+The basic idea of this paper has been introduced in Liao et al. (2010) [50].
+Corresponding author at: Center for the Study of Language and Cognition, Zhejiang University, China 310028.
+E-mail address: baiseliao@zju.edu.cn (B. Liao).
+
+0004-3702/$ – see front matter
+doi:10.1016/j.artint.2011.03.006
+
+© 2011 Elsevier B.V.
+
+All rights reserved.
+
+B. Liao et al. / Artiﬁcial Intelligence 175 (2011) 1790–1814
+
+1791
+
+shows that in many argumentation systems, arguments and their attack relation evolve with the changing of underlying
+knowledge or information. For example, in [20,61], the authors formulated a system where an instantiated argumentation
+framework is based on the changing observations. So, at each time point, when observations change, the arguments and
+their attack relation change accordingly. In [40,41], within an argumentative system, when new explanation is received,
+some strict rules are changed to defeasible rules, which gives rise to the changing of arguments and their attack relation.
+In [48,49], due to the dynamics of observations and inference rules, the argumentation frameworks for beliefs, goals, and
+intentions, respectively, are dynamic. In [59,4], argumentation-based negotiation (ABN) agents perform reasoning with incomplete, uncertain, and inconsistent information. Each agent’s theory (as an argumentation system) may evolve during a
+negotiation dialogue, i.e., if an agent receives an argument from another agent, it will add the new argument to its theory,
+and furthermore, new conﬂicts may arise between the original arguments of the agent and the ones that emerge after
+adding the received arguments to its theory [4]. In [27], when a collection of argumentation systems coming from different
+agents are merged (after consensual expansion of each argumentation system), the arguments and the attack relation of
+each argumentation system may change accordingly.
+To illustrate the dynamics of argumentation systems, let us see a revised example from [20].
+Example 1. There are some rules in the knowledge base of an autonomous agent for performing basic email ﬁltering, in
+which r4 is superior to r5 , and r7 is superior to r5 :
+r1 :
+r2 :
+r3 :
+r4 :
+r5 :
+r6 :
+r7 :
+
+A message from the local host is usually not classiﬁed as spam.
+A message is usually labeled as spam if it comes from a server that is on the blacklist.
+A message should be moved to the “junk” folder if it is marked as spam.
+Unﬁltered messages in the “junk” folder usually should not be moved to the inbox.
+If an email does not match with any user-deﬁned ﬁlter then it usually should be moved to the “inbox” folder.
+A message should not be moved to the “junk” folder if it is from a VIP user.
+A message with viruses should not be moved to the inbox.
+
+Based on the above rules, let us consider the following scenarios at successive time points t 1 , t 2 , t 3 and t 4 . First, at t 1 ,
+the observations related to a message M 1 show that: (1) M 1 is from a local host, and (2) M 1 comes from a server that is
+in the blacklist. Second, at t 2 , a new observation “M 1 does not match with any user-deﬁned ﬁlter” is added. Third, at t 3 , an
+observation “M 1 is from a VIP user” is added. Fourth, at t 4 , an observation “M 1 contains a virus” is added. So, according to
+the rules r1 ∼ r7 , at different time points, we may construct the following four different argumentation frameworks (AF 1 ,
+AF 2 , AF 3 , and AF 4 ), in which (α , β) denotes α rebuts β ,1 while α , β denotes α undercuts β (i.e., ∃γ ⊂ β , such that, γ
+rebuts α ) [49].
+
+AF 1 = {α1 , α2 , α3 },
+
+α1 , α3 , (α1 , α2 ), (α2 , α1 ), α1 , α4
+
+AF 2 = {α1 , α2 , α3 , α4 , α5 },
+
+α1 , α3 , (α1 , α2 ), (α2 , α1 ), α1 , α4 , (α4 , α5 )
+
+AF 3 = {α1 , α2 , α3 , α4 , α5 , α6 },
+
+α1 , α3 , (α1 , α2 ), (α2 , α1 ), α1 , α4 , (α4 , α5 ), (α3 , α6 ), (α6 , α3 ), α6 , α4
+
+AF 4 = {α1 , α2 , α3 , α4 , α5 , α6 , α7 },
+
+α1 , α3 , (α1 , α2 ), (α2 , α1 ), α1 , α4 , (α4 , α5 ), (α3 , α6 ), (α6 , α3 ), α6 , α4 , (α7 , α5 )
+α1 = {r1 }, ¬spam( M 1 )
+α2 = {r2 }, spam( M 1 )
+α3 = {r2 , r3 }, move_junk( M 1 )
+α4 = {r2 , r3 , r4 }, ¬move_inbox( M 1 )
+α5 = {r5 }, move_inbox( M 1 )
+α6 = {r6 }, ¬move_junk( M 1 )
+α7 = {r7 }, ¬move_inbox( M 1 )
+In Fig. 1, arguments and attacks in red are newly added, while those arguments in blue are affected by the addition
+of arguments and attacks. So, the status of arguments α1 , α2 , α3 , and α4 in AF 1 remains unchanged after the addition
+of arguments α5 , and of attacks (α4 , α5 ), in AF 2 ; the status of arguments α1 and α2 in AF 2 remains unchanged, while
+the status of arguments α3 , α4 , and α5 in AF 2 may be affected, after the addition of an argument α6 , and of attacks
+1
+When the conclusions of arguments α and β are complementary, if α is superior to β , then α is a proper defeater of β , denoted as (α , β); else, α is
+a blocking defeater of β , denoted as {(α , β), (β, α )}. For example, since r4 is superior to r5 , the corresponding argument α4 is superior to α5 . So, there is
+only an attack from α4 to α5 , and not vice versa.
+
+1792
+
+B. Liao et al. / Artiﬁcial Intelligence 175 (2011) 1790–1814
+
+Fig. 1. The evolution on an argumentation system. (For interpretation of the references to color in this ﬁgure, the reader is referred to the web version of
+this article.)
+
+(α3 , α6 ), (α6 , α3 ), and α6 , α4 , in AF 3 ; the status of arguments α1 , α2 , α3 , α4 , and α6 in AF 3 remains unchanged, while the
+status of arguments α5 may be affected, after the addition of argument α7 , and of the attack (α7 , α5 ).
+As shown in Example 1, when new observations arise, a set of arguments and/or attacks are added to the system.
+Meanwhile, in some other cases, when observations or rules of inference change, a set of arguments and/or attacks may
+be deleted from the system [49]. With the changing of arguments and/or attacks of an argumentation system, the status
+of some arguments changes, while that of others remains untouched. Now, one of the challenging problems is how to
+eﬃciently compute the dynamics of argumentation systems. When an argumentation system is modiﬁed, we may simply
+recompute the status of each argument afresh. However, this method is obviously ineﬃcient, and in most of cases, diﬃcult.
+To cope with this problem, there have been a small number of efforts [5,13,23]. First, Boella et al. studied the dynamics
+of argumentation by exploring the principles according to which the extension does not change when the set of arguments
+or the attacks between them are changed [13]. However, they have not considered how the extensions of an argumentation
+system evolve when new arguments are added or the old ones are removed. Second, Cayrol et al. addressed the problem
+of revising the set of extensions of an abstract argumentation system, and studied how the extensions of an argumentation
+system may evolve when a new argument is received [23]. However, they restricted their study to the case of adding just
+one argument having only one interaction with an initial argument. Third, Amgoud et al. used dynamics of argumentation
+in the decision-making of an autonomous agent [5]. They studied how the acceptability of arguments evolves when the
+decision system is extended by new arguments without computing the whole extensions. However, they also considered
+the situation where only one argument is added to the system. In addition, all of the current efforts have not taken the
+eﬃciency of computing the dynamics of argumentation into consideration.
+According to the above analysis, a more general theory is needed to formulate the dynamics of an argumentation system,
+with the following three characteristics:
+
+• The number of arguments and attacks to be added to (or deleted from) an argumentation system is unlimited;
+• Both the addition and the deletion of arguments and/or attacks are considered;
+• The eﬃciency of computing the dynamics of argumentation systems is considered.
+To realize this purpose, in this paper, we will propose a division-based method. The basic idea of this method is that
+when an argumentation framework is updated, we may only recompute the status of those arguments that are affected,
+while the status of those arguments that are unaffected can be obtained directly from the result of the previous computation [50]. An important principle behind this method is that, under a given argumentation semantics that satisﬁes
+directionality criterion [9], the status of arguments that are affected and unaffected can be computed separately and then
+combined to form the extensions of the updated argumentation framework.
+According to [9], the following argumentation semantics have been proved to satisfy the directionality criterion:
+grounded semantics, complete semantics, preferred semantics, ideal semantics, CF 2 , and the prudent version of grounded
+semantics. However, for simplicity, in this paper, we will only consider grounded, complete, preferred, and ideal semantics,
+while CF 2 that is based on the SCC-recursive scheme [8], as well as the prudent version of grounded semantics that is based
+on the notion of prudently conﬂict-free set [26], are left to our future work.
+This paper is organized as follows. First, in Section 2, we will introduce some basic concepts that will be used in this
+paper. Second, in Sections 3 and 4, the syntax and semantics of the dynamics of argumentation systems will be described
+respectively. Finally, in Section 5, we will conclude the paper and point out some future work.
+2. Preliminaries
+In this section, we will introduce some basic concepts that will be used in this paper: (1) Dung’s theory of abstract
+argumentation frameworks, (2) the status of arguments, and (3) the directionality criterion of argumentation semantics.
+Dung’s theory of abstract argumentation frameworks. In our division-based method, we will only treat with the argumentation
+systems that are abstract, i.e., abstract argumentation frameworks that were introduced in [30,33].
+Deﬁnition 1. An argumentation framework is a tuple AF = A , R , where A is a set of arguments, and R ⊆ A × A is a set of
+attacks.
+
+B. Liao et al. / Artiﬁcial Intelligence 175 (2011) 1790–1814
+
+1793
+
+In Deﬁnition 1, we use (α , β) ∈ R to denote that α attacks β and do not differentiate rebuts from undercuts that have
+been mentioned in Example 1. Meanwhile, throughout this paper, we assume that A is generated by a reasoner at a given time
+point, and therefore is ﬁnite.
+Given an argumentation framework, a fundamental problem is to determine which arguments can be considered justiﬁed.
+According to [30], extension-based argumentation semantics is a formal way to answer this question. Here, an extension
+represents a set of arguments that are considered to be acceptable together, which is based on the following three important
+notions: conﬂict-free, acceptability, and admissible sets.
+Deﬁnition 2. Let AF = A , R be an argumentation framework.
+
+• A set B ⊆ A of arguments is conﬂict-free if and only if α , β ∈ B, s.t. (α , β) ∈ R.
+• An argument α ∈ A is acceptable w.r.t. a set B ⊆ A of arguments (also called α is defended by B), if and only if
+∀(β, α ) ∈ R, ∃γ ∈ B, s.t. (γ , β) ∈ R.
+• A conﬂict-free set of arguments B ⊆ A is admissible if and only if each argument in B is acceptable w.r.t. B.
+With the notion of admissible set, the extensions of an argumentation framework under different argumentation semantics can be deﬁned as follows:
+Deﬁnition 3. Let AF = A , R be an argumentation framework, B ⊆ A be an admissible set of arguments.
+
+•
+•
+•
+•
+
+B is a preferred extension if and only if B is a maximal (w.r.t. set-inclusion) admissible set of arguments.
+B is a complete extension if and only if each argument in A that is acceptable w.r.t. B is in B.
+B is a grounded extension if and only if B is the minimal (w.r.t. set-inclusion) complete extension.
+B is ideal if and only if B is admissible and it is contained in every preferred set of arguments. The ideal extension is
+the maximal (w.r.t. set-inclusion) ideal set.
+
+We use ECO (AF ), EPR (AF ), EGR (AF ), and EID (AF ) to denote the set of complete extensions, preferred extensions,
+grounded extensions, and ideal extensions of AF, respectively. Meanwhile, for convenience, we use S ∈ {CO , PR, GR, ID }
+to denote one of the four argumentation semantics.
+Status of arguments. With respect to each extension under a certain semantics S , we will differentiate three kinds of statuses of arguments: accepted, rejected, and undecided. Informally, an argument is accepted with respect to an extension, if
+and only if it belongs to this extension; an argument is rejected with respect to an extension, if and only if it is attacked by
+another argument that is accepted with respect to this extension; an argument is undecided with respect to an extension,
+if and only if it is neither accepted nor rejected with respect to this extension. So, given a speciﬁc extension, the status
+of each argument can be determined uniquely. This idea is very important to support the incremental computation of the
+status of arguments in the division-based method. Let us see an example as follows.
+Example 2. Let AF = {α1 , α2 , α3 }, {(α1 , α2 ), (α2 , α1 ), (α2 , α3 )} be an argumentation framework, and AF 1 = {α1 , α2 },
+{(α1 , α2 ), (α2 , α1 )} a sub-framework of AF. Since the arguments in AF 1 are not attacked by the arguments outside AF 1 ,
+we may compute the extensions of AF 1 independently. For instance, under complete semantics, we have ECO (AF 1 ) =
+{ E 1 , E 2 , E 3 }, in which E 1 = {α1 }, E 2 = {α2 }, and E 3 = ∅. With respect to each extension, the status of arguments in AF 1
+can be determined uniquely:
+
+• With respect to E 1 , α1 is accepted and α2 is rejected;
+• With respect to E 2 , α2 is accepted and α1 is rejected;
+• With respect to E 3 , α1 and α2 are undecided.
+Then, for each status assignment of α2 (which has an interaction with α3 ), the status of α3 can be determined accordingly: when α2 is rejected, α3 is accepted; when α2 is accepted, α3 is rejected; and when α2 is undecided, α2 is also
+undecided. As a result, we may obtain the set of complete extensions of AF, i.e., ECO (AF ) = {{α1 , α3 }, {α2 }, ∅}.
+According to Example 2, it is obvious that all the three statuses of arguments are necessary,2 which make possible the
+incremental computation of the status of arguments.
+Based on the above analysis, we have the following deﬁnition:
+
+2
+It is necessary to differentiate undecided from rejected. Otherwise, as shown in Example 2, we may not able to differentiate situations 2 and 3 (when
+the status of α2 is assigned with respect to E 2 and E 3 , respectively). Consequently, the status of α3 cannot be assigned uniquely.
+
+1794
+
+B. Liao et al. / Artiﬁcial Intelligence 175 (2011) 1790–1814
+
+Deﬁnition 4. Let AF = A , R be an argumentation framework, and E ∈ ES (AF ) be an extension. With respect to E, the set
+of arguments A can be partitioned into three parts: A(AF , E ), R(AF , E ), and U(AF , E ), where:
+
+• A(AF , E ) = E is the set of accepted arguments (w.r.t. E);
+• R(AF , E ) = {α ∈ A | ∃β ∈ E, s.t. (β, α ) ∈ R } is the set of rejected arguments (w.r.t. E);
+• U(AF , E ) = A \ (A(AF , E ) ∪ R(AF , E )) is the set of undecided arguments (w.r.t. E).
+A 3-tuple S(AF , E ) = (A(AF , E ), R(AF , E ), U(AF , E )) is called a status assignment of an argumentation framework AF with
+respect to E.
+According to Deﬁnition 4, for all α ∈ A, the status of α is related to a speciﬁc extension E ∈ ES (AF ). So, if the status
+of α is accepted with respect to E, then it indicates that α is a member of E, but not necessary to be a member of other
+extensions. Meanwhile, if the status of α is rejected with respect to E, then it indicates that α is not acceptable with respect
+to E, but may be acceptable with respect to other extensions of AF.
+So, the notion of status assignment with respect of a speciﬁc extension is different from the traditional notions of
+justiﬁcation state of an argument: credulously justiﬁed, skeptically justiﬁed, and indefensible. However, they can be related
+by the following deﬁnition.
+Deﬁnition 5. Given an argumentation framework AF = A , R and a semantics S , an argument α ∈ A is credulously justiﬁed
+if and only if ∃ E ∈ ES (AF ), s.t. α ∈ A(AF , E ); it is skeptically justiﬁed if and only if ∀ E ∈ ES (AF ), α ∈ A(AF , E ); and it is
+indefensible if and only if E ∈ ES (AF ) s.t. α ∈ A(AF , E ).
+According to Deﬁnition 5, under a certain semantics, when an argument α ∈ A is credulously justiﬁed, it is accepted
+with respect to some extensions of the argumentation framework, while it may be rejected or undecided with respect to
+other extensions; when α is skeptically justiﬁed, it is accepted with respect to all extensions; and when α is indefensible,
+it is not accepted with respect to any extension.
+Directionality criterion of argumentation semantics. As mentioned above, the division-method is based on the notion of directionality of argumentation semantics [8,9]. The basic idea of directionality is that under some argumentation semantics, the
+status of an argument α is affected only by the status of its defeaters (which in turn are affected by their defeaters and so
+on), while the arguments which only receive an attack from α (and in turn those which are attacked by them and so on)
+do not have any effect on the status of α . The following deﬁnitions (Deﬁnitions 6–8) are borrowed from [9].
+Deﬁnition 6. Given an argumentation framework AF = A , R , a set U ⊆ A is unattacked if and only if
+attacks an argument in U . The set of unattacked sets of AF is denoted as U S (AF ).
+
+α ∈ ( A \ U ), s.t. α
+
+Deﬁnition 7. Let AF = A , R be an argumentation framework. The restriction of AF to S ⊆ A is the argumentation framework
+AF ↓ S = S , R ∩ ( S × S ) .
+The directionality criterion is then deﬁned by requiring an unattacked set to be unaffected by the remaining parts of the
+argumentation framework as far as extensions are concerned.
+Deﬁnition 8. A semantics S satisﬁes the directionality criterion if and only if ∀AF = A , R , ∀U ∈ U S (AF ), AE S (AF , U ) =
+ES (AF ↓U ), where AE S (AF , U ) =def {( E ∩ U ) | E ∈ ES (AF )} ⊆ 2U .
+According to Deﬁnition 8, the intersection of any extension prescribed by S for AF with an unattacked set U is equal to
+one of the extensions prescribed by S for the restriction of AF to U , and vice versa.
+3. Dynamics of argumentation systems: syntax
+In this section, we will deﬁne the dynamic of argumentation systems syntactically. As mentioned in Section 1, when a
+set of arguments and/or a set of attacks are added to (or deleted from) an argumentation framework, the status of affected
+arguments may change. However, if some arguments and attacks to be added are in the existing argumentation framework,
+or some arguments and attacks to be deleted are not in the existing argumentation framework, an addition (respectively
+a deletion) of them will not have any effects on the argumentation framework. So, in this paper, for simplicity and without
+loss of generality, we suppose that the arguments and attacks to be added are not in the existing argumentation framework,
+while the arguments and attacks to be deleted are in the existing argumentation framework.
+Let Uarg be the universe of arguments. Formally, we have the following deﬁnition.
+Deﬁnition 9. Let AF = A , R be an argumentation framework, where A ⊆ Uarg and R ⊆ A × A. An addition of AF is represented as a tuple ( B , I A: B ∪ I A ), in which B ⊆ Uarg \ A is a set of arguments to be added, and I A: B ∪ I A is a set of attacks
+
+B. Liao et al. / Artiﬁcial Intelligence 175 (2011) 1790–1814
+
+1795
+
+(also called interactions) to be added. On the other hand, a deletion of AF is also represented as a tuple ( B , I A \ B:
+in which B ⊆ A is a set of arguments to be deleted, and I A \ B: B ∪ I A \ B is a set of attacks to be deleted.
+
+B
+
+∪ I A \ B ),
+
+In Deﬁnition 9, we borrow the notion I from [24], denoted the interactions between arguments under the context of
+change in argumentation. In this paper, we extend this notion and differentiate three forms: I A: B , I A , and I( A , B ) , in which:
+
+• I A:
+
+B is the set of interactions related to B and of the form (α , β), (β, α ), or (β, β ), in which α ∈ A and β, β ∈ B. In
+addition, to a deletion, it holds that I A \ B: B = R ∩ (( B × B ) ∪ ( B × ( A \ B )) ∪ (( A \ B ) × B )) = R ∩ (( B × A ) ∪ ( A × B )).
+• I A is a set of interactions between the arguments in A, and of the form (α , α ), in which α , α ∈ A.
+• I( A , B ) is used and explained in Deﬁnition 11.
+
+Based on Deﬁnition 9, an updated argumentation framework with respect to an addition or a deletion is syntactically
+deﬁned as follows:
+Deﬁnition 10. Let AF = A , R be an argumentation framework, ( B , I A: B ∪ I A ) be an addition and ( B , I A \ B: B ∪ I A \ B ) be a
+deletion. Syntactically, the updated AF w.r.t. ( B , I A: B ∪ I A ) and ( B , I A \ B: B ∪ I A \ B ) is respectively represented as follows:
+
+A , R ⊕ ( B , I A:
+A, R
+
+B
+
+∪ I A ) =def A ∪ B , R ∪ (I A: B ∪ I A )
+
+(1)
+
+( B , I A \ B: B ∪ I A \ B ) =def A \ B , R \ (I A \ B: B ∪ I A \ B )
+
+For simplicity, we use
+respectively.
+
+A⊕, R ⊕
+
+and
+
+Proposition 1. Let A ⊕ , R ⊕ and A , R
+R ⊆ A × A , i.e. A ⊕ , R ⊕ and A , R
+
+A ,R
+
+to denote
+
+A ∪ B , R ∪ (I A:
+
+(2)
+B
+
+∪ I A ) and A \ B , R \ (I A \ B:
+
+B
+
+∪ I A\B ) ,
+
+be the result of an addition and of a deletion respectively. It holds R ⊕ ⊆ A ⊕ × A ⊕ and
+are argumentation frameworks.
+
+Proof. First, according to Deﬁnition 9, in the case of addition, it holds that R ⊆ A × A, I A: B ⊆ ( A × B ) ∪ ( B × A ) ∪ ( B × B ),
+and I A ⊆ A × A. So, we have R ⊕ = R ∪ (I A: B ∪ I A ) ⊆ ( A × A ) ∪ (( A × B ) ∪ ( B × A ) ∪ ( B × B )) ∪ ( A × A ) = ( A ∪ B ) × ( A ∪ B ) =
+A ⊕ × A ⊕ . Second, in the case of deletion, it holds that I A \ B: B = R ∩ (( B × B ) ∪ ( B × ( A \ B )) ∪ (( A \ B ) × B )). Therefore,
+R \ I A \ B: B = ( R ∩ ( A × A )) \ ( R ∩ (( B × B ) ∪ ( B × ( A \ B )) ∪ (( A \ B ) × B ))) = R ∩ (( A \ B ) × ( A \ B )). Meanwhile, since all
+interactions in I A \ B belong to R ∩ (( A \ B ) × ( A \ B )), it holds that ( R \ I A \ B: B ) \ I A \ B ⊆ ( A \ B ) × ( A \ B ) = A × A , i.e.,
+R = R \ (I A \ B: B ∪ I A \ B ) = ( R \ I A \ B: B ) \ I A \ B ⊆ A × A . ✷
+4. Dynamics of argumentation systems: semantics
+Now, let’s analyze respectively the semantics of an addition and a deletion to an argumentation framework, i.e., how the
+extensions of an argumentation framework evolve when an addition or a deletion happens.
+According to the formulas (1) and (2), with respect to a certain argumentation semantics S ∈ {CO , PR, GR, ID }, we
+afresh, without considering previous information (the exmay directly compute the extensions of A ⊕ , R ⊕ and A , R
+tensions of AF = A , R ). However, if the previous information is properly used, the complexity of computing the dynamics
+of argumentation might be decreased. According to Deﬁnition 8, if an argumentation semantics satisﬁes the criterion of
+directionality, then the status of an argument α is affected only by the status of its defeaters, while the arguments which
+only receive an attack from α have no effect on the state of α . Based on this idea, we may infer that when a set of arguments and/or a set of attacks are added to (or deleted from) an argumentation framework, some arguments are directly or
+into two parts: affected
+indirectly affected, while others remain unaffected. Therefore, if we can divide A ⊕ , R ⊕ or A , R
+and unaffected, we need only to compute the status of affected arguments, while leaving the status of unaffected arguments
+unchanged. Now, three key questions arise:
+
+• How to divide an argumentation framework when it is updated, and make this division correct?
+• How to compute the status of affected arguments (in this paper, newly added arguments are also regarded as affected
+arguments) whose status might be conditioned by the status of those unaffected arguments?
+
+• How to combine the status of unaffected arguments and that of affected ones, and make this combination sound and
+complete?
+In order to cope with these problems, in this section, we will ﬁrstly introduce two new concepts, conditioned argumentation frameworks and the division of an argumentation framework, and then give the semantics of an addition and a deletion,
+respectively, based on these concepts.
+
+1796
+
+B. Liao et al. / Artiﬁcial Intelligence 175 (2011) 1790–1814
+
+Fig. 2. A conditioned argumentation framework.
+
+4.1. Conditioned argumentation frameworks
+In order to support the formulation of the dynamics of argumentation, i.e., to compute the status of affected arguments,
+we introduce a special argumentation framework that is conditioned by an external argumentation framework. We call it
+conditioned argumentation framework (CAF). The deﬁnitions and properties of a CAF are presented as follows.
+4.1.1. Deﬁnitions
+Deﬁnition 11. Given an argumentation framework AF 1 = A 1 , R 1 , a conditioned argumentation framework w.r.t. AF 1 is a
+tuple CAF = ( A 2 , R 2 , (C ( A 1 ), I(C ( A 1 ), A 2 ) )), in which
+
+• A 2 , R 2 is an argumentation framework that is conditioned by C ( A 1 ), in which A 2 ∩ A 1 = ∅;
+• C ( A 1 ) ⊆ A 1 is a nonempty set of arguments (called conditioning arguments) that have interactions with arguments in
+A 2 , i.e., ∀α ∈ C ( A 1 ), ∃β ∈ A 2 , s.t. (α , β) ∈ I(C ( A 1 ), A 2 ) ; and
+• I(C ( A 1 ), A 2 ) ⊆ C ( A 1 ) × A 2 is the set of interactions from the arguments in C ( A 1 ) to the arguments in A 2 , and of the form
+(α , β), in which α ∈ C ( A 1 ) and β ∈ A 2 .
+In Deﬁnition 11, the status of arguments in C ( A 1 ) of a CAF is assigned within AF 1 , an argumentation framework independent of A 2 , R 2 . So, after the status of arguments in C ( A 1 ) is assigned according to a speciﬁc extension E 1 ∈ ES (AF 1 ),
+we call the CAF an assigned CAF, denoted as CAF [ E 1 ] = ( A 2 , R 2 , (C ( A 1 )[ E 1 ], I(C ( A 1 ), A 2 ) )), in which C ( A 1 )[ E 1 ] is a set of
+arguments with assigned statuses, deﬁned as follows:
+
+C ( A 1 )[ E 1 ] =def A(AF 1 , E 1 ) ∩ C ( A 1 ), R(AF 1 , E 1 ) ∩ C ( A 1 ), U(AF 1 , E 1 ) ∩ C ( A 1 )
+
+(3)
+
+In formula (3), C ( A 1 )[ E 1 ] is also called a condition of A 2 , R 2 . In order to further explain the above concepts, we give
+the following example.
+Example 3. Let AF 1 = A 1 , R 1 be an AF, in which A 1 = {α1 , α2 , α3 , α4 } and R 1 = {(α1 , α2 ), (α2 , α1 ), (α1 , α3 ), (α2 , α3 ),
+(α3 , α4 )}, and CAF 1 = ( A 2 , R 2 , (C ( A 1 ), I(C ( A 1 ), A 2 ) )) be a CAF with respect to AF 1 , in which A 2 = {α5 , α6 , α7 , α8 , α9 ,
+α10 }, R 2 = {(α5 , α6 ), (α6 , α5 ), (α7 , α8 ), (α8 , α7 ), (α5 , α10 ), (α9 , α10 ), (α10 , α7 )}, C ( A 1 ) = {α2 , α4 }, and I(C ( A 1 ), A 2 ) = {(α2 , α5 ),
+(α4 , α9 )} (Fig. 2). Under complete semantics, we have ECO (AF 1 ) = { E 1,1 , E 1,2 , E 1,3 },3 in which E 1,1 = {α1 , α4 }, E 1,2 =
+{α2 , α4 }, and E 1,3 = ∅. Three status assignments of AF 1 are S(AF 1 , E 1,1 ) = ({α1 , α4 }, {α2 , α3 }, ∅), S(AF 1 , E 1,2 ) = ({α2 , α4 },
+{α1 , α3 }, ∅), and S(AF 1 , E 1,3 ) = (∅, ∅, {α1 , α2 , α3 , α4 }). So, there are three assigned CAFs with respect to E 1,1 , E 1,2 , and E 1,3 ,
+respectively:
+
+CAF 1 [ E 1,1 ] =
+
+A 2 , R 2 , C ( A 1 )[ E 1,1 ], I(C ( A 1 ), A 2 )
+
+CAF 1 [ E 1,2 ] =
+
+A 2 , R 2 , C ( A 1 )[ E 1,2 ], I(C ( A 1 ), A 2 )
+
+CAF 1 [ E 1,3 ] =
+
+A 2 , R 2 , C ( A 1 )[ E 1,3 ], I(C ( A 1 ), A 2 )
+
+C ( A 1 )[ E 1,1 ] = {α4 }, {α2 }, ∅
+C ( A 1 )[ E 1,2 ] = {α2 , α4 }, ∅, ∅
+C ( A 1 )[ E 1,3 ] = ∅, ∅, {α2 , α4 }
+According to Example 3, the status of arguments in an assigned CAF is related to the status of conditioning arguments.
+The semantics of an assigned CAF is deﬁned as follows:
+
+3
+For convenience and without confusion, in all subsequent examples, we use E 1,i to denote an extension of the conditioning argumentation framework,
+E 2,i to denote an extension of the conditioned argumentation framework, and E 0,i to denote an extension of the argumentation framework that does not
+belong to the above two cases.
+
+B. Liao et al. / Artiﬁcial Intelligence 175 (2011) 1790–1814
+
+1797
+
+Deﬁnition 12. Let CAF [ E 1 ] = ( A 2 , R 2 , (C ( A 1 )[ E 1 ], I(C ( A 1 ), A 2 ) )) be an assigned CAF w.r.t. AF 1 = A 1 , R 1 , in which E 1 ∈
+ES (AF 1 ), S ∈ {CO, PR, GR, ID }.
+
+• A set B ⊆ A 2 of arguments is conﬂict-free if and only if α , β ∈ B, s.t. (α , β) ∈ R 2 .
+• An argument α ∈ A 2 is acceptable w.r.t. a set B ⊆ A 2 of arguments under the condition C ( A 1 )[ E 1 ], if and only if the
+following two conditions hold:
+– ∀β ∈ A 2 , if (β, α ) ∈ R 2 , then ∃γ ∈ B, s.t. (γ , β) ∈ R 2 , or ∃ξ ∈ C ( A 1 ), s.t. ξ is accepted w.r.t. E 1 and (ξ, β) ∈ I(C ( A 1 ), A 2 ) ;
+and
+– ∀β ∈ C ( A 1 ), if (β, α ) ∈ I(C ( A 1 ), A 2 ) , then β is rejected w.r.t. E 1 .
+• A conﬂict-free set B ⊆ A 2 of arguments is admissible if and only if each argument in B is acceptable w.r.t. B under the
+condition C ( A 1 )[ E 1 ].
+Deﬁnition 13. Let CAF [ E 1 ] = ( A 2 , R 2 , (C ( A 1 )[ E 1 ], I(C ( A 1 ), A 2 ) )) be an assigned CAF w.r.t. AF 1 = A 1 , R 1 , in which E 1 ∈
+ES (AF 1 ), S ∈ {CO, PR, GR, ID }. Let B ⊆ A 2 be an admissible set of arguments.
+
+•
+•
+•
+•
+
+B is a preferred extension if and only if B is a maximal (w.r.t. set-inclusion) admissible set of arguments.
+B is a complete extension if and only if each argument that is acceptable w.r.t. B under the condition C ( A 1 )[ E 1 ] is in B.
+B is a grounded extension if and only if B is the minimal (w.r.t. set-inclusion) complete extension.
+B is ideal if and only if B is admissible and it is contained in every preferred set of arguments. The ideal extension is
+the maximal (w.r.t. set-inclusion) ideal set.
+
+Example 4. According to Example 3, E 1,1 = {α1 , α4 } and E 1,2 = {α2 , α4 } are preferred extensions of AF 1 . So, we have
+EPR (CAF 1 [ E 1,1 ]) = { E 2,1 , E 2,2 , E 2,3 }, EPR (CAF 1 [ E 1,2 ]) = { E 2·4 }, in which E 2,1 = {α5 , α7 }, E 2,2 = {α5 , α8 }, and E 2,3 = E 2·4 =
+{α6 , α8 , α10 }. Here, the acceptability of arguments in each assigned CAF is evaluated according to the corresponding condition. For instance, in EPR (CAF 1 [ E 1,1 ]):
+
+• Argument α5 is acceptable w.r.t. E 2,1 under the condition C ( A 1 )[ E 1,1 ] in that for the only argument α6 in A 2 that
+attacks α5 , there exists α5 in E 2,1 , s.t. (α5 , α6 ) ∈ R 2 , and for the only argument α2 in C ( A 1 ) that attacks α5 , it holds
+that
+
+α2 is rejected w.r.t. E 1,1 ;
+
+• Meanwhile, argument α10 is acceptable w.r.t. E 2,3 under the condition C ( A 1 )[ E 1,1 ] in that for the argument α5 in A 2
+that attacks α10 , there exists α6 in E 2,3 , s.t. (α6 , α5 ) ∈ R 2 , while for the argument α9 in A 2 that attacks α10 , there
+exists α4 in C ( A 1 ), s.t. α4 is accepted w.r.t. E 1,1 and (α4 , α9 ) ∈ I(C ( A 1 ), A 2 ) .
+With respect to each extension under a certain semantics S , the statuses of conditioned arguments (accepted, rejected,
+and undecided) are deﬁned as follows:
+Deﬁnition 14. Let CAF [ E 1 ] = ( A 2 , R 2 , (C ( A 1 )[ E 1 ], I(C ( A 1 ), A 2 ) )) be an assigned CAF w.r.t. AF 1 = A 1 , R 1 , in which E 1 ∈
+ES (AF 1 ). Let E 2 ∈ ES (CAF [ E 1 ]) be an extension.
+
+• An argument α ∈ A 2 is accepted w.r.t. E 2 under the condition C ( A 1 )[ E 1 ], if and only if α ∈ E 2 ;
+• An argument α ∈ A 2 is rejected w.r.t. E 2 under the condition C ( A 1 )[ E 1 ], if and only if ∃β ∈ E 2 , s.t. (β, α ) ∈ R 2 , or
+∃γ ∈ E 1 , s.t. (γ , α ) ∈ I(C ( A 1 ), A 2 ) ;
+• An argument α ∈ A 2 is undecided w.r.t. E 2 under the condition C ( A 1 )[ E 1 ], if and only if (i) α ∈
+/ E 2 , (ii) β ∈ E 2 s.t.
+(β, α ) ∈ R 2 , and (iii) γ ∈ C ( A 1 ), s.t. (γ , α ) ∈ I(C ( A 1 ), A 2 ) and γ ∈ E 1 .
+Finally, the justiﬁcation state of an argument in an assigned CAF is deﬁned as follows:
+Deﬁnition 15. Given C AF = ( A 2 , R 2 , (C ( A 1 ), I(C ( A 1 ), A 2 ) )) (w.r.t. AF 1 = A 1 , R 1 ) and a semantics S , an argument α ∈ A 2 is
+credulously justiﬁed if and only if ∃ E 2 ∈ E 1 ∈ES (AF 1 ) ES (CAF [ E 1 ]), s.t. α is accepted w.r.t. E 2 under the condition C ( A 1 )[ E 1 ];
+it is skeptically justiﬁed if and only if ∀ E 2 ∈ E 1 ∈ES (AF 1 ) ES (CAF [ E 1 ]), α is accepted w.r.t. E 2 under the condition C ( A 1 )[ E 1 ];
+and it is indefensible if and only if E 2 ∈ E 1 ∈ES (AF 1 ) ES (CAF [ E 1 ]), s.t. α is accepted w.r.t. E 2 under the condition C ( A 1 )[ E 1 ].
+4.1.2. Properties
+Existence of preferred extensions. As Deﬁnitions 12 and 13 for an assigned CAF are based on the corresponding deﬁnitions
+of a Dung style argumentation framework,4 it is not surprising to ﬁnd that some properties of a Dung style argumentation
+framework [30] are also possessed by an assigned CAF. The following theorems and corollaries illustrate this similarity.
+
+4
+In order to differentiate an assigned CAF from the argumentation framework deﬁned in Deﬁnition 1, we call the latter Dung style argumentation framework.
+
+1798
+
+B. Liao et al. / Artiﬁcial Intelligence 175 (2011) 1790–1814
+
+Lemma 1. Let CAF [ E 1 ] = ( A 2 , R 2 , (C ( A 1 )[ E 1 ], I(C ( A 1 ), A 2 ) )) be an assigned CAF w.r.t. AF 1 = A 1 , R 1 , in which E 1 ∈ ES (AF 1 ). Let
+B ⊆ A 2 be an admissible set of arguments, and α , α ∈ A 2 be arguments which are acceptable w.r.t. B under the condition C ( A 1 )[ E 1 ].
+Then
+(i) B = B ∪ {α } is admissible, and
+(ii) α is acceptable w.r.t. B under the condition C ( A 1 )[ E 1 ].
+Proof. First, since α is acceptable w.r.t. B under the condition C ( A 1 )[ E 1 ], we need only to prove that B is conﬂict-free.
+Assume the contrary. Therefore, ∃β ∈ B s.t. either (α , β) ∈ R 2 or (β, α ) ∈ R 2 . From the admissibility of B and the acceptability of α , it holds that: (a) ∃β ∈ B, s.t. (β , β) ∈ R 2 or (β , α ) ∈ R 2 ; or (b) ∃γ ∈ C ( A 1 ), s.t. γ is accepted w.r.t. E 1 and
+(γ , α ) ∈ I(C ( A 1 ), A 2 ) or (γ , β) ∈ I(C ( A 1 ), A 2 ) .
+
+• In the ﬁrst case, since B is conﬂict-free, it holds that (β , β) ∈
+/ R 2 , and therefore (β , α ) ∈ R 2 . As a result, either ∃β ∈
+B, s.t. (β , β ) ∈ R 2 , contradicting the admissibility of B, or ∃γ ∈ C ( A 1 ), s.t. γ is accepted w.r.t. E 1 and (γ , β ) ∈
+I(C ( A 1 ), A 2 ) . (According to the second condition of acceptability of arguments in an assigned CAF in Deﬁnition 12, β is
+not acceptable under the condition C ( A 1 )[ E 1 ], i.e., β is not in B, contradicting β ∈ B.)
+• In the second case, according to the second condition of acceptability of arguments in an assigned CAF in Deﬁnition 12,
+it holds that either α or β is not acceptable w.r.t. B under the condition C ( A 1 )[ E 1 ]. Contradiction.
+Second, since the following two conditions hold, it holds that
+
+α is acceptable w.r.t. B under the condition C ( A 1 )[ E 1 ]:
+
+• ∀β ∈ A 2 , if (β, α ) ∈ R 2 , then ∃γ ∈ B , s.t. (γ , β) ∈ R 2 , or ∃ξ ∈ C ( A 1 ), s.t. ξ is accepted w.r.t. E 1 and (ξ, β) ∈ I(C ( A 1 ), A 2 ) .
+Assume the contrary, i.e., γ ∈ B ⊃ B, s.t. (γ , β) ∈ R 2 , and ξ ∈ C ( A 1 ), s.t. ξ is accepted w.r.t. E 1 and (ξ, β) ∈ I(C ( A 1 ), A 2 ) .
+According to the ﬁrst condition of acceptability of arguments in an assigned CAF (Deﬁnition 12), it holds that α is not
+acceptable w.r.t. B under the condition C ( A 1 )[ E 1 ]. Contradiction.
+• ∀β ∈ C ( A 1 ), if (β, α ) ∈ I(C ( A 1 ), A 2 ) , then β is rejected w.r.t. E 1 . Assume the contrary. According to the second condition
+of acceptability of arguments in an assigned CAF (Deﬁnition 12), it holds that α is not acceptable w.r.t. B under the
+condition C ( A 1 )[ E 1 ]. Contradiction. ✷
+According to Lemma 1, we may directly obtain the following theorem.
+Theorem 1. Let CAF [ E 1 ] = ( A 2 , R 2 , (C ( A 1 )[ E 1 ], I(C ( A 1 ), A 2 ) )) be an assigned CAF w.r.t. AF 1 = A 1 , R 1 , in which E 1 ∈ ES (AF 1 ).
+
+• The set of all admissible sets of CAF [ E 1 ] form a complete partial order with respect to set inclusion.
+• For each admissible set B of CAF [ E 1 ], there exists a preferred extension E 2 of CAF [ E 1 ] such that B ⊆ E 2 .
+Since the empty set is always admissible, Theorem 1 implies the following corollary.
+Corollary 1. Let CAF [ E 1 ] = ( A 2 , R 2 , (C ( A 1 )[ E 1 ], I(C ( A 1 ), A 2 ) )) be an assigned CAF w.r.t. AF 1 = A 1 , R 1 . CAF [ E 1 ] possesses at least
+one preferred extension.
+Existence and uniqueness of the grounded extension. In order to verify the existence and uniqueness of the grounded extension,
+we ﬁrstly deﬁne the characteristic function of an assigned CAF, based on the work in [30].
+Deﬁnition 16. Let CAF [ E 1 ] = ( A 2 , R 2 , (C ( A 1 )[ E 1 ], I(C ( A 1 ), A 2 ) )) be an assigned CAF w.r.t. AF 1 = A 1 , R 1 , in which E 1 ∈
+ES (AF 1 ). Let B ⊆ A 2 be a set of arguments. The characteristic function of CAF [ E 1 ], denoted as FCAF [ E 1 ] , is deﬁned as follows:
+
+FCAF [ E 1 ] : 2 A 2 → 2 A 2
+FCAF [ E 1 ] ( B ) = α ∈ A 2 | α is acceptable w.r.t. B under the condition C ( A 1 )[ E 1 ]
+Theorem 2. Given B ⊆ A 2 , if B is admissible, then: (1) B ⊆ FCAF [ E 1 ] ( B ), and (2) FCAF [ E 1 ] ( B ) is admissible.
+Proof.
+
+• If B is admissible, then ∀α ∈ B, α is acceptable w.r.t. B under the condition C ( A 1 )[ E 1 ], from which it follows that
+α ∈ FCAF [ E 1 ] ( B ). So, B ⊆ FCAF [ E 1 ] ( B ).
+• According to Deﬁnition 16, ∀α ∈ FCAF [ E 1 ] ( B ), α is acceptable w.r.t. B ⊆ FCAF [ E 1 ] ( B ) under the condition C ( A 1 )[ E 1 ]. So,
+we need only verify that FCAF [ E 1 ] ( B ) is conﬂict-free. Assume that there exist α and α in FCAF [ E 1 ] ( B ) s.t. (α , α ) ∈ R 2 .
+Then, since α is acceptable w.r.t. B under the condition C ( A 1 )[ E 1 ], according to Deﬁnition 12, there are the following
+two possible cases:
+
+B. Liao et al. / Artiﬁcial Intelligence 175 (2011) 1790–1814
+
+1799
+
+– ∃γ ∈ B, s.t. (γ , α ) ∈ R 2 . Since α is also acceptable w.r.t. B under the condition C ( A 1 )[ E 1 ], it follows that:
+i) ∃γ ∈ B, s.t. (γ , γ ) ∈ R 2 , contradicting “B is conﬂict-free” (in that B is admissible).
+/ B. Contradiction.
+ii) ∃ξ ∈ C ( A 1 ), s.t. ξ is accepted w.r.t. E 1 and (ξ , γ ) ∈ I(C ( A 1 ), A 2 ) . It follows that γ ∈
+– ∃ξ ∈ C ( A 1 ), s.t. ξ is accepted w.r.t. E 1 and (ξ, α ) ∈ I(C ( A 1 ), A 2 ) . According to Deﬁnition 12, α is not acceptable w.r.t.
+B ⊆ FCAF [ E 1 ] ( B ) under the condition C ( A 1 )[ E 1 ]. Contradiction. ✷
+According to Theorem 2, we directly have the following corollary:
+Corollary 2. FCAF [ E 1 ] is monotonic (w.r.t. set inclusion).
+i
+Now that FCAF [ E 1 ] is monotonic and the empty set is admissible, by iteratively applying FCAF [ E 1 ] (∅), when FCAF
+[ E 1 ] (∅) =
+
+i +1
+FCAF
+[ E 1 ] (∅),
+
+we will get the least ﬁxed point of FCAF [ E 1 ] , which is the grounded extension of CAF [ E 1 ]. Thus, there always
+exists a grounded extension of an assigned CAF. Meanwhile, it is unique.
+4.2. The division of an argumentation framework
+
+The division of an argumentation framework is based on the notion of directionality of argumentation semantics [8,9], as
+introduced in Section 2. Given an argumentation framework AF = A , R , for all α , β ∈ A, if there exists a directed path from
+α to β , i.e., β is reachable from α , then under the semantics that satisﬁes directionality, the status of β may be affected
+by α ; otherwise, β is independent of α . Based on this idea, the notion of reachability, as well as the notions of affected and
+unaffected between two arguments can be deﬁned as follows:
+Deﬁnition 17. Let α , β ∈ Uarg be two arguments, and R ⊆ Uarg × Uarg be a set of attacks. The reachability of two arguments
+w.r.t. R is recursively deﬁned as follows:
+
+• If (α , β) ∈ R, then β is reachable from α ;
+• If ∃γ ∈ Uarg , s.t. γ is reachable from α w.r.t. R and (γ , β) ∈ R, then β is reachable from α .
+According to Deﬁnition 17, the reachability relation is transitive, i.e., if
+then γ is reachable from α .
+
+γ is reachable from β and β is reachable from α ,
+
+Deﬁnition 18. Let α , β ∈ Uarg be two arguments, and R ⊆ Uarg × Uarg be a set of attacks. We say that under the semantics
+that satisﬁes directionality, the status of β is affected by α , if and only if β is reachable from α w.r.t. R. Otherwise, β is
+unaffected by α w.r.t. R.
+Based on Deﬁnition 18, given a set of arguments A ⊆ Uarg , it is possible to identify the subset of A that is affected by a
+set of arguments B ⊆ Uarg or by a set of attacks (interactions) I ⊆ Uarg × Uarg , with respect to a set of attacks R ⊆ Uarg × Uarg .
+In addition, we notice that the set of affected arguments related to an attack r = (α , β) can be computed through β , the
+attacked argument of r. So, we will deﬁne the affected and unaffected arguments related to an attack r by using the attacked
+argument of r. Here, we use attacked(r ) to indicate the attacked argument of r, and attacked( I ) = {attacked(r ) | r ∈ I } to
+indicate a set of arguments, each of which is the attacked argument of an attack in I .
+Deﬁnition 19. Let A , B ⊆ Uarg be sets of arguments, and R , I ⊆ Uarg × Uarg be sets of attacks. We use afct( A , B , R ) and
+afct( A , I , R ) to indicate the set of arguments within A that are affected respectively by B and I , with respect to R. Formally,
+we have:
+
+afct( A , B , R ) =
+
+{β ∈ A: β is reachable from α w.r.t. R }
+
+(4)
+
+α∈ B
+
+afct( A , I , R ) = attacked( I ) ∪ afct A , attacked( I ), R
+
+(5)
+
+Based on the concept of affected and unaffected arguments, we are ready to deﬁne the concept of the division of an
+argumentation framework. When an addition ( B , I A: B ∪ I A ) is added to (or a deletion ( B , I A \ B: B ∪ I A \ B ) is deleted from)
+an argumentation framework AF = A , R , AF will be divided into three parts:
+(i) a component of AF that is affected by ( B , I A: B ∪ I A ) (respectively ( B , I A \ B: B ∪ I A \ B )),
+(ii) a component of AF that is unaffected by ( B , I A: B ∪ I A ) (respectively ( B , I A \ B: B ∪ I A \ B )), and
+(iii) a subset of the unaffected component that conditions the affected arguments.
+Formally, we ﬁrst present the deﬁnition of the division of an argumentation framework with respect to an addition
+B ∪ I A ).
+
+( B , I A:
+
+1800
+
+B. Liao et al. / Artiﬁcial Intelligence 175 (2011) 1790–1814
+
+Deﬁnition 20. Let AF = A , R be an argumentation framework, and ( B , I A: B ∪ I A ) be an addition to it. The updated
+⊕
+⊕
+⊕
+argumentation framework A ⊕ , R ⊕ is divided into three parts: A a⊕ , R a⊕ , A ⊕
+u , R u , and ( A c , R c ), where a, u, and c stand
+for, respectively, affected, unaffected, and conditioning.
+
+A a⊕ = afct( A , B , R ∪ I A: B ) ∪ afct( A , I A , R ) ∪ B
+A⊕
+u = A \ afct ( A , B , R ∪ I A: B ) ∪ afct ( A , I A , R )
+⊕
+A c⊕ = β ∈ A ⊕
+u ∃α ∈ A a , s.t. (β, α ) ∈ R ∪ I A:
+⊕
+
+⊕
+
+B
+
+∪ IA
+
+⊕
+
+R a = ( R ∪ I A ∪ I A: B ) ∩ A a × A a
+⊕
+⊕
+R⊕
+u = R ∩ Au × Au
+
+R c⊕ = ( R ∪ I A ∪ I A: B ) ∩ A c⊕ × A a⊕
+In this deﬁnition, the set of affected arguments A a⊕ contains those arguments in A that are affected by B and I A , as
+⊕ that are unaffected. The set of conditioning arguments A ⊕
+well as those arguments in B. A ⊕
+u is the set of arguments in A
+c
+⊕
+contains those arguments in A u that attack the arguments in A a⊕ .
+In order to insure the correctness of the division deﬁned in Deﬁnition 20, in this stage, we should verify that: (1) the
+union of affected arguments and the unaffected ones is equal to the set of arguments in the updated argumentation frame⊕ (obvious), and (2) the union of attacks in three parts (affected, unaffected, conditioning) is equal
+work, i.e., A a⊕ ∪ A ⊕
+u = A
+to the set of attacks in the updated argumentation framework, which is formulated by the following lemma:
+Lemma 2. It holds that R c⊕ ∪ R a⊕ ∪ R ⊕
+u = R ∪ I A ∪ I A: B .
+⊕
+⊕
+⊕
+Proof. Firstly, we identify the characteristics of the relations among A, A ⊕
+u , A c , and A a : since arguments in A a do not
+⊕ × A ⊕ ) = ∅; since in A ⊕ , only arguments in A ⊕ ⊆ A ⊕ attack
+,
+it
+holds
+that
+(
+R
+∪
+I
+∪
+I
+)
+∩
+(
+A
+attack arguments in A ⊕
+A
+A: B
+u
+a
+u
+u
+c
+u
+⊕
+⊕
+⊕
+⊕
+A a⊕ , it holds that ( R ∪ I A ∪ I A: B ) ∩ ( A ⊕
+u × A a ) = ( R ∪ I A ∪ I A: B ) ∩ ( A c × A a ); according to A u = A \ (afct ( A , B , R ∪
+⊕
+I A: B ) ∪ afct( A , I A , R )) and A a⊕ = afct( A , B , R ∪ I A: B ) ∪ afct( A , I A , R ) ∪ B, it holds that A ⊕
+u ∪ A a = A ∪ B. In addition, since
+⊕ ) = ∅, it holds that ( R ∪ I ∪ I
+⊕ × A ⊕ ) = R ∩ ( A ⊕ × A ⊕ ). Secondly, according to these
+(I A ∪ I A: B ) ∩ ( A ⊕
+×
+A
+)
+∩
+(
+A
+A
+A:
+B
+u
+u
+u
+u
+u
+u
+relations, it holds that:
+
+⊕
+⊕
+R c⊕ ∪ R a⊕ ∪ R ⊕
+u = ( R ∪ I A ∪ I A: B ) ∩ A c × A a
+
+∪ ( R ∪ I A ∪ I A: B ) ∩ A a⊕ × A a⊕
+
+⊕
+∪ R ∩ A⊕
+u × Au
+
+= ( R ∪ I A ∪ I A: B ) ∩
+
+⊕
+⊕
+⊕
+A a⊕ × A a⊕ ∪ A ⊕
+u × A u ∪ A c × Aa
+
+= ( R ∪ I A ∪ I A: B ) ∩
+
+⊕
+⊕
+⊕
+⊕
+⊕
+A a⊕ × A a⊕ ∪ A ⊕
+u × A u ∪ A u × Aa ∪ Aa × A u
+
+= ( R ∪ I A ∪ I A: B ) ∩
+
+⊕
+⊕
+⊕
+A⊕
+u ∪ Aa × A u ∪ Aa
+
+= ( R ∪ I A ∪ I A: B ) ∩ ( A ∪ B ) × ( A ∪ B )
+= R ∪ I A ∪ I A: B
+
+✷
+
+Similar to Deﬁnition 20, for the division of an argumentation framework with respect to a deletion, we have the following
+deﬁnition and lemma:
+Deﬁnition 21. Let AF = A , R be an argumentation framework, and ( B , I A \ B: B ∪ I A \ B ) be a deletion to it. The updated
+is divided into three parts: A a , R a , A u , R u , and ( A c , R c ).
+argumentation framework A , R
+
+A a = afct( A \ B , B , R ) ∪ afct( A \ B , I A \ B , R )
+A u = A \ Aa ∪ B
+Ac = β ∈ Au
+
+∃α ∈ A a , s.t. (β, α ) ∈ R \ I A \ B
+
+R a = ( R \ I A\ B ) ∩ Aa × Aa
+R u = R ∩ Au × Au
+R c = ( R \ I A\ B ) ∩ A c × Aa
+In this deﬁnition, the set of affected arguments in A a are those arguments in A \ B (i.e., A ), that are affected by B and
+I A \ B . A u is the set of arguments that are unaffected. The set of conditioning arguments A c contains those arguments in
+A u that attack the arguments in A a .
+Lemma 3. It holds that R c ∪ R a ∪ R u = R \ (I A \ B:
+
+B
+
+∪ I A \ B ).
+
+B. Liao et al. / Artiﬁcial Intelligence 175 (2011) 1790–1814
+
+1801
+
+Proof. Similar to Lemma 2, we have: since I A \ B ∩ ( A u × A u ) = ∅, it holds that R ∩ ( A u × A u ) = ( R \ I A \ B ) ∩ ( A u × A u );
+since in A u , only arguments in A c ⊆ A u attack A a , it holds that ( R \ I A \ B ) ∩ ( A u × A a ) = ( R \ I A \ B ) ∩ ( A c × A a ); since
+arguments in A a do not attack arguments in A u , it holds that ( R \ I A \ B ) ∩ ( A a × A u ) = ∅; since interactions in I A \ B are
+not related to B, it holds that I A \ B ∩ (( A × B ) ∪ ( B × A )) = ∅; according to A u = A \ ( A a ∪ B ), it holds that A a ∪ A u = A \ B;
+and according to Deﬁnition 9, I A \ B: B = R ∩ (( B × A ) ∪ ( A × B )). So, we have:
+
+∪ ( R \ I A\ B ) ∩ Aa × Aa
+
+R c ∪ R a ∪ R u = ( R \ I A\ B ) ∩ A c × Aa
+
+∪ R ∩ Au × Au
+
+= ( R \ I A\B ) ∩
+
+Aa × Aa
+
+∪ A u × A u ∪ A c × Aa
+
+= ( R \ I A\B ) ∩
+
+Aa × Aa
+
+∪ A u × A u ∪ A u × Aa ∪ Aa × A u
+
+= ( R \ I A\B ) ∩
+
+Aa ∪ A u × Aa ∪ A u
+
+= ( R \ I A\B ) ∩ ( A \ B ) × ( A \ B )
+= ( R \ I A\B ) ∩ ( A × A) \ ( A × B ) ∪ ( B × A)
+= ( R \ I A\B ) ∩ ( A × A) \ ( R \ I A\B ) ∩ ( A × B ) ∪ ( B × A)
+= ( R \ I A \ B ) \ I A \ B: B
+= R \ (I A \ B: B ∪ I A \ B )
+
+✷
+
+After division, we will construct two sub-frameworks of the updated argumentation framework A ⊕ , R ⊕ (respectively,
+A , R ): a Dung style sub-framework and a conditioned sub-framework. First, the Dung style sub-framework of A ⊕ , R ⊕
+⊕
+⊕
+⊕ with respect to A ⊕ , R ⊕ is constructed according to
+is A ⊕
+u , R u , while the conditioned sub-framework of A , R
+u
+u
+A a⊕ , R a⊕ and ( A c⊕ , R c⊕ ) as follows:
+
+CAF 1 =
+
+A a⊕ , R a⊕ , A c⊕ , R c⊕
+
+(6)
+
+⊕
+⊕
+⊕
+⊕
+According to Deﬁnition 20, we may infer that: (i) A a⊕ ∩ A ⊕
+u = ∅, (ii) A c ⊆ A u , and ∀α ∈ A c , ∃β ∈ A a , such that α
+attacks β , and (iii) R c⊕ ⊆ A c⊕ × A a⊕ . In other words, CAF 1 satisﬁes the three requirements of a conditioned argumentation
+
+framework listed in Deﬁnition 11.
+Similarly, we may construct two sub-frameworks of the updated argumentation framework A , R : a Dung style subframework A u , R u , and a conditioned sub-framework with respect to A u , R u , which is deﬁned as follows:
+
+CAF 2 =
+
+Aa , R a , A c , R c
+
+(7)
+
+According to Deﬁnition 21, we may infer that: (i) A a ∩ A u = ∅, (ii) A c ⊆ A u , and ∀α ∈ A c , ∃β ∈ A a , such that α
+attacks β , and (iii) R c ⊆ A c × A a . So, CAF 2 also satisﬁes the three requirements of a conditioned argumentation framework
+listed in Deﬁnition 11.
+Finally, based on Lemmas 2 and 3, the following theorem shows the correctness of the division deﬁned in Deﬁnitions 20
+and 21, respectively.
+⊕
+⊕
+⊕
+⊕
+⊕
+⊕
+⊕ = A ∪ B, R ∪
+Theorem 3. Syntactically, the result of combining A ⊕
+u , R u and CAF 1 = ( A a , R a , ( A a , R c )) is equal to A , R
+⊕ = A ∪ B, and R ⊕ ∪ R ⊕ ∪ R ⊕ = R ∪ I
+(I A: B ∪ I A ) , i.e., A ⊕
+∪
+A
+∪
+I
+;
+while
+the
+result
+of
+combining
+A
+,
+R
+and
+CAF 2 = ( A a ,
+A: B
+A
+u
+a
+u
+a
+c
+u
+u
+R a , ( A c , R c )) is equal to A , R = A \ B , R \(I A \ B: B ∪ I A \ B ) , i.e., A u ∪ A a = A \ B, and R u ∪ R a ∪ R c = R \(I A \ B: B ∪ I A \ B ).
+⊕
+Proof. Since A ⊕
+u = A \ (afct ( A , B , R ∪ I A: B ) ∪ afct ( A , I A , R )) and A a = afct ( A , B , R ∪ I A: B ) ∪ afct ( A , I A , R ) ∪ B, it holds that
+⊕ = A ∪ B; according to Lemma 2, R ⊕ ∪ R ⊕ ∪ R ⊕ = R ∪ I
+A⊕
+∪
+A
+A:
+B ∪ I A . On the other hand, since A u = A \ ( A a ∪ B ), it
+u
+a
+u
+a
+c
+holds that A u ∪ A a = ( A \ ( A a ∪ B )) ∪ A a = A \ B; according to Lemma 3, R u ∪ R a ∪ R c = R \ (I A \ B: B ∪ I A \ B ). ✷
+
+Example 5. Let AF = A , R be an argumentation framework, in which A = {α1 , α2 , α3 , α4 , α5 , α6 , α7 , α8 } and R = {(α1 , α2 ),
+(α2 , α1 ), (α1 , α3 ), (α2 , α3 ), (α3 , α4 ), (α5 , α6 ), (α6 , α5 ), (α7 , α8 ), (α8 , α7 )} (Fig. 3). Let ( B , I A: B ∪ I A ) be an addition, in
+which B = {α9 , α10 }, I A: B = {(α4 , α9 ), (α9 , α10 ), (α5 , α10 ), (α10 , α7 )}, and I A = {(α2 , α5 )}. According to Deﬁnition 20, the
+division of the updated argumentation framework A ⊕ , R ⊕ = A ∪ B , R ∪ (I A: B ∪ I A ) as well as the corresponding CAF
+are as follows:
+
+A a⊕ , R a⊕ = {α5 , α6 , α7 , α8 , α9 , α10 }, (α5 , α6 ), (α6 , α5 ), (α7 , α8 ), (α8 , α7 ), (α5 , α10 ), (α9 , α10 ), (α10 , α7 )
+⊕
+A⊕
+u , R u = {α1 , α2 , α3 , α4 }, (α1 , α2 ), (α2 , α1 ), (α1 , α3 ), (α2 , α3 ), (α3 , α4 )
+
+A c⊕ , R c⊕ = {α2 , α4 }, (α2 , α5 ), (α4 , α9 )
+CAF 1 =
+
+A a⊕ , R a⊕ , A c⊕ , R c⊕
+
+⊕
+In this example, it is obvious that A ⊕ , R ⊕ is equal to the combination of A ⊕
+u , R u and CAF 1 .
+
+1802
+
+B. Liao et al. / Artiﬁcial Intelligence 175 (2011) 1790–1814
+
+Fig. 3. An example of the division of an argumentation framework.
+
+4.3. Computing the semantics of an updated argumentation framework based on the division
+4.3.1. Deﬁnitions
+Based on the concept of the division of an argumentation framework, we are now ready to compute the semantics of
+the two kinds of sub-frameworks described above and combine them to form the semantics of the updated frameworks
+A ⊕ , R ⊕ and A , R
+respectively.
+On the one hand, let ES (AF ) be the set of extensions of an argumentation framework AF = A , R , under the argumentation semantics S ∈ {CO , PR, GR, ID }. According to the directionality of argumentation semantics, the set of extensions
+⊕
+of the unaffected sub-framework A ⊕
+u , R u with respect to an addition ( B , I A: B ∪ I A ) (respectively, A u , R u with respect
+to a deletion ( B , I A \ B: B ∪ I A \ B )) can be obtained directly (please refer to Deﬁnition 8):
+⊕
+= E ∩ A⊕
+ES A ⊕
+E ∈ ES (AF )
+u , Ru
+u
+
+(8)
+
+= E ∩ Au
+
+(9)
+
+ES A u , R u
+
+E ∈ ES (AF )
+
+On the other hand, according to Deﬁnition 11, the extensions of conditioned sub-frameworks are not computed directly.
+They are related to the status of the conditioning arguments. In other words, we should ﬁrstly construct two sets of assigned
+conditioned sub-frameworks:
+
+CAF 1 [ E 1 ] =
+
+A a⊕ , R a⊕ , A c⊕ [ E 1 ], R c⊕ ,
+
+⊕
+∀ E 1 ∈ ES A ⊕
+u , Ru
+
+(10)
+
+CAF 2 [ E 1 ] =
+
+A a , R a , A c [ E 1 ], R c
+
+∀ E 1 ∈ ES A u , R u
+
+(11)
+
+,
+
+⊕ and A , R
+In these formulas, A c⊕ [ E 1 ] and A c [ E 1 ] are computed according to the status assignment of A ⊕
+u , Ru
+u
+u
+⊕
+⊕
+⊕
+⊕
+⊕
+⊕
+⊕
+⊕
+⊕
+respectively, i.e., S( A u , R u , E 1 ) = (A( A u , R u , E 1 ), R( A u , R u , E 1 ), U( A u , R u , E 1 )), in which E 1 ∈ ES ( A ⊕
+u , R u );
+S( A u , R u , E 1 ) = (A( A u , R u , E 1 ), R( A u , R u , E 1 ), U( A u , R u , E 1 )), in which E 1 ∈ ES ( A u , R u ). Formally, we have:
+
+⊕
+⊕
+⊕
+⊕
+⊕
+⊕
+⊕
+⊕
+A c⊕ [ E 1 ] = A A ⊕
+u , R u , E 1 ∩ Ac , R Au , R u , E 1 ∩ Ac , U Au , R u , E 1 ∩ Ac
+
+(12)
+
+Ac [ E 1] = A Au , R u , E 1 ∩ Ac , R Au , R u , E 1 ∩ Ac , U Au , R u , E 1 ∩ Ac
+
+(13)
+
+And then, according to Deﬁnitions 12 and 13, the extensions of assigned conditioned sub-frameworks, i.e., ES (CAF 1 [ E 1 ])
+and ES (CAF 2 [ E 1 ]), can be obtained.
+Based on the extensions of the two kinds of sub-frameworks, we will compute the extensions of A ⊕ , R ⊕ by combining
+⊕
+⊕
+⊕
+ES ( A ⊕
+by combining ES ( A u , R u )
+u , R u ) and ES (CAF 1 [ E 1 ]), in which E 1 ∈ ES ( A u , R u ), and the extensions of A , R
+and ES (CAF 2 [ E 1 ]), in which E 1 ∈ ES ( A u , R u ).
+⊕
+⊕
+⊕
+Deﬁnition 22. Let A ⊕
+u , R u be the unaffected sub-framework of AF = A , R w.r.t. an addition ( B , I A: B ∪ I A ), ES ( A u , R u )
+⊕
+⊕
+⊕
+⊕
+⊕
+⊕
+be the set of extensions of A u , R u , and CAF 1 [ E 1 ] = ( A a , R a , ( A c [ E 1 ], R c )) be an assigned conditioned sub-framework
+⊕
+⊕
+⊕
+⊕
+⊕
+w.r.t. E 1 ∈ ES ( A ⊕
+u , R u ). The result of combining ES ( A u , R u ) and ES (CAF 1 [ E 1 ]), ∀ E 1 ∈ ES ( A u , R u ), to form the set of
+⊕
+⊕
+⊕
+⊕
+combined extensions of A , R , denoted as CombExtS ( A , R ), is deﬁned as follows:
+
+CombExtS A ⊕ , R ⊕
+
+⊕
+= E 1 ∪ E 2 E 1 ∈ ES A ⊕
+∧ E 2 ∈ ES CAF 1 [ E 1 ]
+u , Ru
+
+(14)
+
+Deﬁnition 23. Let A u , R u be the unaffected sub-framework of AF = A , R w.r.t. a deletion ( B , I A \ B: B ∪ I A \ B ),
+ES ( A u , R u ) be the set of extensions of A u , R u , and CAF 2 [ E 1 ] = ( A a , R a , ( A c [ E 1 ], R c )) be an assigned conditioned
+sub-framework w.r.t. E 1 ∈ ES ( A u , R u ). The result of combining ES ( A u , R u ) and ES (CAF 2 [ E 1 ]), ∀ E 1 ∈ ES ( A u , R u ), to
+form the set of combined extensions of A , R , denoted as CombExtS ( A , R ), is deﬁned as follows:
+
+CombExtS A , R
+
+= E 1 ∪ E 2 E 1 ∈ ES A u , R u
+
+∧ E 2 ∈ ES CAF 2 [ E 1 ]
+
+(15)
+
+B. Liao et al. / Artiﬁcial Intelligence 175 (2011) 1790–1814
+
+1803
+
+4.3.2. Properties
+Soundness and completeness of the semantics combination. Corresponding to Theorem 3, we will prove that under each argumentation semantics S ∈ {CO , PR, GR, ID }, the extensions of an updated framework ( A ⊕ , R ⊕ or A , R ) are the
+same as those deﬁned by combining the extensions of the unaffected sub-framework and those of the assigned conditioned
+sub-frameworks (as shown in formulas (14) and (15)). Before we prove this property, we ﬁrstly ﬁgure out the relationship
+between a complete extension of an updated argumentation framework and a complete extension of an assigned conditioned sub-framework of it.
+On the one hand, in the case of an addition to an argumentation framework, we have the following lemma:
+Lemma 4. For all E ∈ ECO ( A ⊕ , R ⊕ ), it holds that E ∩ A a⊕ ∈ ECO (CAF 1 [ E 1 ]), in which E 1 = E ∩ A ⊕
+u .
+Proof. Since complete semantics satisﬁes the directionality criterion, and A ⊕
+u is an unattacked set, according to Deﬁnition 8,
+⊕ , R ⊕ ). According to Deﬁnitions 12 and 13, since it is obvious that E ∩ A ⊕ ⊆ A ⊕ and
+∈
+E
+(
+A
+it holds that E 1 = E ∩ A ⊕
+CO
+u
+u
+u
+a
+a
+E ∩ A a⊕ is conﬂict-free, in order to prove that E ∩ A a⊕ is a complete extension of CAF 1 [ E 1 ], we only need to verify the
+following two points:
+
+• Every argument in E ∩ A a⊕ is acceptable w.r.t. E ∩ A a⊕ under the condition A c⊕ [ E 1 ], which is proved as follows:
+Since every argument in E ∩ A a⊕ ⊆ E is acceptable w.r.t. E, it holds that ∀α ∈ E ∩ A a⊕ ⊆ A a⊕ , ∀β ∈ A ⊕ , if (β, α ) ∈ R ⊕ ,
+then ∃γ ∈ E, s.t. (γ , β) ∈ R ⊕ . Since α ∈ A a⊕ and α is not attacked by the arguments in A ⊕ \ ( A c⊕ ∪ A a⊕ ), it holds that
+β ∈ A c⊕ ⊆ A ⊕ or β ∈ A a⊕ ⊆ A ⊕ . So, we have the following two cases:
+⊕
+(i) If β ∈ A c⊕ , then: since β is attacked by the arguments in A ⊕
+u , it holds that γ ∈ E ∩ A u = E 1 , i.e., the status of
+argument that attacks α is rejected w.r.t. E 1 (satisfying the second condition of acceptability of arguments in an
+assigned CAF, in Deﬁnition 12);
+(ii) Else, if β ∈ A a⊕ , then: since β is attacked by the arguments in A a⊕ or A c⊕ , it holds that γ ∈ E ∩ A a⊕ or γ ∈ E ∩ A c⊕ =
+E 1 ∩ A c⊕ (satisfying the ﬁrst condition of acceptability of arguments in an assigned CAF, in Deﬁnition 12).
+As a result, according to Deﬁnition 12, α is acceptable w.r.t. E ∩ A a⊕ under the condition A c⊕ [ E 1 ].
+• Every argument α in A a⊕ that is acceptable w.r.t. E ∩ A a⊕ under the condition A c⊕ [ E 1 ] is in E ∩ A a⊕ , which is proved as
+follows:
+Since α is attacked by the arguments in A a⊕ or A c⊕ , when α is acceptable w.r.t. E ∩ A a⊕ under the condition A c⊕ [ E 1 ], we
+have the following two cases:
+(i) If α is attacked by β ∈ A a⊕ , then according the ﬁrst condition of acceptability of arguments in an assigned CAF
+(Deﬁnition 12), ∃γ ∈ E ∩ A a⊕ ⊆ E, s.t. (γ , β) ∈ R a⊕ ⊆ R ⊕ , or ∃ξ ∈ E 1 ∩ A c⊕ ⊆ E, s.t. (ξ, β) ∈ R c⊕ ⊆ R ⊕ ; and
+(ii) If α is attacked by β ∈ A c⊕ , then according the second condition of acceptability of arguments in an assigned CAF
+⊕
+(Deﬁnition 12), β is rejected w.r.t. E 1 , i.e., ∃γ ∈ E 1 ⊆ E, s.t. (γ , β) ∈ R ⊕
+u ⊆R .
+As a result, for any argument β that attacks α , there exists an argument in E that attacks β . Therefore, α is acceptable
+/ E 1 (in that
+w.r.t. E. Since every argument in A ⊕ ⊇ A a⊕ that is acceptable w.r.t. E is in E, it holds that α is in E. Since α ∈
+⊕
+α ∈/ A ⊕
+/ ( E ∩ A a⊕ ) ∪ E 1 = ( E ∩ A a⊕ ) ∪ ( E ∩ A ⊕
+u ), it holds that α is in E ∩ A a (otherwise, α ∈
+u ) = E, contradicting α ∈ E). ✷
+On the other hand, in the case of a deletion to an argumentation framework, we have the following lemma (the proof is
+similar to that of Lemma 4 (omitted)):
+Lemma 5. For all E ∈ ECO ( A , R
+
+), it holds that E ∩ A a ∈ ECO (CAF 2 [ E 1 ]), in which E 1 = E ∩ A u .
+
+Then, based on Lemmas 4 and 5, the soundness of semantics combination is formulated in Theorems 4 (in the case of
+an addition to an argumentation framework) and 5 (in the case of a deletion to an argumentation framework), respectively.
+Since the proofs of these two theorems are similar, we only provide one of them in this paper.
+Theorem 4 (Soundness). Under each argumentation semantics S ∈ {CO , PR, GR, ID }, ∀ E ∈ CombExtS ( A ⊕ , R ⊕ ), it holds that
+⊕
+E ∈ ES ( A ⊕ , R ⊕ ), in which E = E 1 ∪ E 2 , an extension by combining E 1 ∈ ES ( A ⊕
+u , R u ) and E 2 ∈ ES (CAF 1 [ E 1 ]).
+Proof.
+⊕
+• Under complete semantics, E 1 ∈ ECO ( A ⊕
+u , R u ) and E 2 ∈ ECO (CAF 1 [ E 1 ]): according to Deﬁnitions 2 and 3, in order to
+prove that E 1 ∪ E 2 ∈ ECO ( A ⊕ , R ⊕ ), in which A ⊕ , R ⊕ = A ∪ B , R ∪ (I A: B ∪ I A ) , we should prove that: (1) E 1 ∪ E 2 ⊆
+A ⊕ , (2) E 1 ∪ E 2 is conﬂict-free, (3) every argument in E 1 ∪ E 2 is acceptable w.r.t. E 1 ∪ E 2 , and (4) every argument in
+A ⊕ that is acceptable w.r.t. E 1 ∪ E 2 is in E 1 ∪ E 2 .
+⊕
+⊕
+⊕
+⊕
+– (1) According to Theorem 3, A ⊕
+u ∪ A a = A ∪ B. Since E 1 ∪ E 2 ⊆ A u ∪ A a , we have E 1 ∪ E 2 ⊆ A ∪ B = A .
+⊕
+⊕
+⊕
+– (2) ∀α ∈ E 1 ⊆ A u , ∀β ∈ E 2 ⊆ A a , it holds that β does not attack α , for the reason that A u is unaffected; meanwhile,
+it also holds that α does not attack β . Otherwise, assume that (α , β) ∈ R c⊕ , then β is attacked by a conditioning
+
+argument that is accepted w.r.t. E 1 . According to the second condition of acceptability of arguments in an assigned
+
+1804
+
+B. Liao et al. / Artiﬁcial Intelligence 175 (2011) 1790–1814
+
+CAF (Deﬁnition 12), β is not acceptable w.r.t. E 2 under the condition A c⊕ [ E 1 ], i.e., β ∈
+/ E 2 , contradicting β ∈ E 2 . So,
+E 1 ∪ E 2 is conﬂict-free.
+– (3) We should prove that ∀α ∈ E 1 ∪ E 2 , ∀β ∈ A ⊕ , if (β, α ) ∈ R ⊕ , then ∃γ ∈ E 1 ∪ E 2 , s.t. (γ , β) ∈ R ⊕ .
+⊕
+⊕
+(i) First, ∀α ∈ E 1 , α ∈ A ⊕
+u . So, α is only attacked by the arguments in A u (there exists no argument in A a that
+⊕ , if (β, α ) ∈ R ⊕ ⊆ R ⊕ , then ∃γ ∈ E ⊆
+attacks α ). Since α is acceptable w.r.t. E 1 , it holds that: ∀β ∈ A ⊕
+⊆
+A
+1
+u
+u
+⊕
+E 1 ∪ E 2 , s.t. (γ , β) ∈ R ⊕
+u ⊆R .
+(ii) Second, ∀α ∈ E 2 , there are two possible cases: α is attacked by the arguments in A c⊕ w.r.t. R c⊕ , or by the arguments in A a⊕ w.r.t. R a⊕ . So, if (β, α ) ∈ R ⊕ , then it holds that: β ∈ A c⊕ and (β, α ) ∈ R c⊕ , or β ∈ A a⊕ and (β, α ) ∈ R a⊕ .
+Since α is acceptable w.r.t. E 2 under the condition A c⊕ [ E 1 ], it holds that:
+(a) if β ∈ A c⊕ and (β, α ) ∈ R c⊕ , then β is rejected w.r.t. E 1 (corresponding to the second condition of acceptability
+⊕
+of arguments in an assigned CAF, in Deﬁnition 12), i.e., ∃γ ∈ E 1 ⊆ E 1 ∪ E 2 , s.t. (γ , β) ∈ R ⊕
+u ⊆ R ; and
+⊕
+⊕
+⊕
+⊕
+⊕
+(b) if β ∈ A a and (β, α ) ∈ R a , then ∃γ ∈ E 2 ⊆ E 1 ∪ E 2 , s.t. (γ , β) ∈ R a ⊆ R , or ∃ξ ∈ A c , s.t. ξ is accepted
+w.r.t. E 1 and (ξ, β) ∈ R c⊕ ⊆ R ⊕ , i.e., ∃ξ ∈ E 1 ∩ A c⊕ ⊆ E 1 ∪ E 2 , s.t. (ξ, β) ∈ R c⊕ ⊆ R ⊕ (corresponding to the ﬁrst
+condition of acceptability of arguments in an assigned CAF, in Deﬁnition 12).
+Put (i) and (ii) together, we have: ∀α ∈ E 1 ∪ E 2 , ∀β ∈ A ⊕ , if (β, α ) ∈ R ⊕ , then ∃γ ∈ E 1 ∪ E 2 , s.t. (γ , β) ∈ R ⊕ . Therefore,
+every argument in E 1 ∪ E 2 is acceptable w.r.t. E 1 ∪ E 2 .
+⊕
+/ E1 ∪ E2.
+– (4) Assume that ∃α ∈ A ⊕ = A ⊕
+u ∪ A a , s.t. α is acceptable w.r.t. E 1 ∪ E 2 , but α ∈
+(i) If α ∈ A ⊕
+,
+then
+α
+is
+only
+attacked
+by the arguments in A ⊕
+u
+u . Since α is acceptable w.r.t. E 1 ∪ E 2 , it holds that
+⊕ (there exists no argument in A ⊕ that attacks α ), if (β, α ) ∈ R ⊕ ∩ ( A ⊕ × A ⊕ ) = R ⊕ , then ∃γ ∈
+∀β ∈ A ⊕
+u ⊆ A
+a
+u
+u
+u
+⊕
+⊕
+⊕
+⊕
+/ E 1 ∪ E 2 , it holds
+(E 1 ∪ E 2) ∩ A⊕
+u = E 1 , s.t. (γ , β) ∈ R ∩ ( A u × A u ) = R u , i.e., α is acceptable w.r.t. E 1 . Since α ∈
+⊕
+⊕
+/ E 1 . So, E 1 is not a complete extension, contradicting E 1 ∈ ECO ( A u , R u ).
+that α ∈
+(ii) If α ∈ A a⊕ , then α is attacked by the arguments in A a⊕ w.r.t. R a⊕ or by the arguments in A c⊕ w.r.t. R c⊕ . Since α is
+acceptable w.r.t. E 1 ∪ E 2 , it holds that:
+(a) ∀β ∈ A a⊕ , if (β, α ) ∈ R a⊕ ⊆ R ⊕ , then: since β is in turn attacked by the arguments in A a⊕ w.r.t. R a⊕ or A c⊕ w.r.t.
+R c⊕ , it holds that ∃γ ∈ ( E 1 ∪ E 2 ) ∩ A a⊕ = E 2 , s.t. (γ , β) ∈ R ⊕ ∩ ( A a⊕ × A a⊕ ) = R a⊕ , or ∃γ ∈ ( E 1 ∪ E 2 ) ∩ A c⊕ =
+E 1 ∩ A c⊕ , s.t. (γ , β) ∈ R ⊕ ∩ ( A c⊕ × A a⊕ ) = R c⊕ (satisfying the ﬁrst condition of acceptability of arguments in an
+assigned CAF, in Deﬁnition 12); and
+(b) ∀β ∈ A c⊕ , if (β, α ) ∈ R c⊕ ⊆ R ⊕ , then: since β is attacked by the arguments in A ⊕
+u , it holds that ∃γ ∈ ( E 1 ∪
+⊕ ∩ ( A ⊕ × A ⊕ ) = R ⊕ , i.e., β is rejected w.r.t. E (satisfying the second condition
+E 2) ∩ A⊕
+=
+E
+,
+s.t.
+(
+γ
+,
+β)
+∈
+R
+1
+1
+u
+u
+u
+u
+u
+of acceptability of arguments in an assigned CAF, in Deﬁnition 12).
+/ E 1 ∪ E 2 , it holds that α ∈
+/ E 2 . So, E 2
+As a result, α is acceptable w.r.t. E 2 under the condition A c⊕ [ E 1 ]. Since α ∈
+is not a complete extension, contradicting E 2 ∈ ECO (CAF 1 [ E 1 ]).
+⊕
+According to (i) and (ii), we have: ∀α ∈ A ⊕ = A ⊕
+u ∪ A a , if α is acceptable w.r.t. E 1 ∪ E 2 , then α ∈ E 1 ∪ E 2 . Therefore,
+every argument in A ⊕ that is acceptable w.r.t. E 1 ∪ E 2 is in E 1 ∪ E 2 .
+⊕
+• Under preferred semantics, E 1 ∈ EPR ( A ⊕
+u , R u ) and E 2 ∈ EPR (CAF 1 [ E 1 ]): since a preferred extension is also a complete extension, based on the proof in the case of complete semantics, we only need to prove that E 1 ∪ E 2 is a maximal
+(w.r.t. set-inclusion) complete extension of A ⊕ , R ⊕ . Assume that E 1 ∪ E 2 is not a maximal complete extension. Then,
+⊕
+⊕
+⊕ and S ⊇ E ∪ E . Let Φ = S \ ( E ∪ E ). If Φ = ∅, then
+∃ S ⊆ A⊕
+1
+2
+1
+2
+u ∪ A a , s.t. S is a preferred extension of A , R
+S = E 1 ∪ E 2 . In this case, E 1 ∪ E 2 is a preferred extension. So, we need only to discuss the case when Φ = ∅. Let
+⊕
+⊕
+⊕
+⊕
+⊕
+Φ = Φ ∩ A⊕
+u and Φ = Φ ∩ A a . Since A u ∩ A a = ∅ and Φ ⊆ A u ∪ A a , it holds that Φ ∪ Φ = Φ and Φ ∩ Φ = ∅.
+and
+Φ
+=
+Φ ∩ A⊕
+On the one hand, when Φ = ∅, since E 1 = ( E 1 ∪ E 2 ) ∩ A ⊕
+u
+u , it holds that E 1 ∪ Φ = ( E 1 ∪ E 2 ∪ Φ) ∩
+⊕ . Since preferred semantics satisﬁes the directionality criterion, and A ⊕ is an unattacked set, according to
+A⊕
+=
+S
+∩
+A
+u
+u
+u
+⊕
+⊕
+Deﬁnition 8, it holds that E 1 ∪ Φ = S ∩ A ⊕
+u ∈ EPR ( A u , R u ). Therefore, E 1 is not a preferred extension, contradicting
+⊕
+E 1 ∈ EPR ( A ⊕
+u , R u ).
+On the other hand, when Φ = ∅, if Φ = ∅, then Φ = ∅. In this case, since E 2 = ( E 1 ∪ E 2 ) ∩ A a⊕ and Φ = Φ ∩ A a⊕ , it
+holds that E 2 ∪ Φ = ( E 1 ∪ E 2 ∪ Φ) ∩ A a⊕ = S ∩ A a⊕ . Since a preferred extension is also a complete extension, according
+to Lemma 4, it holds that E 2 ∪ Φ = S ∩ A a⊕ ∈ ECO (CAF 1 [ E 1 ]). So, E 2 is not a preferred extension, contradicting E 2 ∈
+EPR (CAF 1 [ E 1 ]).
+As a result, we may conclude that E 1 ∪ E 2 is a maximal complete extension (i.e., preferred extension).
+⊕
+• Under grounded semantics, E 1 ∈ EGR ( A ⊕
+u , R u ) and E 2 ∈ EGR (CAF 1 [ E 1 ]): since a grounded extension is also a complete extension, based on the proof in the case of complete semantics, we only need to prove that E 1 ∪ E 2 is the
+minimal (w.r.t. set-inclusion) complete extension of A ⊕ , R ⊕ . Assume that E 1 ∪ E 2 is not a minimal complete exten⊕
+⊕
+⊕ and S ⊆ E ∪ E . Let Φ = ( E ∪ E ) \ S. If Φ = ∅,
+sion, then ∃ S ⊆ A ⊕
+1
+2
+1
+2
+u ∪ A a , s.t. S is a grounded extension of A , R
+then S = E 1 ∪ E 2 . In this case, E 1 ∪ E 2 is a grounded extension. So, we need only to discuss the case when Φ = ∅. Let
+⊕
+⊕
+⊕
+⊕
+⊕
+Φ = Φ ∩ A⊕
+u and Φ = Φ ∩ A a . Since A u ∩ A a = ∅ and Φ ⊆ A u ∪ A a , it holds that Φ ∪ Φ = Φ and Φ ∩ Φ = ∅.
+⊕
+On the one hand, when Φ = ∅, since E 1 = ( E 1 ∪ E 2 ) ∩ A u and Φ = Φ ∩ A ⊕
+u , it holds that E 1 \ Φ = (( E 1 ∪ E 2 ) \ Φ) ∩
+⊕
+⊕
+A⊕
+u = S ∩ A u . Since grounded semantics satisﬁes the directionality criterion, and A u is an unattacked set, according to
+⊕ , R ⊕ ). Therefore, E is not a grounded extension, contradicting
+∈
+E
+(
+A
+Deﬁnition 8, it holds that E 1 \ Φ = S ∩ A ⊕
+1
+GR
+u
+u
+u
+⊕
+E 1 ∈ EGR ( A ⊕
+u , R u ).
+On the other hand, when Φ = ∅, if Φ = ∅, then Φ = ∅. In this case, since E 2 = ( E 1 ∪ E 2 ) ∩ A a⊕ and Φ = Φ ∩ A a⊕ , it
+holds that E 2 \ Φ = (( E 1 ∪ E 2 ) \ Φ) ∩ A a⊕ = S ∩ A a⊕ . Since a grounded extension is also a complete extension, according
+
+B. Liao et al. / Artiﬁcial Intelligence 175 (2011) 1790–1814
+
+1805
+
+to Lemma 4, it holds that E 2 \ Φ = S ∩ A a⊕ ∈ ECO (CAF 1 [ E 1 ]). So, E 2 is not a grounded extension, contradicting E 2 ∈
+EGR (CAF 1 [ E 1 ]).
+As a result, we may conclude that E 1 ∪ E 2 is a minimal complete extension (i.e., grounded extension).
+⊕
+• Under ideal semantics, E 1 ∈ EID ( A ⊕
+u , R u ) and E 2 ∈ EID (CAF 1 [ E 1 ]): we need to prove that: (1) E 1 ∪ E 2 is admissible,
+(2) E 1 ∪ E 2 is contained in every preferred set of arguments, and (3) E 1 ∪ E 2 is the maximal (w.r.t. set-inclusion) ideal
+set.
+– First, since both E 1 and E 2 are admissible, according to the proof in the case of complete semantics, it holds that
+E 1 ∪ E 2 is also admissible (i.e., it holds that E 1 ∪ E 2 is conﬂict-free, and every argument in E 1 ∪ E 2 is acceptable w.r.t.
+E 1 ∪ E 2 ).
+⊕
+– Second, ∀ E 1 ∈ EPR ( A ⊕
+u , R u ), ∀ E 2 ∈ EPR (CAF 1 [ E 1 ]), according to the proof in the case of preferred semantics, it
+holds that E 1 ∪ E 2 is a preferred extension of A ⊕ , R ⊕ . Since both E 1 and E 2 are contained in every preferred set
+of arguments, we have E 1 ⊆ E 1 and E 2 ⊆ E 2 , respectively. Therefore, E 1 ∪ E 2 ⊆ E 1 ∪ E 2 . In other words, E 1 ∪ E 2 is
+contained in every preferred set of arguments E 1 ∪ E 2 ∈ EPR ( A ⊕ , R ⊕ ).
+⊕
+⊕
+⊕
+– Third, assume that E 1 ∪ E 2 is not the maximal ideal set. Then, ∃ S ⊆ A ⊕
+u ∪ A a , s.t. S is the ideal extension of A , R
+and S ⊇ E 1 ∪ E 2 . Let Φ = S \ ( E 1 ∪ E 2 ). If Φ = ∅, then S = E 1 ∪ E 2 . In this case, E 1 ∪ E 2 is the ideal extension. So, we
+⊕
+⊕
+⊕
+⊕
+⊕
+need only to discuss the case when Φ = ∅. Let Φ = Φ ∩ A ⊕
+u and Φ = Φ ∩ A a . Since A u ∩ A a = ∅ and Φ ⊆ A u ∪ A a ,
+it holds that Φ ∪ Φ = Φ and Φ ∩ Φ = ∅.
+⊕
+On the one hand, when Φ = ∅, since E 1 = ( E 1 ∪ E 2 ) ∩ A ⊕
+u and Φ = Φ ∩ A u , it holds that E 1 ∪ Φ = ( E 1 ∪ E 2 ∪ Φ) ∩
+⊕ . Since ideal semantics satisﬁes the directionality criterion, and A ⊕ is an unattacked set, according to
+A⊕
+=
+S
+∩
+A
+u
+u
+u
+⊕
+⊕
+Deﬁnition 8, it holds that E 1 ∪ Φ = S ∩ A ⊕
+u ∈ EID ( A u , R u ). Therefore, E 1 is not an ideal extension, contradicting
+⊕
+E 1 ∈ EID ( A ⊕
+u , R u ).
+On the other hand, when Φ = ∅, if Φ = ∅, then Φ = ∅. In this case, we have:
+i) E 2 ∪ Φ is admissible, because:
+(a) E 2 ∪ Φ ⊆ S is conﬂict-free (obvious); and
+(b) Every argument in E 2 ∪ Φ is acceptable w.r.t. E 2 ∪ Φ under the condition A c⊕ [ E 1 ∪ Φ ], which is proved
+as follows: Since every argument in E 2 ∪ Φ ⊆ S is acceptable w.r.t. S, it holds that ∀α ∈ E 2 ∪ Φ ⊆ A a⊕ ,
+∀β ∈ A ⊕ , if (β, α ) ∈ R ⊕ , then ∃γ ∈ S, s.t. (γ , β) ∈ R ⊕ . Since α ∈ A a⊕ and α is not attacked by the arguments
+in A ⊕ \ ( A c⊕ ∪ A a⊕ ), it holds that β ∈ A c⊕ ⊆ A ⊕ or β ∈ A a⊕ ⊆ A ⊕ . So, we have the following two cases:
+⊕
+– If β ∈ A c⊕ , then: since β is attacked by the arguments in A ⊕
+u , it holds that γ ∈ S ∩ A u = E 1 ∪ Φ , i.e., the
+status of argument that attacks α is rejected w.r.t. E 1 ∪ Φ (satisfying the second condition of acceptability
+of arguments in an assigned CAF, in Deﬁnition 12);
+– Else, if β ∈ A a⊕ , then: since β is attacked by the arguments in A a⊕ or A c⊕ , it holds that γ ∈ S ∩ A a⊕ = E 2 ∪ Φ
+or γ ∈ S ∩ A c⊕ = ( E 1 ∪ Φ ) ∩ A c⊕ (satisfying the ﬁrst condition of acceptability of arguments in an assigned
+CAF, in Deﬁnition 12).
+According to Deﬁnition 12, α is acceptable w.r.t. E 2 ∪ Φ under the condition A c⊕ [ E 1 ∪ Φ ].
+⊕
+ii) E 2 ∪ Φ is contained in every preferred set of arguments, which is proved as follows. ∀ E 1 ∈ EPR ( A ⊕
+u , R u ),
+∀ E 2 ∈ EPR (CAF 1 [ E 1 ]), according to the proof in the case of preferred semantics, E 1 ∪ E 2 is a preferred extension
+E 2 . Then, ∃α ∈ E 2 ∪ Φ , s.t. α ∈
+/ E 2 . Since
+of A ⊕ , R ⊕ . It follows that S ⊆ E 1 ∪ E 2 . We assume that E 2 ∪ Φ
+⊕
+⊕
+⊕
+α ∈/ E 1 ⊆ A ⊕
+/ E 1 ∪ E 2 . It follows that α ∈
+/ S. Since E 2 ∪ Φ ⊆ S, if follows
+u (in that α ∈ A a and A a ∩ A u = ∅), α ∈
+/ E 2 ∪ Φ . Contradiction.
+that α ∈
+Therefore, E 2 ∪ Φ is an ideal set. So, E 2 is not an ideal extension, contradicting E 2 ∈ EID (CAF 1 [ E 1 ]).
+According to the above analysis, we may conclude that E 1 ∪ E 2 is the ideal extension of A ⊕ , R ⊕ .
+
+✷
+
+Theorem 5 (Soundness). Under each argumentation semantics S ∈ {CO , PR, GR, ID }, ∀ E ∈ CombExtS ( A , R
+E ∈ ES ( A , R ), in which E = E 1 ∪ E 2 , an extension by combining E 1 ∈ ES ( A u , R u ) and E 2 ∈ ES (CAF 2 [ E 1 ]).
+
+), it holds that
+
+And then, according to Lemmas 4 and 5, and Theorems 4 and 5, we immediately get Lemmas 6 and 7. Due to the
+similarity between Lemmas 6 and 7, we only provide the proof of Lemma 6.
+Lemma 6. Under each argumentation semantics S ∈ {PR, GR, ID }, ∀ E ∈ ES ( A ⊕ , R ⊕ ), it holds that E ∩ A a⊕ ∈ ES (CAF 1 [ E 1 ]), in
+which E 1 = E ∩ A ⊕
+u .
+Proof. According to Lemma 4, under complete semantics, E ∩ A a⊕ ∈ ECO (CAF 1 [ E 1 ]). Now, we prove the following three
+cases:
+(1) Under preferred semantics, we only need to verify that E ∩ A a⊕ is maximal. Assume the contrary. Then, ∃ E 2 ∈
+⊕
+⊕
+⊕ ), accordEPR (CAF 1 [ E 1 ]), s.t. E 2 ⊃ E ∩ A a⊕ . It follows that E 1 ∪ E 2 ⊃ ( E ∩ A ⊕
+u ) ∪ ( E ∩ A a ) = E. Since E ∈ EPR ( A , R
+⊕ , R ⊕ ). Now that E ∈ E
+⊕ , R ⊕ ) and E ∈ E
+∈
+E
+(
+A
+(
+A
+ing to Deﬁnition 8, we have E 1 = E ∩ A ⊕
+1
+PR
+PR
+PR (CAF 1 [ E 1 ]),
+u
+u
+u
+u
+u
+2
+/ EPR ( A ⊕ , R ⊕ ). Contradiction.
+according to Theorem 4, E 1 ∪ E 2 is a preferred extension of A ⊕ , R ⊕ . As a result, E ∈
+
+1806
+
+B. Liao et al. / Artiﬁcial Intelligence 175 (2011) 1790–1814
+
+(2) Under grounded semantics, we only need to verify that E ∩ A a⊕ is minimal. Assume the contrary. Then, ∃ E 2 ∈
+⊕
+⊕
+⊕ ), accordEGR (CAF 1 [ E 1 ]), s.t. E 2 ⊂ E ∩ A a⊕ . It follows that E 1 ∪ E 2 ⊂ ( E ∩ A ⊕
+u ) ∪ ( E ∩ A a ) = E. Since E ∈ EGR ( A , R
+⊕ , R ⊕ ). Now that E ∈ E
+⊕ , R ⊕ ) and E ∈ E
+∈
+E
+(
+A
+(
+A
+(CAF 1 [ E 1 ]),
+ing to Deﬁnition 8, we have E 1 = E ∩ A ⊕
+1
+GR
+GR
+GR
+u
+u
+u
+u
+u
+2
+/ EGR ( A ⊕ , R ⊕ ). Contradiction.
+according to Theorem 4, E 1 ∪ E 2 is a grounded extension of A ⊕ , R ⊕ . As a result, E ∈
+(3) Under ideal semantics, according to the proof of Lemma 4, it holds that E ∩ A a⊕ is admissible. So, we only need to verify
+the following two points:
+⊕
+i) E ∩ A a⊕ is contained in every preferred set of arguments, which is proved as follows. ∀ E 1 ∈ EPR ( A ⊕
+u , R u ), ∀ E 2 ∈
+EPR (CAF 1 [ E 1 ]), according to Theorem 4, E 1 ∪ E 2 is a preferred extension of A ⊕ , R ⊕ . Since E is the ideal extension
+of A ⊕ , R ⊕ , it holds that E ⊆ E 1 ∪ E 2 . Now, assume that E ∩ A a⊕
+E 2 . Then, ∃α ∈ E ∩ A a⊕ (and thus α ∈ E), s.t.
+⊕ = ∅, and E ⊆ A ⊕ , it holds that α ∈
+α ∈/ E 2 . Since α ∈ E ∩ A a⊕ , it holds that α ∈ A a⊕ . Since A ⊕
+∩
+A
+/ E 1 . In other
+u
+a
+u
+1
+/ E 1 ∪ E 2 . So, it is not the case that E ⊆ E 1 ∪ E 2 , contradicting E ⊆ E 1 ∪ E 2 .
+words, ∃α ∈ E, s.t. α ∈
+ii) E ∩ A a⊕ is the maximal (w.r.t. set-inclusion) ideal set. Assume the contrary. Then, ∃ E 2 ∈ EID (CAF 1 [ E 1 ]), s.t. E 2 ⊃
+⊕
+⊕
+⊕ ), according to Deﬁnition 8, we
+E ∩ A a⊕ . It follows that E 1 ∪ E 2 ⊃ ( E ∩ A ⊕
+u ) ∪ ( E ∩ A a ) = E. Since E ∈ EID ( A , R
+⊕
+⊕
+⊕
+⊕
+⊕
+have E 1 = E ∩ A u ∈ EID ( A u , R u ). Now that E 1 ∈ EID ( A u , R u ) and E 2 ∈ EID (CAF 1 [ E 1 ]), according to Theorem 4,
+E 1 ∪ E 2 is the ideal extension of A ⊕ , R ⊕ . As a result, E ∈
+/ EID ( A ⊕ , R ⊕ ). Contradiction. ✷
+Lemma 7. Under each argumentation semantics S ∈ {PR, GR, ID }, ∀ E ∈ ES ( A , R
+which E 1 = E ∩ A u .
+
+), it holds that E ∩ A a ∈ ES (CAF 2 [ E 1 ]), in
+
+Finally, based on Lemmas 4, 5, 6, and 7, the completeness of semantics combination can be proved easily as follows:
+Theorem 6 (Completeness). Under each argumentation semantics S ∈ {CO , PR, GR, ID }, ∀ E ∈ ES ( A ⊕ , R ⊕ ), it holds that E ∈
+CombExtS ( A ⊕ , R ⊕ ).
+Proof. Under a given argumentation semantics S ∈ {CO , PR, GR, ID }, ∀ E ∈ ES ( A ⊕ , R ⊕ ), let E 1 = A ⊕
+u ∩ E, and E 2 =
+⊕
+A a⊕ ∩ E. It holds that E = E 1 ∪ E 2 . According to Deﬁnition 8, Lemmas 4 and 6, it holds that E 1 ∈ ES ( A ⊕
+u , R u ) and E 2 ∈
+ES (CAF 1 [ E 1 ]). According to Deﬁnition 22, it holds that E ∈ CombExtPR ( A ⊕ , R ⊕ ). ✷
+Theorem 7 (Completeness). Under each argumentation semantics S ∈ {CO , PR, GR, ID }, ∀ E ∈ ES ( A , R
+CombExtS ( A , R ).
+Proof. Similar to that of Theorem 6 (omitted).
+
+), it holds that E ∈
+
+✷
+
+Correctness of status evolution of arguments by using the division-based method. In this paragraph, we will prove that when an
+argumentation framework AF = A , R is changed to A ⊕ , R ⊕ or A , R , by using the division-based method, the status
+of each argument with respect to a given extension of AF (respectively, the justiﬁcation state of each argument with respect
+to the set of extensions of AF) evolves correctly, in the sense that:
+
+• If an argument in A ⊕ , R ⊕ (or A , R
+
+) is unaffected, then its status with respect to a given extension of AF should
+be the same as the one with respect to a related extension of A ⊕ , R ⊕ (respectively, A , R ); and the justiﬁcation
+state with respect to the set of extensions of AF should the same as the one with respect to the set of extensions of
+A ⊕ , R ⊕ (respectively, A , R ).
+• If an argument in A ⊕ , R ⊕ (or A , R ) is affected, then its status with respect to a given extension of a conditioned
+CAF should be the same as the one with respect to a related extension of A ⊕ , R ⊕ (respectively, A , R ); and the
+justiﬁcation state with respect to sets of extensions of a set of assigned CAFs should be the same as the one with
+respect to the set of extensions of A ⊕ , R ⊕ (respectively, A , R ).
+First, in the case of an addition to an argumentation framework, we have the following theorems.
+Theorem 8. For all α ∈ A ⊕
+u , α is accepted (respectively, rejected and undecided) w.r.t. an extension E ∈ ES (AF ), if and only if ∃ E 1 ∈
+⊕ ) and ∃ E ∈ E ( A ⊕ , R ⊕ ), s.t. E ∩ E ⊇ E and α is accepted (respectively, rejected and undecided) w.r.t. E and E
+ES ( A ⊕
+,
+R
+1
+1
+S
+u
+u
+respectively.
+Proof. (⇒)
+
+• If α is accepted w.r.t. an extension E ∈ ES (AF ), then α ∈ E. Let E 1 = E ∩ A ⊕
+u . According to formula (8), E 1 ∈
+⊕ ). Since α ∈ A ⊕ and α ∈ E, it holds that α ∈ E , i.e., α is accepted w.r.t. E . Meanwhile, according to
+ES ( A ⊕
+,
+R
+1
+1
+u
+u
+u
+formula (14), ∃ E 2 ∈ ES (CAF 1 [ E 1 ]), s.t. E 1 ∪ E 2 ∈ CombExtS ( A ⊕ , R ⊕ ). Let E = E 1 ∪ E 2 . Since E ⊇ E 1 and E ⊇ E 1 , it
+holds that E ∩ E ⊇ E 1 . According to Theorem 4, we have E ∈ ES ( A ⊕ , R ⊕ ). Since α ∈ E 1 and E 1 ⊆ E , it holds that
+α ∈ E , i.e., α is accepted w.r.t. E .
+
+B. Liao et al. / Artiﬁcial Intelligence 175 (2011) 1790–1814
+
+1807
+
+• If α is rejected w.r.t. E, then ∃β ∈ E, s.t. (β, α ) ∈ R. Since α is only attacked by the arguments in A ⊕
+u , it holds that
+⊕
+⊕
+⊕
+β ∈ A⊕
+u , and therefore β ∈ E ∩ A u = E 1 ∈ ES ( A u , R u ). So, β is rejected w.r.t. E 1 . Meanwhile, since E ⊇ E 1 (similar to
+the proof in the ﬁrst item), it holds that β ∈ E , and therefore α is rejected w.r.t. E .
+⊕
+⊕
+• If α is undecided w.r.t. E, then α ∈
+/ E and ∀β ∈ E, (β, α ) ∈
+/ R. It follows that α ∈
+/ E ∩ A⊕
+u = E 1 ∈ ES ( A u , R u ), and ∀β ∈
+⊕ , R ⊕ ), (β, α ) ∈
+⊕ . Hence, α is undecided w.r.t. E . On the other hand, according to formula (14)
+E ∩ A⊕
+=
+E
+∈
+E
+(
+A
+/
+R
+1
+1
+S
+u
+u
+u
+u
+and Theorem 4, ∃ E 2 ∈ ES (CAF 1 [ E 1 ]), s.t. E 1 ∪ E 2 ∈ ES ( A ⊕ , R ⊕ ). Let E = E 1 ∪ E 2 , and therefore E ∩ E ⊇ E 1 . Since
+α ∈/ A a⊕ , it holds that α ∈/ E 2 . By α ∈/ E 1 and α ∈/ E 2 , we have α ∈/ E . Meanwhile, since ∀β ∈ E 1 , (β, α ) ∈/ R ⊕
+u , and α is
+/ R ⊕ . As a result, α is undecided w.r.t. E .
+not attacked by the arguments in A a⊕ , it holds that ∀β ∈ E , (β, α ) ∈
+(⇐)
+⊕
+• If α is accepted w.r.t. E 1 (and E , respectively), then α ∈ E 1 . Since E 1 ∈ ES ( A ⊕
+u , R u ), according to formula (8), ∃ E ∈
+E
+ES (AF ), s.t. E 1 = E ∩ A ⊕
+.
+By
+α
+∈
+E
+and
+⊆
+E,
+α
+∈
+E,
+α
+is
+accepted
+w.r.t. E.
+it
+holds
+that
+i.e.,
+1
+1
+u
+⊕
+⊕
+E
+• If α is rejected w.r.t. E 1 (and E , respectively), then ∃β ∈ E 1 , s.t. (β, α ) ∈ R ⊕
+.
+Since
+1 ∈ ES ( A u , R u ), according to
+u
+⊕
+formula (8), ∃ E ∈ ES (AF ), s.t. E 1 = E ∩ A u . By β ∈ E 1 and E 1 ⊆ E, it holds that β ∈ E. Therefore, α is rejected w.r.t. E.
+⊕
+⊕
+• If α is undecided w.r.t. E 1 (and E , respectively), then α ∈
+/ E 1 and ∀β ∈ E 1 , (β, α ) ∈
+/ R⊕
+u . Since E 1 ∈ ES ( A u , R u ),
+⊕
+/ E. Meanwhile, assume that ∃β ∈ E, s.t.
+according to formula (8), ∃ E ∈ ES (AF ), s.t. E 1 = E ∩ A u . It follows that α ∈
+(β, α ) ∈ R. According to the proof of the second item of (⇒), it holds that β ∈ E 1 and (β, α ) ∈ R ⊕
+u , contradicting
+E.
+(β, α ) ∈
+/ R⊕
+.
+As
+a
+result,
+it
+holds
+that
+α
+∈
+/
+E
+∀β
+∈
+E,
+(β,
+α
+)
+∈
+/
+R.
+α
+is
+undecided
+w.r.t.
+✷
+and
+Therefore,
+u
+
+Theorem 9. For all α ∈ A a⊕ , α is accepted (respectively, rejected and undecided) w.r.t. an extension E 2 ∈ ES (CAF 1 [ E 1 ]) under the
+⊕
+condition A c⊕ [ E 1 ], in which E 1 ∈ ES ( A ⊕
+u , R u ), if and only if α is accepted (respectively, rejected and undecided) w.r.t. an extension
+E = E 1 ∪ E 2 ∈ ES ( A ⊕ , R ⊕ ) .
+Proof. (⇒) Given E 2 ∈ ES (CAF 1 [ E 1 ]), let E = E 1 ∪ E 2 . According to Theorem 4, E ∈ ES ( A ⊕ , R ⊕ ).
+
+• If α is accepted w.r.t. E 2 under the condition A c⊕ [ E 1 ], then α ∈ E 2 . It follows that α ∈ E , i.e., α is accepted w.r.t. E .
+• If α is rejected w.r.t. E 2 under the condition A c⊕ [ E 1 ], then: according to Deﬁnition 14, ∃β ∈ E 2 , s.t. (β, α ) ∈ R a⊕ or
+∃γ ∈ A c⊕ , s.t. (γ , α ) ∈ R c⊕ and γ is accepted w.r.t. E 1 . By “∃β ∈ E 2 , s.t. (β, α ) ∈ R a⊕ ”, we have β ∈ E (since E ⊇ E 2 ) and
+(β, α ) ∈ R ⊕ (since R ⊕ ⊇ R a⊕ ); and by “∃γ ∈ A c⊕ , s.t. (γ , α ) ∈ R c⊕ and γ is accepted w.r.t. E 1 ”, we have γ ∈ E (since
+E ⊇ E 1 ∩ A c⊕ ) and (γ , α ) ∈ R ⊕ (since R ⊕ ⊇ R c⊕ ). So, α is rejected w.r.t. E .
+• If α is undecided w.r.t. E 2 under the condition A c⊕ [ E 1 ], then: (i) α ∈
+/ E 2 , (ii) β ∈ E 2 , s.t. (β, α ) ∈ R a⊕ and (iii) γ ∈
+⊕
+⊕
+A c , s.t. (γ , α ) ∈ R c and γ ∈ E 1 (according to Deﬁnition 14). First, assume that α ∈ E = E 1 ∪ E 2 . Since α ∈ A a⊕ and
+A a⊕ ∩ A ⊕
+/ E 1 ⊆ A⊕
+/ E 2 ”. Second, assume that ∃β ∈ E = E 1 ∪ E 2
+u = ∅, α ∈
+u . It follows that α ∈ E 2 , contradicting “α ∈
+s.t. (β, α ) ∈ R ⊕ . If β ∈ E 1 , then there exists an argument in A c⊕ , s.t. α is attacked by this argument (since α is only
+attacked by the conditioning arguments in A c ⊆ A u ), contradicting “ γ ∈ A c⊕ , s.t. (γ , α ) ∈ R c⊕ and γ ∈ E 1 ”; else, β ∈ E 2 ,
+contradicting “ β ∈ E 2 s.t. (β, α ) ∈ R a⊕ ”. So, α is undecided w.r.t. E .
+⊕
+(⇐) Given E ∈ ES ( A ⊕ , R ⊕ ), according to Theorem 6 and formula (14), ∃ E 1 ∈ ES ( A ⊕
+u , R u ), E 2 ∈ ES (CAF 1 [ E 1 ]), s.t., E =
+E1 ∪ E2.
+
+• If α is accepted w.r.t. E ∈ ES ( A ⊕ , R ⊕ ), then α ∈ E . Assume that α ∈
+/ E 2 . Since α ∈ A a⊕ and A a⊕ ∩ A ⊕
+u = ∅, it holds that
+α ∈/ E 1 ⊆ A ⊕
+,
+and
+therefore
+α
+∈
+/
+E
+,
+contradicting
+α
+∈
+E
+.
+So,
+α
+is
+accepted
+w.r.t.
+E
+.
+2
+u
+• If α is rejected w.r.t. E , then ∃β ∈ E = E 1 ∪ E 2 , s.t. (β, α ) ∈ R ⊕ . If β ∈ E 1 ⊆ A ⊕
+u , then it means that α is attacked by a
+conditioning argument that is accepted w.r.t. E 1 (since α is only attacked by the conditioning arguments in A c ⊆ A u );
+else, if β ∈ E 2 ⊆ A a⊕ , then it means that α is attacked by an argument in A a⊕ w.r.t. R a⊕ . Therefore, α is rejected w.r.t. E 2
+under the condition A c⊕ [ E 1 ] (according to Deﬁnition 14).
+• If α is undecided w.r.t. E , then α ∈
+/ E and ∀β ∈ E , (β, α ) ∈
+/ R ⊕ . Since α ∈
+/ E , it holds that α ∈
+/ E 2 . Assume that ∃β ∈ E 2 ,
+⊕
+s.t. (β, α ) ∈ R a . According to the proof of the second item of (⇒), we have β ∈ E and (β, α ) ∈ R ⊕ , contradicting
+/ R ⊕ ”. Meanwhile, assume that ∃γ ∈ A c⊕ , s.t. (γ , α ) ∈ R c⊕ and γ is accepted w.r.t. E 1 . According to the
+“∀β ∈ E , (β, α ) ∈
+/ R ⊕ ”. As a result,
+proof of the second item of (⇒), we have γ ∈ E and (γ , α ) ∈ R ⊕ , contradicting “∀β ∈ E , (β, α ) ∈
+⊕
+⊕
+⊕
+/ E 2 , (ii) β ∈ E 2 s.t. (β, α ) ∈ R a and (iii) γ ∈ A c , s.t. (γ , α ) ∈ R c and γ ∈ E 1 . Therefore, α is
+it holds that: (i) α ∈
+undecided w.r.t. E 2 (according to Deﬁnition 14). ✷
+Meanwhile, as presented in Deﬁnitions 5 and 15, the justiﬁcation state of an argument with respect to a set of extensions
+is related to the status of the argument with respect to each extension. So, on the one hand, for the arguments in A ⊕
+u ,
+according to Theorem 8, we have the following corollary.
+Corollary 3. For all α ∈ A ⊕
+u , α is sceptically justiﬁed (respectively, credulously justiﬁed and indefensible) w.r.t. ES (AF ), if and only if α
+⊕
+⊕
+⊕ ) respectively.
+is sceptically justiﬁed (respectively, credulously justiﬁed and indefensible) w.r.t. ES ( A ⊕
+u , R u ) and ES ( A , R
+
+1808
+
+B. Liao et al. / Artiﬁcial Intelligence 175 (2011) 1790–1814
+
+Proof. (⇒)
+
+• If α is sceptically justiﬁed w.r.t. ES (AF ), then ∀ E ∈ ES (AF ), α is accepted w.r.t. E.
+⊕
+– Assume that ∃ E 1 ∈ ES ( A ⊕
+u , R u ), s.t. α is rejected or undecided (i.e., not accepted) w.r.t. E 1 . According to Theorem 8,
+it holds that ∃ E ∈ ES (AF ), s.t. α is rejected (respectively, undecided) w.r.t. E, contradicting “∀ E ∈ ES (AF ), α is accepted
+⊕
+⊕
+⊕
+w.r.t. E”. Therefore, ∀ E 1 ∈ ES ( A ⊕
+u , R u , α is accepted w.r.t. E 1 , i.e., α is sceptically justiﬁed w.r.t. ES ( A u , R u ).
+⊕
+⊕
+– Assume that ∃ E ∈ ES ( A , R ), s.t. α is rejected or undecided (i.e., not accepted) w.r.t. E . Let E 1 = E ∩ A ⊕
+u . Ac⊕
+cording to Deﬁnition 8, it holds that E 1 ∈ ES ( A ⊕
+u , R u ). Since α is only attacked or defended by the arguments in
+
+A⊕
+u , it means that α is rejected or undecided (i.e., not accepted) w.r.t. E 1 . According to the proof of the previous item,
+a contradiction will arise. Therefore, ∀ E ∈ ES ( A ⊕ , R ⊕ ), α is accepted w.r.t. E , i.e., α is sceptically justiﬁed w.r.t.
+ES ( A ⊕ , R ⊕ ) .
+• If α is credulously justiﬁed w.r.t. ES (AF ), then ∃ E ∈ ES (AF ), s.t. α is accepted w.r.t. E. According to Theorem 8, it holds
+⊕
+⊕
+⊕ ), s.t. E ∩ E ⊇ E and α is accepted w.r.t. E and E respectively, i.e.,
+that ∃ E 1 ∈ ES ( A ⊕
+1
+1
+u , R u ) and ∃ E ∈ ES ( A , R
+⊕ ) and E ( A ⊕ , R ⊕ ) respectively.
+R
+α is credulously justiﬁed w.r.t. ES ( A ⊕
+,
+S
+u
+u
+• If α is indefensible w.r.t. ES (AF ), then E ∈ ES (AF ), s.t. α is accepted w.r.t. E.
+⊕
+– Assume that ∃ E 1 ∈ ES ( A ⊕
+u , R u ), s.t. α is accepted w.r.t. E 1 . According to Theorem 8, it holds that ∃ E ∈ ES (AF ), s.t.
+⊕
+α is accepted w.r.t. E, contradicting “ E ∈ ES (AF ), s.t. α is accepted w.r.t. E”. Therefore, E 1 ∈ ES ( A ⊕
+u , R u ), s.t. α is
+⊕ ).
+R
+accepted w.r.t. E 1 , i.e., α is indefensible w.r.t. ES ( A ⊕
+,
+u
+u
+– Assume that ∃ E ∈ ES ( A ⊕ , R ⊕ ), s.t. α is accepted w.r.t. E . Let E 1 = E ∩ A ⊕
+u . According to Deﬁnition 8, we have
+⊕
+⊕
+E 1 ∈ ES ( A ⊕
+u , R u ). Since α ∈ A u and α ∈ E , it holds that α ∈ E 1 , i.e., α is accepted w.r.t. E 1 . According to the proof
+of the previous item, a contradiction will arise. Therefore, E ∈ ES ( A ⊕ , R ⊕ ), s.t. α is accepted w.r.t. E , i.e., α is
+indefensible w.r.t. ES ( A ⊕ , R ⊕ ).
+
+(⇐)
+⊕
+⊕
+⊕ ), respectively), then ∀ E ∈ E ( A ⊕ , R ⊕ ), α is accepted
+• If α is sceptically justiﬁed w.r.t. ES ( A ⊕
+1
+S
+u , R u ) (and ES ( A , R
+u
+u
+w.r.t. E 1 . Assume that ∃ E ∈ ES (AF ), s.t. α is rejected or undecided (not accepted) w.r.t. E. According to Theorem 8,
+⊕
+it holds that ∃ E 1 ∈ ES ( A ⊕
+u , R u ), s.t. α is rejected (respectively, undecided) w.r.t. E 1 . Contradiction. Therefore, ∀ E ∈
+ES (AF ), α is accepted w.r.t. E, i.e., α is sceptically justiﬁed w.r.t. ES (AF ).
+⊕
+⊕
+⊕ ), respectively), then ∃ E ∈ E ( A ⊕ , R ⊕ ), s.t. α is
+• If α is credulously justiﬁed w.r.t. ES ( A ⊕
+1
+S
+u , R u ) (and ES ( A , R
+u
+u
+accepted w.r.t. E 1 . According to Theorem 8, ∃ E ∈ ES (AF ), s.t. α is accepted w.r.t. E, i.e., α is credulously justiﬁed w.r.t.
+ES (AF ).
+⊕
+⊕
+⊕ ), respectively), then E ∈ E ( A ⊕ , R ⊕ ), s.t. α is accepted
+• If α is indefensible w.r.t. ES ( A ⊕
+1
+S
+u , R u ) (and ES ( A , R
+u
+u
+⊕
+w.r.t. E 1 . Assume that ∃ E ∈ ES (AF ), s.t. α is accepted w.r.t. E. According to Theorem 8, it holds that ∃ E 1 ∈ ES ( A ⊕
+u , R u ),
+s.t. α is accepted w.r.t. E 1 . Contradiction. Therefore, E ∈ ES (AF ), s.t. α is accepted w.r.t. E, i.e., α is indefensible w.r.t.
+ES (AF ). ✷
+
+On the other hand, for the arguments in A a⊕ , according to Theorem 9, we have a similar corollary as follows (the proof
+of it is omitted).
+Corollary 4. For all α ∈ A a⊕ , α is sceptically justiﬁed (respectively, credulously justiﬁed and indefensible) w.r.t.
+E 1 ∈ES ( A ⊕ , R ⊕ ) ES ( CAF 1 [ E 1 ]), if and only if α is sceptically justiﬁed (respectively, credulously justiﬁed and indefensible) w.r.t.
+u
+
+u
+
+ES ( A ⊕ , R ⊕ ) .
+
+Second, in the case of a deletion to an argumentation framework, we have the following theorems and corollaries. The
+proofs of them are similar to those of Theorems 8 and 9, and Corollaries 3 and 4, respectively, and therefore omitted.
+Theorem 10. For all α ∈ A u , α is accepted (respectively, rejected and undecided) w.r.t. an extension E ∈ ES (AF ), if and only if
+∃ E 1 ∈ ES ( A u , R u ) and ∃ E ∈ ES ( A , R ), s.t. E ∩ E ⊇ E 1 and α is accepted (respectively, rejected and undecided) w.r.t. E 1 and
+E respectively.
+Theorem 11. For all α ∈ A a , α is accepted (respectively, rejected and undecided) w.r.t. an extension E 2 ∈ ES (CAF 2 [ E 1 ]) under the
+condition A c [ E 1 ], in which E 1 ∈ ES ( A u , R u ), if and only if α is accepted (respectively, rejected and undecided) w.r.t. an extension
+E = E 1 ∪ E 2 ∈ ES ( A , R ) .
+Corollary 5. For all α ∈ A u , α is sceptically justiﬁed (respectively, credulously justiﬁed and indefensible) w.r.t. ES (AF ), if and only if α
+is sceptically justiﬁed (respectively, credulously justiﬁed and indefensible) w.r.t. ES ( A u , R u ) and ES ( A , R ) respectively.
+
+B. Liao et al. / Artiﬁcial Intelligence 175 (2011) 1790–1814
+
+1809
+
+Fig. 4. Two assigned CAFs.
+
+Corollary 6. For all α ∈ A a , α is sceptically justiﬁed (respectively, credulously justiﬁed and indefensible) w.r.t.
+E 1 ∈ES ( A , R ) ES ( CAF 2 [ E 1 ]), if and only if α is sceptically justiﬁed (respectively, credulously justiﬁed and indefensible) w.r.t.
+
+ES ( A , R
+
+u
+
+u
+
+).
+
+In this section, we have formulated in detail how to compute the extensions of the two kinds of sub-frameworks and
+combine them to form the extensions of the updated argumentation framework. We have proved that the semantics combination is both sound and complete. Meanwhile, we have also proved the correctness of the status evolution of arguments
+by using the division-based method.
+4.3.3. An illustrating example
+Finally, in the end of this section, we will use an example to further illustrate the process of computing the extensions
+of an updated argumentation framework based on the division, as well as the properties of the division-based method. For
+simplicity and without loss of generality, we only discuss the case under preferred semantics.
+Example 6 (Continue Example 5). The set of extensions of AF under preferred semantics is: EPR (AF ) = { E 0,1 , E 0,2 ,
+E 0,3 , E 0,4 , E 0,5 , E 0,6 , E 0.7 , E 0,8 }, in which E 0,1 = {α1 , α4 , α5 , α7 }, E 0,2 = {α1 , α4 , α5 , α8 }, E 0,3 = {α1 , α4 , α6 , α7 }, E 0,4 =
+{α1 , α4 , α6 , α8 }, E 0,5 = {α2 , α4 , α5 , α7 }, E 0,6 = {α2 , α4 , α5 , α8 }, E 0,7 = {α2 , α4 , α6 , α7 }, and E 0,8 = {α2 , α4 , α6 , α8 }.
+⊕
+First, according to formula (8), the extensions of A ⊕
+u , R u under preferred semantics are directly computed:
+⊕
+= E ∩ A⊕
+EPR A ⊕
+E ∈ { E 0,1 , E 0,2 , . . . , E 0,8 } = { E 1,1 , E 1,2 },
+u , Ru
+u
+
+E 1,1 = {α1 , α4 },
+
+and
+
+in which
+
+E 1,2 = {α2 , α4 }
+
+Second, get a set of assigned CAFs according to conditioning arguments A c⊕ with different statuses. According to formula (12), we have A c⊕ [ E 1,1 ] = ({α4 }, {α2 }, ∅) and A c⊕ [ E 1,2 ] = ({α2 , α4 }, ∅, ∅). So, there are two different assigned CAFs
+(Fig. 4):
+
+CAF 1 [ E 1,1 ] =
+
+{α5 , α6 , α7 , α8 , α9 , α10 }, (α5 , α6 ), (α6 , α5 ), (α7 , α8 ), (α8 , α7 ), (α5 , α10 ), (α9 , α10 ), (α10 , α7 ) ,
+{α4 }, {α2 }, ∅ , (α2 , α5 ), (α4 , α9 )
+
+CAF 1 [ E 1,2 ] =
+
+{α5 , α6 , α7 , α8 , α9 , α10 }, (α5 , α6 ), (α6 , α5 ), (α7 , α8 ), (α8 , α7 ), (α5 , α10 ), (α9 , α10 ), (α10 , α7 ) ,
+{α2 , α4 }, ∅, ∅ , (α2 , α5 ), (α4 , α9 )
+
+Third, compute the extensions of the assigned CAFs (please refer to Example 4 for the discussion about the acceptability
+of arguments in each assigned CAF):
+
+EPR CAF 1 [ E 1,1 ] = { E 2,1 , E 2,2 , E 2,3 },
+E 2,1 = {α5 , α7 },
+
+E 2,2 = {α5 , α8 },
+
+EPR CAF 1 [ E 1,2 ] = { E 2,4 },
+
+in which
+and
+
+E 2,3 = {α6 , α8 , α10 }
+
+in which E 2,4 = {α6 , α8 , α10 }
+
+Fourth, compute the results of combining the extensions of two kinds of sub-frameworks:
+
+CombExtPR A ⊕ , R ⊕
+
+⊕
+= E 1 ∪ E 2 E 1 ∈ EPR A ⊕
+∧ E 2 ∈ EPR CAF 1 [ E 1 ]
+u , Ru
+
+= { E 1,1 ∪ E 2,1 , E 1,1 ∪ E 2,2 , E 1,1 ∪ E 2,3 , E 1,2 ∪ E 2,4 }
+= {α1 , α4 , α5 , α7 }, {α1 , α4 , α5 , α8 }, {α1 , α4 , α6 , α8 , α10 }, {α2 , α4 , α6 , α8 , α10 }
+Here, we may verify that E 1,1 ∪ E 2,1 , E 1,1 ∪ E 2,2 , E 1,1 ∪ E 2,3 , and E 1,2 ∪ E 2,4 are preferred extensions of A ⊕ , R ⊕ . Take
+E 1,1 ∪ E 2,3 = {α1 , α4 , α6 , α8 , α10 } for example. It holds that: (1) E 1,1 ∪ E 2,3 ⊆ A ∪ B. (2) E 1,1 ∪ E 2,3 is conﬂict-free. (3) Every
+argument in E 1,1 ∪ E 2,3 is acceptable w.r.t. E 1,1 ∪ E 2,3 : α1 is attacked by α2 , which is defeated by α1 ∈ E 1,1 ⊆ E 1,1 ∪ E 2,3 ;
+
+1810
+
+B. Liao et al. / Artiﬁcial Intelligence 175 (2011) 1790–1814
+
+α4 is attacked by α3 , which is defeated by α1 ∈ E 1,1 ⊆ E 1,1 ∪ E 2,3 ; α6 is attacked by α5 , which is defeated by α6 ∈ E 2,3 ⊆
+E 1,1 ∪ E 2,3 ; α8 is attacked by α7 , which is defeated by α10 ∈ E 2,3 ⊆ E 1,1 ∪ E 2,3 ; α10 is attacked by α5 and α9 , in which
+α5 is defeated by α6 ∈ E 2,3 ⊆ E 1,1 ∪ E 2,3 and α9 is defeated by α4 ∈ A c⊕ ∩ E 1,1 = {α4 } ⊆ E 1,1 ∪ E 2,3 . (4) Every argument in
+A ∪ B that is acceptable w.r.t. E 1,1 ∪ E 2,3 is in E 1,1 ∪ E 2,3 : every argument in ( A ∪ B ) \ ( E 1,1 ∪ E 2,3 ) = {α2 , α3 , α5 , α7 , α9 } is
+
+not acceptable w.r.t. E 1,1 ∪ E 2,3 . (5) E 1,1 ∪ E 2,3 is maximal.
+On the other hand, if we directly compute the preferred extensions of A ⊕ , R ⊕ , then we have EPR ( A ⊕ , R ⊕ ) = { E 0,1 ,
+E 0,2 , E 0,3 , E 0,4 } = {{α1 , α4 , α5 , α7 }, {α1 , α4 , α5 , α8 }, {α1 , α4 , α6 , α8 , α10 }, {α2 , α4 , α6 , α8 , α10 }}. For every extension E 0,i (i =
+
+⊕
+⊕
+1, 2, 3, 4) in EPR ( A ⊕ , R ⊕ ), there are a corresponding extension E 1, j = E 0,i ∩ A ⊕
+u ( j = 1, 2) in EPR ( A u , R u ) and a
+⊕
+corresponding extension E 2,k ∩ A a (k = 1, 2, 3, 4) in EPR (CAF 1 [ E 1, j ]), s.t. E 0,i = E 1, j ∪ E 2,k . For example, as to E 0,1 =
+⊕
+{α1 , α4 , α5 , α7 }, we have E 0,1 ∩ A ⊕
+u = {α1 , α4 } = E 1,1 and E 0,1 ∩ A a = {α5 , α7 } = E 2,1 . It is obvious that E 0,1 = E 1,1 ∪ E 2,1 .
+
+Finally, let us discuss the status evolution of arguments by using the division-based method. On the one hand, as to each
+argument in A ⊕
+u = {α1 , α2 , α3 , α4 }, its status w.r.t. each preferred extension of AF is the same as the one w.r.t. a related
+preferred extension of A ⊕ , R ⊕ ; meanwhile, its justiﬁcation state w.r.t. the set of preferred extensions of AF is the same as
+the one w.r.t. the set of preferred extensions of A ⊕ , R ⊕ .
+
+• As far as the status of an argument w.r.t. a speciﬁc extension is concerned, take α1 and E 0,1 = {α1 , α4 , α5 , α7 } as an
+example. Since α1 ∈ E 0,1 , α1 is accepted w.r.t. E 0,1 . Since E 1,1 = E 0,1 ∩ A ⊕
+u , and α1 ∈ E 1,1 , α1 is accepted w.r.t. E 1,1 .
+Since E 0,1 = E 1,1 ∪ E 2,1 and α1 ∈ E 0,1 , α1 is accepted w.r.t. E 0,1 . Therefore, the status of α1 w.r.t. E 0,1 is the same as
+the one w.r.t. E 1,1 and E 0,1 respectively.
+
+• As far as the justiﬁcation state of an argument w.r.t. the set of extensions is concerned, take α4 as an example. Since
+α4 is in every preferred extension of AF, α4 is skeptically justiﬁed w.r.t. EPR (AF ). Meanwhile, since α4 is in every
+⊕
+⊕
+⊕ ) (and
+preferred extension of A ⊕ , R ⊕ (and A ⊕
+u , R u , respectively), α4 is skeptically justiﬁed w.r.t. EPR ( A , R
+⊕
+⊕
+EPR ( A u , R u ), respectively).
+On the other hand, as to each argument in A a⊕ = {α5 , α6 , α7 , α8 , α9 , α10 }, its status w.r.t. each preferred extension of an
+assigned CAF is the same as the one w.r.t. a related preferred extension of A ⊕ , R ⊕ ; meanwhile, its justiﬁcation state w.r.t.
+sets of preferred extensions of a set of assigned CAFs is also the same as the one w.r.t. the set of preferred extensions of
+A⊕, R ⊕ .
+
+• As far as the status of an argument w.r.t. a speciﬁc extension is concerned, take α8 and E 2,2 = {α5 , α8 } ∈
+EPR (CAF 1 [ E 1,1 ]) as an example. Since α8 ∈ E 2,2 , α8 is accepted w.r.t. E 2,2 . Meanwhile, since E 0,2 = E 1,1 ∪ E 2,2 ∈
+EPR ( A ⊕ , R ⊕ ) and α8 ∈ E 0,2 , α8 is accepted w.r.t. E 0,2 . Therefore, the status of α8 w.r.t. E 2,2 is the same as the one
+w.r.t. E 0,2 .
+
+• As far as the justiﬁcation state of an argument w.r.t. the set of extensions is concerned, take α8 as an example. Since
+
+α8 is accepted w.r.t. E 2,2 , E 2,3 , and E 2,4 respectively, but is rejected w.r.t. E 2,1 , it holds that α8 is credulously justiﬁed
+w.r.t. EPR (CAF 1 [ E 1,1 ]) ∪ EPR (CAF 1 [ E 1,2 ]). Meanwhile, since α8 is accepted w.r.t. E 0,2 , E 0,3 , and E 0,4 respectively, but
+
+is rejected w.r.t. E 0,1 , it holds that α8 is credulously justiﬁed w.r.t. EPR ( A ⊕ , R ⊕ ). Therefore, the justiﬁcation state of
+α8 w.r.t. EPR (CAF 1 [ E 1,1 ]) ∪ EPR (CAF 1 [ E 1,2 ]) is the same as the one w.r.t. EPR ( A ⊕ , R ⊕ ).
+
+5. Conclusions and future work
+5.1. The main contributions of this paper
+The changing of arguments and attacks is a very common property of various kinds of argumentation systems. However,
+as Dunne and Wooldridge pointed out that “. . . , the treatment of algorithms and complexity issues relating to determining argument status in dynamically changing environments has been somewhat neglected” [37], unlike other aspects of argumentation in
+artiﬁcial intelligence that have been extensively studied, very little attention has been paid to the dynamics of argumentation. So, it is very important to further explore this subject. Motivated by this idea, we have proposed an original approach
+in this paper to cope with one of the challenging problems of the dynamics of argumentation: how to eﬃciently compute
+the status of arguments in an argumentation system, upon the changing of arguments and attacks. The contributions of this
+paper mainly include the following aspects:
+1. Propose a method to divide an argumentation framework: by taking advantage of the characteristics of the relationship
+between the status of arguments and their attack relation, we have formally described a method for dividing an argumentation framework and proved the correctness of this division.
+2. Propose a method to compute the status of affected arguments: we have introduce two new concepts, conditioned argumentation framework (CAF) and assigned CAFs, as well as the semantics of an assigned CAF, based on which the status of
+affected arguments can be computed correctly.
+
+B. Liao et al. / Artiﬁcial Intelligence 175 (2011) 1790–1814
+
+1811
+
+3. Propose a method to combine the semantics of the two kinds of sub-frameworks: we have formally deﬁned the semantics
+combination of the two kinds of sub-frameworks, and proved the soundness and completeness of the combination.
+Meanwhile, we have proved the correctness of status evolution of arguments by using the division-based method.
+With the above contributions, the division-based method proposed in this paper has the following characteristics:
+1. Generality: It is a general theory in the sense of the following two aspects. First, this theory is applicable to various kinds
+of argumentation semantics that satisfy the directionality criterion, including complete semantics, preferred semantics,
+grounded semantics, and ideal semantics, etc. Second, this theory is able to treat with a general form of dynamics of
+argumentation, i.e., (i) the number of arguments and attacks to be added to or deleted from an argumentation system
+is unlimited; and (ii) both the addition and the deletion of arguments and/or attacks are applicable.
+2. Eﬃciency: Qualitatively, it is obvious that in most cases (although not in all cases) the division-based method is more
+eﬃcient. This is mainly due to the following two reasons. First, there exist linear time algorithms for the division of
+an argumentation framework (in that the problem of dividing an argumentation framework corresponds to ﬁnding
+the nodes reachable from a set of nodes in a directed graph). Second, when computing the extensions of a modiﬁed
+argumentation framework, we may reuse some previous computation, rather than simply recompute the status of each
+argument afresh.
+With the above two characteristics, this theory is expected to be very useful in various kinds of argumentation-based
+systems, especially belief revision [40,19,20,61,42], deliberation [2,54,44], decision-making [46,43,6,51], and negotiation [57,
+47,1,59,4], within agents and multi-agent systems. The reason is that in these systems, underlying knowledge and information are often uncertain, incomplete, inconsistent, and ever-changing. As a result, the corresponding argumentation systems
+are dynamic by nature. So, the eﬃcient division-based method will facilitate the development of these systems.
+5.2. Related work
+In recent years, dynamics of argumentation has attracted some research efforts. However, up to now, its concept is still
+unclear. Different researchers treated with it from different perspectives.
+First, in the area of dialectical argumentation, the dynamics of argumentation means that the dialectical process of
+argumentation may change with the variations of knowledge at different stages [21,58,56]. This concept focuses on how a
+position (or a claim) can be proved with respect to a theory which can be revised dynamically. Researchers in this area did
+not care about the status evolution of the whole set of arguments within an argumentation framework, but only considered
+whether a speciﬁc position (or a claim) is acceptable according to a dialectical proof procedure where two parties (proposer
+and opposer) are involved.
+Second, other researchers paid more attention to how the whole set of arguments and attacks of an argumentation
+system changes with the changing of underlying information, or how the status of arguments of an argumentation system
+evolves upon the changing of arguments and attacks. On the one hand, in [20], Capobianco et al. used potential arguments and the instances of them to treat with the knowledge changing in dynamic environment. When perceptions change
+dynamically, the instances of potential arguments and attacks among them vary accordingly. As a result, the status of arguments is changed. Sharing some basic ideas with [20], Rotstein et al. introduced the notion of dynamics into the concept
+of abstract argumentation frameworks, by including the concept of evidence [61]. They proposed a concept of Dynamic
+Argumentation Framework (corresponding to potential arguments in [20]), from which a static instance can be obtained, according to a varying set of evidence (corresponding to perceptions in [20]). However, both of them have not considered how
+to dynamically compute the status of arguments without computing the whole set of arguments in each time point. On
+the other hand, some researchers have performed some works towards this issue. For example, Moguillansky et al. studied
+the dynamics of argumentation based on the idea of classical belief revision, i.e., when an argument is added to a system,
+the revision operator will change the set of arguments, with an objective that the newly added argument is accepted [55].
+Boella et al. studied the dynamics of argumentation by exploring the principles where the extension does not change when
+an argument or an attack between them is changed, but without considering how to dynamically compute the status of
+arguments when the status of existing arguments is affected [13,14]. Baroni et al. proposed a notion of directionality, which
+says that unattacked sets are unaffected by the remaining part of the argumentation framework as far as extensions are
+concerned [8,9], but without considering the dynamics of argumentation systems. Cayrol et al. explored the impact of the
+arrival of a new argument on the outcome of an argumentation framework, by deﬁning a typology of reﬁnement (i.e. adding
+an argument), and deﬁning principles and condition so that each type of reﬁnement becomes a classical revision [23]. However, they did not focus on how to compute the status of arguments when an argumentation framework is expanded with
+a set of arguments or attacks. Amgoud et al. studied how the acceptability of arguments evolves when the decision system
+is extended by new arguments without computing the whole extensions [5]. Their theory is focused on the revision of a
+particular argument (a practical argument or an epistemic argument). On the contrary, we are more interested in the issue
+of how the status of all arguments in an argumentation framework changes when any variations arise.
+Based on the above analysis, we may conclude that this paper is in line with [8,23,13] and [5], etc., but has the two
+characteristics (generality and eﬃciency) mentioned above.
+
+1812
+
+B. Liao et al. / Artiﬁcial Intelligence 175 (2011) 1790–1814
+
+In addition, we noticed that the idea of computing sets of extensions of sub-frameworks locally and then combining them
+to form the uniﬁed extensions of the whole argumentation framework is related to the work presented in [27]. According
+to [27], given a set of distinct argumentation frameworks from different agents, they are expanded respectively into partial
+systems over the set of all arguments considered by the group of agents. Then, a merging operator is used to produce a set
+of argumentation systems that are as close as possible to the partial systems (to realize a kind of consensus). And then, the
+acceptability of a set of arguments at the group level is obtained by selecting the extensions of a set of produced (merged)
+argumentation frameworks at the local level. With some sense of similarity, in our division-based method, each extension
+of the whole argumentation framework can also be regarded as a kind of the uniﬁed consensus of the extensions of two subframeworks. However, since the sub-frameworks in the division-based method are parts of an argumentation framework,
+although the extensions of each sub-framework are computed locally (associated by the conditioning arguments), they
+are parts of the extensions of the whole argumentation framework, and therefore there are no conﬂicts between each
+extension of the unaffected sub-framework and the extensions of corresponding assigned CAF. So, the extensions of the
+whole argumentation framework is obtained by combining the extensions of the two sub-frameworks (rather than selecting
+the extensions of the two sub-frameworks).
+5.3. Future work
+First, as mentioned in Section 1, beside grounded semantics, complete semantics, preferred semantics, and ideal semantics, some other semantics including CF 2 and the prudent version of grounded semantics also satisfy the directionality
+criterion. However, since CF 2 is based on the SCC-recursive scheme [8], and the prudent version of grounded semantics
+is based on the notion of prudently conﬂict-free set [26], the division-based method proposed in this paper should be
+specialized (or modiﬁed) to meet the characteristics of these semantics.
+Second, based on the theory formulated in this paper, it is worth investigating the development of speciﬁc algorithms
+for computing the extensions of argumentation frameworks under various semantics, as well as their detailed complexities
+(formal analysis or practical experiment). In recent years, some proof theories and algorithms for abstract argumentation
+frameworks have been proposed [22,18,33,34,63,53], but they are mainly related to static systems [37]. So, it would be
+interesting to combine the division-based method with the existing proof theories and algorithms to realize the dynamics of
+argumentation. Meanwhile, it is also important to study the worst-case (algorithm independent) computational complexity
+of this method.
+Third, as mentioned in Section 1, the changing of arguments and attacks among them is an intrinsic property of a
+variety of argumentation systems. Based on the method proposed in this paper, the next step is to study the dynamics
+of these concrete systems, including belief revision, deliberation, decision-making, and negotiation, etc., within agents and
+multi-agent systems [60].
+Finally, the division-based method can also be applied to computing the extensions of a static argumentation framework,
+which is a part of our on-going work.
+Acknowledgement
+We are grateful to the reviewers of this paper for their valuable comments and suggestions, which helped to greatly
+improve our work. We also thank Mirl Kimberling for his useful suggestions. The research reported in this paper was
+ﬁnancially supported by the National Science Foundation of China (No. 60773177), the National Social Science Foundation
+of China (No. 07CZX016), and Zhejiang Provincial Natural Science Foundation of China (No. Y1100036).
+References
+[1] L. Amgoud, S. Parsons, N. Maudet, Argument, dialogue and negotiation, in: Proceedings of the 14th ECAI, Berlin, Germany, 2000, pp. 338–342.
+[2] L. Amgoud, A formal framework for handling conﬂicting desires, in: Proceedings of the ECSQARU, in: LNCS, vol. 2711, Springer-Verlag, Berlin/Heidelberg,
+2003, pp. 552–563.
+[3] L. Amgoud, A uniﬁed setting for inference and decision: An argumentation-based approach, in: Proceedings of the UAI 2005, Edinburgh, Scotland, 2005,
+pp. 26–33.
+[4] L. Amgoud, Y. Dimopoulos, P. Moraitis, A general framework for argumentation-based negotiation, in: Proceedings of the ArgMAS 2007, in: LNAI,
+vol. 4946, Springer-Verlag, Berlin/Heidelberg, 2008, pp. 1–17.
+[5] L. Amgoud, S. Vesic, On revising argumentation-based decision systems, in: Proceedings of the ECSQARU, in: LNAI, vol. 5590, Springer-Verlag,
+Berlin/Heidelberg, 2009, pp. 71–82.
+[6] L. Amgoud, H. Prade, Using arguments for making and explaining decisions, Artiﬁcial Intelligence 173 (2009) 413–436.
+[7] L. Amgoud, C. Devred, M. Lagasquie-Schiex, A constrained argumentation system for practical reasoning, in: Proceedings of the ArgMas 2008, in: LNAI,
+vol. 5384, Springer-Verlag, Berlin/Heidelberg, 2009, pp. 37–56.
+[8] P. Baroni, M. Giacomin, G. Guida, SCC-recursiveness: a general schema for argumentation semantics, Artiﬁcial Intelligence 168 (1–2) (2005) 162–210.
+[9] P. Baroni, M. Giacomin, On principle-based evaluation of extension-based argumentation semantics, Artiﬁcial Intelligence 171 (2007) 675–700.
+[10] P. Baroni, M. Giacomin, Skepticism relations for comparing argumentation semantics, International Journal of Approximate Reasoning 50 (2009) 854–
+866.
+[11] P. Baroni, M. Giacomin, Semantics of abstract argument systems, in: I. Rahwan, G.R. Simari (Eds.), Argumentation in Artiﬁcial Intelligence, Springer,
+2009, pp. 25–44.
+[12] T.J.M. Bench-Capon, P.E. Dunne, Argumentation in artiﬁcial intelligence, Artiﬁcial Intelligence 171 (2007) 619–641.
+
+B. Liao et al. / Artiﬁcial Intelligence 175 (2011) 1790–1814
+
+1813
+
+[13] G. Boella, S. Kaci, L. van der Torre, Dynamics in argumentation with single extensions: abstraction principles and the grounded extension, in: Proceedings of the ECSQARU 2009, in: LNAI, vol. 5590, Springer-Verlag, Berlin/Heidelberg, 2009, pp. 107–118.
+[14] G. Boella, S. Kaci, L. van der Torre, Dynamics in argumentation with single extensions: attack reﬁnement and the grounded extension, in: Proceedings
+of the AAMAS 2009, Budapest, Hungary, 2009, pp. 1213–1214.
+[15] G. Boella, G. Pigozzi, L. van der Torre, Normative framework for normative system change, in: Proceedings of the AAMAS 2009, Budapest, Hungary,
+2009, pp. 169–176.
+[16] A. Bondarenko, P.M. Dung, R.A. Kowalski, F. Toni, An abstract, argumentation-theoretic approach to default reasoning, Artiﬁcial Intelligence 93 (1997)
+63–101.
+[17] M. Caminada, Semi-stable semantics, in: P.E. Dunne, T. Bench-Capon (Eds.), Proceedings of the First International Conference on Computational Models
+of Argument (COMMA 2006), IOS Press, Liverpool, UK, 2006, pp. 121–130.
+[18] M. Caminada, An algorithm for computing semi-stable semantics, in: K. Mellouli (Ed.), Proceedings of the ECSQARU 2007, in: LNAI, vol. 4724, SpringerVerlag, Berlin/Heidelberg, 2007, pp. 222–234.
+[19] M. Capobianco, C.I. Chesñevar, G.R. Simari, An argument-based framework to model an agent’s beliefs in a dynamic environment, in: I. Rahwan, et al.
+(Eds.), Proceedings of the ArgMAS 2004, in: LNAI, vol. 3366, Springer-Verlag, Berlin/Heidelberg, 2005, pp. 95–110.
+[20] M. Capobianco, C.I. Chesñevar, G.R. Simari, Argumentation and the dynamics of warranted beliefs in changing environments, JAAMAS 11 (2) (2005)
+127–151.
+[21] D.V. Carbogim, Dynamics on formal argumentation, PhD thesis, University of Edinburgh, 2000.
+[22] C. Cayrol, S. Doutre, J. Mengin, Dialectical proof theories for the credulous preferred semantics of argumentation frameworks, in: S. Benferhat, P.
+Besnard (Eds.), Proceedings of the ECSQARU 2001, in: LNAI, vol. 2143, Springer-Verlag, Berlin/Heidelberg, 2001, pp. 668–679.
+[23] C. Cayrol, F.D. de St-Cyr, M. Lagasquie-Schiex, Revision of an argumentation system, in: Proceedings of the KR2008, Sydney, Australia, 2008, pp. 124–
+134.
+[24] C. Cayrol, F.D. de Saint-Cyr, M. Lagasquie-Schiex, Change in abstract argumentation frameworks: adding an argument, Journal of Artiﬁcial Intelligence
+Research 38 (2010) 49–84.
+[25] S. Coste-Marquis, C. Devred, P. Marquis, Symmetric argumentation frameworks, in: Symbolic and Quantitative Approaches to Reasoning with Uncertainty, 8th European Conference (ECSQARU), Barcelona, Spain, 2005, pp. 317–328.
+[26] S. Coste-Marquis, C. Devred, P. Marquis, Prudent semantics for argumentation frameworks, in: Proceedings the ICTAI 2005, Hong Kong, China, 2005,
+pp. 568–572.
+[27] S. Coste-Marquis, C. Devred, S. Konieczny, M. Lagasquie-Schiex, P. Marquis, On the merging of Dung’s argumentation systems, Artiﬁcial Intelligence 171
+(2007) 730–753.
+[28] Y. Dimopoulos, B. Nebel, F. Toni, On the computational complexity of assumption-based argumentation for default reasoning, Artiﬁcial Intelligence 141
+(2002) 57–78.
+[29] J. Dix, S. Parsons, H. Prakken, G. Simari, Research challenges for argumentation, Computer Science – Research and Development 23 (1) (2009) 27–34.
+[30] P.M. Dung, On the acceptability of arguments and its fundamental role in nonmonotonic reasoning, logic programming and n-person games, Artiﬁcial
+Intelligence 77 (1995) 321–357.
+[31] P.M. Dung, R.A. Kowalski, F. Toni, Dialectic proof procedures for assumption-based, admissible argumentation, Artiﬁcial Intelligence 170 (2006) 114–
+159.
+[32] P.M. Dung, P. Mancarella, F. Toni, A dialectic procedure for sceptical, assumption-based argumentation, in: P.E. Dunne, T. Bench-Capon (Eds.), Proceedings of the COMMA 2006, Liverpool, UK, 2006, pp. 145–156.
+[33] P.M. Dung, P. Mancarella, F. Toni, Computing ideal sceptical argumentation, Artiﬁcial Intelligence 171 (2007) 642–674.
+[34] P.M. Dung, P.M. Thang, A sound and complete dialectical proof procedure for sceptical preferred argumentation, in: Proceedings of the ArgNMR07,
+Arizona, USA, 2007, pp. 49–63.
+[35] P.E. Dunne, T.J.M. Bench-Capon, Complexity and combinatorial properties of argument systems, Technical report, University of Liverpool, 2001.
+[36] P.E. Dunne, Computational properties of argument systems satisfying graph-theoretic constraints, Artiﬁcial Intelligence 171 (2007) 701–729.
+[37] P.E. Dunne, M. Wooldridge, Complexity of abstract argumentation, in: I. Rahwan, G.R. Simari (Eds.), Argumentation in Artiﬁcial Intelligence, Springer,
+2009, pp. 85–104.
+[38] P.E. Dunne, A. Hunter, P. McBurney, S. Parsons, M. Wooldridge, Weighted argument systems: Basic deﬁnitions, algorithms, and complexity results,
+Artiﬁcial Intelligence 175 (2010) 457–486, doi:10.1016/j.artint.2010.09.005.
+[39] W. Dvoˇrák, S. Woltran, Complexity of semi-stable and stage semantics in argumentation frameworks, Information Processing Letters 110 (2010) 425–
+430.
+[40] M.A. Falappa, G. Kern-Isberner, G.R. Simari, Explanations, belief revision and defeasible reasoning, Artiﬁcial Intelligence 141 (2002) 1–28.
+[41] M.A. Falappa, A.J. García, G.R. Simari, Belief dynamics and defeasible argumentation in rational agents, in: Proceedings of the NMR2004, Whistler, BC,
+Canada, 2004, pp. 164–170.
+[42] M.A. Falappa, G. Kern-Isberner, G.R. Simari, Belief revision and argumentation theory, in: I. Rahwan, G.R. Simari (Eds.), Argumentation in Artiﬁcial
+Intelligence, Springer, 2009, pp. 341–360.
+[43] J. Fox, D. Glasspool, D. Grecu, S. Modgil, M. South, V. Patkar, Argumentation-based inference and decision making-medical perspective, IEEE Intelligent
+Systems (2007) 34–41.
+[44] D. Gaertner, J.A. Rodríguez-Aguilar, F. Toni, Agreeing on institutional goals for multi-agent societies, in: J.F. Hubner, et al. (Eds.), Proceedings of the
+COIN 2008, in: LNAI, vol. 5428, Springer-Verlag, Berlin/Heidelberg, 2009, pp. 1–16.
+[45] A. Kakas, R. Miller, F. Toni, An argumentation framework for reasoning about actions and change, in: Proceedings of the LPNMR’99, El Paso, TX, USA,
+1999, pp. 78–91.
+[46] A.C. Kakas, P. Moraïtis, Argumentation based decision making for autonomous agents, in: Proceedings the AAMAS’03, Melbourne, Australia, 2003,
+pp. 883–890.
+[47] S. Kraus, K. Sycara, A. Evenchik, Reaching agreements through argumentation: a logical model and implementation, Artiﬁcial Intelligence 104 (1998)
+1–69.
+[48] B. Liao, H. Huang, An argumentation-based ﬂexible agent with dynamic rules of inference, in: Proceedings of the ICTAI2009, New Jersey, USA, 2009,
+pp. 284–291.
+[49] B. Liao, H. Huang, ANGLE: an autonomous, normative and guidable agent with changing knowledge, Information Sciences 180 (17) (2010) 3117–3139.
+[50] B. Liao, L. Jin, R.C. Koons, Dynamics of argumentation systems: a basic theory, in: Proceedings of the 17th International Conference on Logic for Programming, Artiﬁcial Intelligence and Reasoning, Yogyakarta, Indonesia, October, 10–15, 2010 (short papers), http://www.computational-logic.org/lpar17/Accepted_Papers_ﬁles/short_papers.html.
+[51] P.-A. Matt, F. Toni, J. Vaccari, Dominant decisions by argumentation agents, in: Proceedings of the ArgMAS 2009, in: LNAI, vol. 6057, Springer-Verlag,
+Berlin/Heidelberg, 2010, pp. 42–59.
+[52] S. Modgil, Reasoning about preferences in argumentation frameworks, Artiﬁcial Intelligence 173 (2009) 901–934.
+[53] S. Modgil, M. Caminada, Proof theories and algorithms for abstract argumentation frameworks, in: I. Rahwan, G.R. Simari (Eds.), Argumentation in
+Artiﬁcial Intelligence, Springer, 2009, pp. 105–129.
+
+1814
+
+B. Liao et al. / Artiﬁcial Intelligence 175 (2011) 1790–1814
+
+[54] S. Modgil, M. Luck, Argumentation based resolution of conﬂicts between desires and normative goals, in: I. Rahwan, P. Moraitis (Eds.), Proceedings of
+the ArgMas 2008, in: LNAI, vol. 5384, Springer-Verlag, Berlin/Heidelberg, 2009, pp. 19–36.
+[55] M.O. Moguillansky, N.D. Rotstein, M.A. Falappa, A.J. García, G.R. Simari, Argument theory change applied to defeasible logic programming, in: Proceedings of the AAAI-08, Chicago, USA, 2008, pp. 132–137.
+[56] K. Okuno, K. Takahashi, Argumentation system with changes of an agent’s knowledge base, in: Proceedings of the IJCAI-09, Pasadena, California, USA,
+2009, pp. 226–232.
+[57] S. Parsons, C.A. Sierra, N.R. Jennings, Agents that reason and negotiate by arguing, Journal of Logic and Computation 8 (3) (1998) 261–292.
+[58] H. Prakken, Relating protocols for dynamic dispute with logics for defeasible argumentation, Synthese 127 (2001) 187–219.
+[59] I. Rahwan, S.D. Ramchurn, N.R. Jennings, P. McBurney, S. Parsons, L. Sonenberg, Argumentation-based negotiation, The Knowledge Engineering Review 18 (4) (2003) 343–375.
+[60] I. Rahwan, Guest editorial: Argumentation in multi-agent systems, Autonomous Agents and Multi-Agent Systems 11 (2005) 115–125.
+[61] N.D. Rotstein, M.O. Moguillansky, A.J. García, G.R. Simari, An abstract argumentation framework for handling dynamics, in: Proceedings of the NMR2008,
+Sydney, Australia, 2008, pp. 131–139.
+[62] B. Verheij, Two approaches to dialectical argumentation: admissible sets and argumentation stages, in: Proceedings of the NAIC’96, Utrecht, NL, 1996,
+pp. 357–368.
+[63] B. Verheij, A labeling approach to the computation of credulous acceptance in argumentation, in: Proceedings of the IJCAI-07, Hyderabad, India, 2007,
+pp. 623–628.
+
+

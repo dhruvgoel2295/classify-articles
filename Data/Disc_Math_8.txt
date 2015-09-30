@@ -1,0 +1,195 @@
+Discrete Mathematics 311 (2011) 1995–1997
+
+Contents lists available at ScienceDirect
+
+Discrete Mathematics
+journal homepage: www.elsevier.com/locate/disc
+
+Note
+
+On a Lovász-type lemma, applied to Brooks’ theorem for list-colouring
+Helge Tverberg
+Department of Mathematics, UiB, Johs. Bruns gate 12, 5008 Bergen, Norway
+
+article
+
+info
+
+Article history:
+Received 16 February 2010
+Received in revised form 16 May 2011
+Accepted 19 May 2011
+Available online 17 June 2011
+
+abstract
+In this paper, I present a new structural lemma for k-regular graphs, similar to an earlier
+lemma by Lovász (1975) [5]. The new lemma is then used to give an algebraic proof of
+Brooks’ theorem for list-colouring.
+© 2011 Elsevier B.V. All rights reserved.
+
+Keywords:
+k-regular graphs
+Graph colouring
+List-colouring
+Brooks’ theorem
+
+1. Introduction
+Brooks’ classical theorem [3] says that if a simple finite graph has maximal degree k, where k is at least 3, and no
+component of it is a Kk+1 , then it can be properly coloured using k colours. Many interesting proofs have been found for this
+theorem, and in 1973, Lovász, [5] gave a very nice proof. There he proved a lemma, dealing with a finite, simple, connected
+graph G. It says that if G is not complete and has no cut-vertex, then there is a vertex triple p, q, r with a nice property:
+pq ∈ E , pr ∈ E , qr ̸∈ E and G − q − r is connected.
+He then considered a minimal counterexample to Brooks’ theorem. It must clearly satisfy the conditions of the lemma;
+hence, there are vertices p, q and r as described. The colouring can then be done as follows. First, one orders V \ {q, r } as
+v1 , . . . , vn−2 in such a way that d(vi , p) ≤ d(vi+1 , p) for 1 ≤ i ≤ n − 3. Here d denotes the usual distance in the connected
+graph G − q − r. One then puts q = vn−1 , r = vn .
+One starts by giving q and r the same colour. Having coloured vi+1 , we colour vi , which is feasible, since vi has at least
+one neighbour vj with j < i and thus has not been coloured yet. This fails for i = 1, but as q and r have the same colour,
+there is still at least one colour available for v1 = p.
+This proof does not immediately apply to list-colouring. Here each vertex v comes with a list Lv of k legal colours for v . One
+must choose a colour cv from Lv , for each v , so that uv ∈ E ⇒ cu ̸= cv . Consider now a vertex-minimal counterexample G
+having a cut-vertex v . By minimality, each component of G − v has a colouring extendable to v , but it may not be possible
+to choose these extended colourings such that they together form a colouring of G. Thus one cannot assume, as Lovász does,
+that G has no cut-vertex. In Section 2, it is shown how to deal with the case when there are cut-vertices.
+In Section 3, I shall prove another, similar, lemma, which works for list-colouring. That lemma will be applied in an
+algebraic proof of Brooks’ theorem for list-colouring, in Section 4. Section 5 contains historical remarks.
+2. A folklore argument (provided by a referee)
+The following argument shows that the Lovász proof extends to the list-colouring case, as it shows how to deal with
+cut-vertices. We consider a minimal counterexample G to Brooks’ theorem for which its vertices p, q, r do not exist; hence,
+E-mail address: tverberg@math.uib.no.
+0012-365X/$ – see front matter © 2011 Elsevier B.V. All rights reserved.
+doi:10.1016/j.disc.2011.05.021
+
+1996
+
+H. Tverberg / Discrete Mathematics 311 (2011) 1995–1997
+
+G has a cut-vertex b. We assume b to be chosen from an endblock B, so that b is the only vertex common to B and U, where
+U is the union of the other blocks of G.
+By the minimality of G, it follows that U can be properly coloured, say with colour x of b. By the lemma p, q and r exist
+for B. If b ̸∈ {q, r }, then p, q, r also works for G, so we may assume that q = b. We also have by minimality that G is regular.
+If now Lp ̸= Lr , then r can be given a colour from Lr \ Lp , and then Lovász’ procedure will work. Hence we assume Lp = Lr .
+If x ∈ Lp , then x ∈ Lr . Using x for r, the procedure works again. If x ̸∈ Lp , then any colour from Lr can be given to r, and once
+again the procedure works.
+Since G can be assumed to be without cut-vertices, the reader can now go directly to Section 4 for the algebraic proof. In
+Section 3 I prove the structure lemma I at first thought necessary for the algebraic proof, as it may still have some interest
+in itself.
+3. A Lovász-type lemma
+In this section we prove the following
+Lemma. Fix k > 2. If G is a finite, simple, k-regular, connected graph other than Kk+1 , then G has 3 vertices, p, q and r such that
+pq ∈ E (G), pr ∈ E (G), qr ̸∈ E (G) and in addition
+(1) G − q − r is connected, or
+(2) G − q − r consists of two components Pp and D where p ∈ Pp , while D is a Kk−1 , each vertex of which is a neighbour (in G) of
+q and r.
+Proof. Each vertex p has neighbours q and r such that qr ̸∈ E. We choose a triple (p, q, r ) for which Pp , the component of
+G − q − r containing p, has the most of vertices. Assume now that (1) is not satisfied. Let D be any of the other components
+of G − q − r. Since G is connected, we may assume that at least one of q and r, say q, has a neighbour in D. Put D−1 = ∅,
+D0 = {q}, and let Di = {v : v ∈ D ∪ {r } & d(v, q) = i}, for i = 1, . . .. Here d denotes the usual distance, calculated in the
+graph induced by G on {q, r } ∪ V (D) if r has a neighbour in D, but on {q} ∪ V (D) if not. In the latter case r is not in any Di .
+Let I be the largest i for which Di is non-empty.
+We first prove by induction on i that Di ∪ Di+1 is a clique in G, for i ∈ {−1, 0, . . . , I − 1}. The claim is trivial when i = −1.
+We now consider i ≥ 0 and do the induction step from i − 1 to i. Put, for convenience, Di = {i′ , i′′ , . . .}. Since Di−1 ∪ Di is a
+clique, Di is one, too. If Di ∪ Di+1 is not a clique there exist i′ and (i + 1)′ such that i′ (i + 1)′ ̸∈ E or (i + 1)′ and (i + 1)′′ such
+that (i + 1)′ (i + 1)′′ ̸∈ E. In the first case there is an edge i′′ (i + 1)′ . Choosing the triple (i′′ , i′ , (i + 1)′ ) instead of (p, q, r )
+we find that Pi′′ ⊃ Pp ∪ D0 ∪ · · · ∪ Di \ {i′ }, a contradiction to the maximality of V (Pp ). In the second case, there exists an
+i′ with i′ (i + 1)′ ̸∈ E and, by what we just proved, i′ (i + 1)′′ ∈ E. Replacing (p, q, r ) by (i′ , (i + 1)′ , (i + 1)′′ ), we find that
+Pi′ ⊃ Pp ∪ D0 ∪ · · · ∪ Di+1 \ {(i + 1)′ , (i + 1)′′ }, which is a contradiction again. Hence Di ∪ Di+1 is a clique.
+Consider now the clique DI −1 ∪ DI . If DI contains some I ′ other than r, then |DI −1 ∪ DI | = k + 1, as DI −1 ∪ DI consists of
+I ′ and its neighbours in G. Since G contains no (k + 1)-clique we have DI = {r } and I > 1. Choose a vertex 1′ from D1 . Now
+D0 ∪ D1 ∪ D2 consists of 1′ and its neighbours in G, and so |D1 ∪ D2 | = k. If |D2 | > 1, then D2 = {2′ , 2′′ , . . .}, and we can
+replace (p, q, r ) by (1′ , q, 2′ ). Since now P1′ ⊃ D1 ∪ D2 \ {2′ } ∪ D3 ∪ · · · ∪ DI ∪ Pp , we conclude that |D2 | = 1 and |D1 | = k − 1.
+Now D2 = {2′ }, but 2′ = r. For if not, 2′ has just one neighbour, 3′ , outside D1 and we can replace (p, q, r ) by (2′ , 1′ , 3′ ).
+Now P2′ ⊃ D1 \ {1′ } ∪ {q} ∪ Pp , a contradiction. Thus D2 = {r } and I = 2, while each of the k − 1 vertices of D = D1 is a
+neighbour of q and r. Hence we have (2).
+Corollary. If the G in the Lemma is a minimal counterexample to Brooks’ theorem for list-colouring, then G − q − r is connected.
+Proof. Since G is a minimal counterexample, it satisfies the conditions of the lemma. In case (2) of the lemma, p is clearly a
+cut-vertex of G but, as shown in Section 2, G has no cut-vertices. Hence we have case (1).
+Remark. Since the component D in case (2) is so simple, the corollary can also be proved without recourse to Section 2.
+4. Algebraic proof of Brooks’ theorem for list-colouring
+From the corollary in Section 3 (or from Section 2) we know that a vertex-minimal counterexample G to the theorem
+must have vertices p, q, r such that pq ∈ E (G), pr ∈ E (G), qr ̸∈ E (G) while G − q − r is connected. We number the vertices
+of G in the way that was described in Section 1 and introduce the polynomial P (x1 , . . . , xn ) = Π (xi − xj ), where each factor
+has i < j and corresponds to an edge vi vj of G.
+We may clearly assume that the list Li assigned to vi is given by the set of zeros of a complex polynomial fi defined as
+e
+xk − gi (x), with deg(gi ) < k. We may also assume that g1 (x) = 1. Write P as a sum of terms ae1 ...en x11 . . . xenn and replace in
+ei
+∗
+each term each power xi for which ei = k by gi (xi ). The result is a polynomial P of degree < k in each variable. It follows
+easily from Alon’s Combinatorial Nullstellensatz that P ∗ = 0. It therefore suffices for us to obtain a contradiction by finding
+a nonzero coefficient in P ∗ .
+Among the 2m monomials obtained by multiplying out P , M, the monomial obtained by choosing xi from each factor
+e
+stands out. It equals x11 . . . xenn , where e1 = k, e2 , . . . , en−2 are less than k, and en−1 = en = 0. It is easily seen that none of
+the other monomials equals ±M. Let M ∗ be the contribution to P ∗ from M. Since gi (x) = 1 and e2 , . . . , en−2 are all less than
+e
+e
+k, while en−1 = en = 0, M ∗ = x22 · · · xnn−−22 .
+
+H. Tverberg / Discrete Mathematics 311 (2011) 1995–1997
+
+1997
+d
+
+P contains 2m − 1 other monomials (before collection of terms); let M0 be any one of them, of the form ±x11 · · · xdnn . Let
+M0 denote the contribution to P ∗ from M0 . Then M0∗ = ±h1 (x1 ) · · · hn (xn ), where hi (x) = xdi if di < k, while hi (x) = gi (x)
+(as defined above) if di = k. M0∗ becomes a sum of monomials when multiplied out, and we shall see below that none of
+e
+e
+e
+e
+these have the form ax22 · · · xnn−−22 . From this it follows that P ∗ , when written in standard form, equals · · · + x22 · · · xnn−−22 + · · ·
+and is not the zero polynomial, which gives the desired contradiction.
+e
+e
+Assume now that some monomial from M0∗ actually equals x22 · · · xnn−−22 . Since d1 +· · ·+ dn = e1 +· · · en−2 and M0 ̸= ±M,
+as seen above, di < ei for some i. Now i = 1, as otherwise xi appears only to the di th power in each term of M0∗ . Since
+∗
+
+d
+
+i = 1, we have d1 = 0, for d1 < e1 = k, so that if d1 was positive, then x11 would divide each term of M0∗ , but not
+M ∗ . But since d1 = 0, dn−1 and dn are both positive, as vn−1 and vn are neighbours of v1 . Then dn = k, as otherwise
+c
+xdnn divides each term of M0∗ and similarly dn−1 = k. Each term of M0∗ as multiplied out has the form bx11 . . . xcnn . Here
+c1 + · · · + cn−2 d1 + · · · dn−2 = m − 2k, and the special term we are looking at has cn−1 = cn = 0. Thus the special term
+has degree at most m − 2k, while deg(M ∗ ) = m − k. This contradiction shows that P ∗ ̸= 0.
+5. Historical remarks and a question
+This paper was inspired by an early version of [4], which gives a different algebraic proof of Brooks’ theorem for listcolouring. However, its roots go back more than 50 years. In the late 1950’s I tried to solve the 4-colour problem by an
+algebraic method that, when extended, becomes the celebrated Combinatorial Nullstellensatz by Alon, cf. [1]. The attempt
+was abortive, and so I did not publish anything about the method. In 1968, however, H. Bergmann published [2], containing
+essentially the same method, but with no applications. His paper seems to have gone unnoticed.
+In 1971 I found an application for my method to Brooks’ theorem, but I first had to prove a purely graph-theoretic lemma.
+When I realized that the lemma also gave a non-algebraic proof, I hesitated to publish. Then, in 1975, Lovász [5] proved the
+same lemma and applied it to a non-algebraic proof. Finally, in 1980, I submitted a manuscript [6], containing among other
+things also my algebraic proof. Unfortunately, [6] was not accepted, so it was only later, and in particular after publication
+of [1], that the force of algebra was demonstrated.
+Upon seeing [4], it was natural to see whether my old algebraic approach would work also for the list version of Brooks’
+theorem. It was clear that now Alon’s theorem would have to be used, and it seemed then that a different Lovász-type lemma
+had to be used. The rest was easy.
+Returning to the 4-colour theorem: I can now see why my approach did not work. I focused on those of the monomials of
+P (x1 , . . . , xn ) where each xi occurs to at most the third power, since they go unchanged into P ∗ . But if a nonzero term of P ∗
+could be found in that way, one would in fact have found a proof of the 4-colour theorem for list-colouring, which is known
+to be false.
+There is a general wish for a better proof of the 4-colour theorem. While waiting for that, I think that having various
+proofs of graph colouring theorems should be encouraged; somewhere an idea applicable to the 4CT might turn up!
+The question: A problem came to my mind during the work on this paper. Given the colourlist for a graph G satisfying
+Brooks’ conditions, and a vertex v of G. Choose a colour for v . Can that colouring be extended to all of G?
+Acknowledgement
+I thank the referees for their very helpful work.
+References
+[1]
+[2]
+[3]
+[4]
+[5]
+[6]
+
+N. Alon, Combinatorial Nullstellensatz, Probab. and Comp. 8 (1999) 7–29.
+H. Bergmann, Ein Färbbarkeitskriterium für endliche Graphen, Math. Nachrichten 36 (1968) 193–194.
+R.L. Brooks, On colouring the nodes of a network, Proc. Cambridge Philosophical Society 37 (1941) 194–197.
+J. Hladký, D. Král, U. Schauz, Brooks theorem via the Alon-Tarsi theorem, Discrete Math. 310 (23) (2010) 3426–3428.
+L. Lovász, Three short proofs in graph theory, J. Combin. Theory Ser. B 19 (1975) 269–271.
+H. Tverberg, Some remarks on the four-colour theorem, manuscript, 1980.
+
+

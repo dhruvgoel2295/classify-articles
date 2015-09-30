@@ -1,0 +1,773 @@
+Computer-Aided Design 43 (2011) 1477–1484
+
+Contents lists available at SciVerse ScienceDirect
+
+Computer-Aided Design
+journal homepage: www.elsevier.com/locate/cad
+
+Blends of canal surfaces from polyhedral medial transform representations
+Bohumír Bastl a , Bert Jüttler b , Miroslav Lávička a , Tino Schulz b,∗
+a
+
+University of West Bohemia, Department of Mathematics, Plzeň, Czech Republic
+
+b
+
+Johannes Kepler University of Linz, Institute of Applied Geometry, Austria
+
+article
+Keywords:
+Medial axis
+Medial structure
+Blend surface
+Canal surface
+
+info
+
+abstract
+We present a new method for constructing G1 blending surfaces between an arbitrary number of canal
+surfaces. The topological relation of the canal surfaces is specified via a convex polyhedron and the
+design technique is based on a generalization of the medial surface transform. The resulting blend surface
+consists of trimmed envelopes of one- and two-parameter families of spheres. Blending the medial surface
+transform instead of the surface itself is shown to be a powerful and elegant approach for blend surface
+generation. The performance of our approach is demonstrated by several examples.
+© 2011 Elsevier Ltd. Open access under CC BY-NC-ND license.
+
+1. Introduction
+Blending is an important operation in any geometric modeling
+system. Given a number of surfaces, which are often called primary
+surfaces, the purpose of blending is to generate one or more
+auxiliary (secondary) surfaces that create a smooth transition
+between the primary ones. The final object then consists of
+trimmed primary surfaces and the auxiliary ones.
+Blending surfaces are needed for rounding edges and corners of
+mechanical parts, or for smoothly joining separated objects. Some
+types of blend surfaces (which require the addition of material
+to an existing object) are called fillets, but there seems to be no
+universally accepted terminology.
+Many engineering objects consists mostly of simple surfaces
+(segments of planes, cylinders, cones, tori and spheres) except
+for the blending surfaces, which require true free-form surfaces.
+Thus, blend surface creation is often the first challenge where it
+is necessary to introduce free-form design tools into a geometric
+modeling system.
+Due to its technical importance, blending has continuously
+attracted the geometric design community since many years.
+Detailed introductions with any related references are provided in
+the two books [1,2].
+The existing approaches to blending can be classified according
+to the type of surfaces which are used to describe the blend surface.
+The rolling ball blend (see e.g. [3] and the references cited therein),
+which probably represents the earliest existing method, uses a
+procedural description of the blend surface. In its simplest form, a ball
+
+∗
+
+Corresponding author. Tel.: +43 0 732 2468.
+E-mail addresses: bastl@kma.zcu.cz (B. Bastl), bert.juettler@jku.at (B. Jüttler),
+lavicka@kma.zcu.cz (M. Lávička), tino.schulz@jku.at (T. Schulz).
+0010-4485 © 2011 Elsevier Ltd. Open access under CC BY-NC-ND license.
+doi:10.1016/j.cad.2011.08.014
+
+of constant radius rolls on two primary surfaces, thereby creating
+the blend surface as its envelope. The blend then consists of
+segments of pipe surfaces which are, however, often approximated
+by other surfaces [4]. A generalization leads to variable radius
+rolling ball blends, consisting of segments of canal surfaces [5]. A
+new method for controlling the radius of a rolling ball blend has
+been proposed recently in [6].
+Parametric blend surfaces are often favored in applications, since
+they can easily be added to an existing boundary representation
+of a solid using trimmed surfaces. These blending surfaces can be
+defined by specifying contact curves on the given primary surfaces
+and then creating a blend surface that is smoothly joined to the
+given surfaces. In 1994, a survey of blending methods of this type
+was presented by Vida et al. [7]. The special case of parametric
+blending surfaces between pairs of quadric surfaces was addressed
+in [8].
+Recent results on parametric blend surfaces include the article
+[9], which uses a partial reparameterization of the base surfaces, as
+well as techniques for blending subdivision surfaces [10].
+When using parametric blend surfaces, however, the flexibility of these surfaces is rather limited, since the mathematical description of these surfaces requires to define them as embeddings
+of a parameter domain. While this works well for blends between
+only two surfaces, the description of multi-sided blends (e.g. the
+house-corner blend, which requires a six-sided surface) is not that
+obvious. Consequently, special techniques for the construction of
+vertex blends have been designed [11,12]. In a recent paper, surfaces defined in polar coordinates were used to define blends between multiple surfaces and to fill n-sided holes [13].
+In order to optimize the shape of blend surfaces, numerical
+methods for solving geometric partial differential equations have
+been studied in [14].
+On the other hand, the use of implicitly defined blend surfaces
+offers more flexibility for designing blends, since their shape is
+
+1478
+
+B. Bastl et al. / Computer-Aided Design 43 (2011) 1477–1484
+
+not restricted to be obtained as an embedding of a parameter
+domain. Due to this flexible topology, it is easier to obtain complex,
+multi-sided blends. The classical texts on use of implicit surfaces
+for blending include [15,16]. Since then, blending using implicit
+representations has been discussed by a large number of authors.
+We refer to [17–22] as a few representative references. Besides
+blends based on (piecewise) polynomial representations, also
+procedurally defined implicit representations were used to create
+blends [23].
+Another possibility to classify blending surfaces is to analyze
+the class of primary surfaces that can be dealt with. Here, special
+attention has been paid to blending surfaces between canal surfaces
+and more generally, of ringed surfaces. In particular, it has been
+proposed to use patches of Dupin cyclides as blends between canal
+surfaces; see the chapter on cyclides in [1].
+These cyclides can be defined as the envelopes of all spheres
+that touch three given spheres; see [24]. They are algebraic surfaces
+of degree four and they possess simple rational parameterizations
+with the parameter lines being simultaneously lines of curvature.
+Moreover, the class of Dupin cyclides is closed under offsetting.
+Cyclide blends between two cones were analyzed in [25]. By
+generalizing the constructions of biarcs to Laguerre geometry it
+was shown how to generate blends between general canal surfaces
+using double-cyclide surfaces in [26].
+In a recent paper, Krasauskas [27] creates branching blends of
+natural quadrics that are also surfaces with rational offsets. These
+blend surfaces are defined as envelopes of special two-parameter
+families of planes.
+We present a new approach to create blend surfaces between
+an arbitrary number of canal surfaces, which also covers the case
+of branching blends discussed by Krasauskas. Our approach is
+based on the use of a medial structure. Recall that the medial axis
+representation of a solid allows to represent its boundary as the
+envelope of two- and one-parameter families of spheres, which
+correspond to the sheets and to the seams of the medial axis,
+respectively. These spheres are the boundaries of the maximum
+inscribed balls (with respect to inclusion) of the given solid object.
+The medial structures has become a popular research area in
+recent years — mathematicians have studied the properties of
+these representations, and computer scientists and engineers have
+developed a variety of algorithms for computing and using these
+models; cf. [28] and references therein for a detailed survey of this
+topic.
+In addition to the use of the medial axis, which turns out
+to be too stiff for the design of blending surfaces in certain
+situations, we propose to design blend surfaces using a polyhedral
+medial structure. This structure again consists of sheets and seams
+representing centers and radii of inscribed balls. As the main
+difference to the medial axis, however, these balls are not required
+to be maximal, but only to touch the boundary in at least one point.
+If such a medial structure is given, then it is possible to recover
+the boundary of the object – and hence the blend surface – as
+envelopes of certain one- and two-parameter families of spheres.
+Not all branches of these envelopes then contribute to the blend.
+By adding constants to the (non-constant) function specifying the
+radius of these balls it is possible to obtain the offsets of the blend
+surfaces.
+The remainder of this paper is organized as follows. The
+next section summarizes several fundamental facts concerning
+the representation of one- and two-parameter families as curves
+and surfaces in the Minkowski space R3,1 . Section 3 introduces
+the polyhedral medial transform representation which serves as
+the tool to create blends between canal surfaces. The details of
+the construction of single-sheeted and polyhedral blends will be
+presented in Sections 4 and 5, respectively. After presenting several
+examples, which illustrate the capabilities of our method, we
+conclude this paper.
+
+2. Preliminaries
+In this section we briefly summarize some fundamental notions
+and basic properties of the four-dimensional Minkowski space
+R3,1 and the medial axis/surface (MA/MS) and medial axis/surface
+transform (MAT/MST) representations.
+2.1. Minkowski space R3,1
+The Minkowski space R3,1 is a four-dimensional real affine space
+which is equipped with the indefinite inner product
+
+⟨u, v⟩ = u⊤ Jv = u1 v1 + u2 v2 + u3 v3 − u4 v4
+
+(1)
+
+defined by the diagonal matrix
+J = (Ji,j )i,j=1,2,3,4 = diag(1, 1, 1, −1),
+
+(2)
+
+where u = (u1 , u2 , u3 , u4 ) , v = (v1 , v2 , v3 , v4 ) . The four axes
+spanned by the vectors (δi,1 , δi,2 , δi,3 , δi,4 )⊤ , i = 1, . . . , 4, will be
+called the x-, y-, z- and r-axis, respectively.
+The squared norm of a vector defined by ‖v‖2 = ⟨v, v⟩, can
+be positive, negative or zero. We distinguish three types of vectors
+(and thus also of corresponding lines with these directions): spacelike if ‖v‖2 > 0, time-like if ‖v‖2 < 0, and light-like (or isotropic) if
+‖v‖2 = 0. Analogously for d > 1, a d-dimensional linear subspace
+of R3,1 is called space-, time- or light-like if the restriction of the
+quadratic form defined by J is positive definite, indefinite nondegenerate or degenerate, respectively.
+Let a be a point in R3,1 and xˆ = (X , Y , Z , 0)⊤ . Then
+⊤
+
+⊤
+
+⟨ˆx − a, xˆ − a⟩ = 0,
+
+(3)
+
+defines a sphere in R centered at (a1 , a2 , a3 ) and with the
+oriented radius a4 . We recall that the correspondence between
+points in R3,1 and oriented spheres in R3 can be established via
+the so called cyclographic mapping; cf. [29,26].
+3
+
+⊤
+
+2.2. Curves in R3,1
+Considering a curve c(t ) = (ˆc(t ), r (t ))⊤ ⊂ R3,1 , t ∈ I ⊆ R, its
+points correspond to spheres whose centers trace the curve cˆ (t ) in
+R3 and possess the radii r (t ). The envelope of this one-parameter
+family of spheres
+
+F (t ) : ⟨ˆx − c(t ), xˆ − c(t )⟩ = 0
+
+(4)
+
+is called a canal surface and the curve cˆ (t ) is called its spine curve. If
+r (t ) = const., we obtain a pipe surface. The defining equations for
+the canal surface C are
+
+F (t ) = 0,
+′
+
+F ′ (t ) = 0,
+
+(5)
+
+where F denotes the derivative with respect to t.
+The equation F ′ (t ) = 0 describes the plane perpendicular to
+the derivative vector c′ (t ). Thus the canal surface C contains a oneparameter set of the so called characteristic circles F (t ) ∩ F ′ (t ).
+Note that for c(t ) being straight lines we obtain cylinders and
+cones.
+The envelope of the one-parameter family of spheres may not
+be real, depending on the relation between cˆ ′ (t ) and r ′ (t ). More
+precisely, the envelope is real if c′ (t ) is not time-like. In particular,
+if c′ (t ) is light-like for a parameter value t0 , then the plane F ′ (t0 ) =
+0 is tangent to the sphere F (t0 ) = 0 and the corresponding
+characteristic circle degenerates to a point.
+Moreover, as proved in [30,31], a canal surface given by a rational curve c(t ) possesses always a rational parameterization.
+However, it should be noted that the computation of a rational
+parameterization is still a challenging problem, which is equivalent to the SOS (sum of squares) problem for non-negative
+polynomials.
+
+B. Bastl et al. / Computer-Aided Design 43 (2011) 1477–1484
+
+2.3. Surfaces in R3,1
+Considering a surface s(u, v) = (ˆs(u, v), r (u, v))⊤ ⊂ R3,1 ,
+(u, v) ∈ I ⊆ R2 , its points correspond to spheres whose centers
+trace the surface sˆ (u, v) in R3 and possess the radii r (u, v). The
+envelope of this two-parameter family of spheres
+
+F (u, v) : ⟨ˆx − s(u, v), xˆ − s(u, v)⟩ = 0
+
+(6)
+
+is generally a surface in R3 . The defining equations for the envelope
+surface B are
+
+F (u, v) = 0,
+
+Fu (u, v) = 0,
+
+Fv (u, v) = 0,
+
+(7)
+
+where Fu , Fv denote the partial derivatives with respect to u, v ,
+respectively. Solving (7) we arrive at the coordinates of a point
+b = (X , Y , Z )⊤ of the envelope surface B described by the closedform envelope formula (cf. [32]) in the form
+b± (u, v) = sˆ (u, v) +
+
+r
+Cˆ
+
+(w ±
+
+√
+
+C · (ˆsu × sˆ v )),
+
+(8)
+
+their spine curves. Hence, in the case of canal surfaces we speak
+about the medial axis (MA).
+By appending the corresponding ball radii r to the points
+(x, y, z )⊤ of the medial axis/surface MA/MS, we obtain the
+medial axis/surface transform MAT/MST consisting from points
+(x, y, z , r )⊤ . Thus all maximal inscribed oriented balls, can be identified as the points in the four-dimensional Minkowski space R3,1 .
+In general, the medial surface transforms can consist of
+components of dimensions two, one, and zero, which are called
+sheets, seams and junctions, respectively. Their points correspond to
+maximal inscribed balls which, generically, touch the boundary in
+two, three, and four points, respectively. The sheets meet in seams,
+and the seams meet in junctions.
+Finally, let us emphasize that when starting from the medial
+surface/axis transform as a shape representation, one has to
+guarantee that the associated domain boundary is a valid boundary
+(real, without self-intersections, etc.). More details about the
+validity of MATs/MSTs can be found e.g. in [37–39].
+3. Polyhedral medial transform representation
+
+where
+
+ˆ − Fˆ 2 ,
+Cˆ = Eˆ G
+
+1479
+
+C = EG − F 2 .
+
+(9)
+
+The components E , F , G of the first fundamental form of s(u, v)
+are computed using the Minkowski inner product in R3,1 , whereas
+ˆ of the first fundamental form of sˆ (u, v) are
+the components Eˆ , Fˆ , G
+determined using the standard Euclidean inner product in R3 . The
+vector w = w(u, v) in (8) consists of polynomials of degree four
+in xu , yu , zu , ru and xv , yv , zv , rv ; see [32] for more details. Clearly,
+the envelope is real if C ≥ 0.
+Unlike the case of canal surfaces, not all envelope surfaces given
+by rational s(u, v) are rational. This was a motivation for introducing the so called MOS surfaces in [32]. The parameterization s(u, v)
+is called an MOS parameterization if there exists a bivariate polynomial or rational function σ (u, v), such that it holds
+EG − F 2 = σ (u, v)2 .
+
+(10)
+3,1
+
+Then, the surface in R having an MOS parameterization is called
+an MOS surface.
+A distinguishing property of MOS surfaces is that not only
+both branches of the envelope but also their offsets possess an
+exact rational parametric representation, i.e., the envelope surfaces
+belong to the class of the so called surfaces with Pythagorean
+normals (PN surfaces).
+It has been recently proved in [33] that quadratic triangular
+Bézier surfaces in R3,1 possess the MOS property. A related study
+followed in [34,35] and an algorithm for computing boundaries
+and trimmed offsets of volumes given by piecewise quadratic
+medial surface transforms was designed and studied in [36]. As
+polynomial quadratic patches in R3,1 are capable of producing C 1
+approximations to free-form surfaces considered as medial surface
+transforms, this algorithm can be also used for computing rational
+approximations of volume boundaries and all their offsets.
+2.4. MA/MS and MAT/MST representations
+Consider a spatial domain Ω ⊂ R3 with a smooth boundary.
+The medial locus, or skeleton, of this domain is constructed as the
+closure of the locus of all centers of maximal balls inscribed into
+Ω . The local thickness of the object is measured by the radii r of
+these maximal balls.
+Except in special cases, the medial locus is a two-dimensional
+medial surface (MS). Degeneracies occur only for spheres when
+the medial locus is a single point, or for the canal surfaces
+(e.g. cylinders, cones, Dupin cyclides) when the medial loci are
+
+In this section we will introduce the notion of a polyhedral
+medial transform (MT) representation, which we will use later for
+the construction of blend surfaces.
+Recall that the medial surface transform of a domain Ω ⊂ R3
+with a piecewise smooth boundary generically consists of several
+components with different dimensions. Moreover, if the medial
+surface transform is known it is possible to completely reconstruct
+the corresponding domain.
+Instead of using the medial axis as a representation of shape, we
+consider shapes that can be reconstructed from a different, more
+general medial representation. Let P ⊂ R3 be a convex polyhedron
+with d ≥ 2 faces and boundary surface ∂ P. A set Q ⊂ R3,1 is called
+a polyhedral medial transform (MT) with shape P if the following
+conditions are satisfied:
+(i) Q is homeomorphic to P.
+(ii) There exists a continuous, piecewise smooth mapping F :
+∂ P → ∂ Q that is regular and smooth in the interior of each
+face of P and with the property that all edges are mapped to
+regular curves.
+(iii) For each face f ⊂ ∂ P, all points on F(f ) (also on boundaries
+and vertices) possess a well defined tangent plane (the limit
+of the tangent planes, when we go to the vertex, is unique).
+(iv) All edges and vertices of Q are strictly convex.
+(v) The radius (i.e., the fourth coordinate of Q) is strictly positive
+The boundary ∂ Q of a polyhedral medial transform Q consists of a
+collection of d smooth surfaces. Each of these surfaces corresponds
+to exactly one face of P and their mutual adjacency relation is
+inherited from P. One may think of Q as a feature-preserving
+distortion of P, embedded in R3,1 .
+Note that the mapping F which is required to exist in (ii) is
+only assumed to be regular and smooth in the interior of each
+face, hence the images of the faces can be patches with singular
+vertices. Later we will use this possibility to define blend surfaces.
+Nevertheless, (iii) guarantees that these patches possess a welldefined tangent plane everywhere.
+A domain Ω ⊂ R3 is said to possess a polyhedral MT representation of shape P, if its boundary ∂ Ω can be reconstructed from
+a polyhedral medial transform with shape P, i.e., if there exists a
+polyhedral medial transform Q such that for
+
+ˆ = π (Q) ∪
+Ω
+
+
+
+{x ∈ R3 , ‖(x, 0)⊤ − q‖ = 0}
+
+q∈∂ Q
+
+ˆ.
+with π : R3,1 → R3 , (x, r ) → x we have ∂ Ω ⊂ ∂ Ω
+
+(11)
+
+1480
+
+B. Bastl et al. / Computer-Aided Design 43 (2011) 1477–1484
+
+As the envelope of a one-parameter family of spheres can
+be also generated as the envelope of a one-parameter family of
+cones/cylinders of revolution (cf. [29]) we can reduce studying the
+blends of canal surfaces to simpler input primitives, i.e., to cones
+and cylinders.
+4.1. Three curves
+We consider three canal surfaces C1 , C2 , C3 represented by their
+MATs c1 , c2 , c3 in R3,1 . The polyhedral medial surface transform
+representing a single-sheeted blend can be then constructed by the
+following three steps:
+(i) Determine three points p1 , p2 , p3 representing end characteristic circles and associated three directional vectors t1 , t2 , t3
+at these points from MATs c1 , c2 , c3 , which are data describing
+the G1 join.
+(ii) Construct a suitable Bézier triangle patch Q in R3,1 interpolating the given data {p1 , p2 , p3 ; t1 , t2 , t3 }.
+(iii) Find the associated ∂ Ω .
+Steps (i) and (iii) are straightforward. Hence, we describe only
+Step (ii) in more detail.
+Step (ii). We construct a Bézier triangle patch of degree five, which
+is the smallest possible degree of the patch to fulfill the necessary
+conditions.
+
+Fig. 1. The projection π(Q) of a polyhedral medial transform (top) and the
+reconstructed domain Ω (bottom).
+
+Note that the norm ‖.‖ is measured in R3,1 , hence the second
+part of this formula contributes the points on the boundaries of
+all spheres represented by points on the boundary ∂ Q. The first
+part π(Q) was added in order to avoid inner boundaries that might
+appear otherwise.
+A very simple example with a medial tetrahedron is shown in
+Fig. 1. The boundary of the associated solid consists of six pieces
+of canal surfaces, which correspond to the edges, four spherical
+segments, which correspond to the vertices, and four surface
+patches, which correspond to the faces of the polyhedron. More
+precisely, the surface patches are planes and the canal surfaces are
+cones and cylinders of revolution.
+In general, if the values of the radius function are sufficiently
+small, a domain with a polyhedral MT representation of shape
+P will be bounded by a collection of pieces of spheres, trimmed
+canal surfaces and generalized, one-sided offsets. Moreover, in that
+case, the numbers of spheres, canal surfaces and generalized offsets
+match the numbers of vertices, edges and faces of P, respectively.
+In the special case d = 2, the polyhedron P degenerates into
+a planar polygon. The two boundary surfaces of Q will be equal to
+each other as well as equal to the medial axis (or surface) transform
+of Ω . Thus, in this situation, the polyhedral MT representation
+becomes the usual medial transform representation.
+We will now use medial polyhedrons to design blends between
+several canal surfaces.
+4. Single-sheeted blends of canal surfaces
+In this section we will focus on single-sheeted blends which
+are nothing else than special cases of the polyhedral ones,
+where the medial polyhedron degenerates into a single face. For
+more details about the mathematical properties of the medial
+representations and the relation between it and the corresponding
+domain boundary; see [28].
+We start with blending of three canal surfaces represented by
+their spine curves and associated radii. Subsequently, we modify
+this design approach to generate branching blends and general
+case of n-way blends.
+
+(a) Initialization:
+The corner control points of the constructed patch are directly
+the input points, i.e., b500 = p1 , b050 = p2 , b005 = p3 .
+Both neighboring control points of pi have to lie on the line
+determined by pi and ti . Further, to have a well-defined tangent
+plane also at a singularly parametrized corner point, the control
+points bα , α = (ijk) ∈ {(311), (131), (113)}, have to satisfy a
+certain linear condition.
+(b) Boundary optimization:
+We use the second order differences of control points, i.e., bα −
+2bα+1 + bα+2 . We choose this method in order to maintain
+cylinders/cones and to minimize the curvature along the
+boundary.
+(c) Optimization of interior control points:
+The remaining points are determined by minimizing the sum
+of the squared distances of neighboring control points.
+Clearly, one might consider other things to minimize in step
+(b), such as curvature variation. However, this may not reproduce
+cylinders and cones.
+Fig. 2 shows an example of a 3-way blend (bottom) along with
+the corresponding polyhedral medial structure (top). The blend
+surface connects three given cylinders with different radii and nonintersecting axes. It consists of two generalized offset surfaces (red)
+and three canal surfaces (blue) which correspond to the edges and
+faces of the medial structure.
+4.2. Two curve branching
+The designed method from the previous subsection can be
+immediately used also for the construction of branching blends.
+This is guaranteed by using the boundary optimization in Step (ii)
+which enables to preserve the shape of cylinders/cones.
+A series of examples is shown in Fig. 3. We visualize several
+branching blends between two given cylinders. The construction
+of the medial surface reproduces lines as boundary curves, hence
+it automatically preserves the bigger cylinder, creating the desired
+branching blend.
+4.3. Free n-way blend
+Finally we describe a construction of an n-way blend. If not just
+three, but n > 3 cylinders/cones Ci with prescribed end circles
+are given, a blend surface can be generated by replacing the Bézier
+triangle in Step (ii) with a suitable n-sided patch.
+
+B. Bastl et al. / Computer-Aided Design 43 (2011) 1477–1484
+
+1481
+
+Fig. 4. 4-way blend of two cylinders.
+
+Fig. 2. Examples of a 3-way blend.
+
+Fig. 3. Examples of 3-way blends used for obtaining branching blends.
+
+We demonstrate this for n = 4 on several examples, cf. Figs. 4–6
+which show two different blends between four cylinders and two
+cones.
+In the last example, the single-sheeted blend does not preserve
+the two cones, since none of them corresponds to an edge of the
+four-sided medial surface.
+The situation is different in the next example, which is shown
+in Fig. 7. Here, the two given cylinders correspond to two of the
+four edges of the medial surface, thereby creating a blend surface
+which preserves cylinders/cones. The shape of the blend, however,
+is not really satisfying and becomes even worse when the angle
+between the cylinders approaches 90 degrees. In this situation it is
+more appropriate to use polyhedral blends.
+5. Polyhedral blends
+Although the single-sheeted blend is rather elegant and flexible,
+it still possesses certain limitations. Due to its construction, every
+canal surface must have exactly two adjacent canal surfaces.
+
+Fig. 5. Examples of 4-way blend of two cylinders.
+
+Thus even for certain relatively simple configurations, e.g. the one
+shown in Fig. 7, the shape of the obtained blend surface is different
+from the shape one would expect.
+However, other configurations of canal surfaces may be blended
+properly by constructing medial polyhedra with more faces.
+For blending n canal surfaces, like in Section 4, one picks a
+convex polyhedron P that reflects the topological structure of the
+canal surfaces: characteristic circles correspond to vertices and a
+polynomial canal surface corresponds to an edge, including its two
+vertices. Again, a one-to-one correspondence between vertices and
+characteristic circles is needed.
+For each face of P we can now apply the single-sheeted
+algorithm from the previous section to obtain the complete
+
+1482
+
+B. Bastl et al. / Computer-Aided Design 43 (2011) 1477–1484
+
+Table 1
+Summary of the blend construction.
+Blending n canal surfaces with MATs c1 , . . . , cn ∈ R3,1
+(i) Determine n points p1 , . . . , pn representing the characteristic circles and associated directional vectors t1 , . . . , tn at these points from MATs c1 , . . . , cn , which are
+data describing the G1 join.
+(ii) Choose a convex polyhedra P with n vertices, specifying the topological relation of the canal surfaces. Each vertex corresponds to exactly one characteristic circle.
+(iii) For each edge of P, find a quintic Bézier curve in R3,1 that interpolates the points and direction vectors corresponding to the vertices of the edge. Specify its control
+points by minimizing the sum of squared second order differences in between them.
+(vi) For each face of P, find a multi-sided surface patch in R3,1 that interpolates the Bézier curves corresponding to the edges of the face and possesses well-defined
+tangent planes at its vertices. For a three- or four-sided Bézier surface patch, specify its control points by minimizing the sum of squared distances in between them.
+(v) Find the associated boundary, i.e., the blend surface, by computing and trimming the envelopes of the one- and two-parameter families of spheres that correspond
+to the constructed curves and surfaces.
+
+Fig. 6. Single-sheeted four way blend of two cones with coplanar axes.
+
+Fig. 8. Tetrahedral blend of two cylinders.
+
+5.1. Tetrahedral blend
+
+Fig. 7. Single-sheeted four way blend of two skew cylinders.
+
+medial polyhedron. Adjacent patches will necessarily have common boundary curves, since the optimization of each singular
+boundary curve only depends on the two given points and tangents
+it connects.
+Thus the construction of complex medial polyhedrons can
+be completely reduced to the construction of single-sheeted
+medial polyhedrons. Of course, the trimming of the constructed
+boundary surface needs to be modified, but however, the amount
+of reasonably treatable configurations is greatly enhanced. In
+Table 1 the whole construction process is summarized.
+In the following we will present some examples to illustrate the
+usefulness of this approach.
+
+This first example was motivated by the fact that with a singlesheeted approach, one is not able to yield a reasonable blending
+surface of two close or even intersecting, non-parallel cylinders.
+Except for the case that the axes of the two cylinders intersect, the
+single-sheeted approach always produces either a non-symmetric
+or a non-interpolating blend.
+By choosing a tetrahedron instead of a four-sided patch, we
+are able to create a reasonable and symmetric blend. Therefore
+we identified the given cylinders with two skew edges of the
+tetrahedron.
+Fig. 8 shows an example of such a tetrahedral blend between
+two partially intersecting cylinders. The upper picture shows the
+projection π (Q) of the polyhedral MT and the final blend – which
+consists of six trimmed canal surfaces (including the cylinders) and
+four one-sided, generalized offsets – is shown in the lower part.
+5.2. Cubical blend
+Naturally, there is a configuration where a multi-sheeted
+approach turns out to be more suitable: blending multiple canal
+surfaces whose tangents at the endpoints are far away from being
+in one plane.
+
+B. Bastl et al. / Computer-Aided Design 43 (2011) 1477–1484
+
+1483
+
+Fig. 9. Blend of eight cylinders.
+
+Fig. 9 shows a polyhedral blending of eight cylinders, having
+their axes equally distributed in space. All cylinder axes intersect
+in one point and the final blend surface (bottom) consists of twelve
+trimmed canal surfaces and six generalized, one-side offsets.
+5.3. Pyramidal blend
+As a final example we consider a cylinder which splits up into
+four cones. The defining convex polyhedron is a square pyramid
+and the cylinder corresponds to the apex (cf. Fig. 10). The medial
+polyhedron consists of four triangular patches and one additional
+quadrilateral surface patch.
+6. Conclusion
+We presented a simple but powerful method for creating
+blend surfaces between an arbitrary number of canal surfaces.
+
+Fig. 10. Blend of four cones and a cylinder.
+
+Our approach is based on a medial structure which can be seen
+as a generalization of the medial axis/medial surface transform of
+a solid object. By preserving existing canal surfaces, our approach
+can also be used to generate branching blends. The blend surfaces
+consist of canal surfaces and generalized offsets, which correspond
+to the edges and the faces of the medial transform structure,
+respectively.
+There are several questions associated with our construction
+that deserve additional investigations.
+
+1484
+
+B. Bastl et al. / Computer-Aided Design 43 (2011) 1477–1484
+
+The first one concerns the regularity of the generated blend
+surfaces. It is relatively simple to use the existing conditions to
+analyze a posteriori the regularity of the blend surfaces. However,
+it would be more desirable to find sufficient conditions on the
+shape of the given canal surfaces that guarantee regularity.
+The second question is related to the parameterization of the
+obtained blend surfaces. Currently, we generate parameterizations
+that involve square-root functions. Thus, an approximation step is
+required in order to convert them into the accepted NURBS format.
+An approximation of the medial transform representation, e.g., by
+piecewise quadratic patches, would allow us to use the techniques
+for exact parameterizations of the envelopes developed in [36].
+Finally, the construction is currently limited to G1 smooth
+blend surfaces. The construction of blends with higher order
+of smoothness requires additional conditions on the medial
+transform representations. It would be interesting to analyze them
+and to see how they can be used for designing shapes.
+Acknowledgments
+B. Bastl and M. Lávička have been supported by Research Plan
+MSM 4977751301. B. Jüttler and T. Schulz have been supported
+by the Austrian Science fund, project S9202. All authors were
+supported by the Austrian/Czech AKTION 2009/5(MEB060905).
+References
+[1] Farin GE, Hoschek J. Handbook of computer aided geometric design. North
+Holland; 2002.
+[2] Hoschek J, Lasser D. Fundamentals of computer-aided geometric design. AK
+Peters; 1993.
+[3] Lukacs G. Differential geometry of G1 variable radius rolling ball blend surfaces.
+Computer-Aided Geometric Design 1998;15:585–613.
+[4] Farouki RA, Sverrison R. Approximation of rolling-ball blends for free-form
+parametric surfaces. Computer-Aided Design 1996;28:871–8.
+[5] Chuang JH, Hwang WC. Variable-radius blending by constrained spine
+generation. The Visual Computer 1997;13(7):316–29.
+[6] Whited B, Rossignac J. Relative blending. Computer-Aided Design 2009;41:
+456–62.
+[7] Vida J, Martin RR, Varady T. A survey of blending methods that use parametric
+surfaces. Computer-Aided Design 1994;26(5):341–65.
+[8] Wallner J, Pottmann H. Rational blending surfaces between quadrics.
+Computer Aided Geometric Design 1997;14(5):407–19.
+[9] Song Q, Wang J. Generating Gn parametric blending surfaces based on
+partial reparameterization of base surfaces. Computer-Aided Design 2007;39:
+953–63.
+[10] Hui KC, Lai YH. Smooth blending of subdivision surfaces. Computer-Aided
+Design 2006;38:786–99.
+[11] Varady T, Rockwood A. Geometric construction for setback vertex blending.
+Computer-Aided Design 1997;29:413–25.
+[12] Zhou P, Qian WH. Polyhedral vertex blending with setbacks using rational
+s-patches. Computer Aided Geometric Design 2010;27:233–44.
+[13] Shi KL, Yong JH, Sun JG, Paul JC. Gn blending multiple surfaces in polar
+coordinates. Computer-Aided Design 2010;42:479–94.
+
+[14] Xu G. Mixed finite element methods for geometric modeling using general
+fourth order geometric flows. Computer Aided Geometric Design 2009;26:
+378–95.
+[15] Hoffmann C, Hopcroft J. The potential method for blending surfaces and
+corners. In: Farin GE, editor. Geometric modeling: algorithms and new trends.
+SIAM; 1987. p. 347–65.
+[16] Warren J. Blending algebraic surfaces. ACM Transactions on Graphics (TOG)
+1989;8(4):263–78.
+[17] Hartmann E. Blending of implicit surfaces with functional splines. ComputerAided Design 1990.
+[18] Hartmann E. Gn -continuous connections between normal ringed surfaces.
+Computer aided Geometric Design 2001;18(8):751–70.
+[19] Wu TR, Zhou Y. On blending of several quadratic algebraic surfaces. Computer
+Aided Geometric Design 2000;17(8):759–66.
+[20] Zhu CG, Wang RH, Shi X, Liu F. Functional splines with different degrees
+of smoothness and their applications. Computer-Aided Design 2008;40(5):
+616–24.
+[21] Fang ME, Wang GZ, Ma WY. N-way blending problem of circular quadrics.
+Science China Information Sciences 2010;53(8):1546–54.
+[22] Mou H, Zhao G, Wang Z, Su Z. Simultaneous blending of convex polyhedra by
+algebraic splines. Computer-Aided Design 2007;39(11):1003–11.
+[23] Hartmann E. Parametric Gn blending of curves and surfaces. The Visual
+Computer 2001;17(1):1–13.
+[24] Dutta D, Martin RR, Pratt MJ. Cyclides in surface and solid modeling. IEEE
+Computer Graphics and its Applications 1993;13:53–9.
+[25] Shene CK. Blending two cones with Dupin cyclides. Computer Aided Geometric
+Design 1998;15(7):643–73.
+[26] Pottmann H, Peternell M. Applications of Laguerre geometry in CAGD.
+Computer Aided Geometric Design 1998;15:165–86.
+[27] Krasauskas R. Branching blend of natural quadrics based on surfaces with
+rational offsets. Computer Aided Geometric Design 2008;25(4–5):332–41.
+[28] Siddiqi K, Pizer SM. Medial representations: mathematics, algorithms and
+applications. 1st edition Springer Publishing Company Incorporated; 2008.
+[29] Peternell M, Pottmann H. A Laguerre geometric approach to rational offsets.
+Computer Aided Geometric Design 1998;15:223–49.
+[30] Peternell M, Pottmann H. Computing rational parametrizations of canal
+surfaces. Journal of Symbolic Computation 1997;23(February):255–66.
+[31] Landsmann G, Schicho J, Winkler F. The parametrization of canal surfaces
+and the decomposition of polynomials into a sum of two squares. Journal of
+Symbolic Computation 2001;32(1–2):119–32.
+[32] Kosinka J, Jüttler B. MOS surfaces: medial surface transforms with rational
+domain boundaries. In: The mathematics of surfaces XII. Lecture notes in
+computer science, vol. 4647. Springer; 2007. p. 245–62.
+[33] Peternell M, Odehnal B, Sampoli ML. On quadratic two-parameter families
+of spheres and their envelopes. Computer Aided Geometric Design 2008;25:
+342–55.
+[34] Peternell M, Odehnal B. On generalized LN-surfaces in 4-space. In: Proceedings
+of ‘ISSAC08’. 2008. p. 223–30.
+[35] Peternell M. Rational two-parameter families of spheres and rational offset
+surfaces. Journal of Symbolic Computation 2010;45(1):1–18.
+[36] Bastl B, Jüttler B, Kosinka J, Lávička M. Volumes with piecewise quadratic
+medial surface transforms: computation of boundaries and trimmed offsets.
+Computer-Aided Design 2010;42(6):571–9.
+[37] Hoffmann CM, Vermeer PJ. Validity determination for MAT surface representation. In: Proceedings of the 6th IMA conference on the mathematics of surfaces.
+New York (NY, USA): Clarendon Press; 1996. p. 249–65.
+[38] Teixeira RC. Medial axes and mean curvature motion I: regular points. Journal
+of Visual Communication and Image Representation 2002;13(1–2):135–55.
+[39] Yushkevich P, Fletcher PT, Joshi S, Thall A, Pizer SM. Continuous medial
+representations for geometric object modeling in 2D and 3D. Image and Vision
+Computing 2003;21(1):17–27.
+
+

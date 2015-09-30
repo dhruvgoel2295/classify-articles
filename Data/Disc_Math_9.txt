@@ -1,0 +1,650 @@
+Discrete Mathematics 311 (2011) 1940–1947
+
+Contents lists available at ScienceDirect
+
+Discrete Mathematics
+journal homepage: www.elsevier.com/locate/disc
+
+Weighted Davenport’s constant and the weighted EGZ Theorem
+Xiangneng Zeng a , Pingzhi Yuan b,∗
+a
+
+Department of Mathematics, Sun Yat-Sen University, Guangzhou 510275, PR China
+
+b
+
+School of Mathematics, South China Normal University, Guangzhou 510631, PR China
+
+article
+
+info
+
+Article history:
+Received 5 October 2009
+Received in revised form 9 January 2011
+Accepted 20 May 2011
+Available online 15 June 2011
+Keywords:
+Zero-sum problems
+Weighted Davenport’s constant
+Weighted EGZ Theorem
+Setpartition
+
+abstract
+Let G∗ , G be finite abelian groups with nontrivial homomorphism group Hom(G∗ , G). Let
+Ψ be a non-empty subset of Hom(G∗ , G). Let DΨ (G) denote the minimal integer, such that
+∗
+any sequence
+∑r over G of length DΨ (G) must contain a nontrivial subsequence s1 , . . . , sr ,
+such that
+i=1 ψi (si ) = 0 for some ψi ∈ Ψ . Let EΨ (G) denote the minimal integer such
+that any sequence over G∗ of length EΨ (G) must contain a nontrivial subsequence of length
+∑|G|
+|G|, s1 , . . . , s|G| , such that i=1 ψi (si ) = 0 for some ψi ∈ Ψ . In this paper, we show that
+EΨ (G) = |G| + DΨ (G) − 1.
+
+© 2011 Elsevier B.V. All rights reserved.
+
+1. Introduction and main results
+We follow the conventions of [6–8] for notation concerning sumsets, sequences and (weighted) subsequence sums over
+an abelian group. We provide self-contained definitions for all relevant concepts and the weighted Davenport’s constant in
+the subsequent notation section.
+Let G be a finite abelian group of order n; Davenport’s constant D(G) of G is defined to be the minimal integer d such
+that every sequence over G with length d contains a non-empty subsequence with a zero-sum. Let F (G) denote the free
+abelian monoid with basis G written multiplicatively. One of the most difficult open questions in finite group theory is the
+determination of a general formula for D(G). Its value also plays an important role in controlling the behavior of factorizations
+over Krull monoids.
+Another interesting constant E (G) is defined to be the smallest natural number k, such that any sequence of k elements
+in G has a subsequence of length |G|, whose sum is zero. In 1995, Gao [4] established the identity
+E (G) = D(G) + n − 1,
+
+(1)
+
+which connects these two invariants.
+For a finite abelian group G and any non-empty set A ⊂ Z, Adhikari and Chen [1] defined Davenport’s constant of G with
+weight A, denoted by DA (G), to be the least natural number k, such that for any sequence (x1 , . . . , xk ) with xi ∈ G, there
+∑l
+exists a non-empty subsequence (xj1 , . . . , xjl ), and a1 , . . . , al ∈ A, such that i=1 ai xji = 0. Clearly, if G is a cyclic group of
+order n, it is equivalent to considering A to be a non-empty subset of {0, 1, . . . , n − 1}, and cases with 0 ∈ A are trivial.
+Similarly, for any such set A, for a finite abelian group G of order n, the constant EA (G) is defined to be the least t ∈ N such
+that for
+∑nall sequences (x1 , . . . , xt ) with xi ∈ G, there exist indices j1 , . . . , jn ∈ N, 1 ≤ j1 < · · · < jn ≤ t, and ϑ1 , . . . , ϑn ∈ A
+with i=1 ϑi xji = 0.
+
+∗
+
+Corresponding author.
+E-mail addresses: junevab@163.com (X. Zeng), mcsypz@mail.sysu.edu.cn (P. Yuan).
+
+0012-365X/$ – see front matter © 2011 Elsevier B.V. All rights reserved.
+doi:10.1016/j.disc.2011.05.024
+
+X. Zeng, P. Yuan / Discrete Mathematics 311 (2011) 1940–1947
+
+1941
+
+For the group G = Z/nZ, we write EA (n) and DA (n) respectively for EA (G) and DA (G). In the cases A = {1}, {−1, 1}, Z⋆n =
+{1 ≤ a ≤ n − 1 : gcd(a, n) = 1} or A = (a1 , . . . , ar ) with gcd(a2 − a1 , . . . , ar − a1 , n) = 1 or n = p is a prime, it is proved
+that EA (n) = DA (n) + n − 1. In [2,1,10,11], a weighted form of (1) were conjectured: for any non-empty set A ⊂ Z,
+EA (n) = DA (n) + n − 1.
+
+(2)
+
+By using the main theorem of Devos et al. [3] and a recently proved theorem of the authors [12], the authors [13]
+confirmed (2) in the cyclic case. Recently, Grynkiewicz et al. [8] established (2) for an arbitrary finite abelian group.
+(2)
+Observe that if G = G1 ⊕ G2 is a direct sum of finite abelian groups, and A is a non-empty subset
+∑ of Z = Z ⊕ Z, S =
+(s1 , t1 ) · · · (s|S | , t|S | ), si ∈ G1 , tj ∈ G2 is a∑
+sequence over G, then we can define the weighted sum n (A, S ) to be all elements
+n
+g that can be represented as a sum g =
+i=1 (ai si , bi ti ) with (s1 , t1 ) · · · (sn , tn ) a subsequence of S and (ai , bi ) ∈ A. Therefore
+we can define the related weighted Davenport’s invariant DA (G) and the weighted Erdös–Ginzburg–Ziv invariant EA (G), and
+ask if we still have the identity
+EA (G) = |G| + DA (G) − 1.
+Motivated by the above observations, we define a general weighted subsequence sum and the related weighted
+Davenport’s invariant DΨ (G) and the weighted Erdös–Ginzburg–Ziv invariant EΨ (G) in the notation section. Our main results
+is as follows.
+Theorem 1.1. Let G∗0 , G0 be finite abelian groups, let G ≤ G0 be a subgroup, let α ∈ G0 and Ψ ⊂ Hom(G∗0 , G0 ) with Ψ (G∗0 ) ̸= {0}.
+Suppose S ∈ F (G∗0 ) is a sequence over G∗0 and ψ(s) ∈ α + G for all ψ ∈ Ψ and s ∈ supp(S ) and |S | ≥ |G| + DΨ (G) − 1. Then
+there exist a subgroup H ≤ G, an element β ∈ α + G, and subsequences S1 |S and S2 |S1 such that
+
+Ψ (s) ⊂ β + H for all s ∈ supp(S1 ),
+
+(3)
+
+|S1 | ≥ |H | + DΨ (G) − 1,
+|S2 | = |H | + DΨ (H ) − 1,
+
+(4)
+(5)
+
+and
+∪
+−
+(Ψ (S2 )) = |H |β + H .
+
+(6)
+
+|H |
+
+Suppose |G| ≤ n ≤ |S | − DΨ (G) + 1. Then
+∪
+−
+(Ψ (S )) is H periodic and contains nβ.
+
+(7)
+
+n
+
+Furthermore, suppose that H is maximal, then
+
+|S1 | ≥ min{|S |, |S | − (|G/H | − 2)}.
+
+(8)
+
+Note that the lower bound EΨ (G) = |G| + DΨ (G) − 1 can be easily seen by considering an extremal sequence of length
+DΨ (G) − 1 that avoids representing zero using weights from Ψ concatenated with a sequence of |G| − 1 zeros. We see that
+the following corollary is an immediate consequence of Theorem 1.1.
+Corollary 1.1. Let G∗ , G be finite abelian groups. Let S ∈ F (G∗ ) and Ψ ⊂ Hom(G∗ , G) with Ψ (G∗ ) ̸= {0}. If |G| ≤ n ≤
+|S | − DΨ (G) + 1. Then there exist some β ∈ G such that:
+nβ ∈
+
+∪
+−
+(Ψ (S )).
+n
+
+In particular, if G = G∗ with Ψ (G) ̸= {0}, then
+EΨ (G) = |G| + DΨ (G) − 1.
+2. Notation
+We follow the conventions of [6,8] for notation concerning sequences over an abelian group. Let [a, b] = {k ∈ Z|a ≤
+k ≤ b}.
+2.1. Groups
+Throughout, all abelian groups will be written additively. Let G be an abelian group, and let A, B ⊂ G be non-empty
+subsets. Then
+A + B = {a + b|a ∈ A, b ∈ B}
+
+1942
+
+X. Zeng, P. Yuan / Discrete Mathematics 311 (2011) 1940–1947
+
+denotes their sumset. For g ∈ G, we let g + A = {g + a, a ∈ A}. We use
+Stab(A) = {g ∈ G|g + A = A}
+to denote the stabilizer of A, and A is called periodic if Stab(A) ̸= {0}, and aperiodic otherwise. If H is a subgroup of an abelian
+group G and A is a union of H-cosets, then we say A is H-periodic. And we use
+
+φH : G → G/H
+to denote the natural homomorphism modulo H.
+Let G0 and G∗0 are finite abelian groups, Hom(G∗0 , G0 ) denotes the set of homomorphisms of G∗0 into G0 . For any non-empty
+subset Ψ ⊂ Hom(G∗0 , G0 ) and any element x ∈ G∗0 , we denote
+
+Ψ (x) = {ψ(x) : ψ ∈ Ψ } and φH · Ψ = {φH · ψ|ψ ∈ Ψ },
+where H < G0 is a subgroup of G0 .
+2.2. Sequences
+Given a set G, following the tradition, we let F (G) denote the free abelian monoid with basis G written multiplicatively,
+and we refer to the elements of F (G) as sequences. We write sequences S ∈ F (G) in the form
+S = s1 s2 · · · sr =
+
+∏
+
+g vg ( S ) ,
+
+g ∈G
+
+where vg (S ) ≥ 0 and si ∈ G. We call |S | = r the length of S and vg (S ) the multiplicity of g in S. The support of S is defined
+to be supp(S ) := {g ∈ G|vg (S ) > 0}.
+A sequence T is called a subsequence of S if T |S in F (G) (equivalently, vg (T ) ≤ vg (S ) for every g ∈ G), and in such case,
+we use ST −1 or T −1 S to denote the subsequence of S obtained by removing all terms of T .
+2.3. Setpartitions
+For a subset G of an abelian group, let S (G) = F (X ), where X is the set of all finite, non-empty subsets of G.
+A setpartition over G is a sequence A = A1 A2 · · · An ∈ S (G), where Ai ⊂ G are finite and non-empty. In particular, a
+sequence over G can be considered as a setpartition. We call |A| = n the length of A and vA (A) = |{i ∈ [1, |A|]|Ai = A}|
+the multiplicity of the subset A in the setpartition A. A setpartition B is called a sub-setpartition of A if B |A in S (G).
+Let Ψ ⊂ Hom(G∗0 , G0 ), if we have a sequence S = s1 s2 · · · sr ∈ F (G∗0 ), then we can get a setpartition Ψ (S ) corresponding
+to S:
+
+Ψ (S ) := Ψ (s1 )Ψ (s2 ) · · · Ψ (sr ).
+2.4. Weighted sums
+For a subset G of an abelian group, let A = A1 A2 · · · An denote a setpartition over G. We call σ (A) =
+
+∑n
+
+i=1
+
+Ai the sum of
+
+A.
+We have some
+
+∑
+
+-notation as follows:
+
+∑
+) : B |A, |B | = k},
+∑k∪(A) = {σ (B
+∑
+(
+A
+)
+=
+∪
+(A) A, 
+A
+∈
+k∑
+∑k∪
+∪
+(A) = ∪nk=1
+k (A) .
+For a sequence S, since Ψ (S ) is a setpartition, so we can apply the
+(g + A1 )(g + A2 ) · · · (g + An ).
+
+-notation to Ψ (S ). Also we have g + A =
+
+∑
+
+2.5. Weighted Davenport’s constant and EGZ invariant
+Let G∗0 , G0 be two finite abelian groups and G ⊂ G0 be a non-empty subgroup. Let Ψ ⊂ Hom(G∗0 , G0 ) with Ψ (G∗0 ) ̸= {0}
+(the case that Ψ (G∗0 ) ̸= {0} is trivial), then we define the weighted Davenport’s constant DΨ (G∗0 , G) to be the least positive
+∑∪
+(Ψ (S )). We often
+integer l such that for any sequence S = s1 s2 · · · sn ∈ F (G∗0 ) with n ≥ l and Ψ (si ) ⊂ G, we have 0 ∈
+use DΨ (G) to denote DΨ (G∗0 , G) when there is no special constraint for G∗0 .
+Similarly, we define the weighted EGZ invariant EΨ (G∗0 , G) to be the least positive integer l such that for any sequence
+∑∪
+S = s1 s2 · · · sn ∈ F (G∗0 ) with n ≥ l and Ψ (si ) ⊂ G, we have 0 ∈
+|G| (Ψ (S )). We often use EΨ (G) for short. Obviously, by
+the definitions, we have 0 ≤ DΨ (G) ≤ D(G) and |G| ≤ EΨ (G) ≤ E (G).
+Remark. Note that the weighted Davenport’s constant defined here is much more general than the weighted Davenport’s
+constant defined in [2]. For example, if G∗0 = G and Ψ is the identity isomorphism, then DΨ (G∗0 , G) is the traditional
+Davenport’s constant. Let G be a finite abelian group and a an integer, then la : g → ag , g ∈ G is a homomorphism
+from G to G. Denote M = {la , a ∈ Z}. If G∗0 = G and Ψ ⊂ M, then the weighted Davenport’s constant DΨ (G∗0 , G) is the
+weighted Davenport’s constant defined in [2].
+
+X. Zeng, P. Yuan / Discrete Mathematics 311 (2011) 1940–1947
+
+1943
+
+2.6. Letters
+Throughout the paper, A, B, C denote the sets; G, H , L, K denote the groups; A, B , C , D denote the setpartitions; S , T , U
+denote the sequences.
+3. Preliminary results
+For the proof, we will use the Devos–Goddyn–Mohar Theorem [3].
+Theorem 3.1 (Devos–Goddyn–Mohar Theorem
+Let G be an abelian group, let A = A1 · · · Am be a setpartition, and let
+∑∪ [3]).
+
+n ∈ Z+ with n ≤ m. Suppose H = Stab
+n (A) , then
+
+
+
+
+
+∪
+−
+
+−
+
+
+min{n, |{i ∈ [1, m] : Ai ∩ Q ̸= ∅}|} − n + 1 .
+ (A) ≥ |H |
+ n
+
+Q ∈G/H
+We also need Kneser’s Theorem.
+Theorem 3.2 (Kneser’s Theorem [9]). Let G be an abelian group, let A = A1 · · · An be a setpartition. If H = Stab
+then
+
+∑n
+
+i=1
+
+
+
+Ai ,
+
+
+
+n
+n
+ −
+−
+
+
+|φ (A )| − n + 1.
+φH (Ai ) ≥
+
+ i=1 H i
+ i=1
+4. Proof of Theorem 1.1
+Before the proof of Theorem 1.1, we need some lemmas.
+Lemma 4.1. Let G be a finite abelian group, A0 ⊂ G and A1 ⊂ G subsets of G such that |A0 | ≥ 2, |A1 | ≥ 2 and A0 is not periodic.
+Let B = A0 + A1 , then |B| ≥ |A0 | + 1, with equality precisely when A0 is the union of an arithmetic progression of difference d
+and some ⟨d⟩-coset (the number of cosets may be 0).
+Proof. It is easy to see that |B| ≥ |A0 | + 1, otherwise A0 is periodic by Kneser’s Theorem. W.l.o.g., we may assume 0 ∈ A1 .
+Let d ∈ A1 and 0 ̸= d. By B ⊃ A0 ∪ (A0 + d) and |B| = |A0 | + 1, it follows that the lemma holds.
+Lemma 4.2. Let Ψ ⊂ Hom(G∗0 , G0 ) where G∗0 and G0 are abelian groups. Let K ∗ = {g ∗ ∈ G∗0 : |Ψ (g ∗ )| = 1} be the subgroup
+of G∗0 and K = ψ(K ∗ ) for some ψ ∈ Ψ . Suppose H ≤ K , then DΨ (G∗0 , H ) = D(H ), where D(H ) is the traditional Davenport’s
+constant.
+Proof. Let H ∗ = K ∗ ∩ ψ −1 (H ). It is easy to see that ψ : H ∗ → H is a surjection and DΨ (H ∗ , H ) = Dψ (H ∗ , H ) = D(H ).
+Since DΨ (G∗0 , H ) ≥ DΨ (H ∗ , H ) and D(H ) ≥ DΨ (G∗0 , H ) by the definitions of D(H ), DΨ (G∗0 , H ) and DΨ (G∗0 , H ), the lemma
+follows.
+Remark. From the proof, we can see that, for any g ∈ K , there is some g ∗ ∈ G∗0 such that Ψ (g ∗ ) = {g }.
+Essentially, the proofs of the statements (7) and (8) are due to Grynkiewicz et al. (see [8]). However, while there are some
+slight change, we give the detailed proofs here for completeness. We need some more lemmas to prove the statements (7)
+and (8).
+Lemma 4.3. Let G∗ and G be finite abelian groups, Ψ ⊂ Hom(G∗ , G) and H ≤ G such that DφH ·Ψ (G/H ) ̸= {0}, then
+DΨ (G) ≥ DΨ (H ) + DφH ·Ψ (G/H ) − 1.
+Proof. By the definition of DφH ·Ψ (G/H ), we can choose S1 ∈ F (G∗ ) such that H ∩
+
+∑∪
+
+(Ψ (S1 )) = ∅ and |S1 | = DφH ·Ψ (G/H )−1.
+∑∪
+∑∪
+
+Similarly, by the definition of DΨ (H ), we can choose S2 ∈ F (G∗ ) such that 0 ̸∈
+(Ψ (S2 )),
+(Ψ (S2 )) ⊂ H and
+∑∪
+|S2 | = DΨ (H ) − 1. Therefore the sequence S = S1 S2 satisfies 0 ̸∈
+(Ψ (S )) with length DΨ (H ) + DφH ·Ψ (G/H ) − 2,
+and the lemma follows.
+Lemma 4.4. Let Ψ ⊂ Hom(G∗0 , G0 ), H ≤ G ≤ G0 and α ∈ G0 with DφH ·Ψ (G/H ) ̸= {0}. Let S ∈ F (G∗0 ), Ψ (supp(S )) ⊂ α + G
+and |S | ≥ DφH ·Ψ (G/H ). Moreover suppose there is some β ∗ ∈ G∗0 and β ∈ α + G such that Ψ (β ∗ ) ⊂ β + H, then there exists
+some nontrivial subsequence s1 s2 · · · sr |S and ψji ∈ Ψ , such that
+r
+−
+i =1
+
+ψji (si ) ∈ r β + H .
+
+1944
+
+X. Zeng, P. Yuan / Discrete Mathematics 311 (2011) 1940–1947
+
+Proof. Consider the sequence S ′ = S − β ∗ . It is easy to see that Ψ (supp(S ′ )) ⊂ G. By the definition of DφH ·Ψ (G/H ), there
+∑r
+exists a nontrivial subsequence (s1 − β ∗ )(s2 − β ∗ ) · · · (sr − β ∗ ) and ψji ∈ Ψ , i = 1, . . . , r such that i=1 ψji (si − β ∗ ) = 0,
+then the lemma follows from Ψ (β ∗ ) ⊂ β + H.
+Lemma 4.5 ([5, Lemma 3.5]). Let G is a finite abelian group, let K ≤ G be a subgroup and A = A1 A2 · · · Ar ∈ S (G) be a
+setpartition with |Ai | ≥ 2 and |φK (Ai )| = 1 for i = 1, 2, . . . , r. If r ≥ |K | − 1, then there exists a nontrivial subgroup H ≤ K
+and sub-setpartitions A1 |A and A2 |A1 such that
+
+|A2 | = |H | − 1,
+|σ (A2 )| = |H |,
+|A1 | ≥ min{|A|, |A| − |K /H | + 2},
+
+|φH (Aj )| = 1,
+
+for all Aj ∈ supp(A1 ).
+
+Now we can proceed to prove the Theorem 1.1.
+Proof. The proof is by induction on |G|.
+Obviously, the base case |G| = 1 is trivial. Let S = s1 · · · s|S | , Ai = Ψ (si ), i ∈ [1, |S |] and let A = A1 A2 · · · A|S | =
+Ψ (s1 )Ψ (s2 ) · · · Ψ (s|S | ) denote the corresponding setpartition. W.l.o.g., we may assume that |S | = |G| + DΨ (G) − 1. Firstly,
+we prove that the statements (7) and (8) hold with the assumptions that the statements (3)–(6) hold.
+Let B = −β + A, and let B1′ = −β + A1 , B2 = −β + A2 , B0 = BB1′−1 and B1 = B1′ B2−1 . In order to prove (7), it is
+∑∪
+sufficient to prove n (B ) is H-periodic and contains 0.
+∑∪
+∑
+Let φH (g ) ∈ {0} ∪
+(φ (B )), we proceed to show that g + H ⊂ ∪n (B ).
+∑∪H
+Since φH (g ) ∈ {0} ∪
+(φH (B )), we can find a sub-setpartition (possible empty, in which case we have φH (g ) = 0)
+C0 |B0 such that φH (g ) ∈ σ (φH (C0 )). Let C0 be maximal in length with |C0 | ≤ n −|H |, then |C0 | ≥ min{|B0 |− DφH ·Ψ (G/H )+
+1, n − |H | − DφH ·Ψ (G/H ) + 1} by the definition of DφH ·Ψ (G/H ) and Lemma 4.4.
+Since n − |C0 | − |H | ≥ 0,
+n − |C0 | − |H | ≤ n − min{n − |H |, |B0 |} + DφH ·Ψ (G/H ) − 1 − |H |
+
+= max{0, n − |B0 | − |H |} + DφH ·Ψ (G/H ) − 1,
+and
+DφH ·Ψ (G/H ) − 1 ≤ DΨ (G) − DΨ (H ) ≤ |S1 | − |S2 | = |B1 |,
+we have
+n − |B0 | − |H | + DφH ·Ψ (G/H ) − 1 ≤ |S | − DΨ (G) + 1 − |B0 | − |H | + DφH ·Ψ (G/H ) − 1
+
+= |B1 | − DΨ (G) + DΨ (H ) + DφH ·Ψ (G/H ) − 1
+≤ |B1 |
+by Lemma 4.3. So we can choose a sub-setpartition C1 |B1 with length n − |C0 | − |H |.
+∑∪
+Now σ (C0 C1 ) ∩ (g + H ) ̸= ∅, let g0 ∈ σ (C0 C1 ) ∩ g + H. By (6), H ⊂
+|H | (B2 ), it follows that g + H = g0 + H ⊂
+n (B ), which completes the proof of (7).
+Now we will prove (8). Let B = B0 B1 B2 be as above.
+Without loss of generality, we may assume that S1 is maximal such that (3)–(6) hold. Suppose
+∏that (8) fails, then we have
+that H ≤ G is a proper subgroup and |B0 | ≥ |G/H | − 1. Let the index set of B0 be I0 and D ′ = i∈I0 ({0} ∪ Bi ) ∈ S (G), then
+every set in D ′ contains at least two cosets of H by the assumption on S1 .
+Applying Lemma 4.5 to φH (D ) with K = G/H, and let L/H < G/H be the resulting nontrivial subgroup and D1′ |D ′ and
+D2′ |D1′ the resulting sub-setpartitions. W.l.o.g. (by a translation if necessary), we may assume that σ (φH (D2′ )) = L/H. Let
+D1 |B0 and D2 |D1 be the corresponding sub-setpartitions of D1′ and D2′ , respectively. We claim that L is a subgroup of G
+which satisfies the conclusions of Theorem 1.1, which contradicts the maximality of H. Therefore it remains to prove the
+claim.
+
+∑∪
+n
+
+( C0 C1 B 2 ) ⊂
+
+∑∪
+
+Proof of the claim. It is easy to see that |D1 B1 B2 | ≥ min{|S |, |S | − |G/L| + 2} ≥ |L| + DΨ (G) − 1 and D1 B1 B2 ∈ S (L), so
+(3) and (4) hold for L.
+Since DφH ·Ψ (L/H ) − 1 ≤ DφH ·Ψ (G/H ) − 1 ≤ DΨ (G) − DΨ (H ) = |B1 |, we can choose a sub-setpartition C1 |B1 of length
+DφH ·Ψ (L/H ) − 1. Since
+
+|D2 | + |C1 | + |B2 | = |L/H | − 1 + DΨ (L/H ) − 1 + H + DΨ (H ) − 1
+≤ |L| + DΨ (L) − 1,
+we can choose a sub-setpartition C0 |D1 D2−1 B1 C1−1 of length |L| + DΨ (L) − 1 − |D2 | − |C1 | − |B2 |.
+∑∪
+∑∪
+Now we show that L =
+|L| (C0 D2 C1 B2 ). Obviously, L ⊃
+|L| (C0 D2 C1 B2 ) holds, we only need to show the reverse
+inclusion relation. For any g ∈ L, choose C0⋆ |C0 of length |L| − |L/H | − |H | + 1 (which is possible since |C0 | ≥ |L| − |L/H | −
+|H | + 1) and let g0 ∈ g − σ (C0⋆ ) (g0 = g if C0⋆ is empty). Choose D2⋆ |D2 of maximal length such that g0 + H ∩ σ (D2⋆ ) ̸= ∅,
+
+X. Zeng, P. Yuan / Discrete Mathematics 311 (2011) 1940–1947
+
+1945
+
+then |D2⋆ | ≥ |D2 | − DΨ (L/H ) + 1 by Lemma 4.4. Choose C1⋆ |C1 of length |D2 | − |D2⋆ | and let g1 ∈ (g0 − σ (D2⋆ C1⋆ )) ∩ H.
+Finally, by (6), we can choose B2⋆ |B2 of length |H | such that g1 ∈ σ (B2⋆ ). It is easy to see that g ∈ σ (C0⋆ D2⋆ C1⋆ B2⋆ ), and
+∑∪
+hence L ⊂
+|L| (C0 D2 C1 B2 ), which implies that (5) and (6) hold for L, which completes the proof of the claim and the
+statement (8).
+To prove the statements (3)–(6), we first prove some claims.
+Claim 4.1. Suppose that there exist the element α0 ∈ α + G, the proper subgroup K ≤ G, subsequence T |S such that
+|T | ≥ |K | + DΨ (G) − 1 and Ψ (T ) ∈ S (α0 + K ), then the theorem holds for S.
+Proof. We can apply the induction hypothesis to the subsequence T . we get the resulting maximal subgroup H ≤ K , element
+β ∈ α0 + K and subsequence T1 |T and T2 |T1 . Now it is easy to see that |T1 | ≥ min{|T |, |T | − |K /H | + 2} ≥ |H | + DΨ (G) − 1,
+then the theorem holds with the result.
+Claim 4.2. Let T = t1 t2 · · · t|T | ∈ F (G∗0 ) be a sequence over G∗0 such that |T | = |S | and Ψ (ti ) ⊂ Ψ (si ) for any i ∈ [1, |S |].
+Suppose that the statements (3)–(6) hold for T , then the statements (3)–(6) hold for S.
+Proof. Since the statements (3)–(6) hold for T , we can get the resulting maximal subgroup K ≤ G, element γ ∈ α + G and
+subsequences T1 |T and T2 |T1 . Choose i ∈ [1, |S |] with si ̸= ti and replace ti by si , then we obtain a new sequence U = Tti−1 si .
+We now prove the statements (3)–(6) hold for U, then applying the replacement iteratively implies that the statements
+(3)–(6) hold for S.
+If ti ∈ TT1−1 , then it is obviously that the statements (3)–(6) hold for U with the subgroup K ≤ G, element γ ∈ α + G and
+subsequences T1 |U∑
+and T2 |T1 .
+∑∪
+∪
+If K = G, then |G| (Ψ (U )) ⊃
+|G| (Ψ (T )), which implies that the statements (3)–(6) hold for U with the subgroup G,
+element α and subsequences U1 = U2 = U.
+If K < G is proper and ti ∈ T1 , let U0 = T1 ti−1 . It is easy to see that |U0 | = |T1 | − 1 ≥ |U | − |G/K | + 1 ≥ |K | + DΨ (G) − 1
+and the statements (3)–(6) hold for U by Claim 4.1, completing the proof.
+Claim 4.3. If there exist an element g0 ∈ α + G, nontrivial subgroup K0 ≤ G and sub-setpartition A0 |A such that |A0 | ≤ |G|/2
+and g0 + K0 ⊂ σ (A0 ), then the statements (3)–(6) hold.
+Proof. If K0 = G, then it is obvious that the statements (3)–(6) hold with the subgroup G, element α , subsequences
+S1 = S2 = S. So we may assume that K0 < G is proper. Let C = A(A0 )−1 . Notice that we can apply induction hypothesis
+to φK0 (C ). Now we obtain the resulting subgroups K /K0 ≤ G/K0 , elements φK0 (γ ) ∈ φK0 (α) + G/K0 and sub-setpartitions
+C1 |C and C2 |C1 .
+If K = G. In order to understand easily, we let A⋆ = A − γ , A⋆0 = A0 − γ , C ⋆ = C − γ , C1⋆ = C1 − γ and C2⋆ = C2 − γ ,
+∑∪
+now the operations are among the subgroups instead of cosets. It is sufficient to prove that |G| (A⋆ ) = G.
+Let g0⋆ + K0 ⊂ σ (A⋆0 ) and notice that C ⋆ = C1⋆ . Now we proceed to prove g ∈
+⋆
+
+⋆ −1
+
+⋆
+
+⋆
+|G| (A )
+
+∑∪
+
+for any g ∈ G.
+
+Obviously, we can choose a sub-setpartition D1 |C (C2 ) of length |G| − |A0 | − |G/K0 | and let g1 ∈ (g − σ (D1⋆ )). By the
+definition of C2⋆ , we can choose a sub-setpartition D2⋆ |C2⋆ of length |G/K0 |, which satisfies that (g1 − g0⋆ + K0 ) ∩ σ (D2⋆ ) ̸= ∅.
+∑∪
+⋆
+Let g2 ∈ (g1 −σ (D2⋆ ))∩(g0⋆ + K0 ), then by the definition of A⋆0 , we have g2 ∈ σ (A⋆0 ). Therefore we have proven g ∈
+| G| ( A )
+⋆
+
+⋆
+and G ⊂
+|G| (A ). Note that the reverse inclusion is trivial, which completes the proof.
+If K < G is proper, then |C1 | ≥ |C | − |G/K | + 2 ≥ |G|/2 + DΨ (G) − 1 − |G/K | + 2 ≥ |K | + DΨ (G) − 1 and the statements
+(3)–(6) hold for S by Claim 4.1. Then we have completed the proof.
+
+∑∪
+
+Now we
+to the main part of the proof. We apply Devos–Goddyn–Mohar Theorem to A with n = |G|. Hence, letting
+∑turn
+∪
+L = Stab
+(
+A
+) , we have
+n
+
+
+
+
+
+∪
+−
+
+−
+
+
+min{n, |{i ∈ [1, |S |] : Ai ∩ Q ̸= ∅}|} − n + 1 .
+ (A) ≥ |L|
+ n
+
+Q ∈G/H
+If L = G, then the theorem holds with subgroup H = G, element β = α and subsequences S2 = S1 = S. Therefore we
+may assume L < G is proper.
+If L is nontrivial, then applying the induction hypothesis to φL (A) (using n = |G| in (7)), we get the maximal subgroup
+K /L, elements φL (γ ) ∈ φL (α) + G/L and subsequences T1 |S and T2 |T1 . If K /L is nontrivial, then it contradicts L being the
+∑∪
+maximal period for n (A). Therefore, we may assume K = L. Let C1 denote the corresponding sub-setpartition of T1 . Since
+C1 ∈ S (γ + L) and |T1 | ≥ |S | − |G/L| + 2 ≥ |L| + DΨ (G) − 1, the theorem holds for S by Claim 4.1, which completes the
+proof of this case.
+If L = {∏
+0} is trivial. Let I1 =
+∏{i ∈ [1, |S |] : |Ai | = 1} and I2 = {i ∈ [1, |S |] : |Ai | ≥ 2}. Let N≥2 (A) = |I2 | and N1 (A) = |I1 |.
+Let B1 = i∈I1 Ai and B2 = i∈I2 Ai . We give some remarks. N≥2 (A) ≤ |G| − 2 (otherwise it would contradict the fact that
+L = {0}); If |Ai | = 1 for some i ∈ [1, |S |], then the multiplicity of Ai in A is less than DΨ (G) (otherwise the theorem would
+hold with subgroup H = {0}). Now we have the decomposition A = B1 B2 .
+
+1946
+
+X. Zeng, P. Yuan / Discrete Mathematics 311 (2011) 1940–1947
+
+Case 1: N1 (A) = |S |, then we may assume that |Ψ | = 1 and consider A as a sequence. W.l.o.g., let Ψ = {ψ}.
+∑∪
+∑∪
+It is easy to see that
+|G| (A) = σ (A) −
+DΨ (G)−1 (A). However, the multiplicity Ai in A is less than DΨ (G), then the
+
+Devos–Goddyn–Mohar Theorem implies DΨ (G)−1 (A) is periodic and so is |G| (A), a contradiction.
+Case 2: G is a cyclic group.
+If there is some g ∈ α + G such that |Ig | ≥ |G| where Ig = {i ∈ [1, |S |] : g ∈ Ai }, since N≥2 (A) ≤ |G| − 2, it follows that
+there is some k ∈ Ig such that Ak = {g }. Replacing si by sk for all i ∈ Ig , we obtain a new sequence T . It is easy to see that the
+theorem holds for T . By Claim 4.2, the theorem holds for S. Therefore we may assume such g does not exist.
+If N≥2 (A) ≥ |G| − DΨ (G), then the Devos–Goddyn–Mohar Theorem implies that L is nontrivial, a contradiction. Thus we
+may assume that N≥2 (A) < |G| − DΨ (G).
+Let K ≤ G be the minimal subgroup such that B1 ∈ S (α0 + K ) for some α0 ∈ α + G, we have DΨ (G) ≥ DΨ (G∗0 , K ) = D(K )
+by Lemma 4.2. Since G is a cyclic group, then DΨ (G) ≥ D(K ) = |K |, and so A1 = |S | − A2 > 2DΨ (G) − 1 ≥ |K | + DΨ (G) − 1,
+which completes the proof of the case by Claim 4.1.
+Case 3: G is not cyclic and N1 (A) < |S |. Let K ≤ G be the minimal subgroup such that B1 ∈ S (α0 + K ) for some α0 ∈ α+ G.
+Since the multiplicity of Ai with |Ai | = 1 in A is less than DΨ (G) and N1 (A) ≥ DΨ (G)+1, we have that |K | ≥ 2 is nontrivial.
+If N1 (A) ≥ |K |+ DΨ (G)− 1, then Claim 4.1 implies that the theorem holds. So we may assume that N1 (A) < |K |+ DΨ (G)− 1.
+Subcase 3.1: If K = G, then D(K ) = DΨ (G) by Lemma 4.2. By the Remark of Lemma 4.2, we have that for any g ∈ α + G,
+there exists some g ∗ ∈ G∗0 such that Ψ (g ∗ ) = {g }. It follows that we can replace si ∈ supp(S ) by ti for any i ∈ [1, |S |],
+which satisfies Ψ (ti ) ⊂ Ψ (si ) and |Ψ (ti )| = 1. Now we obtain a new sequence T and we can apply Case 1 to this case, so
+the theorem holds for T , which implies that the theorem holds for S by Claim 4.2.
+Subcase 3.2: If K < G is proper. W.l.o.g., we may assume that the index set of B2 is [1, |B2 |]. Recall that |B2 | = N≥2 (A) ≥
+|G| − |K | + 1 ≥ |G|/2 + 1. Now we construct a sub-setpartition sequence Di |B2 recursively. Let the last sub-setpartition
+be Dk when the construction ends in the kth step.
+First, let D1 = A1 . Suppose that we have constructed Di , we let Di = σ (Di ) and Ci = B2 (Di )−1 .
+If Di is periodic, end the construction and label this ending sub-setpartition Di by ‘‘Periodic end’’. If there is some term
+Ci+1 |Ci such that |Di + Ci+1 | ≥ |Di | + 2, then let Di+1 = Di Ci+1 and Ci+1 = Ci (Ci+1 )−1 . If such Ci+1 does not exist, end the
+construction and label this ending sub-setpartition Di by ‘‘Cyclic end’’.
+Now we claim that the construction must end with ‘‘Periodic end’’ or ‘‘Cyclic end’’. By the construction of Di , we have
+|Di | ≥ 2i. By Kneser’s Theorem, the three cases in the last paragraph contain all the possibilities. By |A2 | ≥ |G|/2 + 1, the
+second case must end in the finite steps and then will end with ‘‘Periodic end’’ or ‘‘Cyclic end’’. Therefore the claim holds.
+Recall that Dk is the resulting sub-setpartition of the construction and Dk = σ (Dk ) when the construction ends in the
+kth step. It follows that |Dk | ≤ |G|/2 by |Di | ≥ 2i. Let Ck = B2 (Dk )−1 , then |Ck | = |B2 | − |Dk | ≥ 1.
+Subcase 3.2.1: If the ending is ‘‘Periodic end’’, let H = Stab(Dk ) be the period of Dk . Applying Claim 4.3 with the subsetpartition Dk and the subgroup H < G, we complete the proof.
+Subcase 3.2.2: If the ending is ‘‘Cyclic end’’, by Lemma 4.1, the construction of Dk and |Ck | ≥ 1, Dk is the union of an
+arithmetic progression of difference d and some ⟨d⟩-cosets. Let H = ⟨d⟩.
+If the periodic part of Dk is not empty, then applying Claim 4.3 with sub-setpartition Dk and subgroup H, it follows that
+the theorem holds in this case.
+If the periodic part of Dk is empty, then Dk is a subset of some H-coset. Therefore for any Ai |Dk , we have |φH (Ai )| = 1,
+otherwise it would contradict Bk being a subset of some H-coset. For any term Aj |Ck , if |φH (Aj )| > 1, then |Dk + Aj | ≥ 2|Dk | ≥
+|Dk | + 2, which contradicts the construction of Dk . Therefore for any term Ai |B2 , we have |φH (Ai )| = 1. Since G is not cyclic,
+|B2 | ≥ |G|/2 + 1 ≥ |H |. Applying Lemma 4.5 to B2 , we get the subgroup H ′ ≤ H and sub-setpartition B2′ |B2 such that
+|B2′ | = |H ′ | − 1 ≤ |G|/2 and σ (B2′ ) = g0 + H ′ for some g0 ∈ G0 . Now we can apply Claim 4.3 with the subgroup H ′ ≤ H
+and sub-setpartition B2′ |B2 .
+This completes the proof.
+
+∑∪
+
+∑∪
+
+Acknowledgments
+This work was supported by the NSF of China (No. 10971072) and by the Guangdong Provincial Natural Science
+Foundation (No.10152606101000000).
+References
+[1] S.D. Adhikari, Y.G. Chen, Davenport constant with weights and some related quenstions II, Journal of Combinatorial Theory. Series A 115 (2008)
+178–184.
+[2] S.D. Adhikari, P. Rath, Davenport constant with weights and some related questions, Integers 6 (2006) A30. (electronic).
+[3] M. DeVos, L. Goddyn, B. Mohar, A generalization of Kneser’s addition theorem, Advanced Mathematics 220 (2009) 1531–1548.
+[4] W.D. Gao, A combinatorial problem on finite abelian groups, Journal of Number Theory 58 (1996) 100–103.
+[5] W. Gao, Addition theorems for finite abelian groups, Journal of Number Theory 53 (1995) 241–246.
+[6] W. Gao, A. Geroldinger, Zero-sum problems in finite abelian groups: a survey, Expositiones Mathematicae 24 (2006) 337–369.
+[7] A. Geroldinger, F. Halter-Koch, Non-unique factorizations. algebraic, combinatorial and analytic theory, in: Pure and Applied Mathematics, vol. 278,
+Chapman & Hall, CRC, 2006.
+[8] D.J. Grynkiewicz, L.E. Marchan, O. Ordaz, A weighted generalization of two theorems of Gao, Preprint.
+[9] M. Kneser, Ein Satz über abelsche Gruppen mit Anwendungen auf die Geometrie der Zahlen, Mathematische Zeitschrift 64 (1955) 429–434.
+
+X. Zeng, P. Yuan / Discrete Mathematics 311 (2011) 1940–1947
+[10]
+[11]
+[12]
+[13]
+
+R. Thangadurai, A variant of Davenport’s constant, Indian Academy of Sciences. Proceedings. Mathematical Sciences 117 (2007) 147–158.
+The Erdös–Ginzberg–Ziv theorem with units, Discrete Mathematics 308 (2008) 5473–5484.
+P. Yuan, X. Zeng, A new result on Davenport’s constant, Journal of Number Theory 129 (2009) 3026–3028.
+P. Yuan, X. Zeng, Davenport’s constant with weights, European Journal of Combinatorics 31 (2010) 677–680.
+
+1947
+
+

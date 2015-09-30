@@ -1,0 +1,1818 @@
+Artiﬁcial Intelligence 175 (2011) 1604–1619
+
+Contents lists available at ScienceDirect
+
+Artiﬁcial Intelligence
+www.elsevier.com/locate/artint
+
+Learning qualitative models from numerical data
+Jure Žabkar ∗ , Martin Možina, Ivan Bratko, Janez Demšar
+Faculty of Computer and Information Science, University of Ljubljana, Tržaška 25, 1000 Ljubljana, Slovenia
+
+a r t i c l e
+
+i n f o
+
+a b s t r a c t
+
+Article history:
+Received 16 March 2010
+Received in revised form 23 February 2011
+Accepted 23 February 2011
+Available online 2 March 2011
+
+Qualitative models describe relations between the observed quantities in qualitative terms.
+In predictive modelling, a qualitative model tells whether the output increases or decreases
+with the input. We describe Padé, a new method for qualitative learning which estimates
+partial derivatives of the target function from training data and uses them to induce
+qualitative models of the target function. We formulated three methods for computation
+of derivatives, all based on using linear regression on local neighbourhoods. The methods
+were empirically tested on artiﬁcial and real-world data. We also provide a case study
+which shows how the developed methods can be used in practice.
+© 2011 Elsevier B.V. All rights reserved.
+
+Keywords:
+Qualitative modelling
+Regression
+Partial derivatives
+Monotone models
+
+1. Introduction
+People most often reason qualitatively. For example, playing with a simple pendulum, a ﬁve year old child discovers
+that the period of the pendulum increases if he uses a longer rope. Although most of us are later taught a more accurate
+numerical model describing the same behaviour, T = 2π l/ g, we keep relying on the more “operational” qualitative relation
+in everyday life. Still, despite Turing’s proposition that artiﬁcial intelligence should mimic human intelligence, not much work
+has been done so far in trying to learn such models from data.
+We can formally describe the relation between the period of a pendulum T , its length l and the gravitational acceleration
+g as T = Q (+l, − g ), meaning that the period increases with l and decreases with g. Different deﬁnitions of qualitative
+relations are discussed in related work. We will base ours on partial derivatives: a function f is in positive (negative)
+qualitative relation with x over a region R if the partial derivative of f with respect to x is positive (negative) over the
+entire R,
+
+f = Q R (+x)
+
+≡
+
+∀x0 ∈ R:
+
+∂f
+(x0 ) > 0
+∂x
+
+(1)
+
+f = Q R (−x)
+
+≡
+
+∀x0 ∈ R:
+
+∂f
+(x0 ) < 0.
+∂x
+
+(2)
+
+and
+
+Qualitative predictive models describe qualitative relations between input variables and a continuous output, for instance
+
+if z > 0 ∧ x > 0 then f = Q (+x),
+if z < 0 ∨ x < 0 then f = Q (−x).
+For sake of clarity, we omitted specifying the region since it is obvious from the context.
+
+*
+
+Corresponding author. Tel.: +386 1 4768 154; fax: +386 1 4768 386.
+E-mail addresses: jure.zabkar@fri.uni-lj.si (J. Žabkar), martin.mozina@fri.uni-lj.si (M. Možina), ivan.bratko@fri.uni-lj.si (I. Bratko), janez.demsar@fri.uni-lj.si
+(J. Demšar).
+0004-3702/$ – see front matter
+doi:10.1016/j.artint.2011.02.004
+
+© 2011 Elsevier B.V.
+
+All rights reserved.
+
+J. Žabkar et al. / Artiﬁcial Intelligence 175 (2011) 1604–1619
+
+1605
+
+Fig. 1. General outline of the two-step method on a simple example. The target function, f (x1 , x2 ) = x1 x2 , is sampled in ﬁve points. The ﬁrst step relabels
+the examples by replacing the value of the target function by the sign of the (estimated) derivative of f w.r.t. x1 . The second step induces a classiﬁcation
+model from this data.
+
+The paper includes three major contributions. The ﬁrst one is the idea of transforming the problem of learning qualitative
+models to that of learning ordinary predictive models, described in the next section. This is followed by a new method
+called Padé1 for computing partial derivatives from data typical for machine learning. We show three ways of computing
+the derivatives, all based on variations of local linear regression. Finally, we provide an extensive experimental evaluation of
+the proposed setup.
+2. General outline of the method
+We propose a new, two-step approach to induction of qualitative models from data, presented in Fig. 1. Input data
+describes a sampled function given as a set of examples (x, f ), where x are attribute values and f is the function value.
+In the ﬁrst step we estimate the partial derivative at each point covered by a learning example. We replace the value of
+the output f for each example with the sign of the corresponding derivative (q). Each relabelled example, (x, q), describes
+the qualitative behaviour of the function at a single point.
+In the second step, a general-purpose machine learning algorithm is used to generalise from this relabelled data, resulting
+in a qualitative model describing the function’s (qualitative) behaviour in the entire domain.
+Such models describe the relation between the output and a single input variable in dependence of other attributes. In
+Fig. 1 we modelled how the effect of x1 on y depends upon the values of x1 and x2 : the model tells that f decreases with
+increasing x1 if x2 is negative, and increases with increasing x1 if x2 is positive. In real life, we can model the economic
+conditions (e.g. interest rates, public debt, taxation, inﬂation and unemployment) at which an increase of interest rates will
+increase/decrease the unemployment. To describe the inﬂuence of multiple inputs (e.g. the effect of interest rates and of
+inﬂation and taxation on unemployment) we would induce a separate model for each independent attribute.
+In this paper we will use the C4.5 tree inducer for construction of models, so the resulting models will be qualitative
+trees; these are, essentially, classiﬁcation trees predicting qualitative behaviour. While we decided for the trees because of
+their interpretability, any other classiﬁcation model, for instance naive Bayesian classiﬁer, random forest or SVM could be
+used to induce qualitative models.
+3. Related work
+The beginnings of the ﬁeld of qualitative reasoning go back to early work done outside AI. Jeffries [1] and May [2] introduced qualitative stability in ecology, whereas Samuelson [3] discussed the use of qualitative reasoning in economics.
+Examples of qualitative reasoning in economics also include the early work of Simon and Ando [4,5]. The papers by
+Forbus [6], de Kleer and Brown [7], and Kuipers [8] describe approaches that became the foundations of much of qualitative reasoning work in AI. Kalagnanam et al. [9–11] contributed to the mathematical foundations of qualitative reasoning.
+There are a number of approaches to qualitative system identiﬁcation, also known as learning qualitative models from
+data. Most of this work is concerned with the learning of QDE (Qualitative Differential Equations) models. One approach
+is to translate a numerical system’s behaviour in time into a qualitative representation, and then check which QDE constraints (or QSIM-type constraints [8]) are satisﬁed by the qualitative behaviour. The resulting constraints constitute a
+qualitative model. Examples of this approach are the programs GENMODEL [12,13], MISQ [14,15] and QSI [16]. A similar
+approach can be carried out with a general purpose ILP system (Inductive Logic Programming) to induce a model from
+qualitative behaviours, which enjoys the advantages of the power and ﬂexibility of ILP [17–19]. Džeroski and Todorovski
+developed several approaches to discovering dynamics. QMN [20] generates models in the form of qualitative differential
+equations. LAGRANGE [21] and LAGRAMGE [22] can describe the observed behaviour in the form of differential equations
+while system PADLES [23] extends the approach to learning partial differential equations. SQUID [24] ﬁnds models in terms
+of semi-quantitative differential equations. Gerçeker and Say [25] ﬁt polynomials to numerical data and use them to induce
+qualitative models. We believe that their algorithm LYQUID can also be used in static systems although they experiment
+only with dynamic systems.
+
+1
+
+An acronym for “partial derivative”, and the name of a famous French mathematician.
+
+1606
+
+J. Žabkar et al. / Artiﬁcial Intelligence 175 (2011) 1604–1619
+
+Fig. 2. The neighbourhoods for locally weighted regression (a),
+
+τ -regression (b) and parallel pairs (c).
+
+Qualitative models of dynamic systems are not necessarily based on QDE. For example, the KARDIO model of the
+heart [26] uses symbolic descriptions in logic instead. QuMas [27,28] learned such models from example qualitative behaviours in time using an approach similar to ILP.
+The QUIN algorithm [29–31] induces qualitative trees which are similar to classiﬁcation trees but have different leaf
+nodes. The leaves of a qualitative tree contain qualitative constraints (e.g. z = M +− (x, y ), meaning that z increases with x,
+decreases with y and depends on no other variables). QUIN constructs such trees by computing the qualitative change
+vectors between all pairs of points in the data and then recursively splitting the space into regions which share common
+qualitative properties, such as the one given above. Despite similarities, Padé and QUIN are signiﬁcantly different in that
+Padé acts as a preprocessor of numerical data and can be used in combination with any attribute-value learning system.
+Padé computes qualitative partial derivatives in all example data points, and these derivatives become class values for the
+subsequent learning. For example, Padé combined with a decision tree learner would produce qualitative trees similar to
+those induced by QUIN. However, Padé combined with a rule learner, say, produces a model in the form of “qualitative
+rules”. The main algorithmic difference between the two systems is that Padé computes quantitative and qualitative partial
+derivatives in every example point, whereas QUIN computes the degree of consistency of a subregion of numerical data
+with (in principle) every possible qualitative monotonicity constraint.
+Padé is, to our knowledge, the only algorithm for computing (partial) derivatives on point cloud data. Another important difference between Padé and above mentioned algorithms is also that Padé is essentially a preprocessor while other
+algorithms induce a model. Padé merely augments the learning examples with additional labels, which can later be used
+by appropriate algorithms for induction of classiﬁcation or regression models, or for visualisation. This results in a number
+of Padé’s advantages. For instance, most other algorithms for learning qualitative models only handle numerical attributes.
+Since Padé can be combined with any machine learning method, the learner can also use discrete attributes.
+Besides symbolic methods, some interesting approaches to qualitative modelling are inspired by biological systems,
+e.g. [32,33].
+Outside artiﬁcial intelligence, there are several numerical methods for computation of derivatives at a given point. Such
+numerical derivatives could be used for modelling qualitative behaviour. Unfortunately, numerical differentiation computes
+the function value at points chosen by the algorithm, while we are limited to a given data sample.
+4. Computation of partial derivatives
+We will denote a learning example as (x, y ), where x = (x1 , x2 , . . . , xn ) and y is the value of the unknown sampled
+function, y = f (x).
+We will introduce three methods for estimation of partial derivative of f at point x0 . The simplest one assumes that the
+function is linear in a small hyper-sphere around x0 (Fig. 2(a)). It computes locally weighted linear regression on examples
+lying in the hyper-sphere and considers the computed coeﬃcients as partial derivatives. The second method, τ -regression,
+computes a single partial derivative at a time. To avoid the inﬂuence of other arguments of the function, it considers only
+those points in the sphere which lie in a hyper-tube along the axis of differentiation (Fig. 2(b)). The derivative can then be
+computed with weighted univariate regression. Finally, the parallel pairs method replaces the single hyper-tube with a set of
+pairs aligned with the axis of differentiation (Fig. 2(c)), which allows it to focus on the direction of differentiation without
+decreasing the number of examples considered in the computation.
+4.1. Locally weighted regression
+Let N (x0 ) be a set of examples (xm , ym ) such that xmi ≈ x0i for all i (Fig. 2(a)). According to Taylor’s theorem, a differentiable function is approximately linear in a neighbourhood of x0 ,
+
+J. Žabkar et al. / Artiﬁcial Intelligence 175 (2011) 1604–1619
+
+1607
+
+f (xm ) = f (x0 ) + ∇ f (x0 ) · (xm − x0 ) + R 2 .
+
+(3)
+
+Our task is to ﬁnd the vector of partial derivatives, ∇ f (x0 ). We can solve this as a linear regression problem by rephrasing
+(3) as a linear model
+
+ym = β0 + β T (xm − x0 ) +
+
+(xm , ym ) ∈ N (x0 ),
+
+m,
+
+(4)
+
+where the task is to ﬁnd β (and β0 ) with the minimal sum of squared errors m over N (x0 ). The error term m covers the
+remainder of the Taylor expansion, R 2 , as well as noise in the data.
+The size of the neighbourhood N (x0 ) should reﬂect the density of examples and the amplitude of noise. Instead of
+setting a predeﬁned radius (e.g. xm − x0 < δ ), we consider a neighbourhood of k nearest examples and weigh the points
+according to their distance from x0 ,
+
+w m = e−
+
+xm −x0
+
+2
+
+/σ 2
+
+(5)
+
+.
+
+2
+
+The parameter σ is ﬁtted so that the farthest example has a negligible weight of 0.001.
+This transforms the problem into locally weighted regression (LWR) [34], where the regression coeﬃcients represent
+partial derivatives,
+
+β0
+= XTW X
+β
+
+−1
+
+XTW Y ,
+
+(6)
+
+where
+
+⎡
+
+⎤
+⎡1 x
+11 . . . x1n
+.
+.
+.
+.. . . . .. ⎦ ,
+X = ⎣ ..
+1 xk1 . . . xkn
+
+w1
+
+⎢
+W =⎣ 0
+..
+.
+
+0
+
+..
+
+···
+
+.
+
+⎤
+
+⎡y ⎤
+1
+
+⎥
+⎦,
+
+.
+Y = ⎣ .. ⎦ .
+
+(7)
+
+yk
+
+wk
+
+The computed β estimates the vector of partial derivatives ∇ f (x0 ).
+As usual in linear regression, the inverse in (6) can be replaced by pseudo-inverse to increase the stability of the method.
+Fig. 3(a) shows a simple example for computation of derivative of f (x1 , x2 ) = x21 − x22 at point (10, 10) on a neighbourhood of k = 5 examples.
+4.2.
+
+τ -regression
+
+The τ -regression algorithm differs from LWR in the shape of the neighbourhood of the reference point. It starts with κ
+examples in a hyper-sphere, which is generally larger than that for LWR, but then keeps only k examples that lie closest
+to the axis of differentiation (Fig. 2(b)). Let us assume without loss of generality that we compute the derivative with
+regard to the ﬁrst argument x1 . The neighbourhood N (x0 ) thus contains k examples with the smallest distance xm − x0 \1
+chosen from the κ examples with the smallest distance xm − x0 , where · \i represents the distance computed over all
+dimensions except the i-th.
+|xmi − x0i | for all i > 1 for most examples xm . If we
+With a suitable selection of κ and k, we can assume |xm1 − x01 |
+also assume that partial derivatives with regard to different arguments are comparable in size, we get ∂ f /∂ x1 (xm1 − x01 )
+∂ f /∂ xi (xmi − x0i ) for i > 1. We can thus omit all dimensions but the ﬁrst from the scalar product in (3):
+
+f (xm ) ≈ f (x0 ) +
+
+∂f
+(x0 )(xm1 − x01 ) + R 2
+∂ x1
+
+(8)
+
+for (xm , ym ) ∈ N (x0 ). We again set up a linear model,
+
+ym = β0 + β1 (xm1 − x01 ) +
+
+(9)
+
+m,
+
+∂f
+where β1 approximates the derivative ∂ x (x0 ). The task is to ﬁnd the value of
+1
+
+β1 which minimises error over N (x0 ).
+Examples in N (x0 ) are weighted according to their distance from x0 along the axis of differentiation,
+2
+2
+w m = e −(xm1 −x01 ) /σ ,
+
+(10)
+
+where σ is again set so that the farthest example has a weight of 0.001.
+The described linear model can be solved by weighted univariate linear regression over the neighbourhood N (x0 ),
+
+∂f
+(x0 ) = β1 =
+∂ x1
+where
+
+stands for
+
+w m xm1 ym −
+2
+w m xm1
+−(
+xm ∈N (x0 ) .
+
+w m xm1
+
+w m ym /
+
+w m xm1 )2 /
+
+wm
+
+wm
+
+(11)
+
+,
+
+Fig. 3(b) shows a computation of derivative of f (x1 , x2 ) = x21 − x22 at point (10, 10) for
+
+κ = 7 and k = 5.
+
+1608
+
+J. Žabkar et al. / Artiﬁcial Intelligence 175 (2011) 1604–1619
+
+Fig. 3. Computation of partial derivatives of y = x21 − x22 at point (10, 10).
+
+4.3. Parallel pairs
+Consider two examples (xm , ym ) and (xj , y j ) which are close to x0 and aligned with the x1 axis, xm − xj ≈ |xm1 − x j1 |.
+Under these premises we can suppose that both examples correspond to the same linear model (9) with the same coeﬃcients β0 and β1 . Subtracting (9) for ym and y j gives
+
+ym − y j = β1 (xm1 − x j1 ) + (
+
+m
+
+−
+
+j)
+
+(12)
+
+or
+
+y (m, j ) = β1 x(m, j )1 + (m, j ) ,
+
+(13)
+
+J. Žabkar et al. / Artiﬁcial Intelligence 175 (2011) 1604–1619
+
+1609
+
+where y (m, j ) = ym − y j and x(m, j )1 = xm1 − x j1 . The difference ym − y j is therefore linear with the difference in the attribute
+values xm1 and x j1 .
+∂f
+
+Coeﬃcient β1 again approximates the derivative ∂ x (x0 ). Note that the model has no intercept term, β0 .
+1
+To compute the derivative using (12) we take the spherical neighbourhood like the one from the ﬁrst method, LWR. For
+each pair we compute its alignment with the x1 axis using a scalar product with the base vector e1 ,
+
+α(m, j) =
+
+(xm − xj )T e1
+x m − x j e1
+
+=
+
+|xm1 − x j1 |
+.
+xm − xj
+
+We select the k best aligned pairs from
+sponding to the alignment,
+
+(14)
+
+κ points in the hyper-sphere around x0 (Fig. 2(c)) and assign them weights corre-
+
+2
+2
+w (m, j ) = e −(1−α(m, j) ) /σ ,
+
+(15)
+
+with σ 2 set so that the smallest weight equals 0.001.
+The derivative is again computed using univariate linear regression,
+
+∂f
+(x0 ) = β1 =
+∂ x1
+
+(xm ,xj )∈N (x0 ) w (m, j ) (xm1
+
+− x j1 )( ym − y j )
+
+2
+(xm ,xj )∈N (x0 ) w (m, j ) (xm1 − x j1 )
+
+Fig. 3(c) illustrates the computation with k = 5 pairs from
+x(m, j )1 as independent and y (m, j )1 as dependent variable.
+
+.
+
+(16)
+
+κ = 7 points. Note that the regression formula now uses
+
+4.4. Time complexity
+Let the data set contain N points. Described methods compute partial derivative at a single point by ﬁrst ﬁnding the
+k nearest neighbours with distances computed from values of n attributes, which requires O ( N (n + ln k)). The costliest
+remaining step of the LWR method is computation of the inverse of a k × k matrix, X T W X which takes O (k3 ) using
+brute force, or O (k2.376 ) using the Coppersmith–Winograd algorithm. τ -regression and parallel pairs use univariate linear
+regression so their running times are O (k) and O (κ ), respectively. Finding the nearest neighbours usually dominates over
+the time complexity of all other steps. The time complexity of computing the derivatives at all points in the data set thus
+rises quadratically with the number of points, O ( N 2 (n + ln k)).
+The time complexity of the second step of the schema, building the qualitative model from examples labelled by qualitative derivatives, depends upon the used machine learning algorithm and its settings.
+5. Experiments
+We ﬁrst performed an extensive set of experiments on artiﬁcially constructed problems. These data sets are used to test
+Padé with respect to accuracy, the effect of irrelevant attributes and the effect of noise in the data.
+To assess the accuracy of induced models, we compute the derivatives and the model from the entire data set. We then
+check whether the predictions of the model match the analytically computed partial derivatives. We deﬁne the accuracy of
+Padé as the proportion of examples with correctly predicted qualitative partial derivatives. Note that this procedure does
+not require separate training and testing data set since the correct answer with which the prediction is compared is not
+used in induction of the model. Where not stated otherwise, experimental results represent averages of ten trials.
+Another set of experiments was performed on real-world data. Since the ground truth (the correct partial derivative) on
+such data sets is not necessarily known, we cannot compute the predictive accuracy of the model. In such cases, stability is
+often used as a measure of quality of a machine learning method [35]. Stability measures the inﬂuence that variation of the
+input has on the output of a system. The motivation for such analysis is to design robust systems that will not be affected
+by noise and randomness in sampling.
+In experiments with the parallel pairs method we reduced the number of arguments to be ﬁtted by setting κ = k.
+Since the ﬁrst batch of experiments on artiﬁcial data sets suggested that parameter settings do not signiﬁcantly affect the
+performance of methods, we use constant values in other experiments: we use k = 20 for LWR and parallel pairs, and
+κ = 100 and k = 20 for τ -regression, except for real-world data sets where we decreased κ to 50 due to a smaller number
+of examples.
+For LWR, we used ridge regression to compute the ill-posed inverse in (6). We used C4.5 as reimplemented in Orange [36] for induction of qualitative models. We preferred this algorithm over potentially more accurate methods, like
+SVM, since one of our goals was to induce comprehensible models. Besides that, most artiﬁcial data sets are simple enough
+to require only a single-node tree or a tree with two leaves only. C4.5 was run with default settings except where noted
+otherwise.
+
+1610
+
+J. Žabkar et al. / Artiﬁcial Intelligence 175 (2011) 1604–1619
+
+Table 1
+Results of experiments with f (x, y ) = x2 − y 2 .
+LWR
+(a) Accuracy of qualitative derivatives
+0.991
+k = 10
+20
+0.993
+30
+0.992
+40
+0.993
+50
+0.994
+
+Pairs
+
+0.986
+0.992
+0.992
+0.993
+0.993
+
+(b) Accuracy of qualitative models induced by C40.5
+0.997
+0.993
+k = 10
+20
+0.996
+0.995
+30
+0.996
+0.994
+40
+0.995
+0.995
+50
+0.998
+0.995
+
+τ -regression
+κ = 30
+
+50
+
+70
+
+100
+
+0.948
+0.929
+0.909
+
+0.968
+0.960
+0.953
+0.950
+0.935
+
+0.971
+0.972
+0.969
+0.964
+0.961
+
+0.980
+0.981
+0.978
+0.974
+0.972
+
+0.990
+0.983
+0.983
+
+0.993
+0.991
+0.987
+0.978
+0.977
+
+0.990
+0.986
+0.988
+0.978
+0.987
+
+0.991
+0.991
+0.993
+0.990
+0.991
+
+50
+
+70
+
+100
+
+0.597
+0.576
+0.545
+
+0.626
+0.593
+0.571
+0.556
+0.541
+
+0.639
+0.619
+0.609
+0.588
+0.558
+
+0.647
+0.646
+0.618
+0.613
+0.612
+
+0.737
+0.745
+0.752
+
+0.880
+0.743
+0.599
+0.780
+0.906
+
+0.890
+0.811
+0.813
+0.732
+0.805
+
+0.864
+0.860
+0.777
+0.700
+0.760
+
+Table 2
+Results of experiments with f (x, y ) = x3 − y.
+LWR
+(a) Accuracy of qualitative derivatives
+0.727
+k = 10
+20
+0.725
+30
+0.751
+40
+0.740
+50
+0.725
+
+Pairs
+
+0.690
+0.792
+0.879
+0.919
+0.966
+
+(b) Accuracy of qualitative models induced by C40.5
+10.00
+0.898
+k = 10
+20
+10.00
+0.930
+30
+0.978
+0.954
+40
+0.971
+0.964
+50
+0.956
+0.986
+
+τ -regression
+κ = 30
+
+5.1. Accuracy on artiﬁcial data sets
+We performed experiments with three mathematical functions: f (x, y ) = x2 − y 2 , f (x, y ) = x3 − y, f (x, y ) = sin x sin y.
+We sampled them uniform randomly in 1000 points in the range [−10, 10] × [−10, 10].
+Function f (x, y ) = x2 − y 2 is a standard test function often used in [30]. Its partial derivative w.r.t. x is ∂ f /∂ x = 2x, so
+f = Q (+x) if x > 0 and f = Q (−x) if x < 0. Since the function’s behaviour with respect to y is similar, we observed only
+results for ∂ f /∂ x. The accuracy of all methods is close to 100% (Table 1). Changing the values of parameters has no major
+effect except for τ regression, where short (κ = 30 and κ = 50) and wide (k 10) tubes give better accuracy while for very
+long tubes (κ = 100) the accuracy decreases with k. The latter can indicate that longer tubes reach across the boundary
+between the positive and negative values of x. Induced tree models have the same high accuracy.
+Function f (x, y ) = x3 − y is globally monotone, increasing in x and decreasing in y in the whole region. The function is
+interesting because its much stronger dependency on x can obscure the role of y. All methods have a 100% accuracy with
+regard to x. Prediction of function’s behaviour w.r.t. y proves to be diﬃcult: the accuracy of τ -regression is 50–60% and the
+accuracy of LWR is just over 70% (Table 2). Parallel pairs seem undisturbed by the inﬂuence of x and estimate the sign of
+∂ f /∂ y with accuracy of more than 95% with proper parameter settings.
+An interesting observation here is that the accuracy of induced qualitative tree models highly exceeds that of point-wise
+partial derivatives. For instance, qualitative models for derivatives by LWR reach 95–100% despite the low, 70% accuracy
+of estimates of the derivative. When generalising from labels denoting qualitative derivatives, incorrect labels are scattered
+randomly enough that C4.5 recognises them as noise and induces a tree with a single node.
+Function f (x, y ) = sin x sin y has partial derivatives ∂ f /∂ x = cos x sin y and ∂ f /∂ y = cos y sin x, which change their signs
+multiple times in the observed region. The accuracy of all methods is mostly between 80 and 90%, degrading with larger
+neighbourhoods (Table 3). However, the accuracy of C4.5 barely exceeds 50% which we would get by making random predictions. Rather than a limitation of Padé, this shows the (expected) inability of C4.5 to learn this chessboard-like concept.
+Since qualitative modelling has been traditionally interested in examples from physics, we also tested Padé’s ability to
+rediscover three simple physical laws from computer generated data. Each domain is described by an equation which was
+used to obtained 1000 uniform random samples.
+
+J. Žabkar et al. / Artiﬁcial Intelligence 175 (2011) 1604–1619
+
+1611
+
+Table 3
+Results of experiments with f (x, y ) = sin x sin y.
+LWR
+
+τ -regression
+κ = 30
+
+Pairs
+
+(a) Accuracy of qualitative derivatives
+0.882
+k = 10
+20
+0.870
+30
+0.862
+40
+0.844
+50
+0.814
+
+0.858
+0.841
+0.823
+0.796
+0.754
+
+(b) Accuracy of qualitative models induced by C40.5
+0.509
+0.519
+k = 10
+20
+0.515
+0.531
+30
+0.515
+0.523
+40
+0.521
+0.555
+50
+0.516
+0.583
+
+50
+
+70
+
+100
+
+0.863
+0.820
+0.769
+
+0.885
+0.865
+0.837
+0.799
+0.717
+
+0.890
+0.880
+0.861
+0.839
+0.810
+
+0.886
+0.882
+0.877
+0.853
+0.845
+
+0.516
+0.509
+0.510
+
+0.512
+0.518
+0.513
+0.511
+0.507
+
+0.510
+0.522
+0.514
+0.507
+0.508
+
+0.509
+0.510
+0.515
+0.511
+0.515
+
+Table 4
+Accuracy of computed partial derivatives for domains from physics.
+(a) Centripetal force
+Variable
+
+m
+
+v
+
+r
+
+LWR
+τ -regression
+Parallel pairs
+
+1.00
+0.86
+1.00
+
+1.00
+0.97
+1.00
+
+1.00
+0.94
+0.98
+
+Variable
+
+m1
+
+m2
+
+r
+
+LWR
+τ -regression
+Parallel pairs
+
+0.96
+0.88
+0.96
+
+0.96
+0.87
+0.96
+
+1.00
+0.99
+1.00
+
+(b) Gravitational force
+
+(c) Pendulum
+Variable
+
+l
+
+ϕ
+
+LWR
+τ -regression
+Parallel pairs
+
+1.00
+1.00
+1.00
+
+0.98
+0.83
+0.97
+
+5.1.1. Centripetal force
+The centripetal force F on an object of mass m moving at a speed v along a circular path with radius r is
+
+F=
+
+mv 2
+r
+
+.
+
+We prepared a data set for this target concept with m sampled randomly from [0.1, 1], r from [0.1, 2] and v from [1, 10].
+Apart from the failure of τ -regression on ∂ F /∂ m, which we cannot explain, the proportion of correctly computed qualitative partial derivatives (Table 4(a)) is around 100%. C4.5 correctly induced single-node trees predicting F = Q (+m),
+F = Q (+ v ) and F = Q (−r ).
+5.1.2. Gravitation
+Newton’s law of universal gravitation states that a point mass attracts another point mass by a force pointing along the
+line intersecting both points with the force equal to
+
+F =G
+
+m1 m2
+r2
+
+,
+
+where F is gravitational force, G is the gravitational constant, m1 and m2 are the points’ masses, and r is the distance
+between the two point masses. We prepared a data set where m1 and m2 were sampled randomly from [0.1, 1] and r from
+[0.1, 2].
+Padé again reached almost 100% accuracy (Table 4(b)) and C4.5 induced correct models F = Q (+m1 ), F = Q (+m2 ) and
+F = Q (−r ).
+
+1612
+
+J. Žabkar et al. / Artiﬁcial Intelligence 175 (2011) 1604–1619
+
+Fig. 4. The qualitative model describing the relation between T and
+
+ϕ.
+
+Fig. 5. Accuracy for different number of additional irrelevant attributes.
+
+5.1.3. Pendulum
+The period T of the ﬁrst swing of a pendulum w.r.t. its length l, the mass of the bob m and the initial angle
+
+T = 2π
+
+l
+g
+
+1+
+
+1
+16
+
+ϕ02 +
+
+11
+3072
+
+ϕ04 +
+
+173
+737 280
+
+ϕ0 is2
+
+ϕ06 + · · · .
+
+The mass was again chosen randomly from [0.1, 1], the length was from [0.1, 2], the angle was between −180 and 180◦ ,
+and g = 9.81.
+Table 4(c) shows the accuracies for dependency of the period on the length and the angle. All methods achieved 100%
+accuracy for the length, i.e. for each learning example the qualitative derivative equals the ground truth.
+The qualitative model describing the relation between T and ϕ depends on the value of ϕ . C4.5 induced a qualitative
+tree shown in Fig. 4 from data labelled by LWR. The models based on τ -regression and parallel pairs are the same – the
+only difference is in the split threshold at the root node which is −2.7◦ for τ -regression and −2.28◦ for parallel pairs. The
+tree states that for negative angles the period T decreases with ϕ while for positive angles it increases with ϕ . In other
+words, the period increases with the absolute value of ϕ .
+5.2. Effect of irrelevant attributes
+Many real-world data sets include large number of attributes with no effect on the function value. The following experiment shows the robustness of Padé in such cases.
+We consider data sets obtained by sampling f (x, y ) = x2 − y 2 and f (x, y ) = xy as described above and observe the
+correctness of partial derivatives computed by Padé when 0–50 random attributes from the same interval as x and y,
+[−10, 10], are added to the domain. The graphs in Fig. 5 show how the accuracy drops with the increasing number of
+added irrelevant attributes for each method.
+We observe a steep drop in the accuracy of LWR which we can ascribe to the fact that LWR is multivariate and is solving
+an ill-conditioned system as the number of attributes approaches k. Parallel pairs and τ -regression avoid this problem by
+computing the derivative by a single attribute at a time.
+Similar results of the latter two algorithms on f (x, y ) = xy may reﬂect the fact that both deal with the same problem,
+that is, that the gradient of the function is not aligned with the axis of differentiation; the problem gets worse with
+increasing number of additional random variables. The algorithms behave quite differently for f (x, y ) = x2 − y 2 . Here, the
+hyper-plane at x = 0 represents the boundary between positive and negative derivatives w.r.t. x. τ -regression uses a larger
+neighbourhood than parallel pairs, which is generally a disadvantage, yet in this case approximately the same number of
+
+2
+
+http://en.wikipedia.org/wiki/Pendulum.
+
+J. Žabkar et al. / Artiﬁcial Intelligence 175 (2011) 1604–1619
+
+1613
+
+Table 5
+Effect of noise on the accuracy of computed qualitative partial derivatives for f (x, y ) = x2 − y 2 with random noise from N (0, σ ).
+
+σ = 10
+
+σ = 30
+
+σ = 50
+
+(a) Correctness of computed derivatives
+LWR
+0.993
+τ -regression
+0.981
+parallel pairs
+0.992
+
+σ =0
+
+0.962
+0.945
+0.924
+
+0.878
+0.848
+0.771
+
+0.795
+0.760
+0.680
+
+(b) Correctness of qualitative models induced by C4.5
+LWR
+0.996
+τ -regression
+0.991
+parallel pairs
+0.995
+
+0.978
+0.976
+0.966
+
+0.956
+0.949
+0.949
+
+0.922
+0.917
+0.901
+
+examples from both sides of the boundary is added so the qualitative predictions still come out correct. Parallel pairs, on
+the other hand, choose pairs according to their angles with the axis of differentiation. These become random as the number
+of random variables increases, so the derivative is computed in a random direction.
+It is diﬃcult to estimate whether this distinction between the two methods also affects their performance in real-world
+problems. We have performed the same experiment on a number of other function and found that no method consistently
+outperforms the other.
+5.3. Coping with noise
+In this experiment we add various amounts of noise to the function value. The target function is f (x, y ) = x2 − y 2 deﬁned
+on [−10, 10] × [−10, 10] which puts f in [−100, 100]. We added Gaussian noise with a mean of 0 and standard deviation
+0, 10, 30, and 50, i.e. from no noise to the noise in the range comparable to the signal itself. We measured the accuracy
+of derivatives and models induced by C4.5. Since the data contains noise, we set the C4.5’s parameter m (minimal number
+of examples in a leaf) to 10% of the examples of our data set, m = 100. We repeated the experiment with each amount of
+noise 100 times and computed the average accuracies.
+The results are shown in Table 5. Padé is quite robust despite the huge amount of noise. As in other experiments on
+artiﬁcial data sets, we again observed that C4.5 is able to learn almost perfect models despite the drop in correctness of
+derivatives at higher noise levels.
+5.4. Stability on real-world data sets
+In measurements of stability we ran Padé on six UCI ML repository [37] data sets (servo, imports-85, galaxy, prostate,
+housing, auto-mpg) and the four artiﬁcial data sets (xy, x2 − y 2 , x3 − y, sin x sin y) which were already used in previous
+experiments. For each data set we created 100 bootstrap samples and for each sample we computed qualitative partial
+derivatives of the class w.r.t. all continuous attributes for each example. We deﬁned stability w.r.t. attribute xi for example xm , βxm (xi ), as the proportion of the prevailing derivatives ( Q xm (+xi ) or Q xm (−xi )) among all positive and negative
+derivatives predicted for xm ,
+
+βxm (xi ) =
+
+max(#Q xm (+xi ), #Q xm (−xi ))
+#Q xm (+xi ) + #Q xm (−xi )
+
+.
+
+(17)
+
+The total stability with regard to attribute xi is the average stability across all examples in the data set. We prefer β close
+to 1, which happens when most of the qualitative predictions for this derivative are the same. The lowest possible β is 0.5.
+The settings for all methods were k = 20 and κ = 50 for τ -regression. The lower value of κ was used due to a smaller
+number of examples. Results in Table 6 show the average stability of the partial derivative of the outcome w.r.t. to each
+attribute.
+Altogether there are 46 continuous attributes in all domains. We ranked performances of methods for each attribute,
+where rank 1 was assigned to the best method and rank 3 to the worst one. Averaging over all attributes showed that the
+parallel pairs method is the most stable with a rank of 1.80, slightly behind is the τ -regression method with 1.84, while the
+LWR method achieved a considerably worse rank of 2.35.
+5.5. Comparison between Padé and QUIN
+We conclude the experiments with comparison between Padé and QUIN. The two algorithms can be used for similar purposes, yet it is diﬃcult to bring them to the same ground. While the output of QUIN are tree models, Padé computes partial
+derivatives, which can be used for constructing trees or other kinds of models or visualisations. For sake of comparison, we
+observed trees constructed by C4.5 on data relabelled by Padé, as elsewhere in the paper. Padé’s aim is to ﬁnd a partial
+derivative w.r.t. a given variable at a given point; QUIN identiﬁes areas with qualitatively invariant behaviour of the function
+w.r.t. to some variables not speciﬁed in advance. For objectivity, we followed the deﬁnition from [38] stating that absence of
+
+1614
+
+J. Žabkar et al. / Artiﬁcial Intelligence 175 (2011) 1604–1619
+
+Table 6
+Stability on real and artiﬁcial data sets. The numbers correspond to stabilities of LWR,
+pairs, respectively.
+Data set/attribute
+
+LWR
+
+τ
+
+PP
+
+Auto
+
+τ -regression and parallel
+
+LWR
+
+τ
+
+PP
+
+0.93
+0.93
+0.93
+
+0.90
+0.90
+0.90
+
+0.88
+0.80
+0.83
+
+lcavol
+lweight
+age
+lbph
+lcp
+
+0.92
+0.78
+0.69
+0.69
+0.71
+
+0.82
+0.80
+0.79
+0.78
+0.77
+
+0.93
+0.80
+0.79
+0.78
+0.71
+
+pgain
+vgain
+
+0.95
+0.88
+
+0.94
+0.72
+
+1.00
+0.85
+
+x
+y
+
+0.99
+0.99
+
+0.95
+0.94
+
+0.99
+0.98
+
+x
+y
+
+1.00
+0.77
+
+1.00
+0.75
+
+1.00
+0.78
+
+x
+y
+
+0.99
+0.99
+
+0.95
+0.96
+
+0.99
+0.99
+
+x
+y
+
+0.91
+0.91
+
+0.88
+0.89
+
+0.86
+0.86
+
+Data set/attribute
+Galaxy
+
+displacement
+horsepower
+weight
+acceleration
+
+0.76
+0.71
+0.77
+0.75
+
+0.80
+0.84
+0.81
+0.76
+
+0.75
+0.75
+0.78
+0.77
+
+Imports-85
+normalized-losses
+wheel-base
+length
+width
+curb-weight
+height
+engine-size
+bore
+compression-ratio
+stroke
+horsepower
+peak-rpm
+highway-mpg
+city-mpg
+
+0.68
+0.66
+0.72
+0.67
+0.88
+0.72
+0.71
+0.67
+0.68
+0.65
+0.64
+0.66
+0.66
+0.65
+
+0.76
+0.85
+0.85
+0.82
+0.88
+0.79
+0.80
+0.78
+0.81
+0.80
+0.89
+0.83
+0.87
+0.87
+
+0.72
+0.89
+0.82
+0.94
+0.96
+0.75
+0.91
+0.85
+0.79
+0.81
+0.93
+0.75
+0.84
+0.88
+
+0.71
+0.68
+0.70
+0.87
+0.82
+0.71
+0.70
+0.67
+0.68
+0.71
+
+0.80
+0.85
+0.80
+0.88
+0.79
+0.81
+0.88
+0.85
+0.76
+0.91
+
+0.78
+0.81
+0.85
+0.92
+0.79
+0.81
+0.84
+0.84
+0.75
+0.93
+
+east.west
+north.south
+radial.position
+Prostate
+
+Servo
+
+xy
+
+x3 − y
+
+Housing
+crim
+indus
+nox
+rm
+age
+dis
+tax
+ptratio
+b
+lstat
+
+x2 − y 2
+
+sin x sin y
+
+a variable from a leaf in the QUIN’s tree means that the derivative with regard to that variable is zero, although in practise
+it is often considered to be insigniﬁcant or undeﬁned. Padé does not predict zero derivatives. Instead of comparing accuracy
+of the algorithms we therefore show the confusion matrices in which the results of Padé have one column less.
+We report on results obtained with τ -regression; performance of parallel pairs is similar. We used the same parameters
+as elsewhere in the paper (κ = 100, k = 20). QUIN was also run with default parameters.
+We performed the comparison on three artiﬁcial functions: x2 − y 2 , x3 − y and xy, under three different conditions:
+noiseless-data including only the relevant variables x and y, data with Gaussian noise with σ = 10 as described in Section 5.3, and noiseless data with three additional random variables unrelated to the output. We constructed 1000 training
+and 1000 testing instances for each domain. We repeated each experiment 10 times and report the averages.
+Results are given in Table 7. For instance, on noiseless data there were 500 points with positive derivative of f (x, y ) =
+x2 − y 2 w.r.t. x, out of which QUIN (correctly) predicted the positive derivative in 482 points and a zero derivative at 17
+(the missing example is due to rounding error).
+Both algorithms achieve good results on noiseless and noisy data, except for the QUIN’s overlooking of the effect of y in
+f (x, y ) = x3 − y. Padé makes a correct prediction in 71% cases for this problem. It is however impossible to tell what would
+happen if QUIN could be forced into predicting either increase or decrease or if Padé was allowed to abstain, as QUIN is.
+QUIN occasionally gives quite different results for x and y on symmetric functions f (x, y ) = x2 − y 2 and f (x, y ) = xy,
+which cannot be ascribed to the algorithm and can only be explained as implementational issue.
+The performance of the two algorithms signiﬁcantly diverges in the presence of irrelevant variables. Padé is affected only
+on f (x, y ) = x3 − y, where the inferior inﬂuence of y is additionally obscured by random variables. QUIN’s results degrade
+signiﬁcantly. This can be explained by the different nature of the two algorithms: Padé’s τ -regression and parallel pairs are
+univariate methods, and QUIN is multivariate and models the effect of all attributes at once. Padé observes the values of
+other attributes only in the deﬁnition of the neighbourhood, while in QUIN they are also a part of the target concept.
+6. Case study: billiards
+To show a practical use of the proposed methods, we analyse a problem from billiards. Billiards is a common name for
+table games played with a cue and a set of balls, such as snooker or pool and their variants. The goals of the games vary,
+but the main idea is common to all: the player uses the cue to stroke the cue ball aiming at another ball to achieve the
+
+J. Žabkar et al. / Artiﬁcial Intelligence 175 (2011) 1604–1619
+
+1615
+
+Table 7
+Confusion matrices for QUIN and Padé on test data sets.
+
+f (x, y )
+
+∂f
+∂x
+
+QUIN
+
+Padé
+
++: ◦ :−
+
++:◦:−
+
+(a) Noiseless data with only the relevant attributes
++
+482 : 17 : 0
+498 : .. : 2
+x2 − y 2
+−
+0 : 62 : 437
+2 : .. : 497
+x3 − y
+
++
+−
+
+xy
+
++
+−
+
+1000 : 0 : 0
+0: 0 :0
+495 : 0 : 4
+1 : 0 : 498
+
+1000 : .. : 0
+0 : .. : 0
+497 : .. : 1
+3 : .. : 496
+
+(b) Data with Gaussian noise added to the function value,
++
+497 : 2 : 0
+481 : .. : 18
+x2 − y 2
+−
+30 : 28 : 440
+10 : .. : 489
+x3 − y
+
++
+−
+
+xy
+
++
+−
+
+QUIN
+∂f
+∂y
+
++:
+
++
+−
+
+500 :
+23 :
+
++
+−
++
+−
+
+Padé
+
+◦ :−
+0
+0
+
+:0
+: 476
+
+0: 0 :0
+0 : 1000 : 0
+
++:◦:−
+493 : .. : 7
+2 : .. : 497
+0 : .. : 0
+282 : .. : 717
+
+500 :
+9:
+
+0
+0
+
+:0
+: 490
+
+495 : .. : 4
+4 : .. : 495
+
+494 :
+25 :
+
+0
+0
+
+:0
+: 479
+
+483 : .. : 10
+28 : .. : 476
+
+σ = 10
++
+−
+
++
+−
+
+0: 0 :0
+0 : 1000 : 0
+
+0 : .. : 0
+290 : .. : 709
+
+484 : .. : 21
+20 : .. : 474
+
++
+−
+
+171 : 320 : 8
+0 : 0 : 499
+
+469 : .. : 30
+5 : .. : 494
+
+(c) Data with three additional irrelevant variables
++
+103 : 0 : 399
+487 : .. : 15
+x2 − y 2
+−
+106 : 0 : 390
+4 : .. : 492
+
++
+−
+
+175 :
+178 :
+
+490 : .. : 6
+4 : .. : 498
+
+x3 − y
+
++
+−
+
+xy
+
++
+−
+
+1000 : 0 : 0
+0: 0 :0
+496 : 0 : 8
+0 : 0 : 494
+
+1000 : 0 : 0
+0: 0 :0
+0 : 343 : 159
+0 : 342 : 154
+
+1000 : .. : 0
+0 : .. : 0
+
+1000 : .. : 0
+0 : .. : 0
+499 : .. : 3
+5 : .. : 491
+
++
+−
++
+−
+
+0
+0
+
+: 321
+: 324
+
+0: 0 :0
+0 : 1000 : 0
+502 :
+108 :
+
+0
+0
+
+:0
+: 388
+
+0 : .. : 0
+339 : .. : 660
+494 : .. : 8
+9 : .. : 487
+
+Fig. 6. Strokes with different fullness of hit (azimuth).
+
+Fig. 7. Example trace from the simulator.
+
+desired effect. The friction between the table and the balls, the spin of the cue ball and the collision of the balls combine
+into a very complex physical system [39]. However, an amateur player can learn the basic principles of how to stroke the
+cue ball without knowing much about the physics behind it.
+Our goal is to induce a qualitative model describing the relation between the azimuth (degree of fullness of hit; see
+Fig. 6) and the reﬂection angle of the cue ball after the collision with another ball. We deﬁne the reﬂection angle as the
+
+1616
+
+J. Žabkar et al. / Artiﬁcial Intelligence 175 (2011) 1604–1619
+
+Table 8
+The observed variables in the billiards case study.
+Name
+
+Range
+
+Description
+
+Azimuth
+Elevation
+Velocity
+Follow
+Angle
+
+[−15, 15] deg
+[0, 30] deg
+[3, 5] m/s
+[−0.5r, 0.5r]
+[−180, 180) deg
+
+The horizontal angle of the cue
+The vertical angle of the cue
+Velocity of the cue
+Forward/backward spin caused by hitting the ball above/below the centre
+The reﬂection angle of the cue ball
+
+Fig. 8. Spinning the cue ball with a follow (above centre) or a draw (below centre). Dots represent the point at which the cue ball is hit with the cue.
+
+Fig. 9. The qualitative model describing the relation between the reﬂection angle and azimuth.
+
+angle between the stroke direction and the line connecting the positions of the cue ball’s collision with the black ball and
+its next collision, either with the cushion or with the black ball again (Fig. 7).
+We model the relation between the azimuth and the angle as it depends on four attributes (Table 8): the horizontal and
+the vertical angle of the cue, called azimuth and elevation, respectively, as well as the follow (forward/backward spin; see
+Fig. 8) of the cue ball and the velocity of the stroke.
+We used the billiards simulator [40] to collect a sample of 5000 randomly chosen scenarios. We chose to use τ -regression
+with parameters as usual, κ = 100, k = 20. We induced a qualitative tree using C4.5 and asked the experts for their interpretation of the model.
+The tree induced by C4.5 is shown in Fig. 9(a). The experts found the model much easier to understand than a set of
+equations and the knowledge easier to transfer to the actual game. They were also able to recast the original tree into a
+simpler model (Fig. 9(b)). As such, it can serve as a conceptualisation of the domain useful for beginners.
+The tree ﬁrst splits on attribute follow. For negative values (the cue ball is hit below the centre), the backward spin
+results in inversely proportional relation between the reﬂection angle and the azimuth, i.e., increasing the azimuth decreases
+the angle and vice versa. The exception at the azimuth of zero is the artefact of the coordinate system: the reﬂection angle
+at this azimuth crosses the line of discontinuity at ±180◦ , so an increase from, say, 179 to 181◦ is recorded as a decrease
+from 179 to −179◦ .
+Positive values of follow give the cue ball an extra amount of forward spin, which adds to the spin that the cue ball
+acquires due to rolling. In this case, azimuth has a different effect on the black ball. Having a forward spin, the cue ball has
+a tendency to roll forward after the collision. For azimuth approximately between −8 and 8◦ , increasing (decreasing) the
+
+J. Žabkar et al. / Artiﬁcial Intelligence 175 (2011) 1604–1619
+
+1617
+
+Fig. 10. The plots of follow–azimuth for different sample sizes.
+
+azimuth also increases (decreases) the reﬂection angle. For greater absolute values of azimuth the cue ball only partially hits
+the black ball which causes the reﬂection angle to become negatively related with the azimuth.
+Our model also correctly recognised the two important attributes, follow and azimuth. The other two, elevation and
+velocity indeed have no effect on reﬂection angle in our context, according to the expert opinion.
+We have consequently tested the obtained qualitative relations in the simulator by simulating small changes in azimuth
+while leaving the values of other attributes constant and observing the reﬂection angle. We found all rules correct apart
+from some small deviations regarding the numerical values of the splits in the qualitative tree.
+Finally, we have used smaller random samples (from 100 to 1000 examples with a step of 100) from this domain to
+assess the practical usefulness of Padé on sparse data. We ﬁrst excluded the tree learning algorithm from the experiment
+by plotting scatter plots in which examples are marked by their respective qualitative derivatives. Scatter plots of follow–
+azimuth show results computed on two random samples with 1000 (Fig. 10(a)) and 200 examples (Fig. 10(b)), which is the
+smallest sample for which Padé worked reasonably well. However, when we tried to induce qualitative trees from this data,
+we observed that they become unreliable for samples with less than around 1000 examples.
+7. Discussion and conclusion
+The three methods for computation of derivatives differ in their theoretical background, which leads to differences in
+their performance.
+LWR is a multivariate method, computing all derivatives at once, while the other two are univariate. This mostly puts
+LWR at a disadvantage. LWR is more sensitive to the size of data set: if the number of attributes is comparable to (or even
+greater) than the number of points on which the regression is computed (in our case, this is the number of examples in the
+neighbourhood, k, and not the total size of the data set), the LWR is solving an ill-conditioned system. This problem clearly
+surfaces in our experiments with irrelevant attributes. The other two methods take one attribute at a time and do not run
+into this problem. When the number of attributes is small, LWR however gives satisfactory results.
+LWR also fared considerably worse on real-world data sets where we evaluated the methods indirectly by testing their
+stability. The lower stability of LWR reﬂects its higher complexity. Based on multivariate regression, the number of parameters that LWR optimises equals the number of attributes. The higher complexity of the LWR method allows it to ﬁt the
+data better, i.e. it has lower bias at the cost of higher variance. Therefore, LWR can in theory better estimate derivatives
+when compared to the other two, but it can overﬁt on data with many attributes. This property is also manifested in our
+experiments, where LWR performed considerably worse on domains with many attributes (housing and imports-85), while
+it scored best on the ﬁve domains which only have two attributes.
+Being univariate, the τ -regression and the parallel pairs methods have to select examples lying in the direction of differentiation to exclude the inﬂuence of other attributes on function value. To gather the same number of examples as the
+LWR, they expand the neighbourhood. The τ -regression does so by extending the neighbourhood in direction of the axis of
+differentiation and the parallel pairs method differentiates along lines parallel to the actual axis of differentiation. The accuracy of computed derivatives should proﬁt from excluding other attributes and suffer from extending the neighbourhood.
+The effect of this is visible on target functions x3 − y and sin x sin y. The former tests how well the method copes with
+effects of x when differentiating by y; LWR fails here, while parallel pairs work well. The latter concept requires a small
+neighbourhood, so LWR fares better here, although the difference in performance is not as large as for the former concept.
+The difference between the τ -regression and parallel pairs is subtle. The τ -regression computes the derivative inside a
+somewhat longer tube, whose length is governed by the parameter κ , which we typically set to 50–100. It assumes that
+the function is linear in a longer region, and the error comes mostly from violating this assumption. Parallel pairs use a
+smaller vicinity; in most experiments we set κ and k to 20. The function is thus required to be linear only close to x0 .
+The price to pay is that the derivative is smoothed over a hyper-disc perpendicular to the axis of differentiation instead of
+
+1618
+
+J. Žabkar et al. / Artiﬁcial Intelligence 175 (2011) 1604–1619
+
+being computed at x0 , as in τ -regression. This may cause problems if the derivative strongly depends upon other arguments
+of the function. We were however unable to experimentally ﬁnd any practical consequences of this theoretical difference
+between the τ -regression and parallel pairs.
+As a general rule, LWR should be preferred for data sets with a small number of attributes (e.g. up to 5) and a sparse
+sample. On the other hand, τ -regression should be used with high dimensional data and a dense sample. Parallel pairs are
+most appropriate when we assume that the attributes have very different inﬂuence on the class variable.
+Experiments demonstrate that while computation of partial derivatives is often diﬃcult and prone to errors, even quite
+unreliable estimates usually result in correct qualitative models. Even a modest learning algorithm such as C4.5 is able to
+reduce the noise in the computed derivatives and build models which almost perfectly match the target function.
+Apart from ignoring the noisy labels, the C4.5 task was rather trivial for most artiﬁcial domains as it required inducing a
+tree with one or two leaves. It was put to a more serious test in a case study from billiards. It has induced a correct model
+which also demonstrates the basic advantage of qualitative modelling over standard regression modelling: the model we
+induced presents the general principles which can be used by a player, while a regression model would describe complex
+numerical relationships which would probably be diﬃcult to comprehend and certainly impossible to use at the billiards
+table.
+We also experimented with other machine learning algorithms (rule learning, naive Bayesian classiﬁer) and got similar
+results. Since C4.5 proved adequate for our needs, we have not systematically tested and published the behaviour of Padé
+in combination with any other algorithm.
+While all presented models are rather small and simple, real-world qualitative models induced by experts, such as
+Samuelson [3], Jeffries [1] and May [2], do not get any more complex than this neither. It may be that either the world
+is simpler than expected when described qualitatively, or that humans are used to reason using simple models which skip
+over the details, which are included only in speciﬁc models for particular contexts.
+In summary, we introduced a new approach to learning qualitative models which differs from existing approaches by
+its trick of translating the learning problem into a classiﬁcation problem and then applying the general-purpose learning
+methods to solve it. To focus the paper, we mostly explored the ﬁrst step which involves the estimation of partial derivatives.
+The second step opens a number of other interesting research problems not explicitly discussed here. One is exploration
+of other, more powerful learning algorithms. Is our above assumption of the simplicity of the world in qualitative terms
+correct, or would using, say, support vector machines, result in much better models? Another interesting question is how to
+combine models for derivatives with respect to individual arguments into a single model describing the function’s behaviour
+with respect to all arguments. One approach may be to use multi-label learning methods to model all derivatives at once.
+We leave these questions open for further research in the area.
+Acknowledgements
+This work was supported by the Slovenian research agency ARRS (J2-2194, P2-0209) and by the European project XMEDIA
+under EC grant number IST-FP6-026978. We also thank Tadej Janež, Lan Žagar and Jure Žbontar for expert help in billiards
+case study.
+References
+[1]
+[2]
+[3]
+[4]
+[5]
+[6]
+[7]
+[8]
+[9]
+[10]
+[11]
+[12]
+[13]
+[14]
+[15]
+[16]
+[17]
+[18]
+[19]
+
+C. Jeffries, Qualitative stability and digraphs in model ecosystems, Ecology 55 (6) (1974) 1415–1419.
+R.M. May, Qualitative stability in model ecosystems, Ecology 54 (3) (1973) 638–641.
+P.A. Samuelson, Foundations of Economic Analysis, enlarged edition, Harvard University Press, 1983.
+H.A. Simon, On the deﬁnition of the causal relation, The Journal of Philosophy 49 (1952) 517–528;
+Reprinted in H.A. Simon, Models of Discovery, D. Reidel, Boston, 1977.
+H.A. Simon, A. Ando, Aggregation of variables in dynamic systems, Econometrica 29 (1961) 111–138.
+K. Forbus, Qualitative process theory, Artiﬁcial Intelligence 24 (1984) 85–168.
+J. de Kleer, J.S. Brown, A qualitative physics based on conﬂuences, Artiﬁcial Intelligence 24 (1984) 7–83.
+B. Kuipers, Qualitative simulation, Artiﬁcial Intelligence 29 (1986) 289–338.
+J. Kalagnanam, H.A. Simon, Y. Iwasaki, The mathematical bases for qualitative reasoning, IEEE Intelligent Systems 6 (2) (1991) 11–19.
+J. Kalagnanam, Qualitative analysis of system behaviour, Ph.D. thesis, Pittsburgh, PA, USA, 1992.
+J. Kalagnanam, H.A. Simon, Directions for qualitative reasoning, Computational Intelligence 8 (2) (1992) 308–315.
+E. Coiera, Generating qualitative models from example behaviours, Tech. rep. 8901, University of New South Wales, 1989.
+D. Hau, E. Coiera, Learning qualitative models of dynamic systems, Machine Learning Journal 26 (1997) 177–211.
+S. Ramachandran, R. Mooney, B. Kuipers, Learning qualitative models for systems with multiple operating regions, in: Working Papers of the 8th
+International Workshop on Qualitative Reasoning about Physical Systems, Japan, 1994.
+B. Richards, I. Kraan, B. Kuipers, Automatic abduction of qualitative models, in: Proceedings of the National Conference on Artiﬁcial Intelligence,
+AAAI/MIT Press, 1992.
+A. Say, S. Kuru, Qualitative system identiﬁcation: deriving structure from behavior, Artiﬁcial Intelligence 83 (1996) 75–141.
+I. Bratko, S. Muggleton, A. Varšek, Learning qualitative models of dynamic systems, in: Proceeding of the 1st International Workshop on Inductive Logic
+Programming, ILP 91, 1991, pp. 207–224.
+G.M. Coghill, S.M. Garrett, R.D. King, Learning qualitative models in the presence of noise, in: Proceedings of the QR’02 Workshop on Qualitative
+Reasoning Workshop, 2002.
+G.M. Coghill, A. Srinivasan, R.D. King, Qualitative system identiﬁcation from imperfect data, Journal of Artiﬁcial Intelligence Research 32 (1) (2008)
+825–877.
+
+J. Žabkar et al. / Artiﬁcial Intelligence 175 (2011) 1604–1619
+
+1619
+
+[20] S. Džeroski, L. Todorovski, Discovering dynamics: from inductive logic programming to machine discovery, Journal of Intelligent Information Systems 4
+(1995) 89–108.
+[21] S. Džeroski, L. Todorovski, Discovering dynamics, in: International Conference on Machine Learning, 1993, pp. 97–103.
+[22] L. Todorovski, Using domain knowledge for automated modeling of dynamic systems with equation discovery, Ph.D. thesis, University of Ljubljana,
+Ljubljana, Slovenia, 2003.
+[23] L. Todorovski, S. Džeroski, A. Srinivasan, J. Whiteley, D. Gavaghan, Discovering the structure of partial differential equations from example behavior, in:
+Proceedings of the Seventeenth International Conference on Machine Learning, 2000.
+[24] H. Kay, B. Rinner, B. Kuipers, Semi-quantitative system identiﬁcation, Artiﬁcial Intelligence 119 (2000) 103–140.
+[25] R.K. Gerçeker, A. Say, Using polynomial approximations to discover qualitative models, in: Proceedings of the 20th International Workshop on Qualitative Reasoning, Hanover, New Hampshire, 2006.
+[26] I. Bratko, I. Mozetiˇc, N. Lavraˇc, KARDIO: a Study in Deep and Qualitative Knowledge for Expert Systems, MIT Press, Cambridge, MA, USA, 1989.
+[27] I. Mozetiˇc, Learning of qualitative models, in: EWSL, 1987, pp. 201–217.
+[28] I. Mozetiˇc, The role of abstractions in learning qualitative models, in: Proceedings of the Fourth International Workshop on Machine Learning, Morgan
+Kaufmann, 1987.
+[29] D. Šuc, I. Bratko, Induction of qualitative trees, in: L. De Raedt, P. Flach (Eds.), Proceedings of the 12th European Conference on Machine Learning,
+Springer, Freiburg, Germany, 2001, pp. 442–453.
+[30] D. Šuc, Machine Reconstruction of Human Control Strategies, Frontiers in Artiﬁcial Intelligence and Applications, vol. 99, IOS Press, Amsterdam, The
+Netherlands, 2003.
+[31] I. Bratko, D. Šuc, Learning qualitative models, AI Magazine 24 (4) (2003) 107–119.
+[32] A. Varsek, Qualitative model evolution, in: Proceedings of the Twelfth International Joint Conference on Artiﬁcial Intelligence, 1991, pp. 1311–1316.
+[33] W. Pang, G. Coghill, An immune-inspired approach to qualitative system identiﬁcation of biological pathways, Natural Computing (2010) 1–19,
+doi:10.1007/s11047-010-9212-2.
+[34] C. Atkeson, A. Moore, S. Schaal, Locally weighted learning, Artiﬁcial Intelligence Review 11 (1997) 11–73.
+[35] S. Ben-David, U. von Luxburg, D. Pal, A sober look at clustering stability, in: 19th Annual Conference on Learning Theory, Springer, Berlin, Germany,
+2006, pp. 5–19.
+[36] J. Demšar, B. Zupan, G. Leban, T. Curk, Orange: from experimental machine learning to interactive data mining, in: Proceedings of PKDD, 2004, pp. 537–
+539.
+[37] A. Asuncion, D.J. Newman, UCI machine learning repository, 2007.
+[38] D. Šuc, D. Vladušiˇc, I. Bratko, Qualitatively faithful quantitative prediction, Artiﬁcial Intelligence 158 (2) (2004) 189–214.
+[39] D.G. Alciatore, The Illustrated Principles of Pool and Billiards, ﬁrst edition, Sterling, 2004.
+[40] D. Papavasiliou, Billiards manual, Tech. rep., 2009, http://www.nongnu.org/billiards/.
+
+

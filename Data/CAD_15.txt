@@ -1,0 +1,2885 @@
+Computer-Aided Design 45 (2013) 1562–1574
+
+Contents lists available at ScienceDirect
+
+Computer-Aided Design
+journal homepage: www.elsevier.com/locate/cad
+
+A hybrid differential evolution augmented Lagrangian method for
+constrained numerical and engineering optimization
+Wen Long a,b,∗ , Ximing Liang b,c , Yafei Huang b , Yixiong Chen b
+a
+
+Guizhou Key Laboratory of Economics System Simulation, Guizhou University of Finance & Economics, Guiyang, Guizhou 550004, PR China
+
+b
+
+School of Information Science and Engineering, Central South University, Changsha, Hunan 410083, PR China
+
+c
+
+School of Science, Beijing University of Civil Engineering and Architecture, Beijing 100044, PR China
+
+highlights
+• A method hybridizing augmented Lagrangian multiplier and differential evolution algorithm is proposed.
+• We formulate a bound constrained optimization problem by a modified augmented Lagrangian function.
+• The proposed algorithm is successfully tested on several benchmark test functions and four engineering design problems.
+
+article
+
+abstract
+
+info
+
+Article history:
+Received 8 April 2013
+Accepted 29 July 2013
+
+We present a new hybrid method for solving constrained numerical and engineering optimization problems in this paper. The proposed hybrid method takes advantage of the differential evolution (DE) ability
+to find global optimum in problems with complex design spaces while directly enforcing feasibility of
+constraints using a modified augmented Lagrangian multiplier method. The basic steps of the proposed
+method are comprised of an outer iteration, in which the Lagrangian multipliers and various penalty parameters are updated using a first-order update scheme, and an inner iteration, in which a nonlinear optimization of the modified augmented Lagrangian function with simple bound constraints is implemented
+by a modified differential evolution algorithm. Experimental results based on several well-known constrained numerical and engineering optimization problems demonstrate that the proposed method shows
+better performance in comparison to the state-of-the-art algorithms.
+© 2013 Elsevier Ltd. All rights reserved.
+
+Keywords:
+Constrained optimization problem
+Differential evolution algorithm
+Modified augmented Lagrangian multiplier
+method
+Engineering optimization
+
+1. Introduction
+In real-world applications, most optimization problems are
+subject to different types of constraints. These problems are known
+as constrained optimization problems. In the minimization sense,
+general constrained optimization problems can be formulated as
+follows:
+min
+s.t .
+
+f (⃗
+x)
+gj (⃗
+x) = 0, j = 1, 2, . . . , p
+gj (⃗
+x) ≤ 0, j = p + 1, . . . , m
+li ≤ xi ≤ ui , i = 1, 2, . . . , n
+
+(a)
+(b)
+(c)
+(d)
+
+(1)
+
+where ⃗
+x = (x1 , x2 , . . . , xn ) is a dimensional vector of n decision
+variables, f (⃗
+x) is an objective function, gj (⃗
+x) = 0 and gj (⃗
+x) ≤ 0
+are known as equality and inequality constraints, respectively. p
+
+∗ Corresponding author at: Guizhou Key Laboratory of Economics System
+Simulation, Guizhou University of Finance & Economics, Guiyang, Guizhou 550004,
+PR China. Tel.: +86 08516772696.
+E-mail address: lw084601012@gmail.com (W. Long).
+0010-4485/$ – see front matter © 2013 Elsevier Ltd. All rights reserved.
+http://dx.doi.org/10.1016/j.cad.2013.07.007
+
+is the number of equality constraints and m − p is the number of
+inequality constraints, li and ui are the lower bound and the upper
+bound of xi , respectively.
+Evolutionary algorithms (EAs) have many advantages over conventional nonlinear programming techniques: the gradients of the
+cost function and constraint functions are not required, easy implementation, and the chance of being trapped by a local minimum is
+lower. Due to these advantages, evolutionary algorithms have been
+successfully and broadly applied to solve constrained optimization
+problems [1–10] recently. It is necessary to note that evolutionary algorithms are unconstrained optimization methods that need
+additional mechanism to deal with constraints when solving constrained optimization problems. As a result, a variety of EA-based
+constraint-handling techniques have been developed [11,12].
+Penalty function methods are the most common constrainthandling technique. They use the amount of constraint violation to
+punish an infeasible solution so that it is less likely to survive into
+the next generation than a feasible solution [13]. The augmented
+Lagrangian is an interesting penalty function that avoids the sideeffects associated with ill-conditioning of simpler penalty and
+barrier functions. Recent studies have used different augmented
+
+W. Long et al. / Computer-Aided Design 45 (2013) 1562–1574
+
+Lagrangian multiplier methods with an evolutionary algorithm.
+Kim and Myung [14] proposed a two-phase evolutionary programming using the augmented Lagrangian function in the second phase. In this method, the Lagrangian multiplier is updated
+using the first-order update scheme applied frequently in the deterministic augmented Lagrangian methods. Although this method
+exhibits good convergence characteristics, it has been tested only
+for small-scale problems. Lewis and Torczon [15] proposed an augmented Lagrangian technique, where a pattern search algorithm
+is used to solve the unconstrained problem, based on the augmented Lagrangian function presented by Conn et al. [16]. Tahk and
+Sun [17] used a co-evolutionary augmented Lagrangian method to
+solve min–max problems by means of two populations of evolution strategies with annealing scheme. Krohling and Coelho [18]
+also formulated constrained optimization problems as min–max
+problems and proposed the co-evolutionary particle swarm optimization using Gaussian distribution. Rocha et al. [19] used an
+augmented Lagrangian function method along with a fish swarm
+based optimization approach for solving numerical test problems.
+Jansen and Perez [20] implemented a serial augmented Lagrangian
+method in which a particle swarm optimization algorithm is used
+to solve the augmented function for fixed multiplier values.
+In the above approaches, the augmented Lagrangian functions
+were used to deal with the constraints in constrained optimization problems. However, penalty vectors were only considered as
+fixed vectors of parameter. They were given at the beginning of the
+algorithms and kept unchanged during the whole process of solution. It is difficult and very important to choose some good penalty
+vectors. In addition, Mezura-Montes and Cecilia [21] established a
+performance comparison of four bio-inspired algorithms with the
+same constraint-handling technique (i.e., Deb’s feasibility-based
+rule) to solve 24 benchmark test functions. These four bio-inspired
+algorithms are differential evolution, genetic algorithm, evolution
+strategy, and particle swarm optimization. The overall results indicate that differential evolution is the most competitive among all
+of the compared algorithms for this set of test functions.
+In this paper, we presented a modified augmented Lagrangian
+technique, where a differential evolution algorithm is used to solve
+the unconstrained problem, based on the augmented Lagrangian
+function proposed by Liang [22]. The basic steps of the proposed
+method comprise an outer iteration, in which the Lagrange multipliers and various penalty parameters are updated using a firstorder update scheme, and an inner iteration, in which a nonlinear
+optimization of the modified augmented Lagrangian function with
+bound constraints is solved by a differential evolution algorithm.
+The rest of this paper is organized as follows. In Section 2, the
+modified augmented Lagrangian formulation method is described.
+In Section 3, the proposed hybrid method is discussed in sufficient
+detail. Simulation results based on constrained numerical optimization and engineering design problems and comparisons with
+previously reported results are presented in Section 4. Finally, the
+conclusions are given in Section 5.
+2. Modified augmented Lagrangian formulation
+In nonlinear constrained engineering optimization, the problem size ranges from a few hundred to several thousands of
+variables and constraints. Currently, the most frequently used
+solution methods are the generalized reduced gradient methods,
+successive quadratic programming methods, and the modified barrier function methods. These approaches are based on the linearization techniques and can be applied to problems with either
+a few variables, when used in full space, or a few degrees of freedom, when used in reduced space. Also, the presence of many inequality constraints (and bounds) may make their active-set based
+strategies quite inefficient. The modified barrier function method,
+
+1563
+
+which transforms the originally constrained problem to a series of
+unconstrained ones, has finite convergence as opposed to asymptotic convergence for the classical barrier function methods and
+their barrier parameters need not be driven to zero to obtain the
+solution. But the case of equality constraints poses a serious difficulty on the method. All these methods start from an initial point
+and iteratively produce a sequence to approach some local solution to the studied problem. The purpose of this work is to utilize
+the modified augmented Lagrangian multiplier method for constrained problems (1).
+In formula (1), if the simple bound (1)(d) is not present, then
+one can use the modified augmented Lagrange multiplier method
+to solve (1)(a)–(c). For the given Lagrange multiplier vector λk
+and penalty parameter vector σ k , the unconstrained penalty subproblem at the kth step of this method is
+Minimize P (x, λk , σ k )
+
+(2)
+
+where P (x, λ, σ ) is the following modified augmented Lagrangian
+function:
+P (x, λ, σ ) = f (x) −
+
+p 
+
+
+m
+
+
+
+
+2
+
+j=1
+
+−
+
+1
+
+λj gj (x) − σj (gj (x))2
+
+P˜ j (x, λ, σ )
+
+(3)
+
+j=p+1
+
+and P˜ j (x, λ, σ ) is defined as follows:
+
+P˜ j (x, λ, σ ) =
+
+
+1
+
+λj gj (x) − σj (gj (x))2 ,
+
+if λj − σj gj (x) > 0
+
+
+ 1 λ2 /σj ,
+
+otherwise.
+
+2
+
+2
+
+j
+
+(4)
+
+It can be easily shown that the Kuhn–Tucker solution (x∗ , λ∗ ) of
+the primal problem (1)(a)–(c) is identical to that of the augmented
+problem (2). It is also well known that, if the Kuhn–Tucker solution
+is a strong local minimum, then there exists a constant σ¯ such that
+x∗ is a strong local minimum of P (x, λ∗ , σ ) for all penalty vector σ
+which component not less than σ¯ ; the Hessian of P (x, λ, σ ) with
+respect to x near (x∗ , λ∗ ) can be made positive definite. Therefore,
+x∗ can be obtained by an unconstrained search from a point close
+to x∗ if λ∗ is known and σ is large enough.
+If the simple bound (1)(d) is present, the above modified augmented Lagrange multiplier method needs to be modified. In modified barrier function methods, the simple bound constraints are
+treated as the general inequality constraints xi − li ≥ 0 and ui − xi ≥
+0, which enlarges greatly the number of Lagrange multipliers and
+penalty parameters. So, we make another modification to deal with
+the bound constraints. At the kth step, assume that the Lagrange
+multiplier vector λk and penalty parameter vector σ k are given; we
+solve the following bound constrained sub-problem instead of (2):
+
+
+
+min P (x, λk , σ k )
+s.t. li ≤ xi ≤ ui
+
+(5)
+
+where P (x, λ, σ ) is the same modified augmented Lagrangian function as in (3). Let S ⊆ Rn designate the search space, which is defined by the lower and upper bounds of the variables (1)(d). The
+solution x∗ to sub-problem (5) can be obtained by searching the
+search space if λ∗ is known and σ is large enough. We will choose
+the differential evolution algorithm for the global search in (5). The
+details are discussed below.
+
+1564
+
+W. Long et al. / Computer-Aided Design 45 (2013) 1562–1574
+
+original problem has a feasible solution, the multiplier penalty
+function method has finite convergence. The options for initializing
+the Lagrange multiplier vector λ within MAL-DE allow two choices.
+The first is set the initialization of the vector of multipliers to any
+positive vector, and the second is using the provision of initial
+guesses of the multipliers for each constraint explicitly by the user
+(e.g. as stored from a previous run of a similar problem).
+Assuming that the Lagrange multiplier vector λk and penalty
+parameter vector σ k are given and xˆ k is the global minimum of
+sub-problem (5), from the first optimality condition of the original
+problem (1) and the sub-problem (5), we update the Lagrange
+multiplier vector as follows:
+Fig. 1. The framework of the proposed hybrid approach.
+
+λ
+
+k+1
+j
+
+=
+
+ k
+λj − σjk gj (ˆxk ) i = 1, 2, . . . , p
+max{λkj − σjk gj (ˆxk ), 0}
+
+i = p + 1, . . . , m.
+
+(6)
+
+3.3. Initialization and update of penalty parameters
+The initial values of these parameters are set to any arbitrary
+positive values, where typically σ 0 = σ0 (1, 1, . . . , 1)T and σ0 =
+10 or σ0 = 100. The updating scheme is
+
+σ k+1 = γ σ k
+(7)
+where γ > 1 and typically γ = 10 or γ = 100. Instead of increasing the values of the components of the penalty parameter
+vector in every iteration, they may be increased only if no sufficient progress is made towards feasibility of the original problem
+(1) from the previous iteration to the current one. The schemes
+available to the user are as follows.
+Scheme 1. γ = 1 if g (xk+1 )2 ≤ ζ g (xk )2 , otherwise γ > 1,
+where
+
+
+
+
+
+
+
+
+
+
+ p
+m
+
+
+∥g (x)∥2 =  (gj (⃗x))2 +
+(min{gj (⃗x), 0})2
+i=1
+
+(8)
+
+i=p+1
+
+is the feasibility norm and 0 < ζ < 1 and typically ζ = 0.25.
+Scheme 2.
+Fig. 2. Flowchart of the proposed MAL-DE algorithm.
+
+3. The proposed hybrid approach
+
+σjk+1
+
+
+
+ k+1 
+gj (x ) ≤ ζ gj (xk )
+
+
+for j ∈ {1, . . . , p}
+
+
+σjk , if 
+min
+{gj (xk+1 ), 0} ≤ ζ min{gj (xk ), 0}
+=
+
+
+
+
+for j ∈ {p + 1, . . . , m}
+
+
+max{γ σjk , k2 }, otherwise
+
+
+
+
+
+
+(9)
+
+3.1. The framework of the proposed hybrid approach
+
+where γ > 1 and typically γ = 10 or γ = 100.
+
+The proposed hybrid approach is performed in two stages (as
+shown in Fig. 1). The outer stage is performed, which formulates
+a modified augmented Lagrangian function, updates the Lagrange
+multipliers and penalty parameters, checks for convergence and
+reinitiates another bound constrained minimization (5) accordingly or declares convergence. Following this, the inner stage is
+the bound constrained global minimization of the modified augmented Lagrangian function, in which a new iterative point near
+to the global minimum is found via the modified differential algorithm. For given starting guess λ0 and σ 0 of the vectors of Lagrange
+multipliers and penalty parameters, the framework of the proposed hybrid approach can be described as in Fig. 1. The flowchart
+of the MAL-DE algorithm is presented in Fig. 2.
+
+It is also noted that, in the above schemes, when the current
+feasibility norm is less than the user-required tolerance ε , it is useful to restrain increase of σ for insignificant values of the norm,
+which will not be the one determining the dissatisfaction of the
+convergence criteria in this case. In MAL-DE, the user can couple
+with a strict upper bound σu on the values of the penalty parameters, which is a fail-safe mechanism for not driving them to an
+unrealistically large value.
+
+3.2. Initialization and update of Lagrange multipliers
+For the proposed hybrid method (called MAL-DE), the Lagrange
+multiplier vector λk and the penalty parameter vector σ k drive
+the approximate global minimum of sub-problem (5) to that of
+the original problem (1) iteratively. It is well known that if the
+
+3.4. Convergence criteria
+Noting that the iterative sequence {xk } generated by the algorithm MAL-DE satisfies the bound constraints, i.e., l ≤ xk ≤ u, we
+can define the feasibility norm by (8). For user-specified tolerance
+ε , thetermination
+ criterion is as follows.
+If g (xk+1 )2 ≤ ε , then xk+1 is an approximate global solution
+
+to problem (1), where xk+1 is the global minimum obtained from
+the kth bound constrained minimization sub-problem (5) via the
+differential evolution algorithm.
+The above termination criterion is in some cases coupled with a
+maximum iteration number Km of the outer stage. If the feasibility
+
+W. Long et al. / Computer-Aided Design 45 (2013) 1562–1574
+
+1565
+
+Fig. 3. The pseudo code of the modified differential evolutionary algorithm.
+
+norm is larger than the user-specified tolerance in all Km iterations,
+the global minimum obtained from the last bound constrained
+minimization sub-problem (5) will be taken as the approximate
+global solution to problem (1).
+3.5. Modified Differential Evolution (DE) algorithm
+To obtain the global minimum for the kth bound constrained
+minimization sub-problem (5), one can employ many solvers
+based on genetic algorithm [23], particle swarm optimization [24]
+or differential evolution [25,26]. Here we choose the modified differential evolution algorithm for the global search in (5). The objective function in (5), i.e., the modified augmented Lagrangian
+function P (x, λk , σ k ) will be taken as the fitness evaluation, and
+the search space is defined by the lower and upper bounds of the
+variables li ≤ xi ≤ ui .
+During the past decade, the characteristics of the trial vector
+generation strategies of DE have been extensively investigated, and
+some prior knowledge has been obtained. Such prior knowledge
+could be used for designing more effective and robust DE variants. In addition, the DE algorithm employing different trial vector
+generation strategies usually performs differently during different
+stages of evolution [27]. Some strategies have better exploration
+capability, while others favor exploitation. Hence, adaptively selecting a suitable strategy for a certain evolution stage according
+to the current experience can improve the DE algorithm’s performance.
+The following trial vector generation strategies are selected to
+be used in the DE literature:
+xr1 ,j,G + F · (xr2 ,j,G − xr3 ,j,G ),
+if rand ≤ CR or j = jrand
+xi,j,G otherwise
+
+
+DE/rand/1/bin: ui,j,G =
+
+DE/best/1/bin: ui,j,G
+
+
+x
++ F · (xr1 ,j,G − xr2 ,j,G ),
+
+ best ,j,G
+if rand ≤ CR or j = jrand
+=
+
+xi,j,G otherwise
+
+(10)
+
+(11)
+
+4. Experimental studies
+4.1. Constrained benchmark test functions
+
+⃗i,G = ⃗xi,G + rand · (⃗xr1 ,G − ⃗xi,G )
+DE/current-to-rand/1: u
++ F · (⃗xr2 ,G − ⃗xr3 ,G )
+
+chosen index from {1, 2, . . . , n}, G is the current iteration number,
+and 0 ≤ CR ≤ 1 determines the similarity of the offspring with
+respect to the mutation vector.
+The above trial vector generation strategies are frequently used
+in many DE literatures and their properties have been well studied. The ‘‘DE/rand/1/bin’’ strategies are the most commonly used
+strategies in the literature. In these strategies, all vectors for mutation are selected from the population at random and, consequently,
+it has no bias to any special search directions and chooses new
+search directions in a random manner. As a result, they usually
+demonstrate slow convergence speed with superior exploration
+capability. ‘‘DE/best/1/bin’’ strategies rely on the best solution
+found so far. They usually have a faster convergence speed and
+perform well when solving uni-modal problems. However, they
+are more likely to get stuck at a local optimum and thereby lead
+to a premature convergence when solving multimodal problems.
+‘‘DE/current-to-rand/1’’ is a rotation-invariant strategy. Its effectiveness has been verified when it was applied to solve multiobjective optimization problems [22].
+In general, we expect that the chosen DE trial vector generation
+strategies show distinct advantages and, therefore, they can be
+effectively combined to solve different kinds of problems. Unlike
+the traditional DE algorithm where only one trial vector generation
+strategy is used to generate the offspring of each vector in the
+population, the three selected trial vector generation strategies
+(see Eqs. (10)–(12)) compete to get more vectors to reproduce in
+this paper. The initial population P (0) of NP vectors is divided in
+three sub-populations (P1 (0), P2 (0), and P3 (0)) of equal size. Each
+sub-population is assigned to each one of the three DE trial vector
+generation strategies. Each DE trial vector generation strategy then
+generates the offspring for each vector in its sub-population. The
+basic structure of the modified differential evolution algorithm is
+described in Fig. 3.
+
+(12)
+
+where r1 , r2 , r3 ∈ {1, 2, . . . , NP (population_size)} are randomly
+chosen inters, which are different from each other and also different from the running index i. xbest represents the best individual in
+the current generation. F (>0) is a scaling factor which controls the
+amplification of the differential vector. rand denotes a uniformly
+distributed random number between 0 and 1. jrand is a randomly
+
+At first, 13 well-known constrained benchmark test functions
+mentioned in Runarsson and Yao [28] are optimized to inspect the
+performance of the proposed MAL-DE algorithm. The characteristics of these test functions are shown in Table 1, and their expressions are provided in Appendix A. From Table 1, these test problems
+include various types (linear, nonlinear and quadratic) of objective functions with different number of decision variables (n) and
+a range of types (linear inequalities (LI), nonlinear equalities (NE),
+
+1566
+
+W. Long et al. / Computer-Aided Design 45 (2013) 1562–1574
+
+Table 1
+Details of the 13 constrained benchmark test functions [23] (‘‘n’’: dimensions, ‘‘LI’’, ‘‘NE’’, ‘‘NI’’, ‘‘LE’’: linear inequality, nonlinear equality, nonlinear inequality and linear
+equality constraints).
+Function
+
+n
+
+Type of function
+
+ρ (%)a
+
+LI
+
+NE
+
+NI
+
+LE
+
+Optimal solution
+
+g01
+g02
+g03
+g04
+g05
+g06
+g07
+g08
+g09
+g10
+g11
+g12
+g13
+
+13
+20
+10
+5
+4
+2
+10
+2
+7
+8
+2
+3
+5
+
+Quadratic
+Nonlinear
+Nonlinear
+Quadratic
+Nonlinear
+Nonlinear
+Quadratic
+Nonlinear
+Nonlinear
+Linear
+Quadratic
+Quadratic
+Nonlinear
+
+0.0003
+99.9965
+0.0000
+26.9356
+0.0000
+0.0064
+0.0003
+0.8640
+0.5256
+0.0005
+0.0000
+0.0197
+0.0000
+
+9
+1
+0
+0
+2
+0
+3
+0
+0
+3
+0
+0
+0
+
+0
+0
+1
+0
+3
+0
+0
+0
+0
+0
+1
+0
+3
+
+0
+1
+0
+6
+0
+2
+5
+2
+4
+3
+0
+93
+0
+
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+
+−15.00000000
+−0.803619104
+−1.000500100
+−30665.53867
+
+a
+
+5126.4967140
+
+−6961.813876
+24.306209068
+
+−0.095825041
+680.63005737
+7049.2480205
+0.7499000000
+−1.000000000
+0.0539415140
+
+The ratio of the size of the feasible search space to the size of the entire search space.
+
+Table 2
+Experimental results obtained by MAL-DE with 30 independent runs on 13 benchmark functions.
+Function
+
+Optimal value
+
+Best
+
+Median
+
+Mean
+
+Worst
+
+Std
+
+CPU(s)
+
+g01
+g02
+g03
+g04
+g05
+g06
+g07
+g08
+g09
+g10
+g11
+g12
+g13
+
+−15.000000
+−0.803619
+−1.000500
+−30665.53867
+
+−15.000000a
+−0.8036189
+−1.0000000
+−30665.53867
+
+−15.000000
+−0.7680527
+−1.0000000
+−30665.53867
+
+−15.000000
+−0.7575521
+−1.0000000
+−30665.53867
+
+−15.000000
+−0.6597349
+−1.0000000
+−30665.53867
+
+0.00000E+00
+3.74267E−02
+0.00000E+00
+3.73340E−09
+6.98840E−06
+8.58170E−06
+5.10000E−08
+0.00000E+00
+4.06000E−10
+3.28640E−06
+7.40000E−09
+0.00000E+00
+1.00000E−10
+
+846
+1080
+3312
+1764
+306
+432
+594
+414
+378
+738
+18
+504
+702
+
+a
+
+5126.4967
+
+5126.4981
+
+5126.4981
+
+5126.4981
+
+5126.4981
+
+−6961.813876
+
+−6961.813886
+
+−6961.813878
+
+−6961.813877
+
+−6961.813867
+
+24.306209
+
+24.306209
+
+24.306209
+
+24.306209
+
+24.306209
+
+−0.095825
+
+−0.095825
+
+−0.095825
+
+−0.095825
+
+−0.095825
+
+680.63005737
+7049.2480205
+0.74990000
+−1.0000000
+0.0539415
+
+680.63005737
+7049.2364989
+0.74999999
+−1.0000000
+0.0539498
+
+680.63005737
+7049.2367266
+0.74999999
+−1.0000000
+0.0539498
+
+680.63005737
+7049.2369743
+0.75000000
+−1.0000000
+0.0539498
+
+680.63005737
+7049.2398464
+0.75000003
+−1.0000000
+0.0539498
+
+A result in boldface indicates the best result or the global optimum.
+
+nonlinear inequalities (NI), and linear equalities (LE) and number
+of constraints). The feasibility ratio ρ is the ratio between the size
+of the feasible search space and that of the entire search space, i.e.,
+
+ρ = |Ω |/|S |
+
+(13)
+
+where |S | is the number of solutions randomly generated from S
+and |Ω | is the number of feasible solution out of these |S | solutions.
+In our experiment setup, |S | = 1000,000.
+Note that test functions g02, g03, g08, and g12 are maximization
+problems, and the others are minimization problems. In this study,
+the maximization problems are transformed into minimization
+using −f (⃗
+x). In addition, only test functions g03, g05, g11, and g13
+contain equality constraints.
+The following parameters are established experimentally for
+the best performance of MAL-DE: the population size was set to
+100 and the number of cycles to 3000 (120,000 evaluations were
+carried out per independent run); the scaling factor CR = 0.7; the
+crossover rate F = 0.9. The individuals are randomly initialized
+within the boundaries for each run according to a uniform
+probability distribution. The maximum numbers of generations,
+i.e., the maximum iteration number of the outer stage, was set to
+30, the user-required tolerance ε = 1e − 08, the initial Lagrange
+multiplier vector λ0 = (1, 1, . . . , 1), the initial penalty parameter
+vector σ 0 = (10, 10, . . . , 10), the maximum allowed penalty
+parameter σu = 1e10, the penalty parameter increasing factor
+γ = 10, and the reduction factor for feasibility norm ζ = 0.25.
+4.1.1. Experimental results
+The experimental results are presented in Table 2 where the
+best-known optimal solution and the best, median, mean, worst,
+standard deviation of the obtained objective function values as
+well as CPU times over 30 runs have been listed under the given
+parameter settings.
+
+Fig. 4. The distribution of the resulting solutions for test function g02.
+
+As in shown Table 2, the proposed MAL-DE is able to find the
+global optima consistently on test functions over 30 runs except
+for g02, g03, g05, g11, and g13. With respect to test functions
+g02, g03, g05, g11, and g13, although the optimal solutions are
+not consistently found, the best results achieved are very close
+to the global optimal solutions. The distribution of the resulting solutions for test function g02 is shown in Fig. 4. Moreover,
+the objective function values of problem g06 and g10 are the
+‘‘best’’ results reported so far. For the test function g06, MAL-DE
+provides the ‘‘best’’ result [14.095, 0.842961] and the constraints
+[0.0000000019, −0.0000000105], respectively. With the test function g10, the ‘‘best’’ result [579.30589, 1359.96456, 5109.96605,
+182.01858, 295.60135, 217.98142, 286.41723, 395.60135] and
+
+W. Long et al. / Computer-Aided Design 45 (2013) 1562–1574
+
+1567
+
+Fig. 5. Convergence graph for g02, g06, g08, and g11.
+
+the constraints [0.0000000015, −0.0000000020, −0.0000000102,
+−0.0048985766, −0.0048806013, −0.0080747504] are presented
+by MAL-DE, respectively. Furthermore, it can be observed from the
+standard deviation for the test functions in Table 2 that MAL-DE
+is stable and robust for solving these problems. In particular, the
+standard deviations for test functions g01, g03, g08, and g12 are
+equal to 0. The convergence graphs of function values over number
+of iterations at the median run are plotted in Fig. 5. The above discussion validates that MAL-DE is an effective and efficient method
+for constrained optimization, and that it is capable of providing
+competitive results.
+
+and the results are similar to DSS-DE, COMDE, DE-CV, C-IDE. For the
+test function g07 almost all seven algorithms can find the optimal
+results consistently except DE-CV. In the problem g11, MAL-DE,
+ES-DE, DSS-DE, DE-CV, and C-IDE can find the optimal result consistently. For the test function g13, better ‘‘best’’, ‘‘mean’’, ‘‘worst’’
+results were reached by MAL-DE, DSS-DE, COMDE, and C-IDE algorithms. As a general remark on the comparison above, MALDE shows a very competitive performance with respect to the six
+state-of-the-art algorithms in terms of the quality, the robustness,
+and the efficiency of search.
+4.2. Experiment on engineering design problems
+
+4.1.2. Comparisons with other state-of-the-art algorithms
+MAL-DE is compared against six high-performance algorithms
+under four performance evaluation criteria: the best objective
+function values, the mean objective function values, the worst
+objective function value, and the standard deviations. These
+selected state-of-the-art algorithms are CDE [29], ES-DE [30], DSSDE [31], COMDE [32], DE-CV [33], and C-IDE [34]. The comparative
+results have been shown in Tables 3–5. The results provided by
+other algorithms were directly taken from the original references
+for each approach.
+From Table 3, it can be obviously seen that almost all the seven
+algorithms can find the optimal solution consistently for five test
+functions (g04, g06, g08, g09, and g12), but the results provided
+by MAL-DE for g10 is closer to the optimal solution than all other
+algorithms, although they practically provided the better solution.
+For the test function g01, MAL-DE, CDE, DSS-DE, COMDE, and C-IDE
+find the similar ‘‘best’’, ‘‘mean’’, and ‘‘worst’’ results, but ES-DE and
+DE-CV provide similar ‘‘best’’ and worse ‘‘mean’’ and ‘‘worst’’ results. For the test function g02, the results provided by MAL-DE,
+CDE, DSS-DE, COMDE, and C-IDE are closer to the optimal solution
+than ES-DE and DE-CV. However, the better ‘‘mean’’ and ‘‘worst’’
+results were found by CMODE, C-IDE, and DSS-DE. With respect to
+ES-DE, DSS-DE, COMDE, and C-IDE, MAL-DE finds similar ‘‘best’’,
+‘‘mean’’, and ‘‘worst’’ results for g03. However, MAL-DE provides
+better results for function g03 than CDE and DE-CV. For the test
+function g05, our algorithm is distinctly better than CDE and ES-DE,
+
+In order to study the performance of the proposed algorithm
+MAL-DE on real-world constrained optimization problems, four
+well-studied engineering design problems that are widely used
+in the literature and presented in Appendix B have been solved.
+All parameter settings are the same as the previous experiments
+for 13 benchmark test functions. The statistical results of four
+engineering design problems that measure the quality of results
+(best, median, mean, and worst) as well as the robustness of MALDE (standard deviation) are listed in Table 6. From Table 6, it can
+be concluded that MAL-DE is able to consistently find the global
+optimal in four engineering design problems with a very small
+standard deviation which indicates that the proposed MAL-DE
+has a remarkable ability to solve constrained engineering design
+problems.
+4.2.1. Pressure vessel design problem
+For this design problem (as shown in Fig. 6), proposed by
+Sandgren [35], the objective is to minimize the total cost of
+pressure vessel considering the cost of material, forming, and
+welding. This problem (see Appendix B.1) has a nonlinear objective
+function with one nonlinear and three linear inequality constraints
+and two continuous (inner radius R(x3 ) and the inner radius and
+length of the cylindrical selection of the vessel L(x4 )) and two
+discrete (thickness of the shell Ts (x1 ) and thickness of the head
+Th (x2 )) design variables.
+
+1568
+
+W. Long et al. / Computer-Aided Design 45 (2013) 1562–1574
+
+Table 3
+Comparison of the best results of MAL-DE with respect to the six other algorithms for 13 functions.
+Function
+
+CDE [29]
+
+ES-DE [30]
+
+DSS-DE [31]
+
+COMDE [32]
+
+DE-CV [33]
+
+C-IDE [34]
+
+MAL-DE
+
+g01
+g02
+g03
+g04
+g05
+g06
+g07
+g08
+g09
+g10
+g11
+g12
+g13
+
+−15.0000a
+−0.803619
+−0.9954
+−30665.54
+
+−15.0000
+−0.803311
+−1.0000
+−30665.54
+
+−15.000
+−0.803619
+−1.0005
+−30665.539
+
+−15.000000
+−0.803619
+−1.00000039
+−30665.539
+
+−15.000
+−0.704009
+−0.461
+−30665.539
+
+−15.000
+−0.804
+−1.001
+−30665.54
+
+−15.000000
+−0.8036189
+−1.0000000
+−30665.53867
+
+a
+
+5126.571
+
+5126.500
+
+5126.497
+
+5126.498109
+
+5126.497
+
+5126.497
+
+−6961.814
+
+−6961.814
+
+−6961.814
+
+−6961.813875
+
+−6961.814
+
+−6961.814
+
+24.306209
+
+24.306
+
+24.306
+
+5126.4981
+
+−6961.813886
+24.306209
+
+24.3062
+
+24.3062
+
+24.306
+
+−0.095825
+
+−0.095825
+
+−0.095825
+
+−0.095825
+
+−0.095825
+
+−0.096
+
+−0.095825
+
+680.6301
+7049.248
+0.7499
+−1.00
+0.05618
+
+680.6301
+7049.253
+0.7500
+−1.00
+0.05395
+
+680.630
+7049.248
+0.7499
+−1.000
+0.053942
+
+680.630057
+7049.248020
+0.749999
+−1.000000
+0.0539415
+
+680.630
+7049.248
+0.75
+−1.000
+0.059798
+
+680.630
+7049.248
+0.750
+−1.000
+0.054
+
+680.63005737
+7049.2364989
+0.74999999
+−1.0000000
+0.0539498
+
+A result in boldface indicates the best result or the global optimum.
+
+Table 4
+Comparison of the mean results of MAL-DE with respect to the six other algorithms for 13 functions.
+Function
+g01
+g02
+g03
+g04
+g05
+g06
+g07
+g08
+g09
+g10
+g11
+g12
+g13
+a
+
+CDE [29]
+a
+
+−15.0000
+−0.724886
+−0.7886
+−30665.54
+
+ES-DE [30]
+
+DSS-DE [31]
+
+COMDE [32]
+
+DE-CV [33]
+
+C-IDE [34]
+
+MAL-DE
+
+−14.8511
+−0.738181
+−1.0000
+−30665.54
+
+−15.000
+−0.786970
+−1.0005
+−30665.539
+
+−15.000000
+−0.801238
+−1.00000027
+−30665.539
+
+−14.855
+−0.569458
+−0.134
+−30665.539
+
+−15.000
+−0.795
+−1.001
+−30665.54
+
+−15.0000000
+−0.7575521
+−1.0000000
+−30665.53867
+
+5207.411
+
+5127.290
+
+5126.497
+
+−6961.814
+
+−6961.814
+
+−6961.814
+
+5126.4981094
+
+−6961.813875
+24.306209
+
+5126.497
+
+5126.497
+
+−6961.814
+
+−6961.814
+
+24.794
+
+24.306
+
+5126.4981
+
+−6961.813877
+24.306209
+
+24.3062
+
+24.3065
+
+24.306
+
+−0.095825
+
+−0.095825
+
+−0.095825
+
+−0.095825
+
+−0.095825
+
+−0.096
+
+−0.095825
+
+680.6301
+7049.248
+0.7580
+−1.00
+0.28832
+
+680.6301
+7049.418
+0.7500
+−1.00
+0.05395
+
+680.630
+7049.249
+0.7499
+−1.000
+0.053942
+
+680.630057
+7049.248077
+0.749999
+−1.000000
+0.0539415
+
+680.630
+7103.548
+0.75
+−1.000
+0.382401
+
+680.630
+7049.248
+0.750
+−1.000
+0.054
+
+680.63005737
+7049.2369743
+0.75000000
+−1.0000000
+0.0539498
+
+A result in boldface indicates the best result or the global optimum.
+
+Table 5
+Comparison of the worst results of MAL-DE with respect to the six other algorithms for 13 functions.
+Function
+
+CDE [29]
+
+ES-DE [30]
+
+DSS-DE [31]
+
+COMDE [32]
+
+DE-CV [33]
+
+C-IDE [34]
+
+MAL-DE
+
+g01
+g02
+g03
+g04
+g05
+g06
+g07
+g08
+g09
+g10
+g11
+g12
+g13
+
+−15.0000a
+−0.590908
+−0.6399
+−30665.54
+
+−13.0000
+−0.530496
+−1.0000
+−30665.54
+
+−15.000
+−0.728531
+−1.0005
+−30665.539
+
+−15.000000
+−0.785265
+−0.99999994
+−30665.539
+
+−13.000
+−0.238203
+−0.002
+−30665.539
+
+−15.000
+−0.754
+−1.001
+−30665.54
+
+−15.000000
+−0.6597349
+−1.0000000
+−30665.53867
+
+a
+
+5327.390
+
+5129.420
+
+5126.497
+
+−6961.814
+
+−6961.814
+
+−6961.814
+
+5126.4981094
+
+−6961.81375
+24.306211
+
+5126.497
+
+5126.497
+
+−6961.814
+
+−6961.814
+
+29.511
+
+24.306
+
+5126.4981
+
+−6961.813867
+24.306209
+
+24.3062
+
+24.3077
+
+24.306
+
+−0.095825
+
+−0.095825
+
+−0.095825
+
+−0.095825
+
+−0.095825
+
+−0.096
+
+−0.095825
+
+680.6301
+7049.248
+0.7965
+−1.00
+0.39210
+
+680.6301
+7050.226
+0.7500
+−1.00
+0.05397
+
+680.630
+7049.255
+0.7499
+−1.000
+0.053942
+
+680.630057
+7049.248615
+0.749999
+−1.000000
+0.0539415
+
+680.630
+7808.980
+0.75
+−1.000
+0.999094
+
+680.630
+7049.248
+0.750
+−1.000
+0.054
+
+680.63005737
+7049.2398464
+0.75000003
+−1.0000000
+0.0539498
+
+A result in boldface indicates the best result or the global optimum.
+
+Table 6
+Experimental results obtained by MAL-DE with 30 independent runs on four engineering design problems.
+Problem
+
+Optimal
+
+Best
+
+Median
+
+Mean
+
+Worst
+
+Std
+
+Pressure vessel design
+Spring design
+Three-bar truss design
+Speed reducer design
+
+6059.714355
+0.012665233
+263.8958434
+2994.471066
+
+6059.714355
+0.012665233
+263.8958434
+2994.471066
+
+6059.714355
+0.012666242
+263.8958434
+2994.471066
+
+6059.714355
+0.012668960
+263.8958434
+2994.471066
+
+6059.714355
+0.012672330
+263.8958434
+2994.471066
+
+1.35288E−12
+1.43636E−07
+4.01946E−14
+0.00000E+00
+
+The pressure vessel design problem is a practical design problem that has been often used as a benchmark for testing different
+optimization approaches: feasibility-based genetic algorithm inspired by the multi-objective optimization (abbreviated as FGA)
+by Coello and Mezura-Montes [36], hybrid particle swarm optimization (denoted as HPSO) by He and Wang [37], improved
+group search optimizer (denoted as IGSO) by Shen et al. [38], coevolutionary differential evolution (denoted as CEDE) by Huang
+et al. [39], Accelerating adaptive trade-off model (denoted as
+
+AATM) by Wang et al. [40], and co-evolutionary particle swarm optimization (abbreviated as CPSO) by He and Wang [8]. The statistical results of the six approaches and MAL-DE are illustrated in
+Table 7, and the best solutions obtained by the six algorithms are
+listed in Table 8.
+From Table 7, it can be concluded that the MAL-DE is more
+efficient than the other optimization approaches for the pressure
+vessel design problem, in this paper. From Table 8, it can be seen
+
+W. Long et al. / Computer-Aided Design 45 (2013) 1562–1574
+
+1569
+
+Table 7
+Statistical results of different approaches for the pressure vessel design problem.
+
+Best
+Mean
+Worst
+Std.
+
+FGA [36]
+
+HPSO [37]
+
+IGSO [38]
+
+CEDE [39]
+
+CPSO [8]
+
+AATM [40]
+
+MAL-DE
+
+6059.9643
+6177.2533
+6469.3220
+130.9297
+
+6059.7143
+6099.9323
+6288.6770
+86.2000
+
+6059.714
+6238.801
+6820.410
+194.315
+
+6059.7340
+6085.2303
+6371.0455
+43.0130
+
+6061.0777
+6147.1332
+6363.8041
+86.4500
+
+6059.7255
+6061.9878
+6090.8022
+4.700
+
+6059.7143
+6059.7143
+6059.7143
+1.35288E−12
+
+Table 8
+Comparison of the best solution for the pressure vessel design problem found by different algorithms.
+
+x 1 (h)
+x 2 (l)
+x 3 (t )
+x4 (b)
+g 1 (x )
+g 2 (x )
+g 3 (x )
+g 4 (x )
+f (x )
+
+FGA [36]
+
+HPSO [37]
+
+IGSO [38]
+
+CEDE [39]
+
+CPSO [8]
+
+AATM [40]
+
+MAL-DE
+
+0.8125
+0.4375
+42.0974
+176.6540
+−2.01E−03
+−3.58E−02
+−24.7593
+−63.3460
+6059.9463
+
+0.8125
+0.4375
+42.0984
+176.6366
+−8.80E−07
+−3.58E−02
+3.1226
+−63.3634
+6059.7143
+
+0.8125
+0.4375
+42.098446
+176.636596
+−3.40E−10
+−3.5881E−02
+−2.90E−05
+−63.363404
+6059.7140
+
+0.8125
+0.4375
+42.0984
+176.6376
+−6.67E−03
+−3.58E−02
+−3.705123
+−63.3623
+6059.7340
+
+0.8125
+0.4375
+42.0913
+176.7465
+−1.37E−06
+−3.59E−04
+−118.7687
+−63.2535
+6061.0777
+
+0.8125
+0.4375
+42.0984
+176.6375
+−1.12694E−06
+−0.035881
+−0.857920
+−63.362471
+6059.72558
+
+0.8125
+0.4375
+42.098445
+176.636595
+−1.14E−08
+−0.0358808
+−3.11E−05
+−63.363405
+6059.7143
+
+Table 9
+Statistical results of different approaches for the spring design problem.
+
+Best
+Mean
+Worst
+Std.
+
+FGA [36]
+
+IGSO [38]
+
+CEDE [39]
+
+CPSO [8]
+
+AATM [40]
+
+WCA [42]
+
+MAL-DE
+
+0.0126810
+0.0127420
+0.0129730
+5.9E−05
+
+0.012665
+0.012708
+0.012994
+5.1E−05
+
+0.0126702
+0.0126703
+0.0126790
+2.70E−05
+
+0.0126747
+0.0127300
+0.0129240
+5.1985E−04
+
+0.012668262
+0.012708075
+0.012861375
+4.5E−05
+
+0.012665
+0.012746
+0.012952
+8.06E−06
+
+0.012665233
+0.012668960
+0.012672330
+1.43636E−07
+
+L
+
+Th
+
+Ts
+
+the searching quality of MAL-DE is higher than those of other approaches. Table 10 provides the best solutions of MAL-DE and the
+other six evolutionary optimization approaches. From Table 10, it
+is clear that the best solution obtained by MAL-DE is better than
+those by the other optimization techniques.
+
+R
+
+R
+
+Fig. 6. Schematic view of the pressure vessel design problem.
+
+P
+D
+P
+
+d
+
+Fig. 7. Schematic view of the tension/compression spring design problem.
+
+that the best feasible solution obtained by MAL-DE is better than
+the results obtained by other techniques.
+4.2.2. Tension/compression spring design problem
+For tension/compression spring design problem (as shown
+in Fig. 7) is described in Belegundu [41]. The objective of this
+problem (see Appendix B.2) is to minimize the weight (f (x))
+of a tension/compression spring subject to three nonlinear and
+one linear inequality constraints with three continuous design
+variables (the wire diameter d(x1 ), the mean coil diameter D(x2 ),
+and the number of active coils P (x3 )).
+This problem has already been solved by several research
+works, including FGA [36], IGSO [38], CEDE [40], CPSO [8],
+AATM [40], and Water cycle algorithm (denoted as WCA) [42].
+Table 9 compiles statistics of the solutions found by the different methods for the spring design problem, and it is evident that
+
+4.2.3. Three-bar truss design problem
+The three-bar truss design problem (see Appendix B.3) is to deal
+with the design of a three-bar truss structure in which the volume is to be minimized subject to stress constraints. The problem
+has two decision variables and three constraints. The comparison of obtained statistical results for the MAL-DE with previous
+studies including WCA, DSS-DE, society and civilization algorithm
+(denoted as SCA) [38], hybrid particle swarm optimization and differential evolution (abbreviated by PSO-DE) [39], and hybrid evolutionary algorithm and adaptive constraint-handling technique
+(denoted as HEA-ACT) [40] is presented in Table 11. Table 12 lists
+the comparisons of the best solutions obtained by the proposed
+MAL-DE and other compared approaches. Together these two tables demonstrate the superiority of MAL-DE over the other approaches in searching for the global optimum for the three-bar
+truss design problem.
+4.2.4. Speed reducer design problem
+MAL-DE is applied to the design of a speed reducer which
+is a benchmark engineering optimization problem [46] (see Appendix B.4). The objective of this problem is to minimize the total
+weight of the speed reducer. The constraints involve limitations
+on the bending stress of the gear teeth, surface stress, transverse
+deflections of the shafts, and stresses in the shafts. This engineering design problem previously was optimized using DSS-DE, WCA,
+SCA, PSO-DE, HEA-ACT, and differential evolution with level comparison (denoted as DELC) [47]. Table 13 lists the statistical results
+that have been determined by the above mentioned approaches as
+well as the proposed MAL-DE in this study. The best results obtained by MAL-DE in this paper were compared with the six best
+results reported in the literature, and are presented in Table 14.
+
+1570
+
+W. Long et al. / Computer-Aided Design 45 (2013) 1562–1574
+
+Table 10
+Comparison of the best solution for spring design problem found by different algorithms.
+
+x 1 (d )
+x 2 ( D)
+x 3 (N )
+g1 (x)
+g2 (x)
+g3 (x)
+g4 (x)
+f (x )
+
+FGA [36]
+
+IGSO [38]
+
+CEDE [39]
+
+CPSO [8]
+
+AATM [40]
+
+WCA [42]
+
+MAL-DE
+
+0.051989
+0.363965
+10.890522
+−0.000013
+−0.000021
+−1.061338
+−0.722698
+0.0126810
+
+0.051691
+0.356765
+11.286172
+−2.095E−11
+−1.302E−11
+−4.053880
+−0.727696
+0.012665
+
+0.051609
+0.354714
+11.410831
+−3.90E−05
+−1.83E−04
+−4.048627
+−0.729118
+0.0126702
+
+0.0517280
+0.3576440
+11.244543
+−0.000845
+−00001260
+−4.0513000
+−0.7270900
+0.01267470
+
+0.0518130955
+0.3596904119
+11.1192526803
+−1.62E−04
+−4.20E−05
+−4.058572
+−0.725664
+0.012668262
+
+0.05168906749
+0.35671789406
+11.2889567081
+−1.65E−13
+−7.90E−14
+−4.053399
+−0.727864
+0.012665
+
+0.05168906126
+0.35671774404
+11.2889550277
+−2.735589E−13
+2.0450308E−14
+−4.0537856387
+−0.7277287965
+0.012665233
+
+Table 11
+Statistical results of different approaches for the three-bar truss design problem.
+
+Best
+Mean
+Worst
+Std.
+
+DSS-DE [31]
+
+WCA [42]
+
+SCA [43]
+
+PSO-DE [44]
+
+HEA-ACT [45]
+
+MAL-DE
+
+263.895843
+263.895843
+263.895849
+9.7E−07
+
+263.895843
+263.895865
+263.896201
+8.71E−05
+
+263.8958466
+263.9033000
+263.9697500
+1.3E−02
+
+263.895843
+263.895843
+263.895843
+4.5E−10
+
+263.895843
+263.895865
+263.896099
+4.9E−05
+
+263.8958434
+263.8958434
+263.8958434
+4.01946E−14
+
+Table 12
+Comparison of the best solution for the three-bar truss design problem found by different algorithms.
+
+x1
+x2
+g1 (x)
+g2 (x)
+g3 (x)
+f (x )
+
+DSS-DE [31]
+
+WCA [42]
+
+SCA [43]
+
+PSO-DE [44]
+
+HEA-ACT [45]
+
+MAL-DE
+
+0.788675
+0.408248
+1.77E−08
+−1.464101
+−0.535898
+263.895843
+
+0.788651
+0.408316
+0.000000
+−1.464024
+−0.535975
+263.895843
+
+0.7886210370
+0.4084013340
+NA
+NA
+NA
+263.8958466
+
+0.788675
+0.408248
+−5.29E−11
+−1.463747
+−0.536252
+263.895843
+
+0.7886803456
+0.4082335517
+−0.000000
+−1.464118
+−0.535881
+263.895843
+
+0.78867514653
+0.40824825671
+−7.549516E−14
+−1.4641016535
+−0.5358983465
+263.8958434
+
+Table 13
+Statistical results of different approaches for the speed reducer design problem.
+
+Best
+Mean
+Worst
+Std.
+
+DSS-DE [31]
+
+WCA [42]
+
+SCA [43]
+
+PSO-DE [44]
+
+HEA-ACT [45]
+
+DELC [47]
+
+MAL-DE
+
+2994.471066
+2994.471066
+2994.471066
+3.6E−12
+
+2994.471066
+2994.474392
+2994.505578
+7.4E−03
+
+2994.744241
+3001.758264
+3009.964736
+4.0E+00
+
+2996.348167
+2996.348174
+2996.348204
+6.4E−06
+
+2994.499107
+2994.613368
+2994.752311
+7.0E−02
+
+2994.471066
+2994.471066
+2994.471066
+1.9E−12
+
+2994.471066
+2994.471066
+2994.471066
+0.00000E+00
+
+Table 14
+Comparison of the best solution for the speed reducer design problem found by different algorithms.
+
+x1
+x2
+x3
+x4
+x5
+x6
+x7
+f (x )
+
+DSS-DE [31]
+
+WCA [42]
+
+SCA [43]
+
+PSO-DE [44]
+
+HEA-ACT [45]
+
+DELC [47]
+
+MAL-DE
+
+3.50000000
+0.70000000
+17.0000000
+7.30000000
+7.715319
+3.350214
+5.286654
+2994.471066
+
+3.500000
+0.700000
+17.00000
+7.300000
+7.715319
+3.350214
+5.286654
+2994.471066
+
+3.5000681
+0.70000001
+17.0000000
+7.32760205
+7.71532175
+3.35026702
+5.28665450
+2994.744241
+
+3.500000
+0.700000
+17.00000
+7.300000
+7.800000
+3.350214
+5.2866832
+2996.348167
+
+3.500022
+0.700000
+17.000012
+7.300427
+7.715377
+3.350230
+5.286663
+2994.499107
+
+3.50000000
+0.70000000
+17.0000000
+7.30000000
+7.715319
+3.350214
+5.286654
+2994.471066
+
+3.50000000
+0.70000000
+17.0000000
+7.30000000
+7.71531991
+3.35021467
+5.28665446
+2994.471066
+
+As in shown Table 13, the proposed MAL-DE is able to find
+the global optima consistently on the speed reducer design problem over 30 runs. In particular, the standard deviation is equal
+to 0. With respect to DSS-DE and DELC, MAL-DE provides similar ‘‘best’’, ‘‘mean’’, and ‘‘worst’’ results for the speed reducer design problem. Compared with SCA, PSO-DE, and HEA-ACT, MAL-DE
+finds better ‘‘best’’, ‘‘mean’’, ‘‘worst’’, and standard deviation results
+for the speed reducer design problem. Compared with WCA, the
+proposed MAL-DE finds similar ‘‘best’’ result and better ‘‘mean’’,
+‘‘worst’’, and standard deviation results for the speed reducer design problem. The constraints are [−0.07391528, −0.19799853,
+−0.49917225, −0.904643904, −3.495495E−09, −2.825826E−09,
+−0.70250000, 0.00000000, −0.58333333, −0.05132575,
+−5.184488E−10] based on the best result provided by MAL-DE for
+the speed reducer design problem.
+These overall optimization results indicate that the proposed
+MAL-DE has the capability of handling various constrained
+
+optimization problems and can offer optimum solutions (near or
+better than the best-known results). Therefore, it can be concluded
+that the proposed MAL-DE is an attractive alternative optimizer for
+constrained and engineering optimization challenging other metaheuristic approaches.
+5. Conclusions
+This paper has presented a hybrid approach coupling modified augmented Lagrangian multiplier method and modified differential evolution algorithm for solving constrained optimization
+and engineering design optimization problems. The proposed hybrid method employs the differential evolution (DE) to find global
+optimum in problems with complex design spaces while directly
+enforcing the feasibility of constraints using a modified augmented Lagrangian multiplier method. The proposed algorithm
+has demonstrated better performance than the other approaches
+
+W. Long et al. / Computer-Aided Design 45 (2013) 1562–1574
+
+in the literature on solving 13 well-known benchmark constrained
+optimization problems and four engineering design optimization
+problems. In the future, we will apply MAL-DE to various problems
+found in the real world. Meanwhile, we are interested in extending
+our method so that it can deal with multi-objective optimization
+problems.
+
+We are very grateful to the editors and anonymous reviewers
+for their valuable comments and suggestions to help us improve
+our paper. This research was supported in part by the Science and
+Technology Foundation of Guizhou Province ([2013]2082) and in
+part by the Beijing Natural Science Foundation (4122022).
+
+5
+
+
+xi − 5
+
+4
+
+
+i=1
+
+i=1
+
+x2i −
+
+13
+
+
+xi
+
+i=1
+
+g1 (⃗
+x) = 2x1 + 2x2 + x10 + x11 − 10 ≤ 0,
+g2 (⃗
+x) = 2x1 + 2x3 + x10 + x12 − 10 ≤ 0,
+g3 (⃗
+x) = 2x2 + 2x3 + x11 + x12 − 10 ≤ 0,
+g4 (⃗
+x) = −8x1 + x10 ≤ 0,
+g5 (⃗
+x) = −8x2 + x11 ≤ 0,
+
+g3 (⃗
+x) = 80.51249 + 0.0071317x2 x5 + 0.0029955x1 x2
+
++ 0.0021813x23 − 110 ≤ 0,
+
+g6 (⃗
+x) = −9.300961 − 0.0047026x3 x5 − 0.0012547x1 x3
+− 0.0019085x3 x4 + 20 ≤ 0
+where 78 ≤ x1 ≤ 102, 33 ≤ x2 ≤ 45, 27 ≤ xi ≤ 45 (i = 3,
+4, 5). The optimum solution is at ⃗
+x∗ = (78, 33, 29.995256025682,
+45, 36.775812905788), where f (⃗
+x∗ ) = −30,665.53867.
+A.5. g05
+Minimize f (⃗
+x) = 3x1 + 0.000001x31 + 2x2 + (0.000002/3)x32
+
+g6 (⃗
+x) = −8x3 + x12 ≤ 0,
+g7 (⃗
+x) = −2x4 − x5 + x10 ≤ 0,
+g8 (⃗
+x) = −2x6 − x7 + x11 ≤ 0,
+g9 (⃗
+x) = −2x8 − x9 + x12 ≤ 0
+where the bounds are 0 ≤ xi ≤ 1 (i = 1, . . . , 9), 0 ≤ xi ≤
+100 (i = 10, 11, 12) and 0 ≤ x13 ≤ 1. The global minimum is
+at ⃗
+x∗ = (1, 1, 1, 1, 1, 1, 1, 1, 1, 3, 3, 3, 1), where f (⃗
+x∗ ) = −15.
+A.2. g02
+
+
+
+
+
+n
+
+
+ n
+ cos4 (xi ) − 2 cos2 (xi ) 
+
+ i=1
+i =1
+
+Maximize f (⃗
+x) = 
+
+
+n
+
+
+
+
+
+ix2i
+
+
+i=1
+Subject to
+
+Subject to
+g1 (⃗
+x) = −x4 + x3 − 0.55 ≤ 0,
+g2 (⃗
+x) = −x3 + x4 − 0.55 ≤ 0,
+h3 (⃗
+x) = 1000 sin(−x3 − 0.25) + 1000 sin(−x4 − 0.25)
++ 894.8 − x1 = 0,
+h4 (⃗
+x) = 1000 sin(x3 − 0.25) + 1000 sin(x3 − x4 − 0.25)
++ 894.8 − x2 = 0,
+h5 (⃗
+x) = 1000 sin(x4 − 0.25)
++ 1000 sin(x4 − x3 − 0.25) + 1294.8 = 0
+where 1 ≤ x1 ≤ 99, 1 ≤ x2 ≤ 99, 10 ≤ x3 ≤ 200 and
+10 ≤ x4 ≤ 200. The optimum solution f (⃗
+x∗ ) = 5126.4981.
+A.6. g06
+Minimize f (⃗
+x) = (x1 − 10)3 + (x2 − 20)3
+
+n
+
+
+
+Subject to
+
+xi ≤ 0,
+
+g1 (⃗
+x) = −(x1 − 5)2 − (x2 − 5)2 + 100 ≤ 0,
+
+i =1
+
+g2 (⃗
+x) = (x1 − 6)2 − (x2 − 5)2 − 82.81 ≤ 0
+
+xi − 7.5n ≤ 0
+
+i=1
+
+where n = 20 and 0 ≤ xi ≤ 10 (i = 1, . . . , n). The global
+maximum is unknown; the best reported solution is f (⃗
+x∗ ) =
+0.803619104.
+A.3. g03
+
+where 13 ≤ x1 ≤ 100 and 0 ≤ x2 ≤ 100. The optimum solution is
+at ⃗
+x∗ = (14.095, 0.84296), where f (⃗
+x∗ ) = −6961.81388.
+A.7. g07
+Minimize f (⃗
+x) = x21 + x22 + x1 x2 − 14x1 − 16x2 + (x3 − 10)2
+
+√
+
+Maximize f (⃗
+x ) = ( n) n
+
+n
+
+
+
+xi
+
+i=1
+
+n
+
+
+
++ 4(x4 − 5)2 + (x5 − 3)2 + 2(x6 − 1)2 + 5x27
++ 7(x8 − 11)2 + 2(x9 − 10)2 + (x10 − 7)2 + 45
+Subject to
+
+Subject to
+h(⃗
+x) =
+
+g2 (⃗
+x) = −85.334407 − 0.0056858x2 x5 − 0.0006262x1 x4
++ 0.0022053x3 x5 ≤ 0,
+
+g5 (⃗
+x) = 9.300961 + 0.0047026x3 x5 + 0.0012547x1 x3
++ 0.0019085x3 x4 − 25 ≤ 0,
+
+Subject to
+
+n
+
+
++ 37.293239x1 − 40792.141
+Subject to
+
+− 0.0021813x23 + 90 ≤ 0,
+
+A.1. g01
+
+g2 (⃗
+x) =
+
+Minimize f (⃗
+x) = 5.3578547x23 + 0.8356891x2 x5
+
+g4 (⃗
+x) = −80.51249 − 0.0071317x2 x5 − 0.0029955x1 x2
+
+Appendix A. Benchmark functions
+
+g1 (⃗
+x) = 0.75 −
+
+A.4. g04
+
+g1 (⃗
+x) = 85.334407 + 0.0056858x2 x5 + 0.0006262x1 x4
+− 0.0022053x3 x5 − 92 ≤ 0,
+
+Acknowledgments
+
+Minimize f (⃗
+x) = 5
+
+1571
+
+x2i − 1 = 0
+
+i=1
+
+where n = 10 and 0 √
+≤ xi ≤ 10 (i = 1, . . . , n). The global
+maximum is at ⃗
+x∗ = 1/ n (i = 1, . . . , n), where f (⃗
+x∗ ) = 1.
+
+g1 (⃗
+x) = −105 + 4x1 + 5x2 − 3x7 + 9x8 ≤ 0,
+g2 (⃗
+x) = 10x1 − 8x2 − 17x7 + x8 ≤ 0,
+g3 (⃗
+x) = −8x1 + 2x2 + 5x9 − 2x10 − 12 ≤ 0,
+g4 (⃗
+x) = 3(x1 − 2)2 + 4(x2 − 3)2 + 2x23 − 7x4 − 120 ≤ 0,
+
+1572
+
+W. Long et al. / Computer-Aided Design 45 (2013) 1562–1574
+
+g5 (⃗
+x) = 5x21 + 8x2 + (x3 − 6)2 − 2x4 − 40 ≤ 0,
+
+A.12. g12
+
+g6 (⃗
+x) = x21 + 2(x2 − 2)2 − 2x1 x2 + 14x5 − 6x6 ≤ 0,
+g7 (⃗
+x) = 0.5(x1 − 8)2 + 2(x2 − 4)2 + 3x25 − x6 − 30 ≤ 0,
+g8 (⃗
+x) = −3x1 + 6x2 + 12(x9 − 8)2 − 7x10 ≤ 0
+where −10 ≤ xi ≤ 10 (i = 1, . . . , 10). The optimization solution
+f (⃗
+x∗ ) = 24.3062091.
+
+f (⃗
+x) = −(100 − (x1 − 5)2 − (x2 − 5)2 − (x3 − 5)2 )/100
+Subject to
+g (⃗
+x) = (x1 − p)2 + (x2 − q)2 + (x3 − r )2 − 0.0625 ≤ 0
+where 0 ≤ xi ≤ 10 (i = 1, 2, 3), and p, q, r = 1, 2, . . . , 7. The
+optimum solution f (⃗
+x∗ ) = −1.
+
+A.8. g08
+
+Minimize f (⃗
+x) =
+
+sin3 (2π x1 ) sin(2π x2 )
+x31 (x1 + x2 )
+
+Subject to
+g2 (⃗
+x) = 1 − x1 + (x2 − 4)2 ≤ 0
+where 0 ≤ x1 ≤ 10 and 0 ≤ x2 ≤ 10. The optimum solution
+is located at ⃗
+x∗ = (1.2279713, 4.2453733), where f (⃗
+x∗ ) =
+−0.0958250414.
+A.9. g09
+Minimize f (⃗
+x) = (x1 − 10)2 + 5(x2 − 12)2 + x43 + 3(x4 − 11)2
+
++ 10x65 + 7x26 + x47 − 4x6 x7 − 10x6 − 8x7
+Subject to
+g1 (⃗
+x) = −127 + 2x21 + 3x42 + x3 + 4x24 + 5x5 ≤ 0,
+g2 (⃗
+x) = −282 + 7x1 + 3x2 + 10x23 + x4 − x5 ≤ 0,
+g3 (⃗
+x) = −196 + 23x1 + x22 + 6x26 − 8x7 ≤ 0,
+4x21
+
++
+
+x22
+
+− x1 x2 +
+
+A.13. g13
+Minimize f (⃗
+x) = ex1 x2 x3 x4 x5
+
+g1 (⃗
+x) = x21 − x2 + 1 ≤ 0,
+
+g4 (⃗
+x) =
+
+Minimize
+
+2x23
+
++ 5x6 − 11x7 ≤ 0
+
+Subject to
+h1 (⃗
+x) = x21 + x22 + x23 + x24 + x25 − 10 = 0,
+h2 (⃗
+x) = x2 x3 − 5x4 x5 = 0,
+h3 (⃗
+x) = x31 + x32 + 1 = 0
+where −2.3 ≤ xi ≤ 2.3 (i = 1, 2), and −3.2 ≤ xi ≤ 3.2 (i =
+3, 4, 5). The optimum solution is located at ⃗
+x∗ = (−1.717143,
+1.595709, 1.827247, −0.7636413, −0.763645), where f (⃗
+x∗ ) =
+0.0539498.
+Appendix B. Engineering design problems
+B.1. Pressure vessel design
+Minimize f (⃗
+x) = 0.6224x1 x3 x4 + 1.7781x2 x23
+
++ 3.1661x21 x4 + 19.84x21 x3
+
+where −10 ≤ xi ≤ 10 (i = 1, . . . , 7). The optimum solution
+f (⃗
+x∗ ) = 680.6300573.
+
+Subject to
+
+A.10. g10
+
+g2 (⃗
+x) = x2 + 0.00954x3 ≤ 0
+
+Minimize f (⃗
+x) = x1 + x2 + x3
+Subject to
+g1 (⃗
+x) = −1 + 0.0025(x4 + x6 ) ≤ 0,
+g2 (⃗
+x) = −1 + 0.0025(x5 + x7 − x4 ) ≤ 0,
+g3 (⃗
+x) = −1 + 0.01(x8 − x5 ) ≤ 0,
+g4 (⃗
+x) = −x1 x6 + 833.33252x4 + 100x1 − 83333.333 ≤ 0,
+
+g1 (⃗
+x) = x1 + 0.0193x3 ≤ 0
+
+g3 (⃗
+x) = −π x23 x4 +
+
+4
+3
+
+π x33 + 1296000 ≤ 0
+
+g4 (⃗
+x) = x4 − 240 ≤ 0
+where 1 ≤ x1 ≤ 99, 1 ≤ x2 ≤ 99, 10 ≤ x3 ≤ 200 and
+10 ≤ x4 ≤ 200.
+B.2. Tension/compression spring design
+
+g5 (⃗
+x) = −x2 x7 + 1250x5 + x2 x4 − 1250x4 ≤ 0,
+g6 (⃗
+x) = −x3 x8 + 1250000 + x3 x5 − 2500x5 ≤ 0
+
+Minimize f (⃗
+x) = (x3 + 2)x2 x21
+
+where 100 ≤ xi ≤ 10,000, 1000 ≤ xi ≤ 10,000 (i = 2, 3),
+and 10 ≤ xi ≤ 1000 (i = 4, . . . , 8). The optimum solution
+f (⃗
+x∗ ) = 7049.248.
+
+Subject to
+
+A.11. g11
+
+g2 (⃗
+x) =
+
+Minimize f (⃗
+x) = x21 + (x2 − 1)2
+Subject to
+h(⃗
+x) = x2 − x21 = 0
+where −1 ≤ x1 ≤ 1 √
+and −1 ≤ x2 ≤ 1. The optimum solution is
+x∗ ) = 0.75.
+located at ⃗
+x∗ = (±1/ 2, 1/2), where f (⃗
+
+g1 (⃗
+x) = 1 −
+
+71785x41
+
+≤0
+
+4x22 − x1 x2
+12566(
+
+x2 x31
+
+g3 (⃗
+x) = 1 −
+g4 (⃗
+x) =
+
+x32 x3
+
+−
+
+140.45x1
+x22 x3
+
+x1 + x2
+1.5
+
+x41
+
+)
+
++
+
+1
+5108x21
+
+−1≤0
+
+≤0
+
+−1≤0
+
+where 0.25 ≤ x1 ≤ 1.3, 0.05 ≤ x2 ≤ 2.0 and 2 ≤ x3 ≤ 15.
+
+W. Long et al. / Computer-Aided Design 45 (2013) 1562–1574
+
+B.3. Three-bar truss design
+
+√
+
+Minimize f (⃗
+x) = (2 2x1 + x2 ) × l
+Subject to
+
+√
+
+2x1 + x2
+P −σ ≤0
+g1 (⃗
+x) = √
+2x21 + 2x1 x2
+x2
+g2 (⃗
+x) = √
+P −σ ≤0
+2
+2x1 + 2x1 x2
+1
+g3 (⃗
+x) = √
+P −σ ≤0
+2x2 + x1
+where 0 ≤ x1 ≤ 1, 0 ≤ x2 ≤ 1, l = 100 cm, P = 2 kN/cm2 , and
+σ = 2 kN/cm2 .
+B.4. Speed reducer design
+Minimize f (⃗
+x) = 0.7854x1 x22 (3.3333x23 + 14.9334x3 − 43.0934)
+
+− 1.508x1 (x26 + x27 ) + 7.4777(x36 + x37 ) + 0.7854(x4 x26 + x5 x27 )
+Subject to
+g1 (⃗
+x) =
+g2 (⃗
+x) =
+g3 (⃗
+x) =
+g4 (⃗
+x) =
+
+27
+x1 x22 x3
+397.5
+x1 x22 x23
+1.93x34
+x2 x46 x3
+1.93x35
+x2 x47 x3
+
+−1≤0
+−1≤0
+−1≤0
+−1≤0
+
+[(745x4 /x2 x3 )2 + 16.9 × 106 ]1/2
+−1≤0
+110.0x36
+[(745x5 /x2 x3 )2 + 157.5 × 106 ]1/2
+g6 (⃗
+x) =
+−1≤0
+85.0x37
+g5 (⃗
+x) =
+
+g7 (⃗
+x) =
+g8 (⃗
+x) =
+g9 (⃗
+x) =
+g10 (⃗
+x) =
+g11 (⃗
+x) =
+
+x2 x3
+40
+5x2
+x1
+x1
+
+−1≤0
+−1≤0
+
+−1≤0
+12x2
+1.5x6 + 1.9
+x4
+
+1.1x7 + 1.9
+x5
+
+−1≤0
+−1≤0
+
+where 2.6 ≤ x1 ≤ 3.6, 0.7 ≤ x2 ≤ 0.8, 17 ≤ x3 ≤ 28,
+7.3 ≤ x4 ≤ 8.3, 7.3 ≤ x5 ≤ 8.3, 2.9 ≤ x6 ≤ 3.9 and
+5.0 ≤ x7 ≤ 5.5.
+References
+[1] Cai Z, Wang Y. A multiobjective optimization-based evolutionary algorithm
+for constrained optimization. IEEE Transactions on Evolutionary Computation
+2006;10(6):658–75.
+[2] Deb K. An efficient constraint handling method for genetic algorithms.
+Computer Methods in Applied Mechanics and Engineering 2000;186(2–4):
+311–38.
+[3] Wang Y, Cai Z, Guo G, Zhou Y. Multiobjective optimization and hybrid
+evolutionary algorithm to solve constrained optimization problems. IEEE
+Transactions on Systems, Man, and Cybernetics 2007;37(3):560–75.
+[4] Rao RV, Savsani VJ, Vakharia DP. Teaching-learning-based optimization: a
+novel method for constrained mechanical design optimization problems.
+Computer-Aided Design 2011;43(3):303–15.
+[5] Wang Y, Cai Z, Zhou Y, Zeng W. An adaptive tradeoff model for constrained
+evolutionary optimization. IEEE Transactions on Evolutionary Computation
+2008;12(1):80–92.
+
+1573
+
+[6] Coello CAC. Theoretical and numerical constraint-handling techniques used
+with evolutionary algorithms: a survey of the state of the art. Computer
+Methods in Applied Mechanics and Engineering 2002;19(11–12):1245–87.
+[7] Wang Y, Cai Z. A dynamic hybrid framework for constrained evolutionary
+optimization. IEEE Transactions on Systems, Man, and Cybernetics 2012;42(1):
+203–17.
+[8] He Q, Wang L. An effective co-evolutionary particle swarm optimization
+for constrained engineering design problems. Engineering Applications of
+Artificial Intelligence 2007;20(1):89–99.
+[9] Wang Y, Cai Z. Constrained evolutionary optimization by means of (µ + λ)differential evolution and improved adaptive trade-off model. Evolutionary
+Computation 2011;19(2):249–85.
+[10] Wang Y, Cai ZX. Combining multiobjective optimization with differential
+evolution to solve constrained optimization problems. IEEE Transactions on
+Evolutionary Computation 2012;16(1):117–34.
+[11] Michalewicz Z, Schoenauer M. Evolutionary algorithm for constrained
+parameter optimization problems. Evolutionary Computation 1996;4(1):
+1–32.
+[12] Mezura-Montes E, Coello CAC. A simple multi-membered evolutionary
+strategy to solve constrained optimization problems. IEEE Transactions on
+Evolutionary Computation 2005;9(1):1–17.
+[13] Farmani RJ, Wright A. Self-adaptive fitness formulation for constrained
+optimization. IEEE Transactions on Evolutionary Computation 2005;7(5):
+445–55.
+[14] Kim J, Myung H. Evolutionary programming techniques for constrained
+optimization problems. IEEE Transactions on Evolutionary Computation 1997;
+1(2):129–40.
+[15] Lewis RM, Torczon V. A globally convergent augmented Lagrangian pattern
+search algorithm for optimization with general constraints and simple bounds.
+SIAM Journal on Optimization 2002;12(4):1075–89.
+[16] Conn AR, Gould NIM, Toint PL. A globally convergent augmented Lagrangian
+algorithm for optimization with general constraints and simple bounds.
+Journal on Numerical Analysis 1991;28(2):545–72.
+[17] Tahk M, Sun B. Co-evolutionary augmented Lagrangian methods for constrained optimization. IEEE Transactions on Evolutionary Computation 2000;
+4(2):114–24.
+[18] Krohling R, Coelho L. Co-evolutionary particle swarm optimization using
+Gaussian distribution for solving constrained optimization problems. IEEE
+Transactions on Systems, Man, and Cybernetics 2006;36(6):1407–16.
+[19] Rocha A, Martins T, Fernandes E. An augmented Lagrangian fish swarm
+based method for global optimization. Journal of Computational and Applied
+Mathematics 2011;235(16):4611–20.
+[20] Jansen P, Perez R. Constrained structural design optimization via a parallel
+augmented Lagrangian particle swarm optimization approach. Computers &
+Structures 2011;89(13–14):1352–66.
+[21] Mezura-Montes E, Cecilia B. Comparing bio-inspired algorithms in constrained
+optimization problems. In: Proceedings of IEEE congress on evolutionary
+computation. 2007. p. 662–9.
+[22] Liang X. Modified augmented Lagrange multiplier methods for large-scale
+chemical process optimization. Chinese Journal Chemical Engineering 2001;
+9(2):167–72.
+[23] Leung Y, Wang Y. An orthogonal genetic algorithm with quantization for global
+numerical optimization. IEEE Transactions on Evolutionary Computation
+2001;5(1):41–53.
+[24] Juang YT, Tung SL, Chiu HC. Adaptive fuzzy particle swarm optimization
+for global optimization of multimodal functions. Information Science 2011;
+181(20):4539–49.
+[25] Storn R, Price K. Differential evolution—a simple and efficient heuristic for
+global optimization over continuous spaces. Journal of Global Optimization
+1997;11(4):341–59.
+[26] Wang Y, Cai Z, Zhang Q. Differential evolution with composite trial
+vector generation strategies and control parameters. IEEE Transactions on
+Evolutionary Computation 2011;15(1):55–66.
+[27] Qin AK, Huang VL, Suganthan PN. Differential evolution algorithm with
+strategy adaptation for global numerical optimization. IEEE Transactions on
+Evolutionary Computation 2009;13(2):398–417.
+[28] Runarsson TP, Yao X. Stochastic ranking for constrained evolutionary
+optimization. IEEE Transactions on Evolutionary Computation 2000;4(3):
+284–94.
+[29] Becerra RL, Coello CAC. Cultured differential evolution for constrained
+optimization. Computer Methods in Applied Mechanics and Engineering 2006;
+195(33–36):4303–22.
+[30] Gandomi AH, Yang XS, Talatahari S, Deb S. Coupled eagle strategy and
+differential evolution for unconstrained and constrained global optimization.
+Computers and Mathematics with Applications 2012;63(1):191–200.
+[31] Zhang M, Luo W, Wang XF. Differential evolution with dynamic stochastic
+selection for constrained optimization. Information Sciences 2008;178(15):
+3043–74.
+[32] Mohamed AW, Sabry HZ. Constrained optimization based on modified
+differential evolution algorithm. Information Sciences 2012;194:171–208.
+[33] Mezura-Montes E, Miranda-Varela ME, Gómez-Ramón RDC. Differential
+evolution in constrained numerical optimization: an empirical study.
+Information Sciences 2010;180(22):4223–62.
+[34] Zhang HB, Rangaiah GP. An efficient constraint handling method with
+integrated differential evolution for numerical and engineering optimization.
+Computers and Chemical Engineering 2012;37:74–88.
+
+1574
+
+W. Long et al. / Computer-Aided Design 45 (2013) 1562–1574
+
+[35] Sandgren E. Nonlinear integer and discrete programming in mechanical design
+optimization. ASME Journal Mechanical Design 1990;112:223–9.
+[36] Mezura-Montes E, Coello CAC. Constraint-handling in genetic algorithms
+through the use of dominance-based tournament selection. Advancement
+Engineering Informatics 2002;16(3):193–203.
+[37] He Q, Wang L. A hybrid particle swarm optimization with a feasibility-based
+rule for constrained optimization. Applied Mathematics and Computation
+2007;186(2):1407–22.
+[38] Shen H, Zhu YL, Niu B, Wu QH. An improved group search optimizer for
+mechanical design optimization problems. 2009; 19: 91–7.
+[39] Huang FZ, Wang L, He Q. An effective co-evolutionary differential evolution for
+constrained optimization. Applied Mathematics & Computation 2007;186(1):
+340–56.
+[40] Wang Y, Cai ZX, Zhou YR. Accelerating adaptive trade-off model using shrinking space technique for constrained evolutionary optimization. International
+Journal for Numerical Methods in Engineering 2009;77:1501–34.
+[41] Belegundu AD. A study of mathematical programming methods for structural
+optimization. Ph.D. Thesis, Department of Civil and Environmental Engineering, University of Iowa, Iowa, 1982.
+
+[42] Eskandar H, Sadollah A, Bahreininejad A, Hamdi M. Water cycle algorithm—
+a novel metaheuristic optimization method for solving constrained engineering optimization problems. Computers & Structures 2012;110–111:151–66.
+[43] Ray TK, Liew M. Society and civilization: an optimization algorithm based
+on the simulation of social behavior. IEEE Transactions on Evolutionary
+Computation 2003;7(4):386–96.
+[44] Liu H, Cai ZX, Wang Y. Hybridizing particle swarm optimization with
+differential evolution for constrained numerical and engineering optimization.
+Applied Soft Computing 2010;10:629–40.
+[45] Wang Y, Cai ZX, Zhou YR, Fan Z. Constrained optimization based on
+hybrid evolutionary algorithm and adaptive constraint-handling technique.
+Structural and Multidisciplinary Optimization 2009;37(4):395–413.
+[46] Mezura-Montes E, Coello CAC. Useful infeasible solutions in engineering
+optimization with evolutionary algorithms. In: MICAI 2005. Lect notes artif.
+int., vol. 3789. 2005. p. 652–62.
+[47] Mezura-Montes E, Reyes JV, Coello CAC. Modified differential evolution for
+constrained optimization. In: Proceedings of IEEE congress on evolutionary
+computation. 2006. p. 25–32.
+
+

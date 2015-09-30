@@ -1,0 +1,992 @@
+Discrete Mathematics 311 (2011) 1925–1939
+
+Contents lists available at ScienceDirect
+
+Discrete Mathematics
+journal homepage: www.elsevier.com/locate/disc
+
+The number of vertices of degree 5 in a contraction-critically
+5-connected graph
+Kiyoshi Ando a,∗ , Takashi Iwase b
+a
+
+Department of Informatics, The University of Electro-Communications, 1-5-1 Chofugaoka, Chofu City, Tokyo, 182-8585, Japan
+
+b
+
+Department of Measurement System Development, Anritsu Engineering Co., Ltd., 5-1-1 On-na, Atsugi-City, Kanagawa 243-0032, Japan
+
+article
+
+info
+
+Article history:
+Received 30 September 2008
+Received in revised form 27 April 2011
+Accepted 29 April 2011
+Available online 12 June 2011
+Keywords:
+5-connected graph
+Contraction-critically 5-connected
+Degree 5 vertex
+
+abstract
+An edge of a 5-connected graph is said to be 5-contractible if the contraction of the
+edge results in a 5-connected graph. A 5-connected graph with no 5-contractible edge
+is said to be contraction-critically 5-connected. Let V (G) and V5 (G) denote the vertex
+set of a graph G and the set of degree 5 vertices of G, respectively. We prove that each
+contraction-critically 5-connected graph G has at least |V (G)|/2 vertices of degree 5. We
+also show that there is a sequence of contraction-critically 5-connected graphs {Gi } such
+that limi→∞ |V5 (Gi )|/|V (Gi )| = 1/2.
+© 2011 Elsevier B.V. All rights reserved.
+
+1. Introduction
+In this paper, we deal with finite undirected graphs with neither loops nor multiple edges. For a graph G, let V (G) and
+E (G) denote the set of vertices of G and the set of edges of G, respectively. Let Vk (G) denote the set of vertices of degree
+k and let V≥k (G) denote the set of vertices of degree greater than or equal to k. For an edge e ∈ E (G), we denote the
+set of end vertices of e by V (e). Let EG (x) = {e ∈ E (G) | x ∈ V (e)}. For a vertex x ∈ V (G), we denote by NG (x) the
+neighborhood of x in G. Moreover, for a subset S ⊂ V (G), let NG (S ) = ∪x∈S N (x) − S. We denote the degree of x ∈ V (G)
+by degG (x). Then degG (x) = |EG (x)| = |NG (x)|. When there is no ambiguity, we write Vk , V≥k , E (x), N (x), N (S ) and deg(x)
+for Vk (G), V≥k (G), EG (x), NG (x), NG (S ) and degG (x), respectively. For S ⊂ V (G), let G[S ] denote the subgraph induced by S in
+G. Let G be a connected graph. A subset S ⊂ V (G) is said to be a cutset of G, if G − S is not connected. A cutset S is said to
+be a k-cutset if |S | = k. For a noncomplete connected graph G, the order of a minimum cutset of G is said to be the vertex
+connectivity of G. We denote the vertex connectivity of G by κ(G).
+Let k be an integer such that k ≥ 2 and let G be a k-connected graph. An edge e of G is said to be k-contractible if the
+contraction of the edge results in a k-connected graph. Note that, in the contraction, we replace each resulting pair of double
+edges by a simple edge. If an edge is not k-contractible, then it is called a noncontractible edge. Note that an edge e of G is
+not k-contractible if and only if there is a k-cutset S of G such that V (e) ⊂ S. If a k-connected graph G has no k-contractible
+edge, then G is said to be contraction-critically k-connected.
+It is known that every 3-connected graph of order 5 or more contains a 3-contractible edge [9]. There are infinitely many
+contraction-critically 4-connected graphs. It is known that a 4-connected graph G is contraction-critical if and only if G
+is 4-regular, and for each edge e of it, there is a triangle which contains e. [3,6]. If k ≥ 4, then there are infinitely many
+contraction-critically k-connected graphs [8].
+Egawa determined the following sharp minimum degree condition for a k-connected graph to have a k-contractible edge.
+
+∗
+
+Corresponding author.
+E-mail address: ando@ice.uec.ac.jp (K. Ando).
+
+0012-365X/$ – see front matter © 2011 Elsevier B.V. All rights reserved.
+doi:10.1016/j.disc.2011.04.032
+
+1926
+
+K. Ando, T. Iwase / Discrete Mathematics 311 (2011) 1925–1939
+
+Theorem A (Egawa [2]). Let k ≥ 2 be an integer, and let G be a k-connected graph with δ(G) ≥
+edge, unless 2 ≤ k ≤ 3 and G is isomorphic to Kk+1 .
+
+ 5k 
+4
+
+. Then G has a k-contractible
+
+Kriesell extended Egawa’s Theorem and determined the following sharp degree sum condition for a k-connected graph
+to have a k-contractible edge.
+Theorem
+  B (Kriesell [4]). Let k ≥ 2 be an integer, and let G be a noncomplete k-connected graph. If degG (x) + degG (y) ≥
+2 5k
+− 1 for any pair of distinct vertices x, y of G, then G has a k-contractible edge.
+4
+There is a contraction-critically 5-connected graph which is not 5-regular. However, we see from Theorem A that the
+minimum degree of a contraction-critically 5-connected graph is 5. Ando et al. [1] posed Problem D and proved Theorem C,
+which says that each contraction-critically 5-connected graph has many vertices of degree 5.
+Theorem C. Let G be a contraction-critically 5-connected graph of order n. Then each vertex of G has a neighbor of degree 5 and
+G has at least n/5 vertices of degree 5.
+Problem D. Determine the maximum value of the constant c such that the inequality |V5 (G)| ≥ c |V (G)| holds for each
+contraction-critically 5-connected graph G.
+The following important result was showed by Su [7].
+Theorem E. Every vertex of a contraction-critically 5-connected graph has two neighbors of degree five.
+As an immediate consequence of Theorem E, we have the following.
+Theorem F. For every contraction-critically 5-connected graph G, |V5 | ≥
+
+2
+5
+
+|V (G)| holds.
+
+By more detailed investigation of contraction-critically 5-connected graphs, Yuan and others [10] proved the following
+Theorems H and G.
+Theorem G. Let G be a contraction-critically 5-connected graph and let x be a vertex of G with degG (x) ≥ 8. If x has adjacent
+two neighbors of degree five, then x has three neighbors of degree five.
+Theorem H. For every contraction-critically 5-connected graph G, |V5 (G)| ≥
+
+4
+9
+
+|V (G)| holds.
+
+On the other hands, there is a contraction-critically 5-connected graph G such that |V5 (G)| =
+Ando posed the following conjecture.
+Conjecture I. The constant c for Problem D is
+
+8
+13
+
+|V (G)| [1].
+
+8
+.
+13
+
+In this paper we prove the following stronger version of Theorem G (Proposition 1). And using Proposition 1, by detailed
+investigation on vertices not in V5 (G) each of which has just two neighbors of degree 5, we show the constant c in Problem D
+is not less than 12 (Main Theorem). Moreover, we construct a sequence of contraction-critically 5-connected graphs {Gi } such
+that limi→∞ |V5 (Gi )|/|V (Gi )| = 1/2.
+This sequence disproves Conjecture I and, together with Main Theorem, it gives the answer for Problem D, that is c = 12 .
+Proposition 1. Let G be a contraction-critically 5-connected graph and let x be a vertex of G such that x ̸∈ V5 (G). Suppose
+|NG (x) ∩ V5 (G)| = 2, say NG (x) ∩ V5 (G) = {y1 , y2 }. Then y1 y2 ̸∈ E (G).
+Next we concentrate on vertices not in V5 (G) each of which has just two neighbors of degree 5 and we find two specific
+configurations.
+Configuration of the first kind. A subgraph H on eight vertices (in degenerated case, on seven vertices) of a contractioncritically 5-connected graph G is called a configuration of the first kind around (x, y) if the following (1)–(4) hold (see Fig. 1).
+(1)
+(2)
+(3)
+(4)
+
+V (H ) = {x, y, z1 , z2 , z3 , z4 , u1 , u2 },
+E (H ) ⊃ {yx, yz1 , yz2 , yz3 , yz4 , xz4 , z1 z2 , z1 z3 , z1 u1 , z1 u2 , z2 u1 , z3 u2 },
+{y, z1 , z2 , z3 } ⊂ V5 and {x, z4 } ∩ V5 = ∅,
+There is a 5-cutset S such that {x, y, z1 } ⊂ S and S separates {u1 , z2 } and {u2 , z3 , z4 }.
+
+In a configuration of the first kind, if z4 = u2 , then it is said to be a degenerated configuration of the first kind.
+Configuration of the second kind. A subgraph H on nine vertices of a contraction-critically 5-connected graph G is called a
+configuration of the second kind around (y, x) if the following (1)–(4) hold (see Fig. 2).
+(1)
+(2)
+(3)
+(4)
+
+V (H ) = {x, y, z1 , z2 , z3 , z4 , u1 , w1 , w2 },
+E (H ) ⊃ {yx, yz1 , yz2 , yz3 , yz4 , xz3 , xz4 , z1 z2 , z1 z3 , z1 z4 , z1 u1 , z2 u1 , z3 z4 , z3 w1 , z3 w2 , z4 w1 , z4 w2 },
+{y, z1 , z2 , w1 , w2 } ⊂ V5 , x ̸∈ V5 .
+{x, y, z1 , w1 , w2 } is a 5-cutset of G which separates {z2 , u} and {z3 , z4 }, and hence {z3 , z4 } ⊂ V6 (G).
+
+K. Ando, T. Iwase / Discrete Mathematics 311 (2011) 1925–1939
+
+1927
+
+Fig. 1. A configuration of the first kind.
+
+Fig. 2. Configuration of the second kind.
+
+Proposition 2. Let G be a contraction-critically 5-connected graph. Let x be a vertex of G such that x ̸∈ V5 and |N (x)∩V5 (G)| = 2.
+Let y ∈ N (x) ∩ V5 (G). Then, around (y, x), there is either a configuration of the first kind or a configuration of the second kind.
+By virtue of Proposition 2, we get the following result.
+Main Theorem. For every contraction-critically 5-connected graph G, |V5 (G)| ≥
+
+1
+2
+
+|V (G)| holds.
+
+Recently, Li and Su [5] proved the same bound of the constant c in Problem D.
+The organization of the paper is as follows. Section 2 contains preliminary results. In Section 3 we give a proof of
+Proposition 1. In Section 4 we give a proof of Proposition 2 and in Section 5 we give a proof of Main Theorem.
+To conclude this section we give three contraction-critically 5-connected graphs. The first one has a configuration of the
+first kind. The second has a configuration of the second kind. The third shows that there is a sequence of contraction-critically
+5-connected graphs {Gi } such that limi→∞ |V5 (Gi )|/|V (Gi )| = 1/2.
+Example 1. The graph G1 illustrated in Fig. 3 is contraction-critically 5-connected, and we observe that it has a configuration
+of the first kind.
+Example 2. The graph G2 illustrated in Fig. 4 is contraction-critically 5-connected. We observe that G2 has a configuration
+of the second kind.
+Example 3. The graph G3 illustrated in Fig. 5 is contraction-critically 5-connected. Adding pairs of vertices (x4 , y4 ), (x5 , y5 ),
+. . . , (xi , yi ) to this graph by the similar way, we can construct a sequence of contraction-critically 5-connected graphs {Gi }.
+We see that |V (Gi )| = 2i + 15 and |V5 (Gi )| = i + 10 since {y1 , y2 , . . . , yi } ⊂ V5 (Gi ) and {x1 , x2 , . . . , xi } ⊂ V6 (Gi ). Hence we
+have limi→∞ |V5 (Gi )|/|V (Gi )| = 1/2.
+
+1928
+
+K. Ando, T. Iwase / Discrete Mathematics 311 (2011) 1925–1939
+
+Fig. 3. G1 .
+
+Fig. 4. G2 .
+
+Fig. 5. G3 .
+
+2. Preliminaries
+In this section we give some more definitions and preliminary results.
+For a graph G, we denote |G| for |V (G)|. For a subgraphs A and B of a graph G, when there is no ambiguity, we write simply
+A for V (A) and B for V (B). So N (A) and A ∩ B mean N (V (A)) and V (A) ∩ V (B), respectively. Also for a subgraph A of G and a
+subset S of V (G) we write A ∩ S and A ∪ S for V (A) ∩ S and V (A) ∪ S, respectively. For S ⊂ V (G), we let G − S denote the
+
+K. Ando, T. Iwase / Discrete Mathematics 311 (2011) 1925–1939
+
+1929
+
+graph obtained from G by deleting the vertices in S together with the edges incident with them; thus G − S = G[V (G) − S ].
+When there is no ambiguity, we write E (S ) for E (G[S ]). For subsets S and T of V (G), we denote the set of edges between S
+and T by EG (S , T ). We write EG (x, S ) for EG ({x}, S ). Then EG (x) = EG (x, V (G) − {x}).
+An induced subgraph A of a k-connected graph G is called a fragment if |N (A)| = k and V (G) − (A ∪ N (A)) ̸= ∅. In other
+words, a fragment A is a nonempty union of components of G − S where S is a k-cutset of G such that V (G) − (A ∪ S ) ̸= ∅.
+By the definition, if A is a fragment of G, then G − (A ∪ N (A)) is also a fragment of G. Let A¯ stand for G − (A ∪ N (A)).
+Let A be a fragment of a k-connected graph G and let e be an edge of G. Then A is said to be a fragment with respect to e if
+V (e) ⊂ N (A). For a set of edges F ⊂ E (G), we say that A is a fragment with respect to F if A is a fragment with respect to some
+e ∈ F . Sometimes we write ‘‘an F -fragment’’ for ‘‘a fragment with respect to F ’’. If F = {e}, then we write e-fragment instead
+¯ respectively. Hence, if A
+of {e}-fragment. For S ⊂ V (G), a fragment A is said to be S-free and S-opposite if A ∩ S = ∅ and S ⊂ A,
+is S-opposite, the A is S-free. If S = {y}, then we write y-free and y-opposite instead of {y}-free and {y}-opposite, respectively.
+An F -fragment A is said to be minimum (resp. minimal) if there is no F -fragment B other than A such that |B| < |A| (resp.
+B A).
+Hereafter, we consider 5-connected graphs. Let A be a fragment of a 5-connected graph G and let S = N (A). Let x ∈ S and
+let y ∈ N (x) ∩ A. A vertex z is said to be an admissible vertex of (x, y; A), if the following two conditions hold.
+(1) z ∈ N (x) ∩ N (y) ∩ S ∩ V5 .
+(2) |N (z ) ∩ A| ≥ 2.
+Moreover, if |N (z ) ∩ A¯ | = 1, then z is said to be strongly admissible.
+A vertex z is said to be an admissible vertex of (x; A) or a strongly admissible vertex of (x; A), if z is an admissible vertex
+of (x, y; A) or a strongly admissible vertex of (x, y; A) for some y ∈ N (x) ∩ A. Let Ad(x, y; A) denote the set of admissible
+vertices of (x, y; A) and let Ad(x; A) denote the set of admissible vertices of (x; A). Let A be a fragment of a 5-connected graph
+G and let x ∈ N (A). A fragment B of G is said to be (x; A)-fit if {x} ∪ A ⊂ N (B). A vertex x ∈ N (A) is said to be tractable with A
+if there is an (x; A)-fit fragment B such that |S ∩ B| = |S ∩ B¯ | = 2. If there is no ambiguity, we sometimes write ‘‘A-tractable’’
+for ‘‘tractable with A’’.
+We begin with the following two lemmas, which are both simple observations.
+Lemma 1. Let A be a fragment of a 5-connected graph G and let S ⊂ N (A). If |N (S ) ∩ A| < |S |, then A ⊂ N (S ).
+Proof. Assume that A ̸= N (S ) ∩ A. Let A′ = A − (N (S ) ∩ A). Since A′ ̸= ∅ and N (A′ ) ∩ (A¯ ∪ S ) = ∅, (N (A) − S ) ∪ (N (S ) ∩ A)
+separates A′ and A¯ ∪ S. Since |N (S ) ∩ A| < |S |, we see that |(N (A) − S ) ∪ (N (S ) ∩ A)| = |N (A)| − |S | + |N (S ) ∩ A| < |N (A)| = 5,
+which contradicts the assumption that G is 5-connected.
+Lemma 2. Let G be a 5-connected graph, and let A and B be fragments of G Let S = N (A) and T = N (B).
+B
+
+A¯ ∩ B
+
+S∩B
+
+A∩B
+
+T
+
+A¯ ∩ T
+
+S∩T
+
+A∩T
+
+B¯
+
+A¯ ∩ B¯
+
+S ∩ B¯
+
+A ∩ B¯
+
+S
+
+A
+
+A¯
+Then the following hold.
+
+(1) If |(S ∩ B) ∪ (S ∩ T ) ∪ (A ∩ T )| ≥ 6, then |(A¯ ∩ T ) ∪ (S ∩ T ) ∪ (S ∩ B¯ )| ≤ 4 and A¯ ∩ B¯ = ∅. In particular, if neither A ∩ B
+nor A¯ ∩ B¯ is empty, then both A ∩ B and A¯ ∩ B¯ are fragments of G.
+(2) |(S ∩ B) ∪ (S ∩ T ) ∪ (A ∩ T )| = 5 + |S ∩ B| − |A¯ ∩ T |. In particular, if A ∩ B ̸= ∅, then |S ∩ B| ≥ |A¯ ∩ T |.
+(3) If |A¯ | ≥ 2, then either |(S ∩ B) ∪ (S ∩ T ) ∪ (A ∩ T )| ≤ 5 or |(S ∩ B¯ ) ∪ (S ∩ T ) ∪ (A ∩ T )| ≤ 5.
+Proof. (1) Since S and T are both 5-cutsets, |S | + |T | = |(S ∩ B) ∪ (S ∩ T ) ∪ (S ∩ B¯ )| + |(A¯ ∩ T ) ∪ (S ∩ T ) ∪ (A ∩ T )| = 10.
+Hence, if |(S ∩ B) ∪ (S ∩ T ) ∪ (A ∩ T )| ≥ 6, then |(A¯ ∩ T ) ∪ (S ∩ T ) ∪ (S ∩ B¯ )| ≤ 4, which implies that A¯ ∩ B¯ = ∅, since G
+is 5-connected. If neither A ∩ B nor A¯ ∩ B¯ is empty, then |(S ∩ B) ∪ (S ∩ T ) ∪ (A ∩ T )|, |(A¯ ∩ T ) ∪ (S ∩ T ) ∪ (S ∩ B¯ )| ≥ 5,
+which implies |(S ∩ B) ∪ (S ∩ T ) ∪ (A ∩ T )| = |(A¯ ∩ T ) ∪ (S ∩ T ) ∪ (S ∩ B¯ )| = 5. Hence, we see that both A ∩ B and A¯ ∩ B¯
+are fragments of G.
+(2) Since |T | = |(A¯ ∩T )∪(S ∩T )∪(A∩T )| = 5, we see that |(S ∩B)∪(S ∩T )∪(A∩T )| = |T |+|S ∩B|−|A¯ ∩T | = 5+|S ∩B|−|A¯ ∩T |.
+Next assume A ∩ B ̸= ∅. Then (S ∩ B)∪(S ∩ T )∪(A ∩ T ) is a cutset of G since A¯ ∪ B¯ ̸= ∅. Hence |(S ∩ B)∪(S ∩ T )∪(A ∩ T )| ≥ 5.
+Thus, we have |S ∩ B| ≥ |A¯ ∩ T |.
+(3) Assume |(S ∩ B) ∪ (S ∩ T ) ∪ (A ∩ T )| ≥ 6 and |(S ∩ B¯ ) ∪ (S ∩ T ) ∪ (A ∩ T )| ≥ 6. Then, by (1), we have A¯ ∩ B = A¯ ∩ B¯ = ∅,
+which implies |A¯ ∩ T | = |A¯ | ≥ 2. Hence we see that |(S ∩ T ) ∪ (A ∩ T )| = |T | − |A¯ ∩ T | ≤ 3. On the other hand, since
+|S | = 5, we observe that either |S ∩ B| ≤ 2 or |S ∩ B¯ | ≤ 2. This together with the fact |(S ∩ T ) ∪ (A ∩ T )| ≤ 3 implies
+either |(S ∩ B) ∪ (S ∩ T ) ∪ (A ∩ T )| ≤ 5 or |(S ∩ B¯ ) ∪ (S ∩ T ) ∪ (A ∩ T )| ≤ 5, which contradicts the assumption.
+Lemma 3. Let x be a vertex of a contraction-critically 5-connected graph G. Let A be a fragment with respect to E (x) such that
+|A¯ | ≥ 2 and |A| ≥ 3. For each y ∈ N (x) ∩ A, if Ad(x, y; A) = ∅, then there is a fragment A′ with respect to xy such that A′ A.
+
+1930
+
+K. Ando, T. Iwase / Discrete Mathematics 311 (2011) 1925–1939
+
+Proof. Assume that there is neither an admissible vertex of (x, y; A) nor an xy-fragment A′ such that A′
+A. Let B be an xyfragment. Let S = N (A) and let T = N (B). Since |A¯ | ≥ 2, by Lemma 2(3), we see that either |(S ∩ B) ∪ (S ∩ T ) ∪ (A ∩ T )| ≤ 5
+or |(S ∩ B¯ ) ∪ (S ∩ T ) ∪ (A ∩ T )| ≤ 5. Without loss of generality we may assume |(S ∩ B) ∪ (S ∩ T ) ∪ (A ∩ T )| ≤ 5. Then,
+since there is no xy-fragment A′ such that A′
+A, we see that A ∩ B = ∅.
+Claim 3.1. A ∩ B¯ ̸= ∅.
+Proof. Assume A ∩ B¯ = ∅. Then, since A ∩ B = ∅, we have A = A ∩ T and |A| = |A ∩ T | ≥ 3, which implies that
+|A¯ ∩ T | = |T | − |S ∩ T | − |A ∩ T | ≤ 1. Hence, since |A¯ | ≥ 2, by symmetry, we may assume that A¯ ∩ B¯ ̸= ∅. Then,
+by Lemma 2(2), we observe that |S ∩ B¯ | ≥ |A ∩ T | ≥ 3, which implies that |S ∩ B| = |S | − |S ∩ T | − |S ∩ B¯ | ≤ 1. If
+S ∩ B = ∅, then we have B = ∅, which contradicts the choice of B. Hence |S ∩ B| = 1, say S ∩ B = {z }. Then we observe
+that z ∈ N (x) ∩ N (y) ∩ S ∩ V5 and |N (z ) ∩ A| = |A ∩ T | = 3. Now we see that z ∈ Ad(x, y; A), which contradicts the
+assumption.
+By Claim 3.1, we see that A ∩ B¯ ̸= ∅. If |(S ∩ B¯ ) ∪ (S ∩ T ) ∪ (A ∩ T )| = 5, then A ∩ B¯ is an xy-fragment such that A ∩ B¯
+A,
+which contradicts the assumption. Hence we have |(S ∩ B¯ ) ∪ (S ∩ T ) ∪ (A ∩ T )| ≥ 6. Thus, by Lemma 2(1), we observe that
+A¯ ∩ B = ∅, which implies B = S ∩ B since A ∩ B = ∅. We show that |B| = |S ∩ B| = 1. Assume that |S ∩ B| ≥ 2. Since
+|(S ∩ B¯ ) ∪ (S ∩ T ) ∪ (A ∩ T )| ≥ 6, applying Lemma 2(2) with the roles S ∩ B and A¯ ∩ T replaced by A ∩ T and S ∩ B, respectively,
+we see that |A ∩ T | ≥ |S ∩ B| + 1 ≥ 3, which implies that |A¯ ∩ T | = |T | − |S ∩ T | − |A ∩ T | ≤ 1 since x ∈ S ∩ T . Hence,
+since |A¯ ∩ T | < |S ∩ B|, applying Lemma 2(2), we see that A¯ ∩ B¯ = ∅, which implies |A¯ | = |A¯ ∩ T | ≤ 1. This contradicts
+the assumption and it is shown that |S ∩ B| = 1, say B = S ∩ B = {z }. Then we observe that z ∈ N (x) ∩ N (y) ∩ S ∩ V5 and
+|N (z ) ∩ A| = |A ∩ T | ≥ |S ∩ B| + 1 = 2. Hence z is an admissible vertex of (x, y; A), which contradicts the assumption. This
+contradiction proves Lemma 3.
+The following corollary is an immediate consequence of Lemma 3.
+Corollary 4. Let x be a vertex of a contraction-critically 5-connected graph G. Let A be a fragment with respect to E (x) such that
+|A¯ | ≥ 2, |A| ≥ 3. Suppose |N (x) ∩ A| = 1, say N (x) ∩ A = {y}. Then there is an admissible vertex of (x, y; A).
+Proof. Assume that there is no admissible vertex of (x, y; A). Then, Lemma 3 assure us that there is an xy-fragment A′ such
+that A′
+A. Since N (x) ∩ A = {y}, we observe that N (x) ∩ A′ = ∅, which contradicts the fact that A′ is an xy-fragment. This
+contradiction proves Corollary 4.
+Let A be a fragment of a 5-connected graph and let x ∈ N (A). Recall that a fragment B is (x; A)-fit if A ∪ {x} ⊂ N (B) and a
+vertex x ∈ N (A) is tractable with A if there is an (x; A)-fit fragment B such that |S ∩ B| = |S ∩ B¯ | = 2.
+Lemma 5. Let G be a contraction-critically 5-connected graph. Let A be a fragment such that |A¯ | ≥ 2, |A| = 2 and A ∩ V≥6 ̸= ∅.
+Then the following (1), (2) and (3) hold.
+(1) |{x ∈ N (A) | Ad(x; A) ̸= ∅}| ≥ 4.
+(2) If Ad(x; A) = ∅ for x ∈ N (A), then N (x) ∩ N (A) = ∅.
+(3) |N (A) ∩ V5 | ≥ 4.
+Proof. Let S = N (A) and let A = {y1 , y2 }. We may assume that degG (y1 ) ≤ degG (y2 ), then we observe that degG (y2 ) = 6
+and S ⊂ N (y2 ) since A ∩ V≥6 ̸= ∅.
+Claim 5.1. For each x ∈ S, there is an (x; A)-fit fragment.
+Proof. At first we consider the case that xy1 ∈ E (G). Let B be an xy1 -fragment. Then, since S ⊂ N (y2 ), we observe that
+y2 ∈ N (B), which implies that B is an (x; A)-fit fragment. Next assume that xy1 ̸∈ E (G). Then we observe that S −{x} ⊂ N (y1 ).
+Let B be an xy2 -fragment. Then, since S − {x} ⊂ N (y1 ), we see that y1 ∈ N (B), which implies that B is an (x; A)-fit fragment.
+Now Claim 5.1 is proved.
+Claim 5.2. If x ∈ S is not tractable with A, then Ad(x; A) ̸= ∅.
+Proof. Assume x is not tractable with A. By Claim 5.1, let B an (x; A)-fit fragment and let T = N (B). Since x is not tractable
+with A, we know that either |S ∩ B| = 1 or |S ∩ B¯ | = 1. Without loss of generality, we may assume that |S ∩ B| = 1, say
+S ∩ B = {z }. Then, since |S ∩ B| < |A ∩ T |, by Lemma 2(2), we see that A¯ ∩ B = ∅, which implies that B = S ∩ B = {z }.
+Hence, we observe that z ∈ N (x) ∩ N (y) ∩ S ∩ V5 and |N (z ) ∩ A| = |A| = 2, which implies that z ∈ Ad(x; A) and Claim 5.2
+is proved.
+Let S = {x1 , x2 , x3 , x4 , x5 }.
+Claim 5.3. If both x1 and x2 are tractable with A, then neither Ad(x1 ; A) nor Ad(x2 ; A) is empty.
+Proof. Since both x1 and x2 are tractable with A, there are an (x1 ; A)-fit fragment B1 and an (x2 ; A)-fit fragment B2 such that
+|S ∩ B1 | = |S ∩ B¯ 1 | = |S ∩ B2 | = |S ∩ B¯ 2 | = 2. Let T1 = N (B1 ) and T2 = N (B2 ). Then, we observe that A ⊂ T1 ∩ T2 , S ∩ T1 = {x1 }
+and S ∩ T2 = {x2 }. Without loss of generality, we may assume that S ∩ B1 = {x2 , x3 } and S ∩ B¯ 1 = {x4 , x5 }. Furthermore,
+without loss of generality, we may assume that x1 ∈ S ∩ B2 .
+
+K. Ando, T. Iwase / Discrete Mathematics 311 (2011) 1925–1939
+
+1931
+
+At first we consider the case that x3 ∈ S ∩ B2 . In this case S ∩ B2 = {x1 , x3 } and S ∩ B¯ 2 = {x4 , x5 }. Then we observe that
+x3 ∈ B1 ∩ B2 and {x4 , x5 } ⊂ B¯ 1 ∩ B¯ 2 , which implies that neither B1 ∩ B2 nor B¯ 1 ∩ B¯ 2 is empty. Then, Lemma 2(1) assures us
+that both B1 ∩ B2 and B¯ 1 ∩ B¯ 2 are fragments of G. Moreover, we observe that {y1 , y2 } ⊂ T1 ∩ T2 , x1 ∈ T1 ∩ B2 and x2 ∈ B1 ∩ T2 ,
+which implies that N ({y1 , y2 }) ∩ (B1 ∩ B2 ) = {x3 }. Hence, applying Lemma 1 with the roles S and A replaced by {y1 , y2 } and
+B1 ∩ B2 , respectively, we see that B1 ∩ B2 = {x3 }. Now we have x3 ∈ V5 , A = {y1 , y2 } ⊂ N (x3 ), and x1 , x2 ∈ N (x3 ), which
+implies x3 ∈ Ad(x1 ; A) and x3 ∈ Ad(x2 ; A). Hence we have the desired conclusion that neither Ad(x1 ; A) nor Ad(x2 ; A) is
+empty.
+Next we consider the case that x3 ̸∈ S ∩ B2 . In this case, without loss of generality, we may assume that S ∩ B2 = {x1 , x4 }
+and S ∩ B¯ 2 = {x3 , x5 }. Then we observe that x3 ∈ B1 ∩ B¯ 2 , x4 ∈ B¯ 1 ∩ B2 and x5 ∈ B¯ 1 ∩ B¯ 2 , which implies that neither B1 ∩ B¯ 2 nor
+B¯ 1 ∩ B2 is empty. Then, Lemma 2(1) again assures us that both B1 ∩ B¯ 2 and B¯ 1 ∩ B2 are fragments of G. Moreover, we observe
+that {y1 , y2 } ⊂ T1 ∩ T2 , x1 ∈ T1 ∩ B2 and x2 ∈ B1 ∩ T2 . Since N ({y1 , y2 }) ∩ (B1 ∩ B¯ 2 ) = {x3 }, applying Lemma 1 with the roles S
+and A replaced by {y1 , y2 } and B1 ∩ B¯ 2 , respectively, we see that B1 ∩ B¯ 2 = {x3 }, which implies x3 ∈ V5 , A = {y1 , y2 } ⊂ N (x3 )
+and x3 ∈ N (x2 ). Hence we see that x3 ∈ Ad(x2 ; A). We can similarly prove x4 ∈ Ad(x1 ; A). Now we obtain that neither
+Ad(x1 ; A) nor Ad(x2 ; A) is empty.
+In both cases, we have the desired conclusion that neither Ad(x1 ; A) nor Ad(x2 ; A) is empty and Claim 5.3 is proved.
+By virtue of Claim 5.3, we show (1). Assume Ad(x1 ; A) = ∅. Then, by Claim 5.2, we see that x1 is tractable with A. If there
+is a A-tractable vertex other than x1 , then Claim 5.3 assures us that Ad(x1 ; A) ̸= ∅, which contradicts the assumption that
+Ad(x1 ; A) = ∅. Hence we see that none of x2 , x3 , x4 and x5 is A-tractable. Hence, again Claim 5.2 assures us that Ad(xi ; A) ̸= ∅
+for i = 2, 3, 4, 5. Now (1) is proved.
+Next we prove (2). Assume Ad(x1 ; A) = ∅ and N (x1 ) ∩ S ̸= ∅. Then, by (1), we know that Ad(xi ; A) ̸= ∅ for i = 2, 3, 4, 5.
+Then, since Ad(x1 ; A) = ∅, Claim 5.2 assures us that x1 is A-tractable. Hence there is an (x1 ; A)-fit fragment B1 such
+that |S ∩ B1 | = |S ∩ B¯ 1 | = 2. Since |S ∩ B1 | = |S ∩ B¯ 1 | = 2, we observe that S ∩ T1 = {x1 }, which implies that
+|A¯ ∩ T1 | = |T1 | − |S ∩ T1 | − |A ∩ T1 | = 2. By symmetry, we may assume that S ∩ B1 = {x2 , x3 } and S ∩ B¯ 1 = {x4 , x5 }.
+Note that, in this situation, EG ({x2 , x3 }, {x4 , x5 }) = ∅. Since N (x1 ) ∩ S ̸= ∅, without loss of generality, we may assume
+x2 ∈ N (x1 ) ∩ S. Then, since Ad(x1 ; A) = ∅, we observe that either x2 ∈ V≥6 or |N (x2 ) ∩ A| = 1, which implies that x2
+cannot be an admissible vertex of (x3 ; A). Since N (x3 ) ∩ S ⊂ {x1 , x2 }, x2 ̸∈ Ad(x3 ; A), and Ad(x3 ; A) ̸= ∅, we see that x1 is
+an admissible vertex of (x3 ; A), which implies {y1 , y2 , x2 , x3 } ⊂ N (x1 ). Let N (x1 ) = {y1 , y2 , x2 , x3 , v}. Then, since neither
+N (x1 ) ∩ A¯ nor N (x1 ) ∩ B¯ 1 is empty, we see that v ∈ A¯ ∩ B¯ 1 , which implies that |A¯ | ≥ |A¯ ∩ T1 | + |A¯ ∩ B¯ 1 | ≥ 3. Since
+¯ respectively,
+|A¯ | ≥ 3, |A| = 2 and |N (x1 ) ∩ A¯ | = 1, applying Corollary 4 with the roles of x, y and A replaced by x1 , v and A,
+we see that Ad(x1 , v; A¯ ) ̸= ∅. Since N ({x2 , x3 }) ∩ B¯ 1 = ∅, we observe that v ̸∈ N ({x2 , x3 }), which implies that neither x2 nor
+x3 is an admissible vertex of (x1 , v; A¯ ). Since N (x1 ) ∩ S = {x2 , x3 }, we have Ad(x1 , v; A¯ ) = ∅, which contradicts the previous
+assertion. This contradiction proves (2).
+At last we show (3). By (1), we know that |{x ∈ N (A) | Ad(x; A) ̸= ∅}| ≥ 4. To begin with the case that |{x ∈ N (A) |
+Ad(x; A) ̸= ∅}| = 4, let Ad(x1 ; A) = ∅ and Ad(xi ; A) ̸= ∅ for i = 2, 3, 4, 5. By Claim 5.2, let B1 be an (x1 ; A)-fit fragment
+such that |S ∩ B1 | = |S ∩ B¯ 1 | = 2. By symmetry, we may assume that S ∩ B1 = {x2 , x3 } and S ∩ B¯ 1 = {x4 , x5 }. By (2), we see
+that N (x1 ) ∩ S = ∅. Then, since neither Ad(x2 ; A) nor Ad(x3 ; A) is empty, we see that x2 is an admissible vertex of (x3 ; A)
+and x3 is an admissible vertex of (x2 ; A). Similarly we see that x4 is an admissible vertex of (x5 ; A) and x5 is an admissible
+vertex of (x4 ; A). Now we have |S ∩ V5 | ≥ 4.
+Hereafter, we assume that Ad(xi ; A) ̸= ∅ for i = 1, 2, 3, 4, 5. Assume |S ∩ V5 | ≤ 3, say x4 , x5 ∈ V≥6 . Since Ad(xi ; A) ̸= ∅
+for i = 1, 2, 3, we observe that N (xi ) ∩ S ∩ V5 ̸= ∅ for i = 1, 2, 3. Hence we can find a path of length 2 in G[{x1 , x2 , x3 }]
+whose center vertex has degree 5. Without loss of generality, we may assume that x1 x2 , x2 x3 ∈ E (G) and v2 ∈ V5 . We
+show x2 ̸∈ Ad(x4 ; A). Assume x2 ∈ Ad(x4 ; A). Then, since x2 ∈ V5 , {x1 , x3 } ⊂ N (x2 ) and N (x2 ) ∩ A¯ ̸= ∅, we observe that
+|N (x2 ) ∩ (A ∪ {x4 , x5 })| ≤ 2. Hence, we observe that either N (x2 ) ∩ {x4 , x5 } = ∅ or |N (x2 ) ∩ A| = 1. If N (x2 ) ∩ {x4 , x5 } = ∅,
+then we observe that neither x2 ∈ Ad(x4 ; A) nor x2 ∈ Ad(x5 ; A). Otherwise, if |N (x2 ) ∩ A| = 1, then we also observe
+that neither x2 ∈ Ad(x4 ; A) nor x2 ∈ Ad(x5 ; A). This contradicts the assumption and it is shown that x2 ̸∈ Ad(x4 ; A).
+Since Ad(x4 ; A) ̸= ∅ and x2 , x5 ̸∈ Ad(x4 ; A), by symmetry, we may assume that x1 ∈ Ad(x4 ; A), which implies that
+x1 ∈ V5 , {y1 , y2 , x2 , x4 } ⊂ N (x1 ) and |N (x1 ) ∩ A¯ | = 1, say N (x1 ) ∩ A¯ = {v1 }. Since N (x1 ) ∩ S = {x2 , x4 } and x4 ∈ V≥6 ,
+we see that x2 ∈ Ad(x1 ; A), which implies that x2 ∈ V5 , {y1 , y2 , x1 , x4 } ⊂ N (x2 ) and |N (x2 ) ∩ A¯ | = 1, say N (x2 ) ∩ A¯ = {v2 }.
+Since Ad(x5 ; A) ̸= ∅ and N (x5 )∩{x1 , x2 } = ∅, we see that x3 ∈ Ad(x5 ; A), which implies that x3 ∈ V5 , {y1 , y2 , x2 , x5 } ⊂ N (x3 )
+and |N (x3 )∩ A¯ | = 1, say N (x3 )∩ A¯ = {v3 }. If v1 = v2 , then, applying Lemma 1 with the roles of S and A replaced by {x1 , x2 } and
+¯ respectively, we see that |A¯ | = 1, which contradicts the assumption that |A¯ | ≥ 2. Hence v1 ̸= v2 . By similar arguments,
+A,
+we know that v1 , v2 , v3 are distinct, which implies that |A¯ | ≥ 3. Since |A¯ | ≥ 3, |A| = 2 and |N (x1 ) ∩ A¯ | = 1, applying
+¯ respectively, we see that Ad(x1 ; A¯ ) ̸= ∅. However, we already
+Corollary 4 with the roles of x and A replaced by x1 and A,
+know that N (x1 ) ∩ S = {x2 , x4 }, |N (x2 ) ∩ A¯ | = 1 and x4 ∈ V≥6 , which implies that there is no admissible vertex of (x1 ; A¯ ).
+This contradicts the previous assertion and this contradiction proves (3) and Lemma 5 is proved.
+The following is an immediate corollary from Lemmas 3 and 5.
+Lemma 6. Let x be a vertex of a contraction-critically 5-connected graph. Let A be a fragment with respect to E (x) such that
+|A¯ | ≥ 2. If N (x) ∩ A ∩ V5 = ∅, then there is an admissible vertex of (x; A).
+
+1932
+
+K. Ando, T. Iwase / Discrete Mathematics 311 (2011) 1925–1939
+
+Proof. We prove Lemma 6 by induction on |A|. Note that |A| ≥ 2, since N (x) ∩ A ∩ V5 = ∅. If |A| = 2, then, since |A¯ | ≥ 2
+and N (x) ∩ N (A) ̸= ∅, Lemma 5(2) assures us that there is an admissible vertex of (x; A). Now the initial step is completed.
+Next assume |A| ≥ 3 and let y ∈ N (x) ∩ A. If there is an admissible vertex of (x, y; A), then we are done. Hence, assume
+that Ad(x, y; A) = ∅. Then, by Lemma 3, we see that there is an xy-fragment A′ such that A′
+A. Then we see that A′ is
+′
+′
+′
+¯
+¯
+an E (x)-fragment, |A | > |A| ≥ 2, N (x) ∩ A ∩ V5 = ∅ and |A | < |A|. Hence, by the induction hypothesis, we see that
+Ad(x; A′ ) ̸= ∅. Since A′
+A and N (x) ∩ A ∩ V5 = ∅, we see that an admissible vertex of (x; A′ ) is an admissible vertex of
+(x; A). The induction step is now completed and Lemma 6 is proved.
+Lemma 7. Let x be a vertex of a contraction-critically 5-connected graph G. Let A be a fragment with respect to E (x) such that
+|A¯ | ≥ 2 and |A| ≥ 3. Suppose |N (x) ∩ A| = 1, say N (x) ∩ A = {y}. If y ̸∈ V5 , then there is a strongly admissible vertex of (x, y; A).
+Proof. Assume that there is no strongly admissible vertex of (x, y; A). By Corollary 4, we know that Ad(x, y; A) ̸= ∅, say
+z ∈ Ad(x, y; A). Let B = {z } and T = N (z ). By the assumption, z is not strongly admissible, which implies |N (z ) ∩ A¯ | ≥ 2.
+Since |N (z ) ∩ A| ≥ 2 and |N (z ) ∩ A¯ | ≥ 2, we observe that |N (z ) ∩ A| = |N (z ) ∩ A¯ | = 2 and S ∩ T = {x}. Let N (z ) ∩ A = {y, u}
+and S ∩ B¯ = {v1 , v2 , v3 }.
+Claim 7.1. |A| = 3.
+Proof. Assume |A| ≥ 4. Let A′ = A − {y} and S ′ = (S − {x}) ∪ {y}. Then we observe that A′ is a zy-fragment, |A¯ ′ | >
+|A¯ | ≥ 2, |A′ | = |A| − 1 ≥ 3 and N (z ) ∩ A′ = {u}. Hence, by Corollary 4, we see that there is an admissible vertex of (z , u; A′ ).
+But we know that N (z ) ∩ S ′ = {y} and y ∈ V≥6 , which implies that there is no admissible vertex of (z , u; A′ ). This contradicts
+the previous assertion and it is shown that |A| = 3.
+Let A = {y, u, w}, then A ∩ T = {y, u} and A ∩ B¯ = {w}. In this situation, since N (x) ∩ (A ∩ B¯ ) = ∅, we observe that
+w ∈ V5 and N (w) = {y, u, v1 , v2 , v3 }. Let A′ = {u, w} and let S ′ = N (A′ ) = {z , y, v1 , v2 , v3 }.
+Claim 7.2. z is tractable with A′ .
+Proof. Assume z is not tractable with A′ . Let C be a zu-fragment. Since S ′ − {z } = {y, v1 , v2 , v3 } ⊂ N (w), we observe that
+C is a (z ; A′ )-fit fragment. Since z is not tractable with A′ , we see that either |S ′ ∩ C | ≤ 1 or |S ′ ∩ C | ≤ 1. Without loss of
+generality, we may assume that |S ′ ∩ C | ≤ 1. Since C is (z ; A′ )-fit, we know that S ′ ∩ C ̸= ∅, which implies |S ′ ∩ C | = 1,
+say S ′ ∩ C = {y′ }. Then, since |S ′ ∩ C | < |A′ ∩ N (C )| = |A′ | = 2, Lemma 2(2) assures us that A¯ ′ ∩ C = ∅, which implies
+C = S ′ ∩ C = {y′ }. Then, we observe that y′ ∈ N (z ) ∩ S ′ ∩ V5 , which contradicts the fact that N (z ) ∩ S ′ = {y} and y ̸∈ V5 .
+This contradiction proves Claim 7.2.
+Let C be a zu-fragment. By Claim 7.2, we know that A′ ⊂ N (C ), |S ′ ∩ C | = |S ′ ∩ C¯ | = 2 and S ′ ∩ N (C ) = {z }. Without loss
+of generality, we may assume that S ′ ∩ C = {y, v1 } and S ′ ∩ C¯ = {v2 , v3 }. Then, we observe that N (y) ∩ {v2 , v3 } = ∅, which
+implies that N (y) ⊂ (S ∪ A) − {y, v2 , v3 } = {x, z , u, w, v1 }. Now we have degG (y) = |N (y)| ≤ 5, which contradicts the fact
+that y ∈ V≥6 . This contradiction proves Lemma 7.
+3. Proof of Proposition 1
+Let G be a contraction-critically 5-connected graph and let x ∈ V (G) such that x ̸∈ V5 and |N (x) ∩ V5 | = 2, say
+N (x) ∩ V5 = {y1 , y2 }. By way of contradiction, assume y1 y2 ∈ E (G). Let E ′ (x) = E (x) − {xy1 , xy2 }. Let A be a E ′ (x)-fragment
+of G. Then, since y1 y2 ∈ E (G), we observe that either A ∩ {y1 , y2 } = ∅ or A¯ ∩ {y1 , y2 } = ∅. Hence there is a {y1 , y2 }-free
+E ′ (x)-fragment of G.
+Claim 1. Let xz ∈ E ′ (x) and let A be a minimal {y1 , y2 }-free xz-fragment.
+Then, (1) A¯ ∩ {y1 , y2 } ̸= ∅ and (2) if |A¯ | ≥ 2, then |A| ≥ 3.
+Proof. (1) Assume that A¯ ∩ {y1 , y2 } = ∅. Then {y1 , y2 } ⊂ N (A). Then, since N (x) ∩ A ∩ V5 = ∅, we observe that |A| ≥ 2.
+Since N (x) ∩ A¯ ∩ V5 = ∅, we also see that |A¯ | ≥ 2. We show that |N (y1 ) ∩ A| ≥ 2. Assume |N (y1 ) ∩ A| = 1, say
+N (y1 ) ∩ A = {u}. Let A′ = A − {u}. Then we see that A′ is a {y1 , y2 }-free xz-fragment of G and A′
+A, which contradicts
+the minimality of A. This contradiction proves that |N (y1 ) ∩ A| ≥ 2. By symmetry, we have |N (y2 ) ∩ A| ≥ 2. Hence
+|N (y1 ) ∩ (N (A) ∪ A)| ≥ |{x, y2 }| + |N (y1 ) ∩ A| ≥ 4, which implies |N (y1 ) ∩ A¯ | = 1. Similarly we have |N (y2 ) ∩ A¯ | = 1.
+Hence, we see that {y1 , y2 } ∩ Ad(x; A¯ ) = ∅. Since N (x) ∩ V5 = {y1 , y2 }, this implies that Ad(x; A¯ ) = ∅. On the other hand,
+since |A| ≥ 2 and N (x) ∩ A¯ ∩ V5 = ∅, Lemma 6 assures us that there is an admissible vertex of (x; A¯ ), which contradicts the
+previous assertion. This contradiction proves (1).
+(2) Assume that |A¯ | ≥ 2 and |A| ≤ 2. Since N (x) ∩ V5 = {y1 , y2 } and A is {y1 , y2 }-free, we observe that N (x) ∩ A ∩ V5 = ∅,
+which implies A ∩ V≥6 ̸= ∅ and |A| ≥ 2. Hence we see that |A| = 2. Since |A¯ | ≥ 2, |A| = 2 and A ∩ V≥6 ̸= ∅, applying
+Lemma 5(3), we see that |N (A) ∩ V5 | ≥ 4. However, since {x, z } ⊂ N (A) ∩ V≥6 , we observe that |N (A) ∩ V5 | ≤ 3, which
+contradicts the previous assertion. This contradiction shows (2) and Claim 1 is proved.
+Claim 2. There is a yi -opposite E ′ (x)-fragment of G for each i ∈ {1, 2}.
+
+K. Ando, T. Iwase / Discrete Mathematics 311 (2011) 1925–1939
+
+1933
+
+Proof. Let A be a minimal {y1 , y2 }-free E ′ (x)-fragment of G and let S = N (A). Then Claim 1 assures us that A¯ ∩ {y1 , y2 } ̸= ∅.
+Hence, by symmetry, we may assume that A is a minimal y1 -opposite E ′ (x)-fragment of G. Say xz ∈ E (S ) ∩ E ′ (x). Since
+N (x) ∩ A ∩ V5 = ∅, we see that |A| ≥ 2. Assume that there is no y2 -opposite E ′ (x)-fragment. Let u ∈ N (x) ∩ A and let B be
+a minimal {y1 , y2 }-free xu-fragment of G. Then, since N (x) ∩ B ∩ V5 = ∅, we observe that |B| ≥ 2. Applying Claim 1 with
+the roles of xz and A replaced by xu and B, respectively, we see that {y1 , y2 } ∩ B¯ ̸= ∅, which implies y1 ∈ A¯ ∩ B¯ since B is
+not a y2 -opposite E ′ (x)-fragment. Since both A and B are {y1 , y2 }-free and neither A nor B is y2 -opposite, we observe that
+y2 ∈ S ∩ T .
+Subclaim 2.1. (1) A ∩ B = ∅ and (2) |S ∩ B| = 1.
+Proof. (1) Assume A ∩ B ̸= ∅. Then, since neither A ∩ B nor A¯ ∩ B¯ is empty, Lemma 2(1) assures us that A ∩ B is y1 -opposite
+E ′ (x)-fragment, which contradicts the minimality of A since u ̸∈ A ∩ B. This contradiction proves (1).
+(2) Assume |S ∩ B| ≥ 2. Then, since A¯ ∩ B¯ ̸= ∅, Lemma 2(2) assures us |A¯ ∩ T | ≥ |S ∩ B| ≥ 2, which implies |A ∩ T | = 1
+since {x, y2 } ⊂ S ∩ T . Hence, we observe that |A ∩ T | < |S ∩ B| and again Lemma 2(2) assures us that A ∩ B¯ = ∅, which
+implies that |A| = |A ∩ T | = 1. This contradicts the fact that |A| ≥ 2 and it is shown that |S ∩ B| = 1.
+By Subclaim 2.1, we know that A ∩ B = ∅ and |S ∩ B| = 1, which implies A¯ ∩ B ̸= ∅ since |B| ≥ 2. Hence, by Lemma 2(2),
+we see that |A ∩ T | ≤ |S ∩ B| = 1, which implies A ∩ B¯ ̸= ∅ since |A| ≥ 2. Now we observe that neither A¯ ∩ B nor A ∩ B¯
+is empty. Hence, by Lemma 2(1), we see that A ∩ B¯ is a y1 -opposite E ′ (x)-fragment, which contradicts the minimality of A
+¯ This contradiction shows the existence of a y2 -opposite E ′ (x)-fragment and Claim 2 is proved.
+since u ̸∈ A ∩ B.
+Let A be a minimum y1 -opposite E ′ (x)-fragment and let B be a minimum y2 -opposite E ′ (x)-fragment. Let S = N (A) and
+let T = N (B).
+Claim 3. |A¯ | ≥ 2 and |B¯ | ≥ 2.
+Proof. We show |A¯ | ≥ 2. Assume |A¯ | = 1. Then A¯ = {y1 } and S = N (y1 ). Let S = N (y1 ) = {x, y2 , z1 , z2 , z3 }. Let
+B′ = G − N (y2 ) ∪ {y2 } and let T ′ = N (B′ ). Then B¯ ′ = {y2 }. Let T ′ = N (y2 ) = {x, y1 , u1 , u2 , u3 }. By Theorem E, we know that
+|N (y1 ) ∩ V5 | ≥ 2 and |N (y2 ) ∩ V5 | ≥ 2. Hence, since x ̸∈ V5 , we observe that neither {z1 , z2 , z3 } ∩ V5 nor {u1 , u2 , u3 } ∩ V5 is
+empty. Without loss of generality, we may assume z3 , u3 ∈ V5 .
+Subclaim 3.1. N (x) ⊂ S ∪ T ′ ∪ {y1 , y2 }.
+Proof. Assume N (x) ∩ (A ∩ B′ ) ̸= ∅. Let E ′′ (x) = EG (x, A ∩ B′ ). Then E ′′ (x) ̸= ∅. Let C be a minimum {y1 , y2 }-free E ′′ (x)fragment. Say xv ∈ E (N (C )) ∩ EG (x, A ∩ B′ ). Note that v ∈ V≥6 since N (x) ∩ V5 = {y1 , y2 }. Since v ∈ A ∩ B′ , A¯ = {y1 }
+and B¯ ′ = {y2 }, we observe that N (v) ∩ {y1 , y2 } = ∅. Then, applying Claim 1 with the role of A replaced by C , we see
+that {y1 , y2 } ∩ C¯ ̸= ∅. Since v ∈ N (C ) and N (v) ∩ {y1 , y2 } = ∅, we see that |C¯ | ≥ 2. If y1 ∈ C¯ , then we observe that
+A¯ ∩ N (C ) = A¯ ∩ C = S ∩ C = ∅, which implies that C is a y1 -opposite E ′ (x)-fragment such that C ⊂ A − {v}. This contradicts
+the minimality of A. Hence y1 ̸∈ C¯ , which implies that y2 ∈ S ∩ C¯ and y1 ∈ N (C ). Since |C¯ | ≥ 2, applying Claim 1(2) with the
+roles of A and E ′ (x) replaced by C and E ′′ (x), respectively, we see that |C | ≥ 3. Since |C¯ | ≥ 2, |C | ≥ 3 and N (x) ∩ C ∩ V5 = ∅,
+applying Lemma 6 with the role of A replaced by C , we see that Ad(x; C ) ̸= ∅. Since N (x) ∩ N (C ) ∩ V5 = {y1 }, we observe
+that y1 is an admissible vertex of (x; C ), which implies that |N (y1 ) ∩ C | = |S ∩ C | ≥ 2.
+Subsubclaim 3.1.1. |S ∩ C¯ | ≥ 2.
+Proof. Assume |S ∩ C¯ | = 1. Then, since |C¯ | ≥ 2, we observe that A ∩ C¯ ̸= ∅. Then, since |S ∩ C¯ | = |A¯ ∩ N (C )|, applying
+Lemma 2(2), we see that |(S ∩ C¯ )∪(S ∩ N (C ))∪(A ∩ N (C ))| = 5. Hence we observe that A ∩ C¯ is a y1 -opposite E ′ (x)-fragment,
+which contradicts the minimality of A since v ̸∈ A ∩ C¯ . This contradiction proves Subsubclaim 3.1.1.
+Since |N (y1 ) ∩ C | = |S ∩ C | ≥ 2, Subsubclaim 3.1.1 assures us that |S ∩ C | = |S ∩ C¯ | = 2 and S ∩ N (C ) = {x}.
+Subsubclaim 3.1.2. N (x) ∩ (A ∩ C ) = ∅.
+Proof. Assume v ′ ∈ N (x) ∩ (A ∩ C ). Then, there is no admissible vertex of (x, v ′ ; C ) since N (x) ∩ N (C ) ∩ V5 = {y1 } and
+y1 v ′ ̸∈ E (G). Then, since |C¯ | ≥ 2, |C | ≥ 3 and Ad(x, v ′ ; C ) = ∅, applying Lemma 3 with the roles of y and A replaced by v ′
+and C , respectively, we see that there is an xv ′ -fragment C ′ such that C ′
+C , which contradicts the minimality of C . This
+contradiction shows that N (x) ∩ (A ∩ C ) = ∅.
+Subsubclaim 3.1.2 assures us that N (x) ∩ C ⊂ S ∩ C .
+Subsubclaim 3.1.3. N (x) ∩ C = S ∩ C .
+Proof. Assume N (x)∩C
+S ∩C . Then, since |S ∩C | = 2, we observe that |N (x)∩C | = 1. Since |C¯ | ≥ 2, |C | ≥ 3, |N (x)∩C | = 1
+and N (x) ∩ C ⊂ V≥6 , applying Lemma 7 with the role of A replaced by C , we see that y1 is a strongly admissible vertex of
+(x; C ). Hence |N (y1 ) ∩ C¯ | = 1, which contradicts Subsubclaim 3.1.1. This contradiction proves N (x) ∩ C = S ∩ C .
+We are in a position to complete the proof of Subclaim 3.1. By Subsubclaim 3.1.3, we know N (x) ∩ C = N (y1 ) ∩ C , which
+implies that N (y1 ) ∩ C ∩ V5 = ∅ since N (x) ∩ C ∩ V5 = ∅. Since |C¯ | ≥ 2, |C | ≥ 3 and N (y1 ) ∩ C ∩ V5 = ∅, applying
+Lemma 6 with the roles of x and A replaced by y1 and C , respectively, we see that Ad(y1 ; C ) ̸= ∅. On the other hand, since
+N (y1 ) ∩ N (C ) = {x} and x ∈ V≥6 , we see that there is no admissible vertex of (y1 ; C ), which contradicts the previous
+assertion. This contradiction proves Subclaim 3.1.
+
+1934
+
+K. Ando, T. Iwase / Discrete Mathematics 311 (2011) 1925–1939
+
+By Subclaim 3.1 we know that N (x) ⊂ (S ∪ T ′ ) ∪ {y1 , y2 }. Since N (x) ∩ V5 = {y1 , y2 } and z3 , u3 ∈ V5 , we see that
+z3 , u3 ̸∈ N (x). Hence, we observe that y1 , y2 , z1 , z2 , u1 , u2 are distinct and N (x) = {y1 , y2 , z1 , z2 , u1 , u2 } because |N (x)| ≥ 6.
+Hence, we observe that {z1 , z2 , u1 , u2 } ∩ V5 = ∅ since N (x) ∩ V5 = {y1 , y2 }.
+Subclaim 3.2. Let C be a y1 x-fragment such that |S ∩ C | ≥ |S ∩ C¯ | and |S ∩ N (C )| ≥ 2. Then, either (1) C¯ = {y2 } or (2)
+{z1 , z2 } ⊂ C and z3 = u3 .
+Proof. Since A¯ = {y1 } and y1 ∈ N (C ), we observe that neither S ∩ C nor S ∩ C¯ is empty. Hence, since |S ∩ C | ≥ |S ∩ C¯ | and
+|S ∩ N (C )| ≥ 2, we see that |S ∩ C¯ | = 1, say S ∩ C¯ = {v}.
+At first we consider the case that A ∩ C¯ = ∅. In this case C¯ = S ∩ C¯ = {v}. Hence v ∈ N (x) ∩ S ∩ V5 , which implies that
+v = y2 . Now it is shown that if A ∩ C¯ = ∅, then (1) holds.
+Next we assume A ∩ C¯ ̸= ∅. In this case, since |A¯ ∩ N (C )| = |S ∩ C¯ |, we see that A ∩ C¯ is a fragment of G. If |A ∩ C¯ | = 1,
+then N (x) ∩ (A ∩ B¯ ) ∩ V5 ̸= ∅, which contradicts the fact that A is {y1 , y2 }-free. Hence |A ∩ C¯ | ≥ 2, which implies |C¯ | ≥ 3.
+Since S ∩ C ̸= ∅ and |A ∩ N (C )| = |S ∩ C |, we observe that A ∩ C¯
+A. If {z1 , z2 } ∩ (N (C ) ∪ C¯ ) ̸= ∅, then we observe that
+A ∩ C¯ is a y1 -opposite E ′ (x)-fragment, which contradicts the minimality of A. Hence we have {z1 , z2 } ⊂ C . Since {z1 , z2 } ⊂ C ,
+we observe that |C | ≥ 2 and either w = y2 or w = z3 . Now we know that |C | ≥ 2, |C¯ | ≥ 3 and N (y1 ) ∩ C¯ = {w}. Hence,
+applying Corollary 4 with the roles of x and A replaced by y1 and C¯ , respectively, we see that Ad(y1 , w; C¯ ) ̸= ∅. If w = z3 ,
+then y2 is an admissible vertex of (y1 , z3 ; C¯ ), which implies that y2 z3 ∈ E (G). If w = y2 , then z3 is an admissible vertex of
+(y1 , y2 ; C¯ ), which again implies that y2 z3 ∈ E (G). Thus we have z3 = u3 . Now it is shown that if A ∩ C¯ ̸= ∅, then (2) holds
+and Subclaim 3.2 is proved.
+Subclaim 3.3. z3 = u3 .
+Proof. Let C be a y1 z3 -fragment. Then, if x ∈ C , then, since N (y1 ) ⊂ N (x) ∪ {x, z3 }, we observe that N (y1 ) ∩ C¯ = ∅, which
+contradicts the choice of C . Hence x ̸∈ C . By symmetry, we see that x ̸∈ C¯ and hence x ∈ N (C ), which implies that C is a
+y1 x-fragment and |S ∩ N (C )| ≥ 2. Without loss of generality, we may assume that |S ∩ C | ≥ |S ∩ C¯ |. Now we can apply
+Subclaim 2.2. If Subclaim (2) holds, then z3 = u3 and we are done. Hence, we may assume that Subclaim 2.2(1) holds, that
+is C¯ = {y2 }. Thus y2 z3 ∈ E (G), which implies again z3 = u3 . Subclaim 3.3 is proved.
+We proceed with the proof of Claim 3. By Subclaim 3.3, we know that z3 = u3 , say w = z3 = u3 . Since w ∈ V5 , and
+{y1 , y2 } ⊂ N (w), we see that |{z1 , z2 , u1 , u2 } ∩ N (w)| ≤ 3. Without loss of generality, we may assume that z1 ̸∈ N (w). Let
+C be a fragment with respect to y1 z1 . We show that x ∈ N (C ). Assume x ∈ C . Then we observe that N (y1 ) ∩ C¯ = {w} since
+N (y1 ) ⊂ N (x) ∪ {x, w}. Since xy2 , y2 w ∈ E (G), we observe that y2 ∈ N (C ). Furthermore, since {z1 , z2 , u1 , u2 } ⊂ N (x), we
+see that N ({y1 , y2 }) ∩ C¯ = {w}. Hence, applying Lemma 1 with the roles of S and A replaced by {y1 , y2 } and C¯ , respectively,
+we see that C¯ = {w} and N (C ) = N (w). This contradicts the fact that z1 ̸∈ N (w), and this contradiction proves x ̸∈ C . By
+symmetry, we see that x ̸∈ C¯ . Now it is shown that x ∈ N (C ).
+Without loss of generality, we may assume that |S ∩ C | ≥ |S ∩ C¯ |. Applying Subclaim 3.2, we see that C¯ = {y2 } since
+the fact that z1 ∈ N (C ) assures us that Subclaim 3.2(2) does not occur. Hence, we observe that y2 z1 ∈ E (G). However
+N (y2 ) = {x, y1 , u1 , u2 , w} and y1 , y2 , z1 , z2 , u1 , u2 are distinct, which implies y2 z1 ̸∈ E (G). This contradicts the previous
+assertion and we have shown that |A¯ | ≥ 2.
+Using the same arguments with the roles of A and B′ replaced by B and G − N (y1 ) ∪ {y1 }, respectively, we can show that
+|B¯ | ≥ 2. Now Claim 3 is proved.
+Recall that A and B are a minimum y1 -opposite E ′ (x)-fragment and a minimum y2 -opposite E ′ (x)-fragment, respectively,
+and S = N (A) and T = N (B). By Claim 3, we know that |A¯ |, |B¯ | ≥ 2. Then, applying Claim 1(2), we see that |A|, |B| ≥ 3.
+Claim 4. (1) N (x) ∩ A ⊂ N (y2 ) ∩ A and (2) N (x) ∩ B ⊂ N (y1 ) ∩ B.
+Proof. We show (1). Assume that there is a vertex v ∈ N (x) ∩ A such that v ̸∈ N (y2 ). Since N (x) ∩ S ∩ V5 = {y2 }, there is no
+admissible vertex of (x, v; A). Then, since |A¯ | ≥ 2 and |A| ≥ 3, applying Lemma 3 with the role y replaced by v , we see that
+there is an xv -fragment A′ such that A′
+A. Then A′ is a y1 -opposite E ′ (x)-fragment such that A′
+A, which contradicts that
+minimality of A. This contradiction shows (1).
+By the similar arguments, we can show (2) and Claim 4 is proved.
+Since A is y1 -opposite and B is y2 -opposite, Claim 4 assures us that N (x) ∩ (A ∩ B) = ∅.
+Claim 5. Neither A¯ ∩ B nor A ∩ B¯ is empty.
+Proof. Assume that either A¯ ∩ B = ∅ or A ∩ B¯ = ∅. Without loss of generality, we may assume that A¯ ∩ B = ∅. We show
+A ∩ B = ∅. Assume A ∩ B ̸= ∅. Then, since N (x) ∩ (A ∩ B) = ∅, we observe that |(S ∩ B) ∪ (S ∩ T ) ∪ (S ∩ T )| ≥ 6. Then
+Lemma 2(1) assures us that A¯ ∩ B¯ = ∅, which implies A¯ = A¯ ∩ T . Since |A¯ ∩ T | = |A¯ | ≥ 2, by Lemma 2(2), we observe that
+|S ∩ B| ≥ |A¯ ∩ T | + 1 = 3, which implies |S ∩ B¯ | = |S | − |S ∩ T | − |S ∩ B| ≤ 1. Then we observe that |S ∩ B¯ | < |A¯ ∩ T |
+and Lemma 2(2) again assures us that A ∩ B¯ = ∅, which implies that |B¯ | = |S ∩ B¯ | ≤ 1. This contradicts Claim 3 and it
+is shown that A ∩ B = ∅. Since A ∩ B = ∅, A¯ ∩ B = ∅ and |B| ≥ 3, we observe that |S ∩ B| = |B| ≥ 3. Next we show
+that |A ∩ T | ≥ 3. Assume |A ∩ T | ≤ 2. Then, |A ∩ T | < |S ∩ B| and Lemma 2(2) assures us that A ∩ B¯ = ∅, which implies
+|A| = |A ∩ T | ≤ 2. This contradicts the assertion before Claim 4, and it is shown that |A ∩ T | ≥ 3. Since |A ∩ T | ≥ 3, we
+observe that |A¯ ∩ T | = |T | − |S ∩ T | − |A ∩ T | ≤ 1. Hence, since |A¯ ∩ T | < |S ∩ B|, we see that A¯ ∩ B¯ = ∅, which implies that
+A¯ = A¯ ∩ T . Thus |A¯ | = |A¯ ∩ T | ≤ 1, which contradicts Claim 3. This contradiction proves Claim 5.
+
+K. Ando, T. Iwase / Discrete Mathematics 311 (2011) 1925–1939
+
+1935
+
+By Claim 5 we know that neither A¯ ∩ B nor A ∩ B¯ is empty. Then, Lemma 2(1) assures us that both A¯ ∩ B and A ∩ B¯ are
+fragments of G. We show that S ∩ B = A ∩ B = A ∩ T = ∅. Since A is an E ′ (x)-fragment, E (S )∩ E ′ (x) ̸= ∅, say xz ∈ E (S )∩ E ′ (x).
+¯ which implies
+If z ∈ S ∩ (T ∪ B¯ ), then A ∩ B¯ is a y1 -opposite E ′ (x)-fragment. Then, the minimality of A assures us A = A ∩ B,
+that S ∩ B = A ∩ B = A ∩ T = ∅. Hence, z ∈ S ∩ B, which implies that A¯ ∩ B is a y2 -opposite E ′ (x)-fragment. In this
+case, the minimality of B assures us B = A¯ ∩ B, which implies again that S ∩ B = A ∩ B = A ∩ T = ∅. Now we know that
+A = A ∩ B¯ , B = A¯ ∩ B and S ∩ B = A ∩ B = A ∩ T = ∅. Since A = A ∩ B¯ , B = A¯ ∩ B and |A|, |B| ≥ 3, we see that |A¯ |, |B¯ | ≥ 3.
+Claim 6. N (y2 ) ∩ A¯ = {y1 }, N (y1 ) ∩ B¯ = {y2 },
+
+¯ it suffices to show that |N (y2 ) ∩ A¯ | = 1. If |N (y2 ) ∩ A| = 3,
+Proof. We show that N (y2 ) ∩ A¯ = {y1 }. Since y1 ∈ N (y2 ) ∩ A,
+then |N (y2 ) ∩ A¯ | = |N (y2 )| − |N (y2 ) ∩ S | − |N (y2 ) ∩ A| = 1 and we are done. Hence we may assume that |N (y2 ) ∩ A| = 2.
+Then, by Claim 4, we observe that |N (x) ∩ A| ≤ |N (y2 ) ∩ A| = 2. If |N (x) ∩ A| = 1, then we see that y2 is a strongly admissible
+vertex of (x; A), which implies that |N (y2 ) ∩ A¯ | = 1. Hence we may assume that |N (x) ∩ A| = 2. In this situation, by Claim
+4, we see that N (x) ∩ A = N (y2 ) ∩ A, which implies that N (y2 ) ∩ A ∩ V5 = ∅ since N (x) ∩ A ∩ V5 = ∅. Since |A¯ | ≥ 2 and
+N (y2 ) ∩ A ∩ V5 = ∅, applying Lemma 6 with the role of x replaced by y2 , we see that Ad(y2 ; A) ̸= ∅, which implies that y2
+has a neighbor other than x in S. Thus we observe that |N (y2 ) ∩ S | ≥ 2, which implies that |N (y2 ) ∩ A¯ | = 1. Hence, it is
+shown N (y2 ) ∩ A¯ = {y1 }.
+By the similar arguments, we can show that N (y1 ) ∩ B¯ = {y2 }, and Claim 6 is proved.
+¯
+Since |A¯ |, |A| ≥ 3 and N (y2 ) ∩ A¯ = {y1 }, applying Corollary 4 with the roles of x, y and A replaced by y2 , y1 and A,
+respectively, we see that Ad(y2 , y1 ; A¯ ) ̸= ∅. Since |B¯ |, |B| ≥ 3 and N (y1 ) ∩ B¯ = {y2 }, applying Corollary 4 with the roles
+¯ respectively, we also see that Ad(y1 , y2 ; B¯ ) ̸= ∅. Say w ∈ Ad(y2 , y1 ; A¯ ). Then, since
+of x, y and A replaced by y1 , y2 and B,
+w ∈ N (y1 ) ∩ N (y2 ), we observe that N (y2 ) = (N (y2 ) ∩ A) ∪ {x, w, y1 } and N (y1 ) = (N (y1 ) ∩ B) ∪ {x, w, y2 }, which implies
+w ∈ N (y1 ) ∩ N (y2 ) and Ad(y2 , y1 ; A¯ ) = Ad(y1 , y2 ; A¯ ) = {w}.
+Claim 7. |N (w) ∩ A| ≥ 2 and |N (w) ∩ B| ≥ 2.
+Proof. We show |N (w) ∩ A| ≥ 2. Assume |N (w) ∩ A| = 1, say N (w) ∩ A = {u1 }.
+Subclaim 7.1. |N (x) ∩ A| = 1.
+Proof. Assume |N (x) ∩ A| = 2. Then, since |N (y2 ) ∩ A| = 2, Claim 4 assures us that N (y2 ) ∩ A = N (x) ∩ A, which implies
+N (y2 ) ∩ A ∩ V5 = ∅ since N (x) ∩ A ∩ V5 = ∅. Since |A¯ | ≥ 3, applying Lemma 6 with the role of x replaced by y2 , we
+see that Ad(y2 ; A) ̸= ∅. Since N (y2 ) ∩ S ∩ V5 = {w}, we observe that w is an admissible vertex of (y2 ; A), which implies
+|N (w) ∩ A| ≥ 2. This contradicts the assumption and Subclaim 7.1 is proved.
+By Subclaim 7.1, we know that |N (x) ∩ A| = 1, say N (x) ∩ A = {u2 }. We show that u1 ̸= u2 . Assume u1 = u2 . Then, since
+N ({x, w}) ∩ A = {u1 }, applying Lemma 1 with the role S replaced by {x, w}, we see that A = {u1 }, which contradicts the fact
+that |A| ≥ 3. Now it is shown that u1 ̸= u2 .
+Subclaim 7.2. |A| ≥ 4.
+Proof. Assume |A| = 3. Recall that zx ∈ E (S ) ∩ E ′ (x). Since w ∈ V5 , we observe that z ̸= w . Let A1 = A − {u1 }. Then, since
+N (w) ∩ A = {u1 }, we observe that N (A1 ) = (S − {w}) ∪ {u1 }. This implies that A1 is a fragment of G. Since |A| = 3 and
+u2 ∈ A1 ∩ V≥6 , we observe that |A1 | = 2 and A1 ∩ V≥6 ̸= ∅. Then, since |A¯ 1 | ≥ 3, |A1 | = 2 and A1 ∩ V≥6 ̸= ∅, applying
+Lemma 5(3) with the role of A replaced by A1 , we see that |N (A1 ) ∩ V5 | ≥ 4. However, since {x, z } ⊂ N (A1 ) ∩ V≥6 , we observe
+that |N (A1 ) ∩ V≥6 | ≥ 2, which implies that |N (A2 ) ∩ V5 | ≤ 3. This contradicts the previous assertion. and Subclaim 7.2 is
+proved.
+Recall that N (x) ∩ A = {u2 } and y2 is an admissible vertex of (x, u2 ; A). Hence, we observe that u2 ∈ N (x) ∩ N (y2 ) ∩ A.
+Let A2 = A − {u2 }. Then A2 is a fragment of G since N (x) ∩ A = {u2 }. Subclaim 7.2 assures us that |A| ≥ 4, which implies that
+|A2 | ≥ 3. Since |N (y2 ) ∩ A| = 2 and u2 ∈ N (y2 ) ∩ A, we observe that |N (y2 ) ∩ A2 | = 1. Then, since |A¯ 2 | ≥ 2, |A2 | ≥ 3 and
+|N (y2 ) ∩ A2 | = 1, applying Corollary 4 with the roles x and A replaced by y2 and A2 , respectively, we see that Ad(y2 ; A2 ) ̸= ∅.
+Then, since N (y2 ) ∩ S ∩ V5 = {w}, w is an admissible vertex of (y2 ; A2 ), which implies |N (w) ∩ A2 | ≥ 2. This contradicts the
+assumption that |N (w) ∩ A| = 1. This contradiction proves |N (w) ∩ A| ≥ 2.
+By the similar arguments, we can show |N (w) ∩ B| ≥ 2 and Claim 7 is proved.
+We are in a position to complete the proof of Proposition 1. Claim 7 assures us that |N (w) ∩ A| ≥ 2 and |N (w) ∩ B| ≥ 2.
+Since A ∩ B = ∅, we observe that |N (w) ∩ (A ∪ B)| = |N (w) ∩ A| + |N (w) ∩ B| ≥ 4. Since {y1 , y2 } ⊂ N (w) and both A and
+B are {y1 , y2 }-free, we see that |N (w)| ≥ |N (w) ∩ (A ∪ B ∪ {y1 , y2 })| = |N (w) ∩ (A ∪ B)| + |N (w) ∩ {y1 , y2 }| ≥ 6, which
+contradicts the fact that w ∈ V5 . This is the final contradiction and the proof of Proposition 1 is completed.
+4. Proof of Proposition 2
+In this section we prove Proposition 2.
+Let G be a contraction-critically 5-connected graph. Let x be a vertex of G such that x ̸∈ V5 and |N (x) ∩ V5 | = 2. Let
+N (x) ∩ V5 = {y1 , y2 }. Then, Proposition 1 assures us that y1 y2 ̸∈ E (G).
+
+1936
+
+K. Ando, T. Iwase / Discrete Mathematics 311 (2011) 1925–1939
+
+Claim 1. |G| ≥ 10.
+Proof. Assume |G| ≤ 9. Let A be a {y2 }-free xy1 -fragment and let S = N (A). Then, since N (x) ∩ A ∩ V5 = ∅, we observe that
+¯ then we also see that |A¯ | ≥ 2 since
+|A| ≥ 2. If A¯ ∩{y2 } = ∅, then, by the same reason, we see that |A¯ | ≥ 2. Otherwise, if y2 ∈ A,
+y1 y2 ̸∈ E (G). Hence, since |G| ≤ 9, we observe that |A| = |A¯ | = 2. Let A = {u1 , u2 } and A¯ = {v1 , v2 }. Then, since |A| = |A¯ | = 2
+and A ∩ V≥6 ̸= ∅, applying Lemma 5, we see that |S ∩ V5 | ≥ 4, which implies that S −{x} ⊂ V5 . Since x ̸∈ V5 and |A ∪ A¯ | = 4, we
+observe that |N (x)∩ S | ≥ 2, which implies N (x)∩ S = {y1 , y2 } and N (x) = {y1 , y2 , u1 , u2 , v1 , v2 }. Let S = {x, y1 , y2 , w1 , w2 }.
+Since N (x) ∩ V5 = {y1 , y2 }, we observe that {u1 , u2 , v1 , v2 } ⊂ V≥6 , which implies that S ⊂ N (u1 ) ∩ N (u2 ) ∩ N (v1 ) ∩ N (v2 ).
+Hence, we see that N (y1 ) = N (y2 ) = {x, u1 , u2 , v1 , v2 }, which implies N ({w1 , w2 }) = {u1 , u2 , v1 , v2 }. This contradicts the
+assumption that G is 5-connected. This contradiction proves Claim 1.
+We start with the following observation, which has a somewhat technical appearance but is useful.
+Claim 2. Let y ∈ {y1 , y2 }. Let A be an xy-fragment such that |A¯ | ≥ 2 and |A| ≥ 3. Suppose |N (y) ∩ A| = 2, N (y) ∩ N (A) = {x}
+and N (x) ∩ N (y) ∩ A ̸= ∅. Then, for each u ∈ N (x) ∩ N (y) ∩ A, there is an xy-fragment A′ such that A′
+A and N (y) ∩ A′ = {u}.
+Proof. Let S = N (A). Let N (y) ∩ A = {u, u′ } and u ∈ N (x) ∩ N (y) ∩ A. Since N (y) ∩ S = {x} and x ̸∈ V5 , there is no admissible
+vertex of (y, u′ ; A). Hence, since |A¯ | ≥ 2, |A| ≥ 3 and Ad(y, u′ ; A) = ∅, applying Lemma 3 with the roles of x and y replaced
+by y and u′ , respectively, we see that there is a yu′ -fragment A′ such that A′
+A. Since N (y) ∩ A′ ̸= ∅, N (y) ∩ A = {u, u′ } and
+A′
+A, we observe that N (y) ∩ A′ = {u}. Since x ̸∈ A, A′
+A, u ∈ A′ and xu ∈ E (G), we see that x ∈ N (A′ ), which implies
+that A′ is an xy-fragment. Hence A′ is a desired fragment and Claim 2 is proved.
+Claim 3. There is a y2 -opposite xy1 -fragment.
+Proof. Assume that there is no y2 -opposite xy1 -fragment. Let A be a fragment with respect to xy1 and let S = N (A). Then,
+since neither A nor A¯ is y2 -opposite, we observe that {x, y1 , y2 } ⊂ S, which implies N (x) ∩ V5 ⊂ S. Hence we see that
+N (x) ∩ A ∩ V5 = N (x) ∩ A¯ ∩ V5 = ∅, which implies |A|, |A¯ | ≥ 2. We choose a fragment A with respect to xy1 so that
+|N (y1 ) ∩ A| is as small as possible. Furthermore, subject to the above condition, we choose A so that |A| is as large as possible.
+Subclaim 3.1. |N (y2 ) ∩ A| = |N (y2 ) ∩ A¯ | = 2.
+Proof. Assume |N (y2 ) ∩ A| = 1, say N (y2 ) ∩ A = {u}. Then, since |A| ≥ 2, S ′ = (S − {y2 }) ∪ {u} is a 5-cutset of G and
+A − {u} is a y2 -opposite xy1 -fragment, which contradicts the assumption. Hence |N (y2 ) ∩ A| ≥ 2. By symmetry, we see that
+|N (y2 ) ∩ A¯ | ≥ 2. Since x ∈ N (y2 ) ∩ S and |N (y2 )| = 5, we have the desired conclusion.
+Subclaim 3.2. (1) |N (y1 ) ∩ A| ≤ 2. Furthermore, if |N (y1 ) ∩ A| = 2, then |N (y1 ) ∩ A¯ | = 2 and |A| ≥ |A¯ |, (2) |A| ≥ 3.
+Proof. (1) By the choice of A, we know that |N (y1 ) ∩ A| ≤ |N (y1 ) ∩ A¯ |. Since x ∈ N (y1 ) ∩ S and |N (y1 )| = 5, we observe that
+|N (y1 ) ∩ A| + |N (y1 ) ∩ A¯ | ≤ 4. Hence, since |N (y1 ) ∩ A| ≤ |N (y1 ) ∩ A¯ |, we see that |N (y1 ) ∩ A| ≤ 2. Now the former part of
+(1) is shown. Next assume that |N (y1 ) ∩ A| = 2. Then, since |N (y1 ) ∩ A| ≤ |N (y1 ) ∩ A¯ | and x ∈ N (y1 ) ∩ S, we observe that
+|N (y1 ) ∩ A| = |N (y1 ) ∩ A¯ | = 2. Hence, by the choice of A, we see that |A| ≥ |A¯ | and the latter part of (1) is proved.
+(2) Assume |A| = 2, say A = {u, u′ }. If y1 u ̸∈ E (G), then u ∈ V5 and xu ∈ E (G), which contradicts the assumption that
+N (x) ∩ V5 = {y1 , y2 }. Hence y1 u ∈ E (G). Similarly we observe that y1 u′ ∈ E (G). Thus we have |N (y1 ) ∩ A| = 2. Hence, (1)
+assures us that |A| ≥ |A¯ |. On the other hand, by Claim 1, we know that |G| ≥ 10, which implies that |A| + |A¯ | = |G| − |S | ≥ 5.
+This together with the fact |A| ≥ |A¯ | implies |A| ≥ 3, which contradicts the assumption that |A| = 2. This contradiction
+proves (2).
+Subclaim 3.3. y1 ̸∈ Ad(x; A).
+Proof. Assume y1 is an admissible vertex of (x; A). Then N (x) ∩ N (y1 ) ∩ A ̸= ∅ and |N (y1 ) ∩ A| ≥ 2. Since |N (y1 ) ∩ A| ≥ 2,
+Subclaim 3.2(1) assures us that |N (y1 ) ∩ A| = |N (y1 ) ∩ A¯ | = 2, N (y1 ) ∩ N (A) = {x} and |A| ≥ |A¯ |. Also Subclaim 3.2(2)
+assures us that |A| ≥ 3. Now we know that |A¯ | ≥ 2, |A| ≥ 3, |N (y1 ) ∩ A| = 2, N (y1 ) ∩ N (A) = {x} and N (x) ∩ N (y1 ) ∩ A ̸= ∅.
+Applying Claim 2 with the role of y replaced by y1 , we see that there is an xy1 -fragment A′ such that |N (y1 ) ∩ A′ | = 1, which
+contradicts the choice of A. This contradiction proves Subclaim 3.3.
+We proceed with the proof of Claim 3. Subclaim 3.2(2) assures us |A| ≥ 3, hence now we know |A¯ | ≥ 2, |A| ≥ 3 and
+N (x) ∩ A ∩ V5 = ∅. Applying Lemma 6, we see that there is an admissible vertex of (x; A). Since N (x) ∩ V5 = {y1 , y2 }, either
+y1 or y2 is an admissible vertex of (x; A). By Subclaim 3.3, we know that y1 ̸∈ Ad(x; A). Hence y2 is an admissible vertex of
+(x; A), which implies N (x) ∩ N (y2 ) ∩ A ̸= ∅. Let u ∈ N (x) ∩ N (y2 ) ∩ A. By Subclaim 3.1 we know that |N (y2 ) ∩ A| = 2. Thus
+we have |A¯ | ≥ 2, |A| ≥ 3, |N (y2 ) ∩ A| = 2, N (y2 ) ∩ N (A) = {x} and u ∈ N (x) ∩ N (y) ∩ A. Applying Claim 2 with the role of y
+replaced by y2 , we see that there is an xy2 -fragment A′ such that A′
+A and N (y2 ) ∩ A′ = {u}. Since N (x) ∩ A′ ∩ V5 = ∅, we
+observe that |A′ | ≥ 2. We show |A′ | ≥ 3. Assume |A′ | = 2, say A′ = {u, w}. Since N (y2 ) ∩ A′ = {u} and x ∈ N (A′ ), we see that
+w ∈ V5 and xw ∈ E (G), which contradicts the assumption that N (x) ∩ V5 = {y1 , y2 }. Hence, it is shown that |A′ | ≥ 3. Since
+|A¯ ′ | ≥ 2, |A′ | ≥ 3 and N (x) ∩ A′ ∩ V5 = ∅, applying Lemma 6 with the role of A replaced by A′ , we see that Ad(x; A′ ) ̸= ∅.
+By Subclaim 3.3, we observe that y1 ̸∈ Ad(x; A), which implies y1 is not an admissible vertex of (x; A′ ) since A′
+A. Since
+|N (y2 ) ∩ A′ | = 1, y2 is not an admissible vertex of (x; A′ ). Hence, since neither y1 nor y2 is an admissible vertex of (x; A′ )
+and N (x) ∩ V5 = {y1 , y2 }, we see that Ad(x; A′ ) = ∅, which contradicts the previous assertion. This contradiction proves
+Claim 3.
+
+K. Ando, T. Iwase / Discrete Mathematics 311 (2011) 1925–1939
+
+1937
+
+By Claim 3, there is a y2 -opposite xy1 -fragment. Let A be a minimal y2 -opposite xy1 -fragment and let S = N (A). Since A
+is {y1 , y2 }-free, we observe that N (x) ∩ A ∩ V5 = ∅ and |A| ≥ 2. Since y2 ∈ A¯ and y1 y2 ̸∈ E (G), we also see that |A¯ | ≥ 2.
+Claim 4. |A¯ | ≥ 3.
+Proof. Assume |A¯ | = 2, say A¯ = {y2 , z }. Then, Claim 1 assures us that |A| = |G| − |S | − |A¯ | ≥ 3. Let B be an xy2 -fragment
+and let T = N (B). Since N (x) ∩ A¯ ∩ V5 = {y2 }, we observe S − {x} ⊂ N (z ), which implies that B is an (x, A¯ )-fit fragment.
+¯ Assume x is not tractable with A.
+¯ Then, we observe that either |S ∩ B| = 1 or |S ∩ B¯ | = 1.
+We show x is tractable with A.
+Without loss of generality, we may assume |S ∩ B| = 1, say S ∩ B = {w}. Since |S ∩ B| < |A¯ ∩ T |, Lemma 2(2) assures us
+that A ∩ B = ∅, which implies B = S ∩ B = {w} and T = N (w). Hence w ∈ V5 and xw ∈ E (G), which implies w = y1 since
+N (x) ∩ V5 = {y1 , y2 }. Then, since T = N (w) and y2 ∈ T , we see that y1 y2 ∈ E (G), which contradicts Proposition 1. This
+contradiction proves |S ∩ B| ≥ 2. By symmetry, we have |S ∩ B¯ | ≥ 2 and |S ∩ B| = |S ∩ B¯ | = 2. It is shown that x is tractable
+¯
+with A.
+¯ we observe that S ∩ T = {x}. Then, without loss of generality, we may assume that
+Since x is tractable with A,
+y1 ∈ S ∩ B. Since |A¯ ∩ T | = 2 and S ∩ T = {x}, we observe that |A ∩ T | = 2. Now we know that |A ∩ T | = 2 and
+|(S ∩ B) ∪ (S ∩ T ) ∪ (A ∩ T )| = |(S ∩ B¯ ) ∪ (S ∩ T ) ∪ (A ∩ T )| = 5. Hence, since y1 ∈ S ∩ B, if A ∩ B ̸= ∅, then A ∩ B is
+a y2 -opposite xy1 -fragment, which contradicts the minimality of A. Thus A ∩ B = ∅, which implies that A ∩ B¯ ̸= ∅ since
+¯ we see that v y1 ̸∈ E (G). Hence, since
+|A| ≥ 3 and |A ∩ T | = 2. Let v ∈ N (x) ∩ (A ∩ B¯ ). Then, since y1 ∈ S ∩ B and v ∈ A ∩ B,
+N (x) ∩ S ∩ V5 = {y1 } and v y1 ̸∈ E (G), we observe that Ad(x, v; A) = ∅. Since |A¯ | = 2, |A| ≥ 3 and Ad(x, v; A) = ∅, applying
+Lemma 3 with the role y replaced by v , we see that there is a xv -fragment A′ such that A′
+A. Then, since |A¯ ′ | ≥ 2, A′ ∩V5 ̸= ∅,
+′
+′
+applying Lemma 6 with the role of A replaced by A , we see that Ad(x; A ) ̸= ∅, which implies that y1 is an admissible vertex
+of (x; A′ ) since N (x) ∩ N (A′ ) ∩ V5 ⊂ {y1 }. Hence, we observe that A′ is a y2 -opposite xy1 -fragment, which contradicts the
+minimality of A since A′
+A. This contradiction proves Claim 4.
+Claim 5. N (x) ∩ N (y1 ) ∩ A ̸= ∅ and |N (y1 ) ∩ A| ≥ 2.
+Proof. Since |A¯ | ≥ 2, |A| ≥ 2 and N (x) ∩ A ∩ V5 = ∅, applying Lemma 6, we see that there is an admissible vertex of (x; A).
+Then, since N (x) ∩ S ∩ V5 = {y1 }, we see that y1 is an admissible vertex of (x; A) and |N (y1 ) ∩ A| ≥ 2, which implies the
+desired conclusion.
+Claim 6. |N (y1 ) ∩ A¯ | = 1.
+Proof. Assume |N (y1 ) ∩ A¯ | ≥ 2. Then, by Claim 5, we see that |N (y1 ) ∩ A¯ | = |N (y1 ) ∩ A| = 2, N (y1 ) ∩ S = {x} and
+N (x) ∩ N (y1 ) ∩ A ̸= ∅.
+Subclaim 6.1. |A| = 2.
+Proof. Assume |A| ≥ 3. Then, we know that |A¯ | ≥ 2, |A| ≥ 3, |N (y1 ) ∩ A| = 2, N (y1 ) ∩ S = {x} and N (x) ∩ N (y1 ) ∩ A ̸= ∅.
+Then, applying Claim 2 with the role of y replaced by y1 , we see that there is a fragment A′ with respect to xy1 such that
+A′
+A, which contradicts the minimality of A. This contradiction proves that |A| = 2.
+Since N (x) ∩ A ∩ V5 = ∅, we know that A ∩ V≥6 ̸= ∅. Furthermore, since N (y1 ) ∩ S = {x} and x ∈ V≥6 , we observe that
+Ad(y1 ; A) = ∅. Since |A¯ | ≥ 2, |A| = 2, A ∩ V≥6 ̸= ∅ and Ad(y1 ; A) = ∅, applying Lemma 5(2) with the role of x replaced by
+y1 , we see that N (y1 ) ∩ S = ∅, which contradicts the fact that N (y1 ) ∩ S = {x}. This contradiction proves Claim 6.
+By Claim 6, we know that |N (y1 ) ∩ A¯ | = 1, say N (y1 ) ∩ A¯ = {z2 }. Since |A| ≥ 2, |A¯ | ≥ 3 and |N (y1 ) ∩ A¯ | = 1, applying
+¯ respectively, we see that Ad(y1 , A¯ ) ̸= ∅. Since |N (y1 ) ∩ A| ≥ 2 and
+Lemma 3 with the roles of x and A replaced by y1 and A,
+|N (y1 ) ∩ A¯ | = 1, we have |N (y1 ) ∩ S | ≤ 2. This together with the fact that x ∈ V≥6 assures us that there is the only admissible
+vertex of (y1 , A¯ ). Let z1 be the admissible vertex of (y1 , A¯ ). Then z1 ∈ V5 ∩ S ∩ N (y1 ), z1 z2 ∈ E (G) and |N (z1 ) ∩ A¯ | ≥ 2. If
+|N (z1 ) ∩ A| = 1, say N (z1 ) ∩ A = {v}, then A − {v} is a y2 -opposite xy1 -fragment, which contradicts the minimality of A.
+Hence we see that |N (z1 ) ∩ A| ≥ 2. Since |N (z1 )| = 5, we know that |N (z1 ) ∩ A¯ | = |N (z1 ) ∩ A| = 2 and N (z1 ) ∩ S = {y1 }.
+Let N (z1 ) ∩ A¯ = {z2 , u1 }.
+Claim 7. z2 ∈ V5 and z2 u1 ∈ E (G).
+Proof. Since N (y1 )∩A¯ = {z2 }, we observe that y1 u1 ̸∈ E (G). Hence, since N (z1 )∩S = {y1 }, we observe that Ad(z1 , u1 ; A¯ ) = ∅.
+¯
+Since |A| ≥ 2, |A¯ | ≥ 3 and Ad(z1 , u1 ; A¯ ) = ∅, applying Lemma 3 with the roles of x, y and A replaced by z1 , u1 and A,
+¯ Then, since N (z1 ) ∩ A¯ = {u1 , z2 } and A′
+respectively, we see that there is a z1 u1 -fragment A′ such that A′
+A.
+A¯ we
+¯ we see that y1 ∈ N (A′ ) and N (y1 ) ∩ A′ = {z2 }.
+observe that N (z1 ) ∩ A′ = {z2 }. Since y1 ̸∈ A, N (y1 ) ∩ A¯ = {z2 } and A′
+A,
+Hence we observe that N ({z1 , y1 }) ∩ A′ = {z2 }. Since N ({z1 , y1 }) ∩ A′ = {z2 }, applying Lemma 1 with the roles of S and
+A replaced by {z1 , y1 } and A′ , respectively, we see that A′ = {z2 }, which implies z2 ∈ V5 and z2 u1 ∈ E (G) and Claim 7 is
+proved.
+By Claim 7, we know that {z1 , z2 } ⊂ N (y1 ) ∩ V5 . Now we know that N (y1 ) ∩ S = {x, z1 } and |N (y1 ) ∩ A| = 2. Let
+N (y1 ) ∩ A = {z3 , z4 }. Since N (x) ∩ N (y1 ) ∩ A ̸= ∅, without loss of generality, we may assume that z4 ∈ N (x) ∩ N (y1 ) ∩ A.
+To complete the proof of Proposition 2, we first consider the case that |A| = 2 and later we consider the case that |A| ≥ 3.
+
+1938
+
+K. Ando, T. Iwase / Discrete Mathematics 311 (2011) 1925–1939
+
+At first suppose |A| = 2. Let S = {x, y1 , z1 , w1 , w2 }. In this case, since |A¯ | ≥ 2, |A| = 2 and A ∩ V≥6 ̸= ∅, applying
+Lemma 5(3), we see that S − {x} = {y1 , z1 , w1 , w2 } ⊂ V5 . If xz3 ∈ E (G), then we see that {z3 , z4 } ⊂ V≥6 and a configuration
+of the second kind arises. Otherwise, if xz3 ̸∈ E (G), then we see that {z1 , z2 , z3 } ⊂ N (y1 )∩V5 and {x, z4 } ⊂ N (y1 )∩(V (G)−V5 ).
+Hence a degenerated configuration of the first kind arises.
+The remaining case is |A| ≥ 3. Assume |A| ≥ 3. We show a configuration of the first kind arises in this case. Recall that
+N (y1 ) ∩ A = {z3 , z4 } and z4 ∈ N (x) ∩ N (y1 ) ∩ A.
+Claim 8. z1 z3 ∈ E (G).
+Proof. Assume z1 z3 ̸∈ E (G). Then we observe that Ad(y1 , z3 ; A) = ∅ since N (y1 ∩ S ∩ V5 ) = {z1 }. Then, since |A¯ | ≥ 2, |A| ≥ 3
+and Ad(y1 , z3 ; A) = ∅, applying Lemma 3 with the roles of x and yreplaced by y1 and z3 , respectively, we see that there is
+a y1 z3 -fragment A′ such that A′
+A. Since N (y1 ) ∩ A = {z3 , z4 } and z3 ∈ N (A′ ), we observe that z4 ∈ A′ , which implies
+x ∈ N (A′ ) since xz4 ∈ E (G). Hence we see that A′ is a y2 -opposite xy1 -fragment, which contradicts the minimality of A. This
+contradiction proves Claim 8.
+By Claim 8, we have z3 ∈ N (z1 ) ∩ A. Let N (z1 ) ∩ A = {z3 , u2 }.
+Claim 9. u2 ̸= z4 .
+Proof. Assume that u2 = z4 . Then N ({y1 , z1 }) ∩ A = {z3 , z4 }. Since |A| ≥ 3, we observe that A′ = A − {z3 , z4 } ̸= ∅. Since
+|N (A′ )| = |(S − {y1 , z1 }) ∪ {z3 , z4 }| = 5, A′ is an xz4 -fragment. Then, since |A¯ ′ | ≥ 2 and N (x) ∩ A′ ∩ V5 = ∅, applying
+Lemma 6 with the role of A replaced by A′ , we see that Ad(x; A′ ) ̸= ∅. On the other hand, since A′ ∩ {y1 , y2 } = ∅, we see that
+Ad(x; A′ ) = ∅, which contradicts the previous assertion. This contradiction proves Claim 9.
+Claim 10. z3 ∈ N (u2 ) ∩ V5 .
+Proof. Since u2 ̸= z4 , we observe that u2 y1 ̸∈ E (G), which implies that Ad(z1 , u2 ; A) = ∅ since N (z1 ) ∩ S = {y1 }. Then,
+since |A¯ | ≥ 2, |A| ≥ 3 and Ad(z1 , u2 ; A) = ∅, applying Lemma 3 with the roles of x and y replaced by z1 and u2 , respectively,
+we see that there is a z1 u2 -fragment A′ such that A′
+A. Since N (z1 ) ∩ A = {z3 , u2 } and u2 ∈ N (A′ ), we observe that
+N (z1 ) ∩ A′ = {z3 }, which implies y1 ∈ N (A′ ) since y1 z3 ∈ E (G). If x ∈ N (A′ ) then A′ is a y2 -opposite xy1 -fragment, which
+contradicts the minimality of A. Hence x ̸∈ N (A′ ), which implies z4 ̸∈ A′ since xz4 ∈ E (G). Since N (y1 ) ∩ A = {z3 , z4 }, we see
+that N (y1 ) ∩ A′ = {z3 }. Now we observe that N ({z1 , y1 }) ∩ A′ = {z3 }. Since N ({z1 , y1 }) ∩ A′ = {z3 }, applying Lemma 1 with
+the roles of S and A replaced by {z1 , y1 } and A′ , respectively, we see that A′ = {z3 }. This implies z3 ∈ V5 and z3 u2 ∈ E (G).
+Now Claim 10 is proved.
+By Claims 8–10, we find a configuration of the first kind around (x, y1 ), and the proof of Proposition 2 is completed.
+5. Proof of Main Theorem
+In this section we give a proof of Main Theorem.
+We use a discharging method to prove Main Theorem.
+Let G be a contraction-critically 5-connected graph and let x ∈ V (G). We put ch0 (x) unit of charge on x before discharging
+process according to the following rule.
+ch0 (x) =
+
+0,
+1
+
+
+
+if x ∈ V5
+otherwise.
+
+In discharging process we move ϕ(x, y) unit of charge from x to y by the following rule.
+
+ϕ(x, y) =
+
+
+
+
+1
+
+|N (x) ∩ V5 |
+
+0,
+
+,
+
+if xy ∈ EG (V (G) − V5 , V5 )
+otherwise.
+
+We denote ch(x) the amount of charge on x ∈ V (G) after discharging process.
+∑
+Then, since we put a unit of charge on each vertex of V (G) − V5 , we observe that |G| − |V5 | =
+x∈V (G∑
+) ch0 (x). Since
+∑
+the discharging process do not change the total amount of charge on V (G), we see that
+ch
+(
+x
+)
+=
+0
+x∈V (G)
+x∈V (G) ch(x).
+According
+to
+the
+discharging
+rule,
+we
+know
+ch
+(
+x
+)
+=
+0
+for
+each
+x
+∈
+V
+(
+G
+)
+−
+V
+.
+Hence,
+if
+ch
+(
+y
+)
+≤
+1
+for
+each
+y
+∈ V5 , then
+5
+∑
+∑
+∑
+1
+y∈V (G) ch(y) ≤ |V5 |. Then |V (G) − V5 | =
+x∈V (G) ch0 (x) =
+x∈V (G) ch(x) ≤ |V5 |, which implies that |V5 | ≥ 2 |G|. Thus, it
+is enough to show that ch(y) ≤ 1 for each y ∈ V5 .
+Let X = {x ∈ V (G) | deg(x) ≥ 6 and |N (x) ∩ V5 | = 2 }. We divide V5 into two sets W and W ′ as follows.
+W = {y ∈ V5 | N (y) ∩ X = ∅} and W ′ = V5 − W . Let y ∈ V5 . Let N˜ (y) = N (y) ∩ (V (G) − V5 ). Then, by Theorem E,
+we know that |N (y) ∩ V5 | ≥ 2, which implies that |N˜ (y)| ≤ 3. At first assume y ∈ W . Then, from each vertex of N˜ (y), y
+receives at most 31 unit of charge through the discharging process. Hence ch(y) ≤ 13 × |N˜ (y)| ≤ 1 since |N˜ (y)| ≤ 3.
+Next assume y ∈ W ′ and let x ∈ N (y) ∩ X . Then, Proposition 2 assures us that there is either a configuration of the first
+kind or a configuration of the second kind around (x, y). If there is a configuration of the first kind, then we observe that
+
+K. Ando, T. Iwase / Discrete Mathematics 311 (2011) 1925–1939
+
+1939
+
+|N˜ (y)| = 2. Hence ch(y) ≤ 12 × |N˜ (y)| ≤ 1. So assume there is a configuration of the second kind around (x, y). In this case
+|N˜ (y)| = 3. Let N˜ (y) = {x, z3 , z4 } as in Proposition 2. Then we see that |N (z3 ) ∩ V5 | = |N (z4 ) ∩ V5 | = 4, which implies that
+ϕ(z3 , y) = ϕ(z4 , y) = 41 . Hence, ch(y) = ϕ(x, y) + ϕ(z3 , y) + ϕ(z4 , y) = 12 + 14 + 14 = 1. Now it is shown that ch(y) ≤ 1
+for each y ∈ V5 and the proof of Main Theorem is completed.
+Acknowledgments
+The authors would like to thank the referees for their detailed and valuable comments.
+References
+[1]
+[2]
+[3]
+[4]
+[5]
+[6]
+[7]
+[8]
+[9]
+[10]
+
+K. Ando, K. Kawarabayashi, A. Kaneko, Vertices of degree 5 in a contraction critically 5-connected graphs,
+  Graphs Combin. 21 (2005) 27–37.
+Y. Egawa, Contractible edges in n-connected graphs with minimum degree greater than or equal to 5n
+, Graphs Combin. 7 (1991) 15–21.
+4
+M. Fontet, Graphes 4-essentiels, C. R. Acad. Sci. Paris 287 (1978) 289–290.
+M. Kriesell, A degree sum condition for the existence of a contractible edge in a κ -connected graph, J. Combin. Theory Ser. B 82 (1) (2001) 81–101.
+T. Li, J. Su, The new lower bound of the number of vertices of degree 5 in contraction critical 5-connected graphs, Graphs Combin. 26 (3) (2010)
+395–406.
+N. Martinov, Uncontractible 4-connected graphs, J. Graph Theory 6 (1982) 343–344.
+J. Su, Vertices of degree 5 in contraction critical 5-connected graphs, J. Guangxi Norm. Univ. 3 (1997) 12–16 (in Chinese).
+C. Thomassen, Non-separating cycles in k-connected graphs, J. Graph Theory 5 (1981) 351–354.
+W.T. Tutte, A theory of 3-connected graphs, Indag. Math. 23 (1961) 441–455.
+X. Yuan, C. Qin, J. Su, Some properties of contraction-critical 5-connected graphs, Discrete Math. 23 (2008) 441–455.
+
+

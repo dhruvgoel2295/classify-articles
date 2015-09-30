@@ -1,0 +1,215 @@
+Discrete Mathematics 311 (2011) 2020–2023
+
+Contents lists available at ScienceDirect
+
+Discrete Mathematics
+journal homepage: www.elsevier.com/locate/disc
+
+Note
+
+A note on the monotonicity of mixed Ramsey numbers
+Maria Axenovich, JiHyeok Choi ∗
+Department of Mathematics, Iowa State University, Ames, IA 50011, United States
+
+article
+
+abstract
+
+info
+
+Article history:
+Received 14 May 2010
+Received in revised form 23 May 2011
+Accepted 25 May 2011
+
+Keywords:
+Mixed Ramsey
+Edge coloring
+Monochromatic
+Totally multicolored
+Gallai colorings
+
+For two graphs, G and H, an edge coloring of a complete graph is (G, H )-good if there is
+no monochromatic subgraph isomorphic to G and no rainbow subgraph isomorphic to H
+in this coloring. The set of numbers of colors used by (G, H )-good colorings of Kn is called
+a mixed Ramsey spectrum. This note addresses a fundamental question of whether the
+spectrum is an interval. It is shown that the answer is ‘‘yes’’ if G is not a star and H does not
+contain a pendant edge.
+© 2011 Elsevier B.V. All rights reserved.
+
+1. Introduction
+Let G and H be two graphs on fixed numbers of vertices. An edge coloring of a complete graph Kn is called (G, H )-good
+if there is no monochromatic copy of G and no rainbow (totally multicolored) copy of H in this coloring. This, sometimes
+called mixed Ramsey coloring, is a hybrid of classical Ramsey [12] and anti-Ramsey [4] colorings. As shown by Jamison and
+West [10], a (G, H )-good coloring of an arbitrarily large complete graph exists unless G is a star or H is a forest.
+Let S (n; G, H ) be the set of the numbers k, such that there is a (G, H )-good k-coloring of Kn . Here, a k-coloring is a coloring
+using exactly k colors. We call S (n; G, H ) a spectrum. Let max S (n; G, H ) and min S (n; G, H ) be the maximum number and
+minimum number in S (n; G, H ), respectively. The behaviors of these functions have been studied by [2,6,1] among others.
+Note that, if there were no restrictions
+ongraphs G or H, then the spectrum would be an interval. For a graph G on at least
+
+n + 1 vertices, S (n; G, H ) = 1, AR(n, H ) , where AR(n, H ) is the classical anti-Ramsey number; for a graph H on at least
+n + 1 vertices, S (n; G, H ) = k, 2 , where k = k(n, G) is the largest number such that n ≥ rk−1 (G), the classical multicolor
+Ramsey number.
+The main question investigated in this note is whether the same behavior continues to hold for mixed Ramsey colorings.
+Specifically, for a given integer n, and for graphs G and H, is S (n; G, H ) an interval? When G is not a star, for most graphs H,
+we show that S (n; G, H ) is an interval.
+
+  n 
+
+Theorem 1. Let G be a graph that is not a star, and let H be a graph with minimum degree at least 2. Then, for any natural number
+n, S (n; G, H ) is an interval.
+The simplest connected graph H that is not a tree and that has a vertex of degree 1 is K3 + e, a 4-vertex graph obtained
+by attaching a pendant edge to a triangle. We show that S (n; G, K3 + e) could have a gap for some graphs G and some values
+of n. However, when n is arbitrarily large, we do not have a single example of a graph G and a graph H for which S (n; G, H )
+is not an interval.
+
+∗
+
+Corresponding author.
+E-mail address: jchoi@iastate.edu (J. Choi).
+
+0012-365X/$ – see front matter © 2011 Elsevier B.V. All rights reserved.
+doi:10.1016/j.disc.2011.05.030
+
+M. Axenovich, J. Choi / Discrete Mathematics 311 (2011) 2020–2023
+
+2021
+
+The next theorem is a collection of results on S (n; G, K3 + e). Here, ℓK2 is a matching of size ℓ, C4 is a 4-cycle, and P4 is a
+path on four vertices.
+2ℓ+1
+Theorem 2. • S (n; ℓK2 , K3 ) = S (n; ℓK2 , K3 + e) = ⌈ n−ℓ−
+⌉ + 1, n − 1 for n ≥ 4 and ℓ ≥ 2,
+1
+S (n; P4 , K3 ) = S (n; P4 , K3 + e) = [n − 2, n − 1] for n ≥ 4,
+S (n; C4 , K3 ) = S (n; C4 , K3 + e) = [n − 3, n − 1] for n ≥ r3 (C4 ) = 11,
+S (n; K3 , K3 ) = S (n; K3 , K3 + e) = [c log n + c ′ , n − 1] for n ≥ r3 (K3 ) = 17, where c and c ′ are constants,
+S (n; K1,ℓ , K3 ) = S (n; K1,ℓ , K3 + e) = ∅ for n ≥ 3ℓ + 1 and ℓ ≥ 2.
+• S (10; C4 , K3 + e) = {3, 7, 8, 9}.
+
+
+
+
+
+Corollary 3. If ℓ ≥ 2 and n ≥ max{17, 3ℓ + 1}, then S (n; G, K3 + e) is an interval for any G ∈ {ℓK2 , K3 , P4 , C4 , K1,ℓ }. However,
+S (n; G, K3 + e) is not an interval if n = 10 and G = C4 .
+Open question. Are there graphs G and H such that for any natural number N there is n > N so that S (n; G, H ) is not an
+interval?
+2. Definitions and proofs of main results
+For an edge coloring c of Kn and a vertex x ∈ V (Kn ), let Nc (x) be the set of colors used only on edges incident to x, and for
+X ⊆ V (Kn ) let c (X ) be the set of colors used on edges induced by X . Let |c | denote the number of colors used in the coloring
+c. Then |c | = |Nc (x)| + |c (V (Kn ) − x)| for any x ∈ V (Kn ).
+Observation 1. If G is not a star, and A and B are color classes that are stars with the same center in a (G, H )-good k-coloring
+c of Kn , then replacing A and B in c with a new color class A ∪ B gives a (G, H )-good (k − 1)-coloring.
+Observation 2. For any graphs G and H,
+min S (n; G, H ) ≤ min S (n + 1; G, H ).
+Proof. Consider a (G, H )-good coloring of Kn+1 with k colors. Delete one vertex to get a (G, H )-good coloring of Kn with
+k′ ≤ k colors.
+Observation 3. For G ⊆ G′ and H ⊆ H ′ ,
+S (n; G, H ) ⊆ S (n; G′ , H ) ⊆ S (n; G′ , H ′ ),
+
+and S (n; G, H ) ⊆ S (n; G, H ′ ) ⊆ S (n; G′ , H ′ ).
+
+Proof. If there is no monochromatic G and no rainbow H in a coloring of E (Kn ), then there is no monochromatic G′ and no
+rainbow H ′ in this coloring.
+Observation 4. If G is not a star, H has minimum degree at least 2, and k ∈ S (n; G, H ), then k + 1 ∈ S (n + 1; G, H ).
+Proof. Consider a (G, H )-good k-coloring of Kn . Add a new vertex x, and color edges incident to x by a new color to get a
+(G, H )-good (k + 1)-coloring of Kn+1 .
+Proof of Theorem 1. We prove that [min S (n; G, H ), max S (n; G, H )] ⊆ S (n; G, H ) using induction on n. When n = 2, every
+coloring uses one color.
+Let n ≥ 3. Consider the smallest k such that [k, max S (n; G, H )] ⊆ S (n; G, H ). First, note that, for any (G, H )-good
+k-coloring c of Kn and any vertex x, we have |Nc (x)| ≤ 1; otherwise, by applying Observation 1, we obtain a (G, H )-good
+(k − 1)-coloring of Kn , which contradicts the minimality of k. Consider a (G, H )-good k-coloring of Kn and any vertex x, and
+delete it. We now have a (G, H )-good coloring of Kn−1 with k or k − 1 colors. Here, we note that max S (n − 1; G, H ) ≥ k − 1.
+By induction hypothesis, S (n − 1; G, H ) is an interval, i.e. [min S (n − 1; G, H ), max S (n − 1; G, H )] = S (n − 1; G, H ). Then,
+by Observation 4, [min S (n − 1; G, H ) + 1, max S (n − 1; G, H ) + 1] ⊆ S (n; G, H ). Since min S (n; G, H ) ≥ min S (n − 1; G, H )
+from Observation 2, [min S (n; G, H ), max S (n − 1; G, H ) + 1] ⊆ S (n; G, H ). Since k ≤ max S (n − 1; G, H ) + 1 and
+[k, max S (n; G, H )] ⊆ S (n; G, H ), we finally have that [min S (n; G, H ), max S (n; G, H )] ⊆ S (n; G, H ).
+For the proof of Theorem 2, we shall use the function
+f (k; G, H ) := max{n : there is a (G, H )-good coloring of Kn using exactly k colors}.
+Note that, if f (k; G, H ) = n, then min S (n; G, H ) ≤ k.
+Observation 5. If f (k; G, H ) = n and f (k˜ ; G, H ) < n for any k˜ < k, then min S (n; G, H ) = k. In particular, if f is strictly
+increasing in k, then f (k; G, H ) = n implies that min S (n; G, H ) = k.
+
+2022
+
+M. Axenovich, J. Choi / Discrete Mathematics 311 (2011) 2020–2023
+
+Proof of Theorem 2. First, observe that max S (n; G, H ) ≤ AR(n, H ), where AR(n, H ) is the classical anti-Ramsey number,
+the maximum number of colors in an edge coloring of Kn with no rainbow subgraphs isomorphic to H. If G is not a star,
+then max S (n; G, K3 ) = AR(n, K3 ) = n − 1; see [2]. Moreover, from Observation 3, we obtain that max S (n; G, K3 ) ≤
+max S (n; G, K3 + e); and from [7], we know that AR(n, K3 ) = AR(n, K3 + e) for n ≥ 4. Thus, when G is not a star,
+max S (n; G, K3 ) = max S (n; G, K3 + e) = n − 1 for n ≥ 4.
+Therefore, for n ≥ 4, if min S (n; G, K3 ) = min S (n, G, K3 +e) and G is not a star, then we can conclude that S (n; G, K3 +e) =
+S (n; G, K3 ), which is an interval by Theorem 1. Next, we shall analyze min S (n, G, K3 + e). We note that f (k; G, H )+ 1 ≤ rk (G),
+where rk (G) denotes the classical k-color Ramsey number for G. The equality holds if there is a k-coloring of E (Krk (G)−1 ) with
+no monochromatic G and no rainbow H.
+Case 1. G = ℓK2
+From [11], we have that rk (ℓK2 ) = (k − 1)(ℓ − 1) + 2ℓ. The extremal coloring providing this Ramsey number can be
+constructed as follows. Starting with a complete graph on 2ℓ − 1 vertices, whose edges are colored entirely with color
+1, add ℓ − 1 vertices and color all edges incident to these vertices with color 2. Then add another ℓ − 1 vertices and
+color all edges incident to these vertices with color 3. Repeat this process until we get a k-coloring of a complete graph
+on 2ℓ − 1 + (k − 1)(ℓ − 1) vertices with no monochromatic ℓK2 . Note that this coloring contains no rainbow cycles;
+thus, it contains neither a rainbow copy of K3 nor a rainbow copy of K3 + e. Hence, f (k; ℓK2 , H ) = f (k; ℓK2 , H + e) =
+(k − 1)(ℓ − 1) + 2ℓ − 1 for any H that is not a forest. By Observation 5, min S (n; ℓK2 , H ) = min S (n; ℓK2 , H + e). In
+2ℓ+1
+particular, for ℓ ≥ 2, min S (n; ℓK2 , K3 ) = min S (n; ℓK2 , K3 + e) = ⌈ n−ℓ−
+⌉ + 1.
+1
+Case 2. G ∈ {K3 , P4 , C4 }
+From [3,2,8,5,6], we have that (i) f (k; K3 , K3 ) = f (k; K3 , K3 + e) = λ(k) for k ≥ 1 and k ̸= 3, f (3; K3 , K3 ) = 10, and
+f (3; K3 , K3 + e) = r3 (K3 ) − 1 = 16, where λ(k) = 5k/2 if k is even, λ(k) = 2 · 5(k−1)/2 if k is odd; (ii) f (k; P4 , K3 ) =
+f (k; P4 , K3 + e) = k + 2 for k ≥ 1; and (iii) f (k; C4 , K3 ) = f (k; C4 , K3 + e) = k + 3 for k = 2 or k ≥ 4, f (3; C4 , K3 ) = 6, and
+f (3; C4 , K3 + e) = r3 (C4 )− 1 = 10. Therefore, from Observation 5, we conclude that (i) min S (n; K3 , K3 ) = min S (n; K3 , K3 +
+e) = c log n + c ′ for n ≥ r3 (K3 ) = 17 and some constants c , c ′ ; (ii) min S (n; P4 , K3 ) = min S (n; P4 , K3 + e) = n − 2 for n ≥ 4;
+and (iii) min S (n; C4 , K3 ) = min S (n; C4 , K3 + e) = n − 3 for n ≥ r3 (C4 ) = 11. Thus, min S (n; G, K3 ) = min S (n; G, K3 + e)
+for G ∈ {K3 , P4 , C4 } and n ≥ r3 (G).
+Case 3. G = K1,ℓ
+In [9], it was shown that any coloring of E (Kn ) with no rainbow triangles has a monochromatic star K1,2n/5 . Using this
+fact and the pigeonhole principle, we easily see that any coloring of E (Kn ) with no rainbow K3 + e has a monochromatic
+star K1,(n−1)/3 . Namely, let c be a coloring of E (Kn ) with no rainbow K3 + e. Since 2n/5 ≥ (n − 1)/3, we may assume that
+there is a rainbow copy T of K3 . To avoid a rainbow K3 + e in this coloring, the edges between V (T ) and V (Kn ) − V (T ) have
+colors only presented on the edges of T . Thus, for any vertex x in T , the number of colors used on edges incident to x is at
+most three. By the pigeonhole principle, we can find a monochromatic star K1,s with vertex x and s ≥ (n − 1)/3 vertices
+in V (Kn ) − x. This is sharp, as the referee remarked (one can also find it in [6]). Consider a complete graph Kn and partition
+V (Kn ) into four subsets V0 , V1 , V2 , and V3 , with |V0 | = 1 and |Vi | = (n − 1)/3 for 1 ≤ i ≤ 3. Color all edges induced by
+V0 ∪ Vi with color i for 1 ≤ i ≤ 3, and all edges between Vj and Vk with color i for {i, j, k} = {1, 2, 3}. In this coloring, there
+is no monochromatic star K1,s with s > (n − 1)/3. Therefore, S (n; K1,ℓ , K3 ) = S (n; K1,ℓ , K3 + e) = ∅ if n ≥ 3ℓ + 1.
+Summarizing Cases 1, 2, and 3, we have that S (n; G, K3 ) = S (n; G, K3 + e) is an interval if G is one of {ℓK2 , K3 , P4 , C4 , K1,ℓ }
+and n ≥ N, where N is a constant depending only on G. This concludes the proof of the first part of Theorem 2.
+Consider the case when G = C4 , H = K3 + e, and n = 10. Since r2 (C4 ) = 6 < 10, we see that there is no (C4 , K3 + e)good coloring of K10 in two colors. On the other hand, since r3 (C4 ) = 11, there is a (C4 , K3 + e)-good coloring of K10
+in three colors. Thus min S (10; C4 , K3 + e) = 3. We also have that max S (10; C4 , K3 + e) = AR(10, K3 ) = 9. Since
+f (k; C4 , K3 + e) = k + 3 < 10 for 4 ≤ k ≤ 6, there is no (C4 , K3 + e)-good coloring of K10 with 4, 5, or 6 colors. To
+construct an 8-colorings and a 7-coloring of K10 with no rainbow K3 + e and no monochromatic C4 , consider a vertex set
+{v1 , . . . , v10 }. Let c (vi vj ) = i, 1 ≤ i ≤ 7, i < j; c (v8 v9 ) = c (v8 v10 ) = c (v9 v10 ) = 8. Let c ′ (vi vj ) = i, 1 ≤ i ≤ 5,
+i < j; c ′ (v6 v7 ) = c ′ (v7 v8 ) = c ′ (v8 v9 ) = c ′ (v9 v10 ) = c ′ (v10 v6 ) = 6, and all other edges get color 7 under c ′ . Note that
+c and c ′ are an 8-coloring and a 7-coloring, respectively, containing no rainbow K3 and no monochromatic C4 . Therefore,
+S (10; C4 , K3 + e) = {3, 7, 8, 9}.
+Acknowledgments
+The authors thank the anonymous referees for their careful reading and comments improving the manuscript, as well as
+for pointing out some minor errors.
+The first author was supported in part by NSA grant H98230-09-1-0063 and NSF grant DMS-0901008, and the second
+author was supported in part under NSF grant DMS-0901008.
+References
+[1] M. Axenovich, J. Choi, On colorings avoiding a rainbow cycle and a fixed monochromatic Subgraph, Electron. J. Combin. 17 (1) (2010) Research Paper
+31, 15pp.
+[2] M. Axenovich, P. Iverson, Edge-colorings avoiding rainbow and monochromatic subgraphs, Discrete Math. 308 (20) (2008) 4710–4723.
+
+M. Axenovich, J. Choi / Discrete Mathematics 311 (2011) 2020–2023
+
+2023
+
+[3] F.R.K. Chung, R.L. Graham, Edge-colored complete graphs with precisely colored subgraphs, Combinatorica 3 (3–4) (1983) 315–324.
+[4] P. Erdős, M. Simonovits, V.T. Sós, Anti-Ramsey theorems, in: Infinite and Finite Sets (Colloq., Keszthely, 1973; Dedicated to P. Erdős on his 60th
+Birthday), Vol. II, in: Colloq. Math. Soc. Janos Bolyai, vol. 10, North-Holland, Amsterdam, 1975, pp. 633–643.
+[5] R.J. Faudree, R.J. Gould, M.S. Jacobson, C. Magnant, Ramsey numbers in rainbow triangle free colorings, Australas. J. Combin. 46 (2010) 269–284.
+[6] S. Fujita, C. Magnant, Extensions of Gallai–Ramsey results, J. Graph Theory (in press).
+[7] I. Gorgol, Rainbow numbers for cycles with pendant edges, Graphs Combin. 24 (4) (2008) 327–331.
+[8] A. Gyárfás, G. Sárközy, A. Sebő, S. Selkow, Ramsey-type results for Gallai colorings, J. Graph Theory 64 (3) (2010) 233–243.
+[9] A. Gyárfás, G. Simonyi, Edge colorings of complete graphs without tricolored triangles, J. Graph Theory 46 (3) (2004) 211–216.
+[10] R. Jamison, D. West, On pattern Ramsey numbers of graphs, Graphs Combin. 20 (3) (2004) 333–339.
+[11] S.P. Radziszowski, Small Ramsey numbers, Electron. J. Combin. 1 (1994) Dynamic Survey 1, 30 pp. (electronic).
+[12] F.P. Ramsey, On a problem of formal logic, Proc. London Math. Soc. 30 (1930) 264–286.
+
+

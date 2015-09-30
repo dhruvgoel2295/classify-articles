@@ -1,0 +1,2809 @@
+Neural Networks 71 (2015) 27–36
+
+Contents lists available at ScienceDirect
+
+Neural Networks
+journal homepage: www.elsevier.com/locate/neunet
+
+Multistability of memristive Cohen–Grossberg neural networks with
+non-monotonic piecewise linear activation functions and
+time-varying delays
+Xiaobing Nie a,b , Wei Xing Zheng b,∗ , Jinde Cao a,c
+a
+
+Department of Mathematics, Southeast University, Nanjing 210096, China
+
+b
+
+School of Computing, Engineering and Mathematics, University of Western Sydney, Sydney NSW 2751, Australia
+
+c
+
+Department of Mathematics, Faculty of Science, King Abdulaziz University, Jeddah 21589, Saudi Arabia
+
+article
+
+info
+
+Article history:
+Received 30 January 2015
+Received in revised form 6 June 2015
+Accepted 19 July 2015
+Available online 28 July 2015
+Keywords:
+Memristive Cohen–Grossberg neural
+networks
+Multistability
+Non-monotonic piecewise linear activation
+functions
+Time-varying delays
+
+abstract
+The problem of coexistence and dynamical behaviors of multiple equilibrium points is addressed for a
+class of memristive Cohen–Grossberg neural networks with non-monotonic piecewise linear activation
+functions and time-varying delays. By virtue of the fixed point theorem, nonsmooth analysis theory and
+other analytical tools, some sufficient conditions are established to guarantee that such n-dimensional
+memristive Cohen–Grossberg neural networks can have 5n equilibrium points, among which 3n equilibrium points are locally exponentially stable. It is shown that greater storage capacity can be achieved
+by neural networks with the non-monotonic activation functions introduced herein than the ones with
+Mexican-hat-type activation function. In addition, unlike most existing multistability results of neural
+networks with monotonic activation functions, those obtained 3n locally stable equilibrium points are
+located both in saturated regions and unsaturated regions. The theoretical findings are verified by an illustrative example with computer simulations.
+© 2015 Elsevier Ltd. All rights reserved.
+
+1. Introduction
+Memristor (an abbreviation for memory and resistor), as the
+fourth fundamental two-terminal circuit element, was first postulated by Chua (1971). However, such a memristor is only an
+ideal circuit element based purely on symmetry arguments, and
+no much attention was paid to Chua’s theory until nearly forty
+years later. In 2008, the scientists at Hewlett-Packard Laboratories
+invented successfully such a practical memristor device (Strukov,
+Snider, Stewart, & Williams, 2008). It was shown in Pershin and
+Ventra (2010) that the memristor exhibits the feature of pinched
+hysteresis just as the neurons in the human brain have. Due to
+this important feature, the memristor can remember its past dynamic history. By replacing the resistors with memristors in a conventional neural network model, a new neural network model
+(i.e., memristive neural network model) can be constructed. Exploiting memristive neural networks will provide the great po-
+
+∗
+
+Corresponding author. Tel.: +61 2 47360608; fax: +61 2 4736 0374.
+E-mail addresses: xbnie@seu.edu.cn (X. Nie), w.zheng@uws.edu.au
+(W.X. Zheng), jdcao@seu.edu.cn (J. Cao).
+http://dx.doi.org/10.1016/j.neunet.2015.07.009
+0893-6080/© 2015 Elsevier Ltd. All rights reserved.
+
+tential for helpfully building a brain-like neural computer to implement the synapses of biological brains (Corinto, Ascoli, & Gilli,
+2011; Itoh & Chua, 2008). On the other hand, for the conventional
+neural networks in this area, the lack of efficient circuit implementation of synapses leads to only limited success.
+As a prerequisite, the dynamical analysis of memristive neural
+networks plays an important role in the design of practical memristive neural networks model. During the last few years there
+has been an increasing research interest in dynamical behaviors
+of memristive neural networks. In Wen, Huang, Zeng, Chen, and
+Li (2015) and Wu and Zeng (2012a), some sufficient conditions
+in terms of linear matrix inequalities were presented to ascertain
+the exponential stabilization of memristive neural networks. Based
+on local inhibition, the non-divergence and global attractivity of
+memristive neural networks were studied in Wu and Zeng (2012b),
+while Chandrasekar, Rakkiyappan, Cao, and Lakshmanan (2014),
+Yang, Cao, and Yu (2014) and Zhang and Shen (2013, 2014) dealt
+with the synchronization control of memristive neural networks.
+In Guo, Wang, and Yan (2013), the global exponential dissipativity
+and stabilization of memristive neural networks with time-varying
+delays were investigated by constructing proper Lyapunov functions and using the M-matrix theory and LaSalle invariant principle. In Chen, Zeng, and Jiang (2014), a class of fractional-order
+
+X. Nie et al. / Neural Networks 71 (2015) 27–36
+
+
+−1,
+
+
+x,
+f (x) =
+ −x + 2 ,
+
+−1,
+
+−∞ < x < −1,
+−1 ≤ x ≤ 1 ,
+1 < x ≤ 3,
+3 < x < +∞.
+
+(1)
+
+With the inspiration from Mexican-hat-type activation function
+(1) and in order to increase the storage capacity of neural networks,
+in this paper, another class of continuous non-monotonic piecewise linear activation functions is introduced as follows (see Fig. 2):
+
+
+mi ,
+
+
+li,1 x + ci,1 ,
+
+fi (x) = li,2 x + ci,2 ,
+
+
+
+li,3 x + ci,3 ,
+Mi ,
+
+−∞ < x < pi ,
+pi ≤ x ≤ ri ,
+ri < x < qi ,
+qi ≤ x ≤ si ,
+si < x < +∞,
+
+(2)
+
+1.5
+
+1
+
+0.5
+
+f(x)
+
+memristive neural networks was introduced and the issue of global
+Mittag-Leffler stability and synchronization was analyzed via the
+theory of fractional-order differential equations with discontinuous right-hand sides.
+The coexistence of multiple equilibrium points and their local
+stability is referred to as the ‘‘multistability’’ of neural networks.
+Multistability is necessary whenever neural networks are used for
+implementing an associative memory or for solving in real time
+other asks in the field of combinatorial optimization, pattern recognition, image processing, and so on. As a result, multistability of
+conventional recurrent neural networks has attracted considerable
+attention from many researchers over the last decade. For example, Nie and Cao (2009) investigated the multistability of competitive neural networks with time-varying and distributed delays by
+formulating some parameter conditions and using the inequality
+technique. In Huang, Song, and Feng (2010) and Nie and Cao (2011),
+the high-order synaptic connectivity was introduced into neural
+networks and the multistability was discussed for high-order neural networks based on decomposition of the state space, Cauchy
+convergence principle and the inequality technique. The effect of
+impulses on multistability of discrete-time Hopfield neural networks was first revealed in Kaslik and Sivasundaram (2011) by
+means of the Lyapunov functionals and stability theory. Based on
+the theory of monotone semiflows, Di Marco, Forti, Grazzini, and
+Pancioni (2012) studied the multistability of cooperative neural
+networks with piecewise linear activation functions. In order to
+increase storage capacity, Nie, Cao, and Fei (2013) considered the
+multistability of competitive neural networks with nondecreasing
+piecewise linear activation functions with 2r corner points, and it
+was shown that such n-neuron competitive neural networks have
+exactly (2r +1)n equilibrium points, (r +1)n of which are locally exponentially stable. By utilizing the notion of exponential function
+on time scales and constructing algebraic inequalities over scalelimited activating sets, the multiperiodicity of threshold-linear
+neural networks on time scales was analyzed in Huang, Raffoul,
+and Cheng (2014). The other relevant works can be found in Cheng
+and Shih (2009), Nie and Zheng (2015), Wang and Chen (2014),
+Zhang, Zhang, and Li (2008) and references therein.
+It has been well recognized that multistability analysis of
+neural networks critically depends upon the type of activation
+functions. However, most of the activation functions employed
+in multistability analysis are restricted in sigmoidal activation
+functions, nondecreasing saturated activation functions, and
+piecewise linear activation functions, which share the common
+feature that they are all monotonically increasing. Recently, Wang
+and Chen (2012) introduced a class of non-monotonic piecewise
+linear activation function which is called Mexican-hat-type
+activation function, and investigated the issue of multistability for
+Hopfield neural networks without time delays. Their Mexican-hattype activation function is defined as follows (see Fig. 1):
+
+0
+
+–0.5
+
+–1
+
+–1.5
+–3
+
+–2
+
+–1
+
+0
+
+1
+x
+
+2
+
+3
+
+4
+
+5
+
+Fig. 1. Mexican-hat-type activation function (1).
+4
+
+3
+
+2
+
+f(x)
+
+28
+
+1
+
+0
+
+–1
+
+–2
+–4
+
+–3
+
+–2
+
+–1
+
+0
+
+1
+
+2
+
+3
+
+4
+
+5
+
+x
+
+Fig. 2. The configuration of non-monotonic piecewise linear activation functions (2).
+
+where pi , ri , qi , si , mi , Mi , li,1 , li,2 , li,3 , ci,1 , ci,2 , ci,3 are constants
+with −∞ < pi < ri < qi < si < +∞, li,1 > 0, li,2 < 0, li,3 > 0,
+mi = fi (qi ) and Mi > fi (ri ), i = 1, 2, . . . , n. It is easy to see that
+the activation functions fi are Lipschitz continuous, i.e., ∀ x, y ∈ ℜ,
+there exists positive number ρi = max{|li,1 |, |li,2 |, |li,3 |} such that
+
+|fi (x) − fi (y)| ≤ ρi |x − y|.
+Cohen–Grossberg neural networks were first proposed by Cohen and Grossberg (Cohen & Grossberg, 1983). It is well known
+that Cohen–Grossberg neural networks model is one of the most
+popular and typical neural networks models. A lot of famous
+ecological systems and neural networks, such as Lotka–Volterra
+system, the Gilpia–Analg competition system and the Hopfield
+neural networks, are special cases of this model (Cohen & Grossberg, 1983; Gopalsamy, 1985). The multistability of conventional
+Cohen–Grossberg neural networks has been investigated in Cao,
+Feng, and Wang (2008) and Huang, Feng, and Mohamad (2012).
+We remark that activation functions employed in these two papers are all monotonically increasing. However, to the best of the
+authors’ knowledge, the study on multistability of memristive Cohen–Grossberg neural networks (MCGNNs) is still an open and yet
+important problem that deserves further investigation. It should be
+pointed out that memristive neural networks are totally different
+from conventional recurrent neural networks, since memristive
+neural networks are a state-dependent switching system which is
+a discontinuous dynamical system, while conventional recurrent
+neural networks are a continuous dynamical system. Therefore, the
+
+X. Nie et al. / Neural Networks 71 (2015) 27–36
+
+research on multistability of memristive neural networks is more
+complicated and challenging.
+With the motivations illustrated as above, our main objective
+in this paper is to investigate the multistability of MCGNNs with
+non-monotonic activation functions (2) and time-varying delays.
+Note that time delays are inevitable in real-world neural networks
+because of the finite speeds of the switching and transmission
+of signals, and time delays may lead to oscillation, instability,
+bifurcation or chaos of neural networks. Specifically, the main
+contributions of this paper may be summarized in the following
+aspects.
+(1) The well-known fixed point theorem and the definition of
+Filippov’s solution are utilized to derive sufficient conditions
+under which the n-neuron MCGNNs with activation functions
+(2) and time-varying delays can have 5n equilibrium points
+located in ℜn .
+(2) Based on the theories of set-valued maps and differential inclusions, the dynamical behaviors of the corresponding MCGNNs
+with time-varying delays are rigorously analyzed, and it is
+shown that the considered MCGNNs can have 5n equilibrium
+points, among which 3n equilibrium points are locally exponentially stable. Besides, as a byproduct, the multistability results of memristive Hopfield neural networks and conventional
+Hopfield neural networks are obtained, respectively.
+(3) Compared with some activation functions that possess the
+same number of saturations as activation functions (2), such as
+the Mexican-hat-type activation function employed in Wang
+and Chen (2012) and the nondecreasing saturated activation
+functions with two corner points adopted in Cao et al. (2008),
+Cheng and Shih (2009) and Nie and Cao (2009, 2011), the neural networks with activation functions (2) can have both more
+total equilibrium points and more locally stable equilibrium
+points. In other words, the neural networks with activation
+functions (2) can have greater storage capacity than the ones
+with the Mexican-hat-type activation function or the nondecreasing saturated activation functions with two corner points.
+(4) Due to the non-monotonic property of activation functions
+(2), the 3n locally stable equilibrium points obtained in this
+paper are located in not only saturated regions, but also unsaturated regions, which is different from most existing multistability results of neural networks with nondecreasing activation
+functions, where all locally stable equilibrium points are only
+located in saturated regions.
+(5) A numerical example together with computer simulations is
+provided to validate the theoretical results.
+
+where i = 1, 2, . . . , n, u(t ) = (u1 (t ), . . . , un (t ))T ∈ ℜn is the
+state vector, bi > 0, ai (ui (t )) represents amplification function,
+I = (I1 , I2 , . . . , In )T is an input vector, fj (·) is the activation function
+defined in (2), τij (t ) corresponds to the time-varying delay that
+satisfies 0 ≤ τij (t ) ≤ τ = max1≤i,j≤n {sup
+ {τij (t ), t ≥ 0}}, and
+τ is a constant number. hij uj (t ) and wij uj (t − τij (t )) denote
+connection weights of the networks satisfying the following
+conditions:
+ ∗
+hij ,
+|uj (t )| ≤ Tj ,
+hij (uj (t )) =
+h∗∗
+,
+|
+uj (t )| > Tj ,
+ij
+
+ ∗
+wij ,
+wij (uj (t − τij (t ))) =
+wij∗∗ ,
+
+xi (θ ) = φi (θ ) ∈ C ([−τ , 0], ℜ) ,
+
+2.1. Model
+In this paper, we consider a class of MCGNNs with time-varying
+delays as follows:
+dui (t )
+dt
+
+= −ai (ui (t )) bi ui (t ) −
+
+−
+
+Throughout this paper, solutions of all the systems considered
+in the following are intended in Filippov’s sense. Let x˙ (t ) denote the
+∗ ∗∗
+derivative of x(t ). Let hij = max{h∗ij , h∗∗
+ij }, hij = min{hij , hij }, w ij =
+∗
+∗∗
+∗
+∗∗
+max{wij , wij }, w ij = min{wij , wij }. Given a set Ω ⊂ ℜ, co[Ω ]
+denotes the closure of the convex hull of Ω . Thus, we have
+
+ ∗
+|uj (t )| < Tj ,
+hij ,
+co hij (uj (t )) = [hij , hij ], |uj (t )| = Tj ,
+ ∗∗
+hij ,
+|uj (t )| > Tj ,
+ ∗
+|uj (t − τij (t ))| < Tj ,
+
+ wij ,
+co wij (uj (t − τij (t ))) = [w ij , w ij ], |uj (t − τij (t ))| = Tj ,
+w∗∗ ,
+|u (t − τ (t ))| > T .
+
+
+j =1
+
+
+
+
+
+j
+
+ij
+
+ij
+
+j
+
+Denote
+
+(−∞, pi ) = (−∞, pi )1 × [pi , ri ]0 × (ri , qi )0 × [qi , si ]0 × (si , +∞)0 ;
+[pi , ri ] = (−∞, pi )0 × [pi , ri ]1 × (ri , qi )0 × [qi , si ]0 × (si , +∞)0 ;
+(ri , qi ) = (−∞, pi )0 × [pi , ri ]0 × (ri , qi )1 × [qi , si ]0 × (si , +∞)0 ;
+[qi , si ] = (−∞, pi )0 × [pi , ri ]0 × (ri , qi )0 × [qi , si ]1 × (si , +∞)0 ;
+(si , +∞) = (−∞, pi )0 × [pi , ri ]0 × (ri , qi )0 × [qi , si ]0 × (si , +∞)1 .
+Then ℜn can be divided into 5n parts as
+
+
+n
+(i)
+(i)
+(i)
+Ω =
+(−∞, pi )δ1 × [pi , ri ]δ2 × (ri , qi )δ3
+i=1
+(i)
+
+(i)
+
+× [qi , si ]δ4 × (si , +∞)δ5 ,
+(δ1(i) , δ2(i) , δ3(i) , δ4(i) , δ5(i) ) = (1, 0, 0, 0, 0) or (0, 1, 0, 0, 0)
+
+or (0, 0, 1, 0, 0) or (0, 0, 0, 1, 0) or (0, 0, 0, 0, 1) .
+
+By the theories of differential inclusions and set-valued
+maps (Clarke, Ledyaev, Stem, & Wolenski, 1998; Filippov, 1988),
+the MCGNNs (3) can be written as the following differential inclusion:
+dui (t )
+
+−
+
+
+wij uj (t − τij (t )) fj (uj (t − τij (t ))) − Ii ,
+
+
+(4)
+
+2.2. Notation
+
+dt
+
+
+hij uj (t ) fj (uj (t ))
+
+
+j =1
+n
+
+
+i = 1, 2, . . . , n.
+
+2.3. Properties and definitions
+
+2. Model formulation and preliminaries
+
+n
+
+
+|uj (t − τij (t ))| ≤ Tj ,
+|uj (t − τij (t ))| > Tj ,
+
+∗
+∗∗
+in which switching jumps Tj > 0, h∗ij , h∗∗
+ij , wij , wij , i, j = 1,
+2, . . . , n are all constant numbers.
+The initial condition of MCGNNs (3) is assumed to be
+
+The rest of this paper is organized as follows. In Section 2, some
+preliminaries, model description and necessary definitions are presented. Section 3 discusses the coexistence and local exponential
+stability of multiple equilibrium points of MCGNNs. Then numerical simulations are given in Section 4. Finally, some conclusions are
+made in Section 5.
+
+
+
+29
+
+(3)
+
+
+
+∈ −ai (ui (t )) bi ui (t ) −
+
+n
+
+
+co hij uj (t )
+
+
+
+
+
+
+
+fj (uj (t ))
+
+j =1
+n
+
+
+
+ 
+
+co wij uj (t − τij (t )) fj (uj (t − τij (t ))) − Ii ,
+
+j =1
+
+for a.e. t ≥ 0, i = 1, 2, . . . , n,
+
+(5)
+
+30
+
+X. Nie et al. / Neural Networks 71 (2015) 27–36
+
+
+or equivalently, there exist 
+hij ∈ co hij uj (t ) and w
+ij ∈ co
+
+ 
+wij uj (t − τij (t )) such that
+
+n
+
+dui (t )
+
+= −ai (ui (t )) bi ui (t ) −
+hij fj (uj (t ))
+
+
+dt
+
+
+
+j =1
+
+−
+
+n
+
+
+w
+ij fj (uj (t − τij (t ))) − Ii ,
+
+for a.e. t ≥ 0, i = 1, 2, . . . , n.
+
+(6)
+
+In order to achieve our main results, the following assumption
+is needed.
+
+(A1 ) The function ai (r ) is continuous, and there exist positive
+constants ai and a¯ i such that 0 < ai ≤ ai (r ) ≤ a¯ i holds for all
+r ∈ ℜ, i = 1, 2, . . . , n.
+Since MCGNNs (3) are systems of differential equations with
+discontinuous right-hand side, we need to specify what is meant
+by a solution of (3).
+Definition 1. A function u(t ) = (u1 (t ), . . . , un (t ))T is a solution
+of (3) in the sense of Filippov, with the initial condition (4), if u(t )
+is an absolutely continuous function on any compact interval of
+[0, +∞) and satisfies the differential inclusion (5).
+∗
+
+Definition 2. An equilibrium point of (3) is a constant vector u ∈
+ℜn that satisfies
+
+
+
+n
+
+ 
+
+
+0 ∈ ai u∗i
+−bi u∗i +
+co[hij (u∗j )] + co[wij (u∗j )] fj (u∗j ) + Ii ,
+j=1
+
+(7)
+or equivalently, for i, j = 1, 2, . . . , n, there exist 
+hij ∈ co[hij (u∗j )]
+∗
+and w
+ij ∈ co[wij (uj )] such that
+ai u∗i
+
+ 
+
+n
+
+−bi u∗i +
+
+Theorem 1. Assume that (A1 ) holds and the following conditions are
+satisfied for all i = 1, 2, . . . , n:
+
+
+
+−bi pi + max (hii + wii ) mi , (hii + w ii ) mi
+n
+
+
++
+max (hij + w ij ) mj ,
+
+
+
+j=1
+
+
+
+on the coexistence of multiple equilibrium points for MCGNNs (3)
+under the framework of Filippov’s solution.
+
+j̸=i,j=1
+
+
+(hij + w ij ) Mj , (hij + wij ) mj , (hij + wij ) Mj + Ii < 0,
+
+
+−bi ri + min (hii + w ii ) fi (ri ), (hii + w ii ) fi (ri )
+n
+
+
+min (hij + w ij ) mj ,
++
+j̸=i,j=1
+
+
+(hij + w ij ) Mj , (hij + wij ) mj , (hij + wij ) Mj + Ii > 0,
+
+
+−bi si + min (hii + wii ) Mi , (hii + wii ) Mi
+n
+
+
+min (hij + w ij ) mj ,
++
+
+
+
+
+hij + w
+ij fj (u∗j ) + Ii = 0.
+
+(11)
+
+j̸=i,j=1
+
+
+(hij + w ij ) Mj , (hij + wij ) mj , (hij + wij ) Mj + Ii > 0.
+
+(12)
+
+Then MCGNNs (3) with activation functions (2) can have 5n
+equilibrium points located in ℜn .
+Proof. Arbitrarily pick a region from the set Ω as
+
+ =
+Ω
+
+
+
+(−∞, pi ) ×
+
+×
+
+
+
+[p i , r i ] ×
+
+
+
+[qi , si ] ×
+
+
+
+
+
+(ri , qi )
+
+i∈N3
+
+i∈N2
+
+i∈N1
+
+(si , +∞) ⊂ Ω ,
+
+i∈N5
+
+i∈N4
+
+
+
+(10)
+
+(8)
+
+where Ni (i = 1, 2, 3, 4, 5) are subsets of {1, 2, . . . , n}, and
+
+5
+i=1 Ni = {1, 2, . . . , n}, Ni ∩ Nj = ∅ (i ̸= j, i, j = 1, 2, 3, 4, 5).
+
+From assumption (A1 ), it is easy to see that (8) is equivalent to the
+following:
+
+We will show that MCGNNs (3) with activation functions (2) have
+.
+at least an equilibrium point located in Ω
+From (9), we know that any equilibrium point (u∗1 , u∗2 , . . . , u∗n )T
+of MCGNNs (3) is a root of the following equations:
+
+j =1
+
+− bi u∗i +
+
+n
+
+
+
+
+hij + w
+ij fj (u∗j ) + Ii = 0.
+
+(9)
+
+j =1
+
+− bi u∗i +
+
+It is obvious that the set-valued map
+ui ( t )
+
+
+
+−ai (ui (t )) bi ui (t ) −
+
+n
+
+
+
+
+
+
+fj (uj (t ))
+
+j =1
+
+−
+
+n
+
+
+co wij uj (t − τij (t ))
+
+
+
+
+
+
+
+i = 1, 2, . . . , n,
+
+(13)
+
+j=1
+
+co hij uj (t )
+
+
+
+n
+
+
+
+
+hij + w
+ij fj (u∗j ) + Ii = 0,
+
+fj (uj (t − τij (t ))) − Ii
+
+
+
+j =1
+
+has nonempty compact convex values. Furthermore, it is uppersemicontinuous. Thus, the existence of a local solution u(t ) with
+initial condition (4) can be guaranteed (Filippov, 1988). Moreover,
+since the activation functions fi are bounded and Lipschitz continuous, the local solution u(t ) can be extended to the interval
+[0, +∞).
+3. Main results
+In this section, the dynamical behaviors of multiple equilibrium
+points for MCGNNs (3) with both activation functions (2) and timevarying delays are investigated. First of all, by virtue of the wellknown fixed point theorem, we provide the following theorem
+
+where 
+hij ∈ co[hij (u∗j )], w
+ij ∈ co[wij (u∗j )].
+
+ , fix u2 , u3 , . . . , un , and
+(a) For any point (u1 , u2 , . . . , un )T ∈ Ω
+define
+F1 (u) = −b1 u + 
+h11 + w
+11 f1 (u)
+
+
+
++
+
+
+
+n
+
+
+
+
+h1j + w
+1j fj (uj ) + I1 .
+
+(14)
+
+j =2
+
+Then there are five possible cases for us to discuss.
+Case 1. u1 ∈ (−∞, p1 ). Given that mj ≤ fj ≤ Mj and h1j + w 1j ≤
+
+h1j + w
+1j ≤ h1j + w1j , it follows from (10) and (14) that
+
+
+F1 (p1 ) = −b1 p1 + 
+h11 + w
+11 m1
+n
+
+
+
+
++
+h1j + w
+1j fj (uj ) + I1
+j=2
+
+
+
+≤ −b1 p1 + max (h11 + w 11 ) m1 , (h11 + w 11 ) m1
+
+X. Nie et al. / Neural Networks 71 (2015) 27–36
+n
+
++
+
+
+
+max (h1j + w 1j ) mj , (h1j + w 1j ) Mj ,
+
+j =2
+
+
+(h1j + w1j ) mj , (h1j + w1j ) Mj + I1
+< 0.
+Then because of the continuity of F1 (u) and limu→−∞ F1 (u) = +∞,
+a u¯ 1 ∈ (−∞, p1 ) can be found such that F1 (¯u1 ) = 0.
+Case 2. u1 ∈ [p1 , r1 ]. In view of (11) and (14), we obtain
+F1 (r1 ) ≥ −b1 r1 + min (h11 + w 11 ) f1 (r1 ), (h11 + w 11 ) f1 (r1 )
+
+
+
++
+
+n
+
+
+
+
+to Brouwer’s fixed point theorem, there exists one fixed point
+ , which is also the equilibrium
+u∗ = (u∗1 , . . . , u∗n )T of H in Ω
+ . As ℜn is divided into 5n parts, by
+point of MCGNNs (3) in Ω
+ , MCGNNs (3) with activation functions (2) can
+arbitrariness of Ω
+have 5n equilibrium points located in ℜn .
+Introduce
+
+Φ =
+
+j =2
+
+
+(h1j + w1j ) mj , (h1j + w1j ) Mj + I1
+> 0.
+Then a u¯ 1 ∈ (p1 , r1 ) can be found such that F1 (¯u1 ) = 0, owing to
+F1 (p1 ) < 0.
+Case 3. u1 ∈ (r1 , q1 ). Since f1 (q1 ) = m1 and p1 < q1 , from (10) we
+get
+
+
+
+n
+
+
+
+
+h1j + w
+1j fj (uj ) + I1
+j =2
+
+< F1 (p1 ) < 0.
+Then a u¯ 1 ∈ (r1 , q1 ) can be found such that F1 (¯u1 ) = 0, because of
+F1 (r1 ) > 0.
+Case 4. u1 ∈ [q1 , s1 ]. From (12) and (14) it follows that
+F1 (s1 ) = −b1 s1 + 
+h11 + w
+11 M1 +
+
+
+
+
+
+(i)
+
+(i)
+
+(i)
+
+(−∞, pi )δ1 × (ri , qi )δ2 × (si , +∞)δ3 ,
+
+
+(δ1(i) , δ2(i) , δ3(i) ) = (1, 0, 0) or (0, 1, 0) or (0, 0, 1) .
+
+min (h1j + w 1j ) mj , (h1j + w 1j ) Mj ,
+
+
+
+
+n
+i=1
+
+
+
+F1 (q1 ) = −b1 q1 + 
+h11 + w
+11 m1 +
+
+31
+
+ → Ω
+ by H (u1 , u2 , . . . , un ) =
+Define a map H : Ω
+(¯u1 , u¯ 2 , . . . , u¯ n ). Obviously the map H is continuous. According
+
+
+
+Apparently, Φ is made up of 3n regions. Before discussing the
+dynamical behaviors of multiple equilibrium points, we need to
+give some positively invariant sets for MCGNNs (3), which will
+establish a foundation of multistability analysis.
+Theorem 2. Assume that (A1 ) holds. Then Φ are positively invariant
+sets of MCGNNs (3) if the following conditions hold for all i =
+1, 2, . . . , n:
+
+
+
+−bi pi + max hii mi , hii mi
+
+
++ max wii mi , w ii mi , wii fi (ri ), wii fi (ri )
+n
+
+
+
++
+max hij mj , hij Mj , hij mj , hij Mj
+j̸=i,j=1
+
++
+
+n
+
+
+
+
+h1j + w
+1j fj (uj ) + I1
+j =2
+
+
+
+≥ −b1 s1 + min (h11 + w11 ) M1 , (h11 + w 11 ) M1
+n
+
+
++
+min (h1j + w 1j ) mj , (h1j + w 1j ) Mj ,
+j =2
+
+n
+
+
+max w ij mj , w ij Mj , w ij mj , w ij Mj
+
+
+
+
+
+j̸=i,j=1
+
++ Ii < 0,
+
+
+−bi ri + min hii fi (ri ), hii fi (ri )
+
+
++ min wii mi , wii mi , wii fi (ri ), w ii fi (ri )
+n
+
+
+
+min hij mj , hij Mj , hij mj , hij Mj
++
+
+(16)
+
+j̸=i,j=1
+
+
+(h1j + w 1j ) mj , (h1j + w1j ) Mj + I1
++
+
+> 0.
+
+n
+
+
+min w ij mj , w ij Mj , w ij mj , w ij Mj
+
+
+
+
+
+j̸=i,j=1
+
+Then a u¯ 1 ∈ (q1 , s1 ) can be found such that F1 (¯u1 ) = 0, due to
+F1 (q1 ) < 0.
+Case 5. u1
+∈ (s1 , +∞). Noting that F1 (s1 ) > 0 and
+limu→+∞ F1 (u) = −∞, we can also find a u¯ 1 ∈ (s1 , +∞) such
+that F1 (¯u1 ) = 0.
+From the above Cases 1–5, we arrive at the following result: for
+ , fixing u2 , u3 , . . . , un , we can find
+any point (u1 , u2 , . . . , un )T ∈ Ω
+a u¯ 1 such that
+n
+
+
+
+
+
+
+−b1 u¯ 1 + 
+h11 + w
+11 f1 (¯u1 ) +
+h1j + w
+1j fj (uj ) + I1 = 0.
+
+ , fix u1 , . . . , ui−1 , ui+1 ,
+(b) For any point (u1 , u2 , . . . , un )T ∈ Ω
+. . . , un (i = 2, 3, . . . , n), and define
+
+
+ 
+
+
+hij + w
+ij fj (uj ) + Ii .
+
+j̸=i,j=1
+
+(15)
+Similar to the proof of (a), we can also find u¯ i (i = 2, 3, . . . , n) such
+that
+n
+
+
+
+
+
+
+−bi u¯ i + 
+hii + w
+ii fi (¯ui ) +
+hij + w
+ij fj (uj ) + Ii = 0.
+j̸=i,j=1
+
+j̸=i,j=1
+
++
+
+n
+
+
+min w ij mj , w ij Mj , w ij mj , w ij Mj
+
+
+
+
+
+j̸=i,j=1
+
+(18)
+
+Proof. Arbitrarily pick a region from the set Φ as
+
+=
+Φ
+
+
+i∈N1
+
+n
+
+
+
+(17)
+
++ Ii > 0.
+
+j =2
+
+Fi (u) = −bi u + 
+hii + w
+ii fi (u) +
+
++ Ii > 0,
+
+
+−bi si + min (hii + w ii ) Mi , (hii + w ii ) Mi
+n
+
+
+
++
+min hij mj , hij Mj , hij mj , hij Mj
+
+(−∞, pi ) ×
+
+
+i∈N3
+
+(ri , qi ) ×
+
+
+
+(si , +∞) ⊂ Φ ,
+
+(19)
+
+i∈N5
+
+where N1 , N3 , N5 are subsets of {1, 2, . . . , n}, and N1 ∪ N3 ∪ N5 =
+{1, 2, . . . , n}, Ni ∩ Nj = ∅ (i ̸= j, i, j = 1, 3, 5). Our task is to
+ is an invariant set of MCGNNs (3) in the sense that for
+show that Φ
+ ), we have the solution
+any initial condition φ(θ ) ∈ C ([−τ , 0], Φ
+ for all t ≥ 0. If this is not true, then there are three
+u(t ; φ) ∈ Φ
+possible cases to discuss.
+Case 1. There exists a component u
+i (t ) of u(t ; φ) which is the first
+(or one of the firsts) escaping from i∈N1 (−∞, pi ). Restated, there
+
+32
+
+X. Nie et al. / Neural Networks 71 (2015) 27–36
+
+exist some i ∈ N1 and t ∗ > 0 such that ui (t ∗ ) = pi , u˙ i (t ∗ ) >
+0, ui (t ) ≤ pi for −τ ≤ t ≤ t ∗ . Using ai (pi ) > 0, (6), (16) and the
+definition of fi , we obtain that
+
+
+
++ max wii mi , wii mi , wii fi (ri ), wii fi (ri )
+n
+
+
+
+max hij mj , hij Mj , hij mj , hij Mj
++
+j̸=i,j=1
+
+
+
+u˙ i (t ∗ ) = ai (ui (t ∗ )) −bi ui (t ∗ ) + 
+hii fi (ui (t ∗ ))
+
++w
+ii fi (ui (t ∗ − τii (t ∗ ))) +
++
+
+n
+
+j̸=i,j=1
+
+n
+
+j̸=i,j=1
+
+j̸=i,j=1
+
+w
+ij fj (uj (t ∗ − τij (t ∗ ))) + Ii
+
+
+n
+
+
+
+
+u˙ i (t ) = ai (si ) −bi si + 
+hii + w
+ii Mi +
+hij fj (uj (t ∗ ))
+∗
+
+
+
+j̸=i,j=1
+
+n
+
++
+
+max hij mj , hij Mj , hij mj , hij Mj
+
+
+
+
+
++
+
+j̸=i,j=1
+
++
+
+max w ij mj , w ij Mj , w ij mj , w ij Mj + Ii
+
+
+
+
+
+
+
+n
+
+
++
+
+< 0,
+Case 2. There exists a component u
+i (t ) of u(t ; φ) which is the first
+(or one of the firsts) escaping from i∈N3 (ri , qi ). Restated, there exist some i ∈ N3 and t ∗ > 0 such that either ui (t ∗ ) = ri , u˙ i (t ∗ ) < 0,
+ui (t ) ∈ [ri , qi ) for − τ ≤ t ≤ t ∗ or ui (t ∗ ) = qi , u˙ i (t ∗ ) > 0,
+ui (t ) ∈ (ri , qi ] for − τ ≤ t ≤ t ∗ . For the first case, noting that
+mi ≤ fi (ui (t ∗ − τii (t ∗ ))) ≤ fi (ri ), it follows from (6) and (17) that
+
+n
+
+j̸=i,j=1
+
+j̸=i,j=1
+
+w
+ij fj (uj (t ∗ − τij (t ∗ ))) + Ii
+
+
+
+
+
+
+≥ ai (ri ) −bi ri + min hii fi (ri ), hii fi (ri )
+
+
++ min w ii mi , w ii mi , wii fi (ri ), w ii fi (ri )
+n
+
+
+
++
+min hij mj , hij Mj , hij mj , hij Mj
+
+
+min w ij mj , w ij Mj , w ij mj , w ij Mj + Ii
+
+
+
+
+
+which contradicts u˙ i (t ∗ ) < 0.
+It is seen from the above three cases that the solution u(t ; φ)
+ for all t ≥ 0, which implies that Φ
+ is an
+will never escape from Φ
+invariant set of MCGNNs (3).
+From assumption (A1 ), we know that the antiderivative of
+exists. We choose such an antiderivative gi (ui ) that satisfies
+
+d
+gi (ui ) = a (1u ) . By ai (ui ) > 0, we obtain
+gi (0) = 0. Obviously, du
+i
+i i
+that gi (ui ) is strictly monotonically increasing about ui . By virtue
+of the derivative theorem of inverse function, the inverse function
+gi−1 (vi ) of function gi (ui ) is differentiable and ddv gi−1 (vi ) = ai (ui ),
+i
+where vi = gi (ui ). Let xi (t ) = gi (ui (t )). Then we have x˙ i (t ) =
+u˙ i (t )
+and ui (t ) = gi−1 (xi (t )). Substituting these equalities into
+ai (ui (t ))
+(5) yields
+
++
+
+n
+
+
+co hij gj−1 (xj (t ))
+
+
+
+
+
+fj gj−1 (xj (t ))
+
+ 
+
+
+
+n
+
+
+co wij gj−1 (xj (t − τij (t )))
+
+
+
+
+
+fj gj−1 (xj (t − τij (t ))) + Ii .
+
+ 
+
+
+
+j=1
+
+(20)
+
+which is a contradiction. Similarly, for the second case, in view of
+fi (qi ) = mi , mi ≤ fi (ui (t ∗ − τii (t ∗ ))) ≤ fi (ri ), (6) and (16), we have
+that
+
+
+
+u˙ i (t ∗ ) = ai (qi ) −bi qi + 
+hii mi + w
+ii fi (ui (t ∗ − τii (t ∗ )))
+
+j̸=i,j=1
+
+
+
+j =1
+
+
+
+> 0,
+
++
+
+min w ij mj , w ij Mj , w ij mj , w ij Mj + Ii
+
+x˙ i (t ) ∈ −bi gi−1 (xi (t )) +
+
+j̸=i,j=1
+
+n
+
+
+
+
+> 0,
+
+j̸=i,j=1
+n
+
+
+
+
+1
+ai (ui )
+
+
+∗
+u˙ i (t ) = ai (ri ) −bi ri + 
+hii fi (ri ) + w
+ii fi (ui (t ∗ − τii (t ∗ )))
+
+hij fj (uj (t ∗ )) +
+
+min hij mj , hij Mj , hij mj , hij Mj
+
+j̸=i,j=1
+
+which is a contradiction.
+
++
+
+n
+
+
++
+
+n
+
+
+
+
+j̸=i,j=1
+
+j̸=i,j=1
+
++
+
+w
+ij fj (uj (t ∗ − τij (t ∗ ))) + Ii
+
+
+
+
+≥ ai (si ) −bi si + min (hii + wii ) Mi , (hii + wii ) Mi
+
+
+
+j̸=i,j=1
+n
+
+
+
+
+Case 3. There exists a component u
+i (t ) of u(t ; φ) which is the first
+(or one of the firsts) escaping from i∈N5 (si , +∞). Restated, there
+exist some i ∈ N5 and t ∗ > 0 such that ui (t ∗ ) = si , u˙ i (t ∗ ) < 0,
+ui (t ) ≥ si for −τ ≤ t ≤ t ∗ . Then it follows from (6) and (18) that
+
+
+
+
+
+ 
+≤ ai (pi ) −bi pi + max hii + w ii mi , hii + wii mi
+n
+
+
+
+
+which is also a contradiction.
+
+
+
+j̸=i,j=1
+
++
+
+
+
+< 0,
+
+
+n
+
+
+
+
+= ai (pi ) −bi pi + 
+hii + w
+ii mi +
+hij fj (uj (t ∗ ))
+n
+
+
+max w ij mj , w ij Mj , w ij mj , w ij Mj + Ii
+
+j̸=i,j=1
+
+
+hij fj (uj (t ∗ ))
+
+w
+ij fj (uj (t ∗ − τij (t ∗ ))) + Ii
+
+n
+
+
++
+
+
+hij fj (uj (t ∗ )) +
+
+n
+
+j̸=i,j=1
+
+w
+ij fj (uj (t ∗ − τij (t ∗ ))) + Ii
+
+
+
+
+< ai (qi ) −bi pi + max hii mi , hii mi
+
+
+
+We are now ready to analyze the dynamical behavior of the
+solution u(t ) with initial condition φ(θ ) ∈ C ([−τ , 0], Φ ). The
+following theorem shows that under some conditions, MCGNNs (3)
+with activation functions (2) can have 5n equilibrium points, and 3n
+equilibrium points located in Φ are locally exponentially stable.
+Theorem 3. Assume that (A1 ), fi (±Ti ) = 0 (i = 1, 2, . . . , n),
+and conditions (16)–(18) hold. If there exist positive constants
+ξ1 , ξ2 , . . . , ξn such that
+
+− ai bi ξi +
+
+n
+
+j =1
+
+a¯ j |lj,2 | ξj Hij + Wij < 0
+
+
+
+
+
+(21)
+
+X. Nie et al. / Neural Networks 71 (2015) 27–36
+
+hold for all i = 1, 2, . . . , n, where Hij = max{|h∗ij |, |h∗∗
+ij |}, Wij =
+max{|wij∗ |, |wij∗∗ |}, then MCGNNs (3) with activation functions (2) can
+have 5n equilibrium points, 3n of which are locally exponentially
+stable.
+
+33
+
+
+− co hij gj−1 (x∗j ) fj gj−1 (x∗j ) 
+  
+
+
+
+= h∗ij fj gj−1 (xj (t )) − fj gj−1 (x∗j ) 
+
+
+
+
+ 
+
+≤ Hij |lj,2 | |gj−1 (xj (t )) − gj−1 (x∗j )| ≤ Hij |lj,2 | aj |yj (t )|.
+
+(25)
+
+Before giving the proof of Theorem 3, we first take a close look
+at the conditions in Theorem 3.
+
+(b) |gj−1 (xj (t ))| > Tj , |gj−1 (x∗j )| > Tj . In this case, similarly, we
+have
+
+Remark 1. It should be pointed out that the assumption fi (±Ti ) =
+0 has been employed in several very recent papers to handle the
+synchronization control and global stability analysis of memristive
+neural networks, see, for example, Chandrasekar et al. (2014),
+Chen et al. (2014) and Zhang and Shen (2014). Besides, previously
+most existing results on dynamical behaviors of memristive neural
+networks were obtained based on the following typical condition:
+
+   −1
+
+ 
+co hij g (xj (t )) fj g −1 (xj (t ))
+j
+j
+ 
+ 
+
+− co hij gj−1 (x∗j ) fj gj−1 (x∗j ) 
+  
+
+
+
+= h∗∗ fj g −1 (xj (t )) − fj g −1 (x∗ ) 
+
+[a, a¯ ] x − [a, a¯ ] y ⊆ [a, a¯ ] (x − y).
+
+|gj (x∗j )|. Here we only consider the case (c) |gj−1 (x∗j )| ≤ Tj <
+|gj−1 (xj (t ))|, since the other case (d) can be proved similarly. Then
+we have either −Tj ≤ gj−1 (x∗j ) ≤ Tj < gj−1 (xj (t )) or gj−1 (xj (t )) <
+−Tj ≤ gj−1 (x∗j ) ≤ Tj . For the first subcase of (c), noting fj (Tj ) = 0,
+
+(22)
+
+However, the above condition (22) is difficult to verify, and it may
+not hold for some special cases. Indeed, as pointed out in Wu,
+Zhang, Ding, Guo, and Wang (2013), condition (22) holds only
+when either x · y < 0 or x · y = 0. Note that based on the assumption
+fi (±Ti ) = 0, condition (22) is not needed in this paper.
+Remark 2. Let D = diag a1 b1 , . . . , an bn , G = diag(¯a1 |l1,2 |, . . . ,
+
+
+
+
+
+a¯ n |ln,2 |), H = Hij n×n , W = Wij n×n . Then by the properties
+of M-matrix (Chen, 2001), condition (21) is equivalent to D −
+(H + W ) G being an M-matrix. Thus, by applying the M-matrix
+theory, condition (21) can be verified easily.
+
+
+
+
+
+
+
+
+
+Proof of Theorem 3. First of all, it is easy to see that conditions
+(16)–(18) imply that conditions (10)–(12) in Theorem 1 hold.
+Thus, according to Theorem 1, the coexistence of 5n equilibrium
+points for MCGNNs (3) can be guaranteed under the conditions of
+Theorem 3. In the following, we will prove that the 3n equilibrium
+points located in Φ are locally exponentially stable.
+ from the
+To prove this, we will arbitrarily pick a region Φ
+
+set Φ (see (19)) and prove that the equilibrium point u∗ in Φ
+is locally exponentially stable. By condition (21), there exists a
+positive constant ε small enough such that the following inequality
+holds for all i = 1, 2, . . . , n:
+n
+n
+
+
+
+
+−ai bi + ε ξi +
+a¯ j |lj,2 | ξj Hij + eε τ
+a¯ j |lj,2 | ξj Wij < 0.
+j =1
+
+j =1
+
+(23)
+Let u(t ) be a solution of system (3) with initial condition φ(θ ) ∈
+ ) and yi (t ) = xi (t )− x∗i , where xi (t ) = gi (ui (t )), x∗i =
+C ([−τ , 0], Φ
+∗
+gi (ui ). By the set-valued maps theory and (20), we get that
+y˙ i (t ) ∈ −bi gi−1 (xi (t )) − gi−1 (x∗i )
+
+
+
+
+
++
+
+n 
+
+
+co hij gj−1 (xj (t ))
+
+
+
+
+
+fj gj−1 (xj (t ))
+
+ 
+
+n 
+
+
+j
+
+(26)
+
+(c) |gj−1 (x∗j )| ≤ Tj < |gj−1 (xj (t ))| or (d) |gj−1 (xj (t ))| ≤ Tj <
+−1
+
+we have
+
+   −1
+ 
+
+co hij g (xj (t )) fj g −1 (xj (t ))
+j
+j
+
+ 
+ 
+− co hij gj−1 (x∗j ) fj gj−1 (x∗j ) 
+  
+  
+
+
+
+= co hij gj−1 (xj (t )) fj gj−1 (xj (t )) − fj (Tj )
+ 
+ 
+
+ 
++ co hij gj−1 (x∗j ) fj (Tj ) − fj gj−1 (x∗j ) 
+
+ 
+
+≤ Hij |lj,2 | gj−1 (xj (t )) − Tj + Tj − gj−1 (x∗j )
+= Hij |lj,2 | |gj−1 (xj (t )) − gj−1 (x∗j )| ≤ Hij |lj,2 | aj |yj (t )|.
+
+(27)
+
+Similarly, for the second subcase of (c), it follows from fj (−Tj ) = 0
+that
+
+   −1
+
+ 
+co hij g (xj (t )) fj g −1 (xj (t ))
+j
+j
+ 
+ 
+
+− co hij gj−1 (x∗j ) fj gj−1 (x∗j ) 
+  
+
+ 
+
+
+= co hij gj−1 (xj (t )) fj (−Tj ) − fj gj−1 (xj (t ))
+ 
+  
+
+ 
++ co hij gj−1 (x∗j ) fj gj−1 (x∗j ) − fj (−Tj ) 
+
+ 
+
+≤ Hij |lj,2 | −Tj − gj−1 (xj (t )) + gj−1 (x∗j ) + Tj
+= Hij |lj,2 | |gj−1 (xj (t )) − gj−1 (x∗j )| ≤ Hij |lj,2 | aj |yj (t )|.
+
+(28)
+
+So, combining (25)–(28) together gives
+
+   −1
+ 
+
+co hij g (xj (t )) fj g −1 (xj (t ))
+j
+j
+ 
+ 
+
+− co hij gj−1 (x∗j ) fj gj−1 (x∗j ) 
+(29)
+
+Similarly, we can derive that
+
+− co hij gj (xj )
++
+
+j
+
+j
+
+≤ Hij |lj,2 | aj |yj (t )|.
+
+
+
+j =1
+
+
+
+ij
+
+≤ Hij |lj,2 | aj |yj (t )|.
+
+
+
+−1
+
+∗
+
+fj gj (xj )
+
+ 
+
+−1
+
+∗
+
+
+
+co wij gj−1 (xj (t − τij (t )))
+
+
+
+
+
+fj gj−1 (xj (t − τij (t )))
+
+ 
+
+
+
+j =1
+
+ 
+ 
+
+− co wij gj−1 (x∗j ) fj gj−1 (x∗j ) .
+
+  
+ 
+
+
+co wij gj−1 (xj (t − τij (t ))) fj gj−1 (xj (t − τij (t )))
+ 
+ 
+ 
+− co wij gj−1 (x∗j ) fj gj−1 (x∗j ) 
+≤ Wij |lj,2 | aj |yj (t − τij (t ))|.
+
+(24)
+
+(30)
+
+εt
+
+Define zi (t ) = e yi (t ) and
+
+Then at time t four cases may appear in the following.
+(a) |gj−1 (xj (t ))| ≤ Tj , |gj−1 (x∗j )| ≤ Tj . It follows from
+
+M (t ) = sup
+
+ d −1 
+ g (s) ≤ aj and the definition of fj that
+ds j
+   −1
+ 
+
+co hij g (xj (t )) fj g −1 (xj (t ))
+
+In the following, we claim that M (t ) is bounded. Specifically, we
+show that M (t ) = M (0) for all t ≥ 0.
+
+j
+
+j
+
+s≤t
+
+
+
+max ξi−1 |zi (s)|
+
+
+
+1≤i≤n
+
+
+
+
+
+, t ≥ 0.
+
+(31)
+
+34
+
+X. Nie et al. / Neural Networks 71 (2015) 27–36
+
+In fact, for any t0 ≥ 0, there are two cases:
+
+
+Case 1. max1≤i≤n ξi−1 |zi (t0 )| < M (t0 ). In this case, there exists a
+
+
+
+δ > 0 such that max1≤i≤n ξi−1 |zi (t )| < M (t0 ) for t ∈ (t0 , t0 + δ).
+
+
+Case 2. max1≤i≤n ξi−1 |zi (t0 )| = M (t0 ). In this case, let it0 = it0 (t0 )
+be such an index that
+
+
+
+ξi−t 1 |zit0 (t0 )| = max ξi−1 |zi (t0 )| .
+0
+
+Differentiating |zit0 (t )| at time t0 , then it follows from (24), (29) and
+(30) that
+
+
+
+
+
+dt
+
+
+
+t = t0
+
+
+
+= ε|zit0 (t0 )| + sign yit0 (t0 ) e
+
+= −bi ui (t ) +
+
+0
+
+0
+
+aj |lj,2 |(Hit0 j |yj (t0 )| + Wit0 j |yj (t0 − τit0 j (t0 ))|). (32)
+
+n
+
+
+0
+
+0
+
+
+
+
+
+= sign yit0 (t0 ) .
+
+0
+
+Thus, we have
+
+
+
+
+− sign yit0 (t0 ) gi−t 1 (xit0 (t0 )) − gi−t 1 (x∗it )
+0
+0
+0
+
+
+
+
+
+
+ −1
+−1 ∗ 
+= − git (xit0 (t0 )) − git (xit ) ≤ −ait yit0 (t0 ) .
+0
+
+0
+
+0
+
+(33)
+
+0
+
+
+
+
+
+dt
+
+
+
+t = t0
+
++
+
+n
+
+
+≤ −ait bit0 + ε |zit0 (t0 )| +
+0
+
+0
+
+j =1
+
+≤
+
+
+
+
+
+
+−ait bit0 + ε ξit0 +
+0
+
+Applying Theorem 3, we can easily obtain the following corollary.
+Corollary 1. Assume that fi (±Ti ) = 0 (i = 1, 2, . . . , n), and conditions (16)–(18) hold. If there exist positive constants ξ1 , ξ2 , . . . , ξn
+such that
+
+
+
+≤
+
+(39)
+
+hold for all i = 1, 2, . . . , n, where Hij = max{|h∗ij |, |h∗∗
+ij |}, Wij =
+max{|wij∗ |, |wij∗∗ |}, then memristive Hopfield neural networks (38)
+with activation functions (2) can have 5n equilibrium points, and 3n
+of them are locally exponentially stable.
+
+
+
+stants, i.e., hij (uj (t )) = hij , wij uj (t − τij (t )) = wij , i, j = 1,
+2, . . . , n, neural networks (38) turn into the following conventional Hopfield neural networks with time delays:
+
+dt
+
+max ξi−1 |zi (t0 )|
+
+
+
+= −bi ui (t ) +
+
+1≤i≤n
+
+n
+
+
+hij fj (uj (t )) +
+
+j =1
+
++ Ii ,
+
+
+
+
+
+n
+
+
+n
+
+
+i = 1, 2, . . . , n.
+
+(40)
+
+The next corollary follows directly from Corollary 1.
+
+n
+
+
+−bi pi + hii mi + max{wii mi , wii fi (ri )} +
+aj |lj,2 | ξj Hit0 j
+
++
+
+
+
+≤ 0.
+
+(34)
+
+Then there exists a δ1 > 0 such that M (t ) = M (t0 ) for t ∈
+(t0 , t0 + δ1 ).
+Hence, we can conclude that M (t ) = M (0) for all t ≥ 0, which
+implies that
+max ξi−1 |zi (t )| ≤ M (0).
+
+
+
+(35)
+
+1≤i≤n
+
+Since |zi (t )| = e
+
+εt
+
+|ui (t ) − ui | ≤ M e
+
+(41)
+
+j̸=i,j=1
+
++
+
+n
+
+
+min{wij mj , wij Mj } + Ii > 0,
+
+(36)
+|ui (t )−u∗i |
+ai
+
+(42)
+
+j̸=i,j=1
+
+−bi si + (hii + wii ) Mi +
+
+n
+
+
+min{hij mj , hij Mj }
+
+j̸=i,j=1
+
+∗
+
+|gi (ui (t )) − gi (u∗i )| ≤ M (0) ξi e−ε t .
+
+−ε t
+
+max{wij mj , wij Mj } + Ii < 0,
+
+−bi ri + hii fi (ri ) + min{wii mi , wii fi (ri )}
+n
+
++
+min{hij mj , hij Mj }
+
+|yi (t )| = e |gi (ui (t )) − gi (ui )|, we can obtain
+
+By virtue of the fact |gi (ui (t )) − gi (u∗i )| ≥
+
+n
+
+j̸=i,j=1
+
+aj |lj,2 | ξj Wit0 j M (t0 )
+
+εt
+
+max{hij mj , hij Mj }
+
+j̸=i,j=1
+
+j =1
+
+
+
+wij fj (uj (t − τij (t )))
+
+j =1
+
+Corollary 2. Assume that the following conditions:
+
+
+
+j =1
+
+∗
+
+
+
+|lj,2 | ξj Hij + Wij < 0
+
+1≤i≤n
+
+0
+
+n
+
+
+n
+
+j =1
+
+dui (t )
+
+
+
+
+
+ετ
+
+aj |lj,2 | Hit0 j |zj (t0 )|
+
+aj |lj,2 | ξj Wit0 j · max ξi−1 |zi (t0 − τit0 j (t0 ))|
+
+−ait bit0 + ε ξit0 +
+
++e
+
+aj |lj,2 | ξj Hit0 j
+
+j =1
+
+j =1
+
+
+
+
+− bi ξ i +
+
+
+
+n
+
++ eε τ
+
+n
+
+
+
+
+
+
+zj (t0 − τit0 j (t0 ))
+
+n
+
+
+(38)
+
+
+
+j =1
+
+ε τit j (t0 )
+
+
+
+wij uj (t − τij (t )) fj (uj (t − τij (t ))) + Ii ,
+
+
+
+
+
+aj |lj,2 | Wit0 j e
+
+
+
+When hij (uj (t )) and wij uj (t − τij (t )) are deterministic con-
+
+Substituting (33) into (32) leads to
+d|zit0 (t )| 
+
+
+
+i = 1, 2, . . . , n.
+
+Since gi−1 (·) is strictly monotonically increasing and gi−1 (0) = 0,
+
+
+
+hij uj (t ) fj (uj (t ))
+
+j=1
+
+j=1
+
+1
+we get that sign gi−
+(xit0 (t0 )) − gi−t 1 (x∗it )
+t
+
+n
+
+j=1
+
+y˙ it0 (t0 )
+
+0
+
++ e ε t0
+
+dt
+
++
+
+ε t0
+
+
+
+
+≤ ε|zit0 (t0 )| − eεt0 bit0 sign yit0 (t0 ) gi−t 1 (xit0 (t0 )) − gi−t 1 (x∗it )
+n
+
+
+Let ai (ui (t )) = 1 (i = 1, 2, . . . , n). Then MCGNNs (3)
+degenerate to the following memristive Hopfield neural networks:
+dui (t )
+
+1≤i≤n
+
+d|zit0 (t )| 
+
+ ⊂ Φ is chosen arbitrarily, we conclude that in
+Because Φ
+each subset of Φ , there is a locally exponentially stable equilibrium
+point. This means that MCGNNs (3) have 3n locally exponentially
+stable equilibrium points, thereby completing the proof.
+
++
+
+n
+
+
+min{wij mj , wij Mj } + Ii > 0
+
+(43)
+
+j̸=i,j=1
+
+, it follows that
+
+,
+
+where M
+= M (0) max1≤i≤n {ai ξi }. That is, u
+.
+exponentially stable in Φ
+
+(37)
+∗
+
+is locally
+
+= 1, 2, . . . , n. If there exist positive constants
+ξ1 , ξ2 , . . . , ξn such that
+
+hold for all i
+
+− bi ξi +
+
+n
+
+j =1
+
+
+
+|lj,2 | ξj |hij | + |wij | < 0
+
+(44)
+
+X. Nie et al. / Neural Networks 71 (2015) 27–36
+
+35
+
+hold for all i = 1, 2, . . . , n, then conventional Hopfield neural
+networks (40) with activation functions (2) can have 5n equilibrium
+points, and 3n of them are locally exponentially stable.
+Remark 3. As reported in Wang and Chen (2012), under some
+conditions, conventional Hopfield neural networks with Mexicanhat-type activation function (1) have at most 3n equilibrium points
+and at most 2n locally stable equilibrium points. From Corollary 2
+it can be observed that neural networks (40) with activation
+functions (2) have both more total equilibrium points and more
+locally stable equilibrium points than the results in Wang and Chen
+(2012). This clearly shows that neural networks with activation
+functions (2) can have greater storage capacity than the ones with
+Mexican-hat-type activation function (1).
+4. An illustrative example
+Example 1. Consider the following two-dimensional MCGNNs
+with time-varying delays:
+dui (t )
+
+
+
+= −ai (ui (t )) bi ui (t ) −
+
+dt
+
+2
+
+
+
+
+j =1
+
+
+
+
+
+
+
+wij uj (t − τij (t )) fj (uj (t − τij (t ))) − Ii ,
+
+i = 1, 2,
+(45)
+
+where a1 (u1 ) = 1 +
+
+59+u21
+
+, a2 (u2 ) = 2 +
+
+1.5, I1 = −1, I2 = −0.7, τij (t ) = e
+h11 (u1 (t )) =
+h12 (u2 (t )) =
+h21 (u1 (t )) =
+
+−t
+
+
+
+2.6,
+2.7,
+
+
+
+0.05,
+−0.05,
+
+|u2 (t )| ≤ 1,
+|u2 (t )| > 1,
+
+
+
+−0.05,
+0.05,
+
+|u1 (t )| ≤ 1,
+|u1 (t )| > 1,
+
+2
+89+u22
+
+, b1 = 2, b2 =
+
+(i, j = 1, 2), and
+
+|u1 (t )| ≤ 1,
+|u1 (t )| > 1,
+
+|u2 (t )| ≤ 1,
+|u2 (t )| > 1,
+ 
+
+
+ 
+
+−0.1, u1 t − e−t  ≤ 1,
+−t
+w11 u1 t − e
+=
+u1 t − e−t  > 1,
+0.1,
+ 
+
+
+ 
+
+−0.05, u2 t − e−t  ≤ 1,
+w12 u2 t − e−t =
+u2 t − e−t  > 1,
+0.05,
+ 
+
+
+ 
+
+−0.05, u1 t − e−t  ≤ 1,
+w21 u1 t − e−t =
+−
+t
+u1 t − e  > 1,
+0.05,
+ 
+
+
+ 
+
+−0.04, u2 t − e−t  ≤ 1,
+−t
+w22 u2 t − e
+=
+u2 t − e−t  > 1,
+0.04,
+
+h22 (u2 (t )) =
+
+
+
+2.06,
+2,
+
+and the activation functions fi (x) (i = 1, 2) are defined as follows:
+
+fi (x) =
+
+
+
+−1,
+
+
+
+
+
+
+
+
+
+2 (x + 1),
+
+
+2
+
+(1 − x),
+
+
+
+3
+
+
+
+
+
+
+8 x − 21,
+
+
+
+3,
+
+3
+
+−∞ < x < − ,
+−
+−
+
+3
+2
+1
+2
+
+2
+1
+
+≤x≤− ,
+2
+
+<x<
+
+5
+2
+
+,
+
+S3
+
+T
+
+S5
+
+j =1
+
+1
+
+uS2 = (−19/10, 82/427)T ,
+
+= (−19/10, −142/75) ,
+uS4 = (2/11, 2951/825)T ,
+T
+S6
+u = (2/11, 977/4697) ,
+u = (2/11, −1537/825)T ,
+uS7 = (37/10, 286/75)T ,
+uS8 = (37/10, 142/427)T ,
+S9
+T
+u = (37/10, −122/75) ,
+uΞ1 = (−19/10, 2182/741)T ,
+Ξ2
+T
+u = (−19/10, −164/129) ,
+uΞ3 = (−23/18, 2414/675)T ,
+uΞ4 = (−23/18, 19618/6669)T ,
+uΞ5 = (−23/18, 266/1281)T ,
+uΞ6 = (−23/18, −1496/1161)T ,
+uΞ7 = (−23/18, −1258/675)T ,
+uΞ8 = (2/11, 23977/8151)T ,
+uΞ9 = (2/11, −1829/1419)T ,
+uΞ10 = (299/102, 14446/3825)T ,
+uΞ11 = (299/102, 110402/37791)T ,
+uΞ12 = (299/102, 2274/7259)T ,
+uΞ13 = (299/102, −9244/6579)T ,
+uΞ14 = (299/102, −6362/3825)T ,
+uΞ15 = (37/10, 2162/741)T ,
+uΞ16 = (37/10, −184/129)T .
+u
+
+2
+
+−
+
+it is easy to verify that the conditions (16)–(18) hold and the
+condition (21) is satisfied with ξ1 = 2, ξ2 = 1. Thus, according
+to Theorem 3, MCGNNs (45) can have 52 = 25 equilibrium points
+uSi and uΞi , which are located in regions Si (i = 1, 2, . . . , 9) and
+Ξj (j = 1, 2, . . . , 16), respectively (see Fig. 3). Among them, 32 =
+9 equilibrium points uSi (i = 1, 2, . . . , 9) are locally exponentially
+stable. In fact, direct computations can give all the 25 equilibrium
+points as follows:
+uS1 = (−19/10, 266/75)T ,
+
+hij uj (t ) fj (uj (t ))
+
+
+
+Fig. 3. ℜ2 is composed of 25 regions.
+
+(i = 1, 2).
+
+5
+≤ x ≤ 3,
+2
+3 < x < +∞.
+
+Obviously, fi (±1) = 0 (i = 1, 2) and the assumption (A1 ) are
+satisfied with a1 = 1, a¯ 1 = 60
+, a2 = 2, a¯ 2 = 180
+. Furthermore,
+59
+89
+
+We generate 180 initial states arbitrarily to track the solution
+trajectories by simulations. Fig. 4 confirms that the nine
+equilibrium points uSi (i = 1, 2, . . . , 9) are locally exponentially
+stable.
+Remark 4. It was proved in Cao et al. (2008), Cheng and Shih
+(2009) and Nie and Cao (2009, 2011) that n-neuron neural
+networks with nondecreasing saturated activation functions can
+have 3n equilibrium points and 2n of them are locally stable
+equilibrium points. In other words, as long as the number of
+saturations of activation functions is the same, neural networks
+with non-monotonic piecewise linear activation functions (2)
+introduced in this paper can have greater storage capacity than the
+ones with nondecreasing saturated activation functions employed
+in Cao et al. (2008), Cheng and Shih (2009) and Nie and Cao
+(2009, 2011). Furthermore, from Example 1, it can be seen that
+MCGNNs (45) have nine locally exponentially stable equilibrium
+points. Among them, four equilibrium points uSi (i = 1, 3, 7, 9)
+are located in saturated regions, whereas the other five equilibrium
+points uSi (i = 2, 4, 5, 6, 8) are located in unsaturated regions
+due to the non-monotonic structure of activation functions (2). So
+this is very different from most existing multistability results of
+
+36
+
+X. Nie et al. / Neural Networks 71 (2015) 27–36
+5
+4
+3
+2
+1
+0
+–1
+–2
+–3
+–4
+–4
+
+–3
+
+–2
+
+–1
+
+0
+
+1
+
+2
+
+3
+
+4
+
+5
+
+Fig. 4. Phase plot of state variable (u1 , u2 )T in Example 1, where nine red points
+denote the nine equilibrium points located in regions Si (i = 1, 2, . . . , 9). (For
+interpretation of the references to colour in this figure legend, the reader is referred
+to the web version of this article.)
+
+neural networks with nondecreasing activation functions, where
+all locally stable equilibrium points are only located in saturated
+regions.
+5. Conclusion
+In this paper, the dynamical behaviors of multiple equilibrium points have been studied for a class of MCGNNs with nonmonotonic piecewise linear activation functions and time-varying
+delays. The main contributions of the paper have been the establishment of some sufficient conditions under which this type of nneuron MCGNNs can have 5n equilibrium points and 3n of them are
+locally exponentially stable. The theoretical results and computer
+simulations have demonstrated that non-monotonic piecewise linear activation functions introduced in this paper can generate more
+total equilibrium points and more locally stable equilibrium points
+than the existing results, thus enabling the MCGNNs to have the increased storage capacity for practical applications.
+Acknowledgments
+This work was supported in part by the Australian Research
+Council under Grant DP120104986, the National Natural Science
+Foundation of China under Grant 61203300, the Specialized
+Research Fund for the Doctoral Program of Higher Education under
+Grant 20120092120029, the Natural Science Foundation of Jiangsu
+Province of China under Grant BK2012319, the China Postdoctoral
+Science Foundation funded project under Grant 2012M511177,
+and the Innovation Foundation of Southeast University under
+Grant 3207012401.
+References
+Cao, J., Feng, G., & Wang, Y. (2008). Multistability and multiperiodicity of delayed
+Cohen–Grossberg neural networks with a general class of activation functions.
+Physica D, 237(13), 1734–1749.
+Chandrasekar, A., Rakkiyappan, R., Cao, J., & Lakshmanan, S. (2014). Synchronization
+of memristor-based recurrent neural networks with two delay components
+based on second-order reciprocally convex approach. Neural Networks, 57,
+79–93.
+Chen, T. (2001). Global exponential stability of delayed Hopfield neural networks.
+Neural Networks, 14, 977–980.
+Chen, J., Zeng, Z., & Jiang, P. (2014). Global Mittag-Leffler stability and synchronization of memristor-based fractional-order neural networks. Neural Networks, 51,
+1–8.
+
+Cheng, C., & Shih, C. (2009). Complete stability in multistable delayed neural
+networks. Neural Computation, 21(3), 719–740.
+Chua, L. O. (1971). Memristor-the missing circuit element. IEEE Transactions on
+Circuit Theory, 18(5), 507–519.
+Clarke, F. H., Ledyaev, Y. S., Stem, R. J., & Wolenski, R. R. (1998). Nonsmooth analysis
+and control theory. New York: Springer.
+Cohen, M., & Grossberg, S. (1983). Absolute stability of global pattern formation and
+parallel memory storage by competitive neural networks. IEEE Transactions on
+Systems, Man and Cybernetics, 13(5), 815–826.
+Corinto, F., Ascoli, A., & Gilli, M. (2011). Nonlinear dynamics of memristor
+oscillators. IEEE Transactions on Circuits and Systems I: Regular Papers, 58(6),
+1323–1336.
+Di Marco, M., Forti, M., Grazzini, M., & Pancioni, L. (2012). Limit set dichotomy
+and multistability for a class of cooperative neural networks with delays. IEEE
+Transactions on Neural Networks and Learning Systems, 23(9), 1473–1485.
+Filippov, A. F. (1988). Differential equations with discontinuous right-hand sides.
+Dordrecht, The Netherlands: Kluwer.
+Gopalsamy, K. (1985). Global asymptotic stability in a peiodic Lotka–Volterra
+system. The Journal of the Australian Mathematical Society. Series B. Applied
+Mathematics, 27(1), 66–72.
+Guo, Z., Wang, J., & Yan, Z. (2013). Global exponential dissipativity and stabilization
+of memristor-based recurrent neural networks with time-varying delays.
+Neural Networks, 48, 158–172.
+Huang, Z., Feng, C., & Mohamad, S. (2012). Multistability analysis for a general
+class of delayed Cohen–Grossberg neural networks. Information Sciences, 187,
+233–244.
+Huang, Z., Raffoul, Y., & Cheng, C. (2014). Scale-limited activating sets and
+multiperiodicity for threshold networks on time scales. IEEE Transactions on
+Cybernetics, 44(4), 488–499.
+Huang, Z., Song, Q., & Feng, C. (2010). Multistability in networks with self-excitation
+and high-order synaptic connectivity. IEEE Transactions on Circuits and Systems
+I: Regular Papers, 57(8), 2144–2155.
+Itoh, M., & Chua, L. (2008). Memristor oscillators. International Journal of Bifurcation
+and Chaos, 18(11), 3183–3206.
+Kaslik, E., & Sivasundaram, S. (2011). Impulsive hybrid discrete-time Hopfield
+neural networks with delays and multistability analysis. Neural Networks, 24(4),
+370–377.
+Nie, X., & Cao, J. (2009). Multistability of competitive neural networks with timevarying and distributed delays. Nonlinear Analysis: Real World Applications,
+10(2), 928–942.
+Nie, X., & Cao, J. (2011). Multistability of second-order competitive neural networks
+with nondecreasing saturated activation functions. IEEE Transactions on Neural
+Networks, 22(11), 1694–1708.
+Nie, X., Cao, J., & Fei, S. (2013). Multistability and instability of delayed competitive
+neural networks with nondecreasing piecewise linear activation functions.
+Neurocomputing, 119, 281–291.
+Nie, X., & Zheng, W. X. (2015). Multistability of neural networks with discontinuous
+non-monotonic piecewise linear activation functions and time-varying delays.
+Neural Networks, 65, 65–79.
+Pershin, Y., & Ventra, M. (2010). Experimental demonstration of associative
+memory with memristive neural networks. Neural Networks, 23(7), 881–886.
+Strukov, D., Snider, G., Stewart, G., & Williams, R. (2008). The missing memristor
+found. Nature, 453, 80–83.
+Wang, L., & Chen, T. (2012). Multistability of neural networks with Mexican-hattype activation functions. IEEE Transactions on Neural Networks and Learning
+Systems, 23(11), 1816–1826.
+Wang, L., & Chen, T. (2014). Multiple µ-stability of neural networks with
+unbounded time-varying delays. Neural Networks, 53, 109–118.
+Wen, S., Huang, T., Zeng, Z., Chen, Y., & Li, P. (2015). Circuit design and exponential
+stabilization of memristive neural networks. Neural Networks, 63, 48–56.
+Wu, A., & Zeng, Z. (2012a). Exponential stabilization of memristive neural networks
+with time delays. IEEE Transactions on Neural Networks and Learning Systems,
+23(12), 1919–1929.
+Wu, A., & Zeng, Z. (2012b). Dynamic behaviors of memristor-based recurrent neural
+networks with time-varying delays. Neural Networks, 36, 1–10.
+Wu, H., Zhang, L., Ding, S., Guo, X., & Wang, L. (2013). Complete periodic
+synchronization of memristor-based neural networks with time-varying
+delays. Discrete Dynamics in Nature and Society, 12. Article ID 140153.
+Yang, X., Cao, J., & Yu, W. (2014). Exponential synchronization of memristive Cohen–Grossberg neural networks with mixed delays. Cognitive Neurodynamics,
+8(3), 239–249.
+Zhang, G., & Shen, Y. (2013). New algebraic criteria for synchronization stability
+of chaotic memristive neural networks with time-varying delays. IEEE
+Transactions on Neural Networks and Learning Systems, 24(10), 1701–1707.
+Zhang, G., & Shen, Y. (2014). Exponential synchronization of delayed memristorbased chaotic neural networks via periodically intermittent control. Neural
+Networks, 55, 1–10.
+Zhang, L., Zhang, Y., & Li, J. (2008). Multiperiodicity and attractivity of delayed
+recurrent neural networks with unsaturating piecewise linear transfer
+functions. IEEE Transactions on Neural Networks, 19(1), 158–167.
+
+

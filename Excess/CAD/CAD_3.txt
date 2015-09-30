@@ -1,0 +1,2163 @@
+Computer-Aided Design 69 (2015) 35–50
+
+Contents lists available at ScienceDirect
+
+Computer-Aided Design
+journal homepage: www.elsevier.com/locate/cad
+
+Rapidly finding CAD features using database optimization
+Zhibin Niu a,∗ , Ralph R. Martin a , Frank C. Langbein a , Malcolm A. Sabin b
+a
+
+School of Computer Science & Informatics, Cardiff University, UK
+
+b
+
+Numerical Geometry Ltd., Cambridge, UK
+
+highlights
+•
+•
+•
+•
+•
+
+This paper describes a declarative feature recognizer which utilizes concepts from database query optimization.
+It gives a general way to translate feature definitions to efficient SQL query.
+It uses lazy evaluation to reduce the work performed by the CAD modeler.
+It also uses estimated cost of reorder various geometric computations to further improve performance.
+Our approach provides linear time performance with respect to model size for common features.
+
+article
+
+info
+
+Article history:
+Received 25 March 2015
+Accepted 6 August 2015
+Keywords:
+Feature recognition
+Database query planning
+Declarative features
+
+abstract
+Automatic feature recognition aids downstream processes such as engineering analysis and manufacturing planning. Not all features can be defined in advance; a declarative approach allows engineers to
+specify new features without having to design algorithms to find them. Naive translation of declarations
+leads to executable algorithms with high time complexity. Database queries are also expressed declaratively; there is a large literature on optimizing query plans for efficient execution of database queries.
+Our earlier work investigated applying such technology to feature recognition, using a testbed interfacing a database system (SQLite) to a CAD modeler (CADfix). Feature declarations were translated into SQL
+queries which are then executed.
+The current paper extends this approach, using the PostgreSQL database, and provides several new
+insights: (i) query optimization works quite differently in these two databases, (ii) with care, an approach
+to query translation can be devised that works well for both databases, and (iii) when finding various
+simple common features, linear time performance can be achieved with respect to model size, with
+acceptable times for real industrial models. Further results also show how (i) lazy evaluation can be used
+to reduce the work performed by the CAD modeler, and (ii) estimating the time taken to compute various
+geometric operations can further improve the query plan. Experimental results are presented to validate
+our main conclusions.
+© 2015 The Authors. Published by Elsevier Ltd.
+This is an open access article under the CC BY-NC-ND license
+(http://creativecommons.org/licenses/by-nc-nd/4.0/).
+
+1. Introduction
+Feature recognition aims to extract certain substructures from
+a solid model; it has been the subject of extensive research during
+the past thirty years [1–3]. One major application of feature
+recognition is to computer-aided process planning (CAPP), the
+generation of sequences of instructions for manufacturing [4].
+More recently, the trend of integrating computer-aided design
+
+∗
+
+Corresponding author.
+E-mail addresses: Z.Niu@cs.cardiff.ac.uk (Z. Niu), ralph@cs.cf.ac.uk
+(R.R. Martin), F.C.Langbein@cs.cardiff.ac.uk (F.C. Langbein),
+malcolm.sabin@btinternet.com (M.A. Sabin).
+
+(CAD) with computer-aided engineering (CAE) has led to a
+requirement for model simplification. As much as 80% of overall
+analysis time can be spent on mesh generation in the automotive,
+aerospace, and ship building industries [5,6]. By removing
+(typically small) features which have little effect on the analysis
+results, simplified models can be meshed more quickly and
+robustly for finite element analysis, and in turn analyzed more
+quickly, as the meshes are simpler [7–10].
+Fig. 1, which extends a figure in [11], shows some typical
+(simple) industrial features. Manually finding them is tedious,
+and in extreme cases, infeasible to carry out reliably, as complex
+models may have upwards of tens of thousands of small features,
+of many types and forms. Traditional automatic feature recognition
+(AFR) algorithms face two challenges. Firstly, features are diverse,
+
+http://dx.doi.org/10.1016/j.cad.2015.08.001
+0010-4485/© 2015 The Authors. Published by Elsevier Ltd. This is an open access article under the CC BY-NC-ND license (http://creativecommons.org/licenses/by-nc-nd/4.
+0/).
+
+36
+
+Z. Niu et al. / Computer-Aided Design 69 (2015) 35–50
+
+Fig. 1. Common industrial features, including some noted in [11].
+
+and different applications need to find different features. Most
+existing work concerns fixed algorithms for finding predetermined
+features [12]. However, it is infeasible to hard-code all possible
+useful features for all possible domains in advance. The second
+issue is that many approaches to feature finding have high
+computational complexity: times taken to find features can rise
+rapidly when dealing with complex features and large, detailed
+models.
+The first issue above is challenging, as it is difficult for
+engineering end-users to define effective algorithms for finding
+features. One solution is to use a declarative approach: this allows
+users of a feature finder to simply state what properties a feature
+has, and how a feature is composed, rather than having to give an
+algorithm to find instances of the feature.
+The performance issue is a bottleneck in industrial CAD–CAE
+integration, especially as engineering designs are becoming rapidly
+more complicated. A nuclear submarine may contain 300 times
+more parts than an automobile; for the latter, it can take about four
+months to prepare a mesh from the CAD model [5]. It is well known
+that existing approaches to finding complex features based on
+such techniques as subgraph pattern matching, forward chaining
+using frame-based reasoning, and pattern-matching techniques
+are computationally impractical [13,14]. Even when using a
+declarative approach, naively turning such a definition into an
+algorithm results in a series of nested loops, which takes far too
+long to execute for any non-trivial feature. Gibson, who pioneered
+the declarative approach, considered six specific optimizations
+for transforming the naive code into a faster algorithm [15,16].
+He used this approach to solve various 2D feature recognition
+problems. However 3D problems involving complex features and
+large models require other kinds of optimization. In previous
+work [17], we noted that relational database management systems
+(DBMS) also use a declarative language, SQL, to formulate database
+queries, and that much research has gone into optimizing the
+execution plans into which the queries are translated [18]. We
+demonstrated that these optimizations as built into a DBMS
+can be used to advantage when turning declarative feature
+definitions into executable algorithms for finding features. Our
+
+high-level declarative feature language allows end-user engineers
+to define new features relevant to their problem domain. Finding
+features – instances of these declarations – is translated into an
+SQL query, which is then input to a relational DBMS (SQLite)
+coupled to a CAD modeler (CADfix) as a back end. Geometric
+and topological information is processed instead of data from
+tables. Our main conclusions are as follows: naive translation of
+a feature declaration based on e distinct entities (i.e. faces, edges,
+vertices, or subfeatures) leads to an execution plan with e nested
+loops, causing feature finding to take exponential time O(ne ) for a
+model with n entities. However, SQLite’s optimizer is often capable
+of optimizing such plans into ones taking quasi-quadratic time
+for simple features, giving a significant improvement, and times
+which are potentially viable for a real system. We analyzed which
+optimizations in SQLite’s query optimizer led to this performance,
+and also compared them to the specifically crafted optimizations
+devised by Gibson [16].
+This paper builds upon that previous work. We have replaced
+the SQLite database engine with PostgreSQL, as its query optimizer
+is more powerful (and also allows more complex SQL queries
+which we expect to be useful in future research). Doing so has
+provided us with several further insights: (i) query optimization
+works quite differently in these two databases, (ii) with care,
+an approach to query translation can be devised that works
+well for both databases, despite these differences, (iii) for
+various simple common features, more or less linear performance
+O(n) can be achieved with respect to model size, and (iv)
+acceptable performance can be achieved for real industrial
+models. PostgreSQL is clearly a more suitable database engine
+for a CAD feature recognizer, as SQLite typically gives quasiquadratic performance. We analyze how linear time performance
+is achieved, and compare the PostgreSQL optimization approach
+with SQLite query optimization and Gibson’s work. We have also
+investigated (i) how lazy evaluation can be used to reduce the work
+performed by the CAD modeler, and (ii) how estimates of the time
+taken to compute various geometric operations can be used to
+further improve the query plan. Experimental results are presented
+to validate our main conclusions.
+
+Z. Niu et al. / Computer-Aided Design 69 (2015) 35–50
+
+The rest of this paper is organized as follows. Section 2 discusses
+previous work. Section 3 overviews our architecture, while
+Section 4 details our contributions to feature recognizer speed:
+effective translation, lazy evaluation, and selectivity. Section 5
+presents our experimental results and discusses them, while
+Section 6 considers limitations and future work and Section 7
+concludes the paper.
+2. Previous work
+2.1. Feature recognition
+We start by briefly summarizing prior work on feature
+recognition, much of which is historical—yet the need for feature
+recognition is perhaps greater now than ever before.
+Since the seminal work on geometric model analysis and classification by Kyprianou [19], much work has considered feature
+recognition. Classic feature recognition systems can be categorized into graph-based, volumetric decomposition, and hint-based
+approaches [3,4]. Graph-based methods first translate a B-rep
+model and a target feature into attributed face adjacency graphs
+(AAG), and then perform graph matching. Several successful feature recognition systems are based on this approach [9,11,20–23].
+There are three main drawbacks to graph-based approaches.
+Firstly, they are less successful at coping with interacting features,
+and features with variable topology, such as n-sided bosses for
+arbitrary n. Secondly, they are slow. In general, subgraph isomorphism is an NP-hard problem and has worst case exponential complexity [24]. Thus, some partitioning strategy or hints must be
+used [12], but even then times can be too long for large models
+or complex features. Thirdly, it is difficult to extend the approach
+to real industrial tasks involving complex geometry and topology [14].
+Volume decomposition and recomposition approaches are also
+quite general, and better at dealing with interacting features [25].
+Such methods usually decompose a CAD model into a set of
+intermediate volumes which are then combined to produce
+features [3]. Classical works include [26–28]. However, they again
+exhibit exponential complexity [3] and are limited to low degree
+analytical surfaces [12].
+Hint-based approaches are computationally efficient for small
+features but depend on the generation and definition of hints [29],
+and refer to hard-coded features—it is not easy for end users to
+modify them or define new features [12]. Key papers here include [30–32]. Various other approaches have also been suggested
+for recognizing features, e.g. using octrees to identify assembly
+features based on spatial and contact face adjacency relationships [33], artificial neural networks to assist in the recognition of
+complex features [34–36], etc.
+The outstanding key challenges, as noted, are performance, and
+the need for end users to be able to define their own features.
+To overcome the problem that engineers who understand what a
+feature is may not be expert in devising geometric algorithms to
+find such features, Martino [37] developed a teaching-by-example
+technique for form feature recognition, which first recognizes the
+protrusions and depressions of the component using syntactic
+pattern matching then performs graph matching. Suh [38] defined
+features textually in terms of a set of fundamental features and their
+arrangement represented by fundamental spatial relationships,
+turning feature recognition into a constraint satisfaction problem.
+This replaces the usual face adjacency graph search by a hintbased constraint-graph traversal. They also investigated several
+optimizations to reduce the search space. This approach has worst
+case time complexity of O(mn2 ) where m is the number of nodes
+in the relationship graph and n is the number of fundamental
+features in the part. The idea to use a declarative approach has
+
+37
+
+been considered previously. N-REP is a declarative system based
+on EXPRESS [39,40]; it uses a graphical interface to allow users to
+define features by selecting necessary entities. A tailored system
+for locating turning features for mill-turn parts was developed
+based on N-REP, with overall O(n2 ) complexity; here n is the
+number of machined faces [41]. However, its feature recognition
+performance more generally is unclear. Other declarative work
+includes that by Gibson [16] and our previous paper [17].
+Performance is another tough requirement, especially as
+real engineering designs become increasingly complex. Graph
+matching based methods have long been criticized for their
+high computational complexity, and various methods have been
+proposed to overcome this problem. Field [22] defined five classes
+of machining feature and used oriented face adjacency graph
+search to achieve linear performance. However, the system only
+supports prismatic machined features. Regli exploited distributed
+computing to provide a system with complexity between O(n2 )
+and O(n5 ), depending on the particular configuration of geometric
+entities and implementation details [14]. Feature vectors can
+also be used to optimize graph-based matching, achieving O(n3 )
+performance [24]. The approach first turns subgraphs into
+adjacency matrices, then groups and orders different elements,
+finally encoding ordered adjacency matrices as vectors. This
+reduces the subgraph isomorphism problem to a computation over
+three nested loops. Simple declarative approaches also suffer from
+performance problems, as a naive execution plan involves multiple
+nested loops, as previously noted.
+In summary, an ideal feature recognition system should be
+general, allowing end users to define new kinds of features relevant
+to their application, but it should leave the system to devise
+an efficient algorithm. This suggests a declarative rather than
+procedural approach to feature definition. However, the algorithm
+generator will need optimization techniques to ensure sufficient
+performance.
+2.2. Database query optimization
+Relational databases have long been used as the main way of
+storing large amounts of related business information. Information
+is retrieved using declarative queries; if these were naively
+translated into execution plans, the time taken would be far too
+long. There is thus a large body of work on optimizing query
+processing. We rely on this to efficiently retrieve features from CAD
+models using declarative feature definitions.
+In the discipline of relational algebra, relational database
+systems model data and perform queries using set operators. SQL
+is a high level declarative language used to implement relational
+algebra in relational database management systems [42]. A typical
+SQL query is a SELECT statement which retrieves data from one
+or more tables. When selecting data from multiple tables, a JOIN
+operator is typically used to specify how the data from one table is
+related to that in another table. Joins may be classified as INNER,
+OUTER (LEFT, RIGHT, FULL), and CROSS types; for details
+see [43]. The INNER join is most commonly used, as it is amenable
+to optimization. In SQL, INNER JOIN is often expressed implicitly
+as in the example query below. This form is the one used in our
+proposed approach.
+1
+2
+3
+4
+5
+6
+7
+8
+
+SELECT c. tstamp
+FROM commits c, actions a
+WHERE a.file IN
+( SELECT id FROM files WHERE path = ... )
+AND a. commit_id = c.id
+AND c.id >5
+GROUP BY c. tstamp DESC
+HAVING agg ();
+
+Listing 1: Example SQL query.
+
+38
+
+Z. Niu et al. / Computer-Aided Design 69 (2015) 35–50
+
+Here, items after SELECT name the information the user wishes to
+retrieve from the database. The keyword FROM is followed by several range tables, which are the source of the target information.
+Only certain information is used from each table: WHERE specifies various predicates the selected elements should satisfy. WHERE
+clauses can include subqueries such as the SELECT clause in brackets; they can also be (implicit) join predicates like the one equating
+a.commit_id to c.id, which connects (i.e. joins) two range tables via a common value. The predicates in WHERE statements are
+evaluated on all tuples, generating a temporary target list, while
+the HAVING clause further aggregates the temporary target list to
+produce the final results. We will use this idea later.
+When the query is executed, a query optimizer is used to
+determine a suitable plan, or algorithm, from the declarative form
+of the query. Considerable effort may be put into query planning,
+as the savings over straightforward plans may be significant,
+and indeed turn an infeasible query into a feasible one. Query
+optimization is a mature field [44]. Normally, a declarative query
+is first turned into a relational calculus expression, and the query
+optimizer then generates various execution paths with equivalent
+results, using two stages: rewriting, and planning [44]. The former
+rewrites the declarative query in the expectation that the new
+form may be more efficient. An example of this approach is
+sargable rewriting (i.e. a transformation to take advantage of an
+index). Planning transforms the query at a procedural level, via
+relational algebra transformations. Then a cost based planner is
+used to choose the plan predicted to be fastest based on statistical
+information about the database. System-R, one of the earliest
+databases to support SQL, pioneered such optimization [45]. Its use
+of dynamic programming to select the best query plan has been
+adopted by most commercial databases [44].
+Space precludes a full discussion of query optimization
+technology; for more information see [18]. However, we note that
+the planner may generate the search space by transforming the
+query in the following ways:
+Generalizing join sequencing Many queries involve multiple
+joins. This step finds an efficient execution order in which
+to process them. While the operations are commutative
+and associative, join tuples are not necessarily symmetric, so a translated execution tree with Cartesian products may result in poor performance for some orders of
+evaluation [45]. Approaches include turning asymmetric one-sided outer joins into equivalent but re-ordered
+expressions [46] by shuffling GROUP BY and JOIN [47]
+clauses, an important optimization supported by most
+current database systems [48–51].
+Multi-block query transformation A multi-block query includes
+several SELECT-FROM-WHERE structures in a single
+query. Such a query can be converted into a single
+block query via view merging, nested subquery merging
+(also called subquery flattening [48]), and semijoin-like
+techniques, as explained in [45].
+Scan methods Database systems use various methods to scan
+tables, including sequential scans, index scans, and
+bitmap index scans. Index and bitmap index scanning are
+much more efficient than sequential scanning, because
+only parts of the table have to be considered [49]. The
+planner chooses an appropriate scan method based on
+selectivity, a quantity which determines the effectiveness
+of an index in terms of the proportion of the data filtered
+out [52].
+Join optimization JOIN operations can be translated into procedural algorithms in various ways. The main alternatives
+use either nested loops, hash joins, or merge joins. Nested
+loops are normally used for small tables but the other approaches work much better for large tables [52], and are
+widely used in mainstream database systems [49–51].
+
+2.3. Gibson’s work
+As our work builds on Gibson’s, we briefly describe his
+contribution in more detail. He suggested that a declarative
+approach to feature definition could be an effective solution to
+the problem of allowing user-defined features [15,16,53]. He also
+noted that naive translation of the declarative form leads to
+inefficient algorithms, and that optimization is necessary.
+He defined features in a language with similarities to EXPRESS [39]. Features are based on entities (which may be a face,
+edge, vertex or subfeature), and predicates linking them. Such a
+declaration can be easily rewritten as an algorithm using a set of
+nested FOR loops, one per entity in the definition, and IF statements, one per predicate. Executing this takes exponential time in
+the number of entities in the feature definition, so is infeasible for
+anything but trivial features. Gibson investigated six strategies for
+optimizing this basic plan; they are clearly related to those used
+in database optimization, although Gibson did not consider this
+point of view. His strategies belong to four categories with respect
+to their effect on time complexity:
+Strength reduction and loop re-sequencing Both methods aim
+to reduce time spent inside each nested loop. They reduce
+recognition time by some constant factor but do not
+change the time complexity, which remains O(nk ) where
+k is number of loops and n is the total number of entities
+in the model. In SQL, join reordering is analogous to loop
+re-sequencing [54].
+Entity classification and featuretting These are both ways of
+splitting a declarative definition into parts—featuretting
+refers to splitting a feature into subfeatures. This reduces
+k
+the time complexity from O(nk ) to O(max(n11 , . . . , nkmm ))
+where m is the number of parts and ni is the number
+of entities in part i. Database systems do not typically
+automatically split queries into several simpler queries—
+queries are usually performed on all tuples of the
+search space, so we cannot rely on the database engine
+optimizer to do this for us. However, if the user defines
+features in terms of subfeatures (a natural divide-andconquer approach to problem solving), such a split is
+achieved manually, reducing time complexity.
+Indexing Precomputing an index allows relevant entities to be
+directly retrieved, rather than having to scan all entities
+during query processing. This effective technique is used
+both in Gibson’s approach and database engines. Time
+improvements depend on the selectivity of the index.
+Assignment This approach narrows the search space by finding
+WHERE statements containing equalities and associated
+conditions. The key idea is to replace an inner loop
+by results satisfying the conditions, reducing the time
+complexity. Database subqueries share a common goal
+with Gibson’s assignment approach, but adopt flattening
+which works differently in detail.
+
+2.4. Our previous work
+Our previous work [17] extended Gibson’s work from 2D to 3D
+models, more typical of real engineering, and considers a greater
+number of basic entities. We followed his declarative approach, but
+rather than devising an ad-hoc set of query optimizations, we took
+advantage of database optimization techniques. We translated
+declarative feature definitions into SQL queries which could
+then be automatically optimized by a database engine (SQLite)
+before evaluation using a CAD modeler (CADfix). SQLite has a
+compact but effective query optimizer [48]: it provides sargable
+rewriting including BETWEEN and OR optimizations, and provides
+
+Z. Niu et al. / Computer-Aided Design 69 (2015) 35–50
+
+algebraic space and method-structure space transformations such
+as reordering joins, subquery flattening, automatic indexing and
+group-by optimizations. Its nearest neighbor heuristic planner
+provides an efficient polynomial-time algorithm to select a good
+plan. Our experiments showed that this approach could effectively
+find various basic features (in particular through-holes, notches,
+and slots) in models, and experimentally determined that the
+time complexity is reduced from exponential to approximately
+quadratic for these simple features. The main optimization
+processes used by SQLite to achieve this are reordering joins, using
+a covering index, and subquery flattening.
+In the current work, we have replaced the database engine
+by PostgreSQL. One goal was to see whether the optimizations
+provided by SQLite could be replicated, and to determine whether
+different database engines would arrive at similar query execution
+plans when used for feature recognition. As our results later
+show, SQLite and PostgreSQL take very different approaches to
+query optimization. Our previous approach for translating feature
+declarations into SQL queries which worked well for SQLite was
+much less successful when used with PostgreSQL. This led us
+to reconsider how to perform translation, culminating in a new
+approach which works well with both databases. We also show
+that PostgreSQL query optimization is more powerful for reasons
+explained later; the significant outcome is that simple features can
+now be found in linear time.
+We also extend our earlier work by considering further
+improvements that can be brought about by lazy evaluation, and
+by using estimates of time required to compute various geometric
+operations.
+3. Optimization in a feature recognizer
+Our approach is based on letting a database engine optimize
+the query plans used to perform featuring recognition, allowing
+us to leverage the large body of research on database query
+optimization. The first important contribution of this paper is
+an approach to translating declarative feature definitions into
+carefully SQL designed queries, which work well for multiple
+database systems. Different database systems take different
+approaches to query optimization, and if the query is presented to
+the database in a form which is not well handled by its optimizer,
+poor performance will result.
+The second idea we consider is lazy evaluation. Some geometric
+predicates, e.g. determining whether the area of a curved face
+exceeds a threshold, require significant calculation. For efficiency,
+rather than evaluating such a predicate for all relevant entities, it is
+better to only evaluate it for those entities for which it is definitely
+needed. For example, if a face fails to meet some other constraint
+such as being connected to a certain edge, we may never need its
+area.
+Thirdly, when we do have to perform geometric computations,
+some are much cheaper than others. It may be quicker to perform
+a simple computation on many entities rather than a very slow
+computation on just a few entities. In cases when multiple
+predicates filter a list of entities, determining how many entities
+there are of various kinds, and how long different predicates are
+expected to take to compute, can be used to choose the best order
+in which to apply the sequence of filters.
+The second and third kinds of optimization above are typically
+not used in database systems, as most queries are based on reading
+data from tables, which is quick, and takes a more or less constant
+amount of time.
+We now briefly summarize our system architecture, which
+remains essentially unchanged from our earlier work [17], apart
+from the additional selectivity module and training models. The
+feature recognizer includes a translator, importer, query planner,
+
+39
+
+executor, and selectivity trainer, interfaced to a CAD modeler (see
+Fig. 2). Commands to open a model, or draw feature instances
+on the CAD model, are handled by the command analyzer, and
+appropriate requests are passed to the modeler. Another command
+is used to declaratively define a feature. A further command can
+then be used to seek instances of the feature in a loaded model.
+At this point, the translator uses the definition to generate an SQL
+query which is in turn optimized by the query planner internal to
+the chosen database engine. The importer analyzes the query and
+caches necessary simple relations retrieved from the CAD modeler
+for speed; only topological relations and simple information such
+as edge convexity are treated in this way. The query planner
+analyzes the query as well as the numbers of entities in the basic
+topological relations to determine the expected cheapest plan.
+This takes into account the cost of computing each predicate. The
+executor executes the chosen query plan, using data from the
+local cache and other information requested directly from the CAD
+modeler. The resulting feature instances can be output in text
+format or drawn on the original CAD model.
+The current implementation uses PostgreSQL as the database
+engine—it is free, has open source which aids understanding of its
+query optimizer, and has clearly structured code which facilitates
+linking it to the CAD modeler. PostgreSQL supports a range of
+query optimization approaches. The most important ones include
+(i) alternative ways to access data using sequential scans, bitmap
+index scans, or index scans according to filter selectivity (using
+statistics obtained by ANALYZE), (ii) alternative ways of processing
+joins to shrink the search space and reduce time complexity, using
+nested loops, hash joins, merge joins or procedural code, and
+(iii) reordering join sequences. PostgreSQL’s optimizer uses System
+R’s dynamic programming approach when the number of tables is
+small, but switches to a genetic algorithm to solve the join ordering
+problem when there is a large number of FROM tables [55,56].
+CADfix [57,58] is used as the CAD modeler. It is a commercial
+geometry translation and repair package primarily intended for 3D
+model data exchange between different engineering systems and
+applications. It already provides some defeaturing tools, although
+we do not make use of these. We use CADfix (via its API) to load
+CAD models (and repair them to ensure consistent, connected
+topology), and to interrogate their topology and geometry. It is also
+used to draw the features found.
+4. Improvements to query translation and execution
+We now discuss the three main contributions of this paper
+which improve feature finding performance: effective translation,
+lazy evaluation and predicate ordering.
+4.1. Effective translation
+Effective translation should translate declarative feature definitions into SQL queries which can be efficiently processed by the
+database engine, independently of how it subsequently performs
+query optimization. We consider four issues, the predicates used
+to define features, the translation rules, uniqueness of entities, and
+the performance achieved.
+4.1.1. Predicates
+Features are defined in terms of necessary component entities: faces, edges, vertices, and subfeatures. Predicates – truth
+functions returning a Boolean answer – are used either to define
+relationships between entities (relational predicates), or characteristics they should exhibit (attribute predicates). The available predicates include:
+
+40
+
+Z. Niu et al. / Computer-Aided Design 69 (2015) 35–50
+
+Fig. 2. Feature recognition architecture.
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+
+Bounds ( edge_id :e, face_id :f)
+Vertex_bounds_edge ( vertex_id :v, edge_id :e)
+Valency ( face_id :f, int:i)
+Face_has_number_of_vertices ( face_id :f, int:imin , int:
+imax)
+Face_has_number_of_edges ( face_id :f, int:imin , int:
+imax)
+Face_has_number_of_loops ( face_id :f, int:imin , int:
+imax)
+Face_has_geometry ( face_id :f1 , facetype :t)
+Plane_normal_aligned_within ( face_id :f, vector :v,
+angle : a)
+Cylinder_axis_aligned_within ( face_id :f, vector :v,
+angle :a)
+Cone_axis_aligned_within ( face_id :f, vector :v, angle :a
+)
+Ellipsoid_axis_aligned_within ( face_id :f1 , vector :v1 ,
+angle :a1 , vector :v2 , angle:a2)
+Torus_axis_aligned_within ( face_id :f, vector :v, angle :
+a)
+Cone_angle_in_range ( face_id :f, angle:amin , angle :amax
+)
+Sphere_centre_near ( face_id :f, point:p, real:r)
+Ellipsoid_centre_near ( face_id :f, point:p, real:r)
+Torus_centre_near ( face_id :f, point:p, real :r)
+Sphere_radius_in_range ( face_id :f, real:rmin , real:
+rmax)
+Cylinder_radius_in_range ( face_id :f, real:rmin , real:
+rmax)
+Cone_min_radius_in_range ( face_id :f, real:rmin , real:
+rmax)
+Cone_max_radius_in_range ( face_id :f, real:rmin , real:
+rmax)
+Torus_radii_in_range ( face_id :f, real:rmin1 , real:
+rmax1 ,
+real:rmin2 , real:rmax2)
+Ellipsoid_radii_in_range ( face_id :f, real:rmin1 , real:
+rmax1 ,
+real:rmin2 , real:rmax2 , real:rmin3 , real:rmax3 )
+Face_area_in_range ( face_id :f, real:rmin , real:rmax)
+Edge_has_geometry ( edge_id :e1 , edgetype :type)
+Convexity_is ( edge_id :e1 , convexitytype :type)
+Edge_length_in_range ( edge_id :e, real:rmin , real:rmax)
+Body_has_number_of_faces ( body_id :b, int:imin , int:
+imax)
+Body_has_number_of_edges ( body_id :b, int:imin , int:
+imax)
+Body_has_number_of_vertices ( body_id :b, int:imin , int:
+imax)
+
+Listing 2: Supported predicates.
+
+A key point is that the predicates are carefully chosen to be
+simple. This both aids the user who is writing feature definitions,
+and in translating the definitions into queries. For example, by
+using Bounds(edge_id:e,face_id:f), the user does not need
+to think in terms of following all edges around the boundary of a
+face, but simply in terms of which edges belong to that boundary.
+4.1.2. Translation rules
+The translator transforms each predicate into a query fragment;
+multiple predicates are connected using AND. Different ways of
+translating declarations into SQL queries differ in efficiency.
+Attribute predicates typically involve only a single entity
+and some condition that the entity must satisfy, encoding a
+binary relation. Such predicates can be written as SQL fragments in a straightforward way. For example a predicate
+Convexity_is(edge, convex) in the definition can be translated into the SQL fragment edge.convexity = convex. These
+predicates act as filters which reject data not meeting some requirement. A query optimizer can efficiently deal with them by indexing the data.
+Relational predicates are more complex as they involve
+multiple entities. Bounds(edge, face) is of this type; it
+indicates adjacency of some face and some edge. It is one of the
+most important predicates, used in almost every feature definition.
+Since the edge and face are arbitrary, when executing a feature
+query, we must in principle iterate over all faces and all edges to
+determine which ones satisfy this relationship. As such a predicate
+involves two variables, it cannot be effectively written as a filter.
+Our previous work [17], based on the SQLite database,
+straightforwardly translated feature definitions into SQL queries
+using a series of EXISTS clauses. Entities satisfying bounds
+predicates linking edges and faces (and other relational predicates)
+were found using a preloaded, cached range table:
+1
+2
+
+Definition :
+SQL fragment :
+
+3
+4
+5
+
+Range table :
+
+Bounds (e1 , f1);
+EXISTS ( SELECT bounds .edge FROM
+bounds WHERE bounds .face = f1.
+face AND bounds .edge = e1.edge)
+bounds (edge int , face int);
+
+Z. Niu et al. / Computer-Aided Design 69 (2015) 35–50
+
+41
+
+Fig. 3. Notch feature and definition.
+
+As SQLite effectively performs self-join optimization, bounds
+are handled efficiently, allowing simple features to be found in
+time approximately O(n2 ) for models with n entities. However,
+on replacing SQLite with PostgreSQL, we found that this did not
+happen. PostgreSQL has no self-join optimization, and instead
+uses a strategy based on cross-joins via a Cartesian product.
+Such optimization fails to reduce the complexity of nested loops
+corresponding to multiple predicates, and even for simple models,
+could take days to return results. This led us to rethink the way
+translation was performed.
+Assuming that we are dealing with manifold models, each edge
+bounds only two faces, so the number of bounds relationships
+is twice the number of edges. We can take advantage of
+this observation as follows. Instead of thinking in terms of
+edge–face pairs joined by a bounds relationship, we think in
+terms of edge–face1–face2 triples. We extract and cache these in
+what we call a full-edge-form table. For a given edge, the triples
+edge–face1–face2 and edge–face2–face1 are both cached, as a
+feature definition might insist that face1 has a lower id (i.e. unique
+identifier) than face2, or vice versa (to prevent a symmetric feature
+from being reported multiple times with different labeling, as
+we discuss later). This doubles the table size, but provides more
+flexibility, and has little impact on performance.
+Feature declarations can be automatically rewritten to use the
+full-edge-form relationship, rather than the bounds relationship.
+Feature definitions often specify e.g. that two edges border the
+same face, or that they belong to different faces. This can be
+expressed using an equality or inequality predicate. For example, the SQL fragment full_edge_e1.f2=full_edge_e2.f1
+corresponds to the need to find a pair of tuples with patterns
+ei, fa, fb and ej, fb, fc in the full-edge-form table; note
+that fb occurs in both, as face 2 in the first tuple and as face 1
+in the second. Typically, many relations of this kind will occur in
+the WHERE clause of the generated query. This approach replaces
+the need to iterate over all face–edge pairs to find ones satisfying a bounding relationship, to simply retrieving those few tuples
+which match a pattern indicating equality. Most database systems
+can recognize such relations as corresponding to inner joins, and
+can readily optimize them [49–51].
+At runtime, when the parser encounters any Bounds predicate
+in the feature definition, the importer module executes a query
+to create and load the full-edge-form relation. Other predicates
+are evaluated at runtime and cached into temporary tables as
+explained later.
+An example of a definition of a notch feature from our previous
+work is given in Fig. 3. The inequality clauses linking faces prevent
+finding the same feature multiple times, as discussed under
+symmetry in Section 4.1.3. Our previous translation approach for
+the SQLite database results in the SQL query below1 :
+
+1 Here and elsewhere we simply omit repeated clauses of a similar nature to
+shorten the paper. In each case, omitted clauses are replaced by an ellipsis while
+keeping the first and last clauses.
+
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+
+SELECT f1.face , ... , f4.face , e1.edge , ... , e5.edge
+FROM
+faces AS f1 , ... , faces AS f4 , edges AS e1 ,
+... , edges AS e5
+WHERE f1.face <f2.face AND f3.face <f4.face
+AND e2.edge <>e1.edge ... AND e5.edge <>e1.edge
+AND EXISTS ( SELECT bounds .edge FROM bounds
+WHERE bounds .face=f1.face AND bounds .edge=e1.edge)
+AND EXISTS ( SELECT convexity .edge from convexity
+WHERE convexity .type =1 and convexity .edge=e1.edge)
+...
+AND EXISTS ( SELECT bounds .edge FROM bounds
+WHERE bounds .face=f4.face AND bounds .edge=e5.edge)
+AND EXISTS ( SELECT convexity .edge from convexity
+WHERE convexity .type =2 and convexity .edge=e5.edge);
+
+Listing 3: Notch query: translation from our previous work.
+All edges have convexity specified in the SQL via a numerical code in which CONCAVE=1, CONVEX=2, TANGENTIAL=3,
+MIXED=4.
+However, using the full-edge-form approach, this is now
+translated into the following SQL:
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+
+SELECT full_edge_e1 .edge AS e1 , ... , full_edge_e5 .
+edge AS e5 , full_edge_e1 . face1 AS f1 , ... ,
+full_edge_e3 . face2 AS f4
+FROM
+full_edge full_edge_e5 , ... , full_edge
+full_edge_e1
+WHERE full_edge_e1 . face2 = full_edge_e2 . face1 ...
+AND full_edge_e3 . face2 = full_edge_e5 . face2
+AND full_edge_e1 . convexity =1 ... AND full_edge_e5 .
+convexity =2
+AND full_edge_e1 .face1 < full_edge_e1 . face2
+AND full_edge_e2 .face2 < full_edge_e3 . face2
+AND full_edge_e3 .face2 <> full_edge_e2 . face2 ...
+AND full_edge_e1 .face2 <> full_edge_e1 . face1
+AND full_edge_e5 .edge <> full_edge_e4 .edge ...
+AND full_edge_e2 .edge <> full_edge_e1 .edge;
+
+Listing 4: Notch query: improved translation.
+A further change we have made is that additional inequality clauses
+are automatically added during translation to meet the implicit
+user expectation that all named entities should be different
+unless explicitly stated otherwise—this is discussed further in
+Section 4.1.3.
+In practice, only bounds and convexity predicates are translated
+into SQL fragments represented by WHERE clauses. Other predicates involving geometry, area, etc., are translated into SQL fragments via a HAVING clause. This design permits lazy evaluation, as
+we describe later. Bounds and convexity predicates are almost always needed, and can be determined at little cost, so there is little
+point in using lazy evaluation in these cases. This approach is consistent with previous methods based on adjacency graphs, which
+use topological information to find potential parts of features and
+then use other conditions to refine the results.
+
+42
+
+Z. Niu et al. / Computer-Aided Design 69 (2015) 35–50
+
+4.1.3. Uniqueness of entities and symmetry
+Feature declarations are difficult to write correctly, and as in
+other areas of geometric computing, special cases can often cause
+difficulties. Consider, for example, through holes. A through hole
+in a cube, or most other models, has end loops which lie on
+distinct faces. However, a through hole in a cylinder can have
+both end loops lying on the same face, which is a special case.
+Whether such a special case should be permitted or excluded is
+a matter for the user. However, it is clear that in most cases, if
+a feature definition mentions e.g. two faces f1 and f2, it is the
+intent that they should typically be distinct. In our current system,
+we make this assumption for all entities in feature declarations,
+so the Different_id clauses we originally used in the notch
+example are no longer needed in our current system. This makes
+it easier for users to write feature declarations. If necessary, the
+user may override this assumption by adding clauses of the form
+ALLOWING f1=f2 to state that some particular entities may be
+the same.
+This assumption differs from the way an SQL query finds
+features: each entity is filtered out from a range table, and there
+is no guarantee that values are distinct. To ensure that entities
+with different names are distinct, a straightforward approach is to
+automatically insert an SQL fragment like f1<>f2 into the final
+query for each pair of entities of the same kind.
+A further issue is that many features are topologically symmetric in some way, and this can lead to repeatedly finding the same
+solution in which the names of the entities are permuted. For example, see the notch in Fig. 3: interchanging the roles of faces F1
+and F2, and F3 and F4 (as well as various edges) gives another
+interpretation of the same notch. Such symmetries are in general
+difficult to detect and handle automatically, and we currently leave
+this to the user to resolve. One way to do this is to add further conditions on the identities of entities. For example, for notch features,
+if the user adds Lower_id(F1,F2), Lower_id(F3,F4), it will
+prevent features from being reported twice.
+4.1.4. Performance
+We now consider the performance achieved by the above
+translation. Using the EXPLAIN ANALYZE database command
+when executing a feature query provides information about
+the plan the database uses. Our experiments show that, after
+optimizing, PostgreSQL uses hash joins, while SQLite relies on
+indexing. We consider in detail how the query is optimized by
+PostgreSQL with our new approach, and how our old translation is
+optimized by SQLite. We consider a basic feature with only Bounds
+and Convexity predicates. While in principle, features with other
+geometric predicates (e.g. concerning face type) will theoretically
+take longer, using lazy evaluation as proposed in next section helps
+to overcome this problem.
+In practical SQL queries, it is common for two tables to be
+connected by equi-join predicates. In feature queries, the Bounds
+predicates are such equi-join predicates, and the query is an
+implicit inner join query. When at least of the inputs to a join
+has few items, it can be effectively computed using nested loops;
+merge joins are an improvement when there are two large inputs.
+However, if (as is typically true) main memory is plentiful, hash
+joins provide substantially better performance than nested loops
+and merge joins [59]. Hash joins are the most frequently used
+join algorithm in current commercial database systems [60],
+and are responsible for PostgreSQL’s better feature recognition
+performance than SQLite’s.
+In our previous feature finder, predicates were translated into
+EXISTS subqueries (we refer to this as the old approach). Such
+subqueries are multi-block queries. They are usually turned into
+single block queries by merging any subqueries into the main body.
+While SQLite can perform subquery flattening optimization, it is
+
+not used for EXISTS subqueries [48], as confirmed by examining
+execution plans. Using the old translation approach, a typical query
+fragment, from our notch feature finding experiment (see later),
+might be
+1
+2
+3
+4
+5
+6
+
+EXIST ( SELECT valency .face FROM valency WHERE
+valency . degree =4 and valency .face=f1.face) AND
+EXISTS ( SELECT convexity .edge FROM convexity WHERE
+convexity .type =2 AND convexity .edge=e1.edge) AND
+EXISTS ( SELECT bounds .edge FROM bounds WHERE
+bounds .face=f1.face AND bounds .edge=e1.edge) AND
+
+with a corresponding execution plan reported by SQLite to be
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+
+0|0|0| SCAN TABLE faces AS f1 (~500000 rows)
+0|0|0| EXECUTE CORRELATED SCALAR SUBQUERY 1
+1|0|0| SEARCH TABLE valency USING AUTOMATIC
+COVERING INDEX ( DEGREE =? AND FACE =?) (~7 rows)
+0|1|5| SCAN TABLE edges AS e1 (~250000 rows)
+0|0|0| EXECUTE CORRELATED SCALAR SUBQUERY 2
+2|0|0| SEARCH TABLE convexity USING AUTOMATIC
+COVERING INDEX (TYPE =? AND EDGE =?) (~7 rows)
+0|0|0| EXECUTE CORRELATED SCALAR SUBQUERY 3
+3|0|0| SEARCH TABLE bounds USING AUTOMATIC
+COVERING INDEX (FACE =? AND EDGE =?) (~7 rows)
+
+The numbers indicated are generated automatically by the SQLite
+query planner, and change case by case. Valency here means the
+number edges surrounding a face.
+The execution plan shows that EXISTS introduces correlated
+subqueries: inner queries depend on outer queries. Here, the inner
+tables valency, convexity, and bounds have references to the
+outer table faces AS f1.
+Consider the valency query first. The executor executes the
+outer table scan on faces, taking time O(f ) where f is the number
+of faces, and then executes the inner scan on the valency table
+using an automatically created covering index. This a temporary
+index just used in this query to find tuples satisfying subquery
+predicates. It incurs a cost of O(f log(f )), as the valency table has
+the same number of entities as the face table, and sorting is needed
+to make the index. Then, similarly, the outer query goes through all
+edge rows, and for each row, searches in an index. This takes time
+O(e log(e) + fe log(b)) where b is the size of the bounds table; the
+convexity table is the same size as the edge table. As, the bounds
+table contains 2e entries, so this is overall time O(e log e). Now, as
+models get more complex, generally, the individual faces do not get
+more complex, there are just more of them. Typically, faces have
+a small fixed maximum number of edges. This observation, taken
+together with Euler’s formula, means that in complex models, as
+the number of faces grows, the number of edges approximately
+grows in proportion, i.e. O(e) = O(f ) = O(n) where n is the
+number of entities in the model. Overall, then, processing EXISTS
+takes time O(n2 log(n)): subqueries correspond to outer tables
+each running an inner scan over a unique index. As log(n) varies
+slowly, this explains the quasi-quadratic performance empirically
+observed in our previous paper.
+The new scheme proposed in this paper is more efficient;
+EXISTS clauses of the type used above are not required. The
+simplest kind of hash join includes two steps: first, the smaller
+relation is used to construct a hash table, then the larger relation’s
+tuples are used to probe the hash table to find matches (we
+refer to this as the new approach later). To understand the
+performance, consider the simplest situation: two (unindexed)
+relational tables, both with O(n) tuples. The cost is composed of
+four linear components: reading the inner table, hashing the inner
+table, reading the outer table, and probing the hash table, giving a
+total cost of O(n). This expectation is verified in our experiments
+later.
+
+Z. Niu et al. / Computer-Aided Design 69 (2015) 35–50
+
+43
+
+The result in this case is that the area function is called many fewer
+times—only for mid-faces of step ribs, and not for all model faces.
+For additional efficiency, caching is used: each time we evaluate
+an expensive predicate such as one involving the area of a face, we
+first see if it is already available in a local table. If not, a remote call
+is made to CADfix to calculate the result, which is then also cached
+in the local table.
+Fig. 4. Artificial models for performance testing.
+
+4.2. Lazy evaluation
+We now consider a further method to gain additional speed.
+The idea of lazy evaluation is to avoid computing things until the
+very moment that they are definitely needed—there is no point
+in computing things which may later turn out to be unnecessary.
+For example, suppose p(x) and q(y) are predicates (without
+side-effects), which may be expensive to evaluate. Consider the
+expression p(x) AND q(y). We could evaluate both and then
+compute the result using logical AND. However, if p(x) is false,
+the overall expression must be false, and we do not need to
+compute q(y) at all, saving unnecessary work.
+Lazy evaluation can help to ensure that we only evaluate
+predicates on a small candidate set. In our feature finder, predicates
+are evaluated at runtime either by local lookup in cache tables, or
+remotely by the CAD modeler; some of the latter may take a long
+time. For example, when finding features such as small pockets,
+it will be an improvement to only compute the areas of faces
+definitely belonging to pockets, rather than the areas of all faces.
+Lazy evaluation is realized in our system by steps in the
+translation stage, the importer, and the executor. The translated
+query is first analyzed by an importer, which then retrieves basic
+relations and entity properties of the model from the CAD modeler.
+Returned topological information such as bounds relations, and
+geometric properties which can be rapidly determined such as
+convexity, are cached locally in database tables. Bounds relations
+are cached as full-edge-form tables and geometric information is
+cached in (id,property) tables. All are used as range tables
+in the final query. Expensive predicates are expressed as foreign
+SQL functions and evaluated during execution, by calling the CAD
+modeler directly.
+The time at which predicates are evaluated is determined
+by how a feature definition is translated into SQL. Predicates
+placed in WHERE clauses are evaluated on all tuples of the range
+tables. Predicates placed in HAVING clauses are only evaluated
+on temporary results which fulfill the conditions in the WHERE
+clauses. Thus, our translator puts potentially expensive predicates
+into HAVING clauses for efficiency. The only predicates placed
+into WHERE clauses are basic topological predicates (which can be
+optimized by hash joins) and fast geometric predicates (which can
+be optimized by use of an index).
+For example, if the user wants to find large step ribs (see Fig. 4),
+whose middle face has an area greater than 50 units, a feature
+definition might be translated as:
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+
+SELECT full_edge_e1 .edge AS e1 , ..., full_edge_e12 .
+edge AS e12 , full_edge_e1 .face1 AS f1 , ...,
+full_edge_e1 .face2 AS f9
+FROM
+full_edge full_edge_e12 , ..., full_edge
+full_edge_e1
+WHERE full_edge_e1 .face2= full_edge_e2 .face2
+...
+AND full_edge_e11 .face2= full_edge_e12 .face2
+AND full_edge_e1 . convexity =1 ... full_edge_e12 .
+convexity =1
+AND full_edge_e10 .face2 <> full_edge_e9 .face1 ...
+AND full_edge_e1 .face2 <> full_edge_e1 .face1
+AND full_edge_e12 .edge <> full_edge_e11 .edge ...
+AND full_edge_e2 .edge <> full_edge_e1 .edge
+GROUP BY full_edge_e1 .edge , ..., full_edge_e12 .edge ,
+full_edge_e1 .face1 , ..., full_edge_e1 . face2
+HAVING get_area ( full_edge_e1 .face2) >50;
+
+4.3. Predicate ordering
+Our final approach to provide speed gains concerns predicate
+ordering. Query optimization in database systems includes reordering subtasks in a query for efficiency—if a series of filters is
+applied, we would like the first filter to reject as much as possible so that subsequent filters have less data to process. Standard
+database query optimization chooses an approach based on statistical information, including the fraction of column entries that are
+null, the average size of column entries, whether the number of
+distinct values is likely to increase as the table grows or not, and so
+on [61]. It is usually assumed that retrieving each data item takes a
+constant amount of time, whereas in our system, some information
+must be computed by the CAD modeler, and so the time taken may
+vary considerably according to the predicate involved. We therefore modify the standard database query optimizer to take this into
+account.
+Our approach is based on the idea of selectivity, the probability
+that a given predicate will return TRUE. In a HAVING clause with
+multiple predicates, the order in which they are evaluated does not
+affect the result. If all predicates took the same time to evaluate,
+for efficiency, we should thus evaluate them in decreasing order
+of selectivity, to reject as much as possible early on. However,
+some take longer to evaluate, which should also be taken into
+account: if all predicates were equally likely to be false, we should
+evaluate the fastest ones first, to reduce the number of slower
+evaluations. These two requirements can be combined to give an
+overall optimal order of evaluating the predicates by considering
+the merit of a predicate, m = sc, where s is its selectivity, and c
+is its expected cost (time taken to evaluate it). The fastest way to
+evaluate a clause is to evaluate the predicates in order of decreasing
+merit.
+However, for a given model, we know neither the selectivity,
+nor the cost of executing a given predicate. Nevertheless, we can
+obtain estimates for these quantities by a prior offline analysis of
+a collection of CAD models. Ideally these would be models of a
+similar kind to the one being considered—a collection of similar
+water pumps, for example, if we are finding features in a water
+pump.
+Let P (a1 , . . . , an ) be a predicate with n arguments, which for
+simplicity we take to be discrete values. Suppose the training set
+has M models. The selectivity for the kth model taken individually
+is
+sk = Ok /Ik
+
+(1)
+
+where Ok is the number of entities in model k for which the
+predicate P is true, and Ik is the number of entities in model k that
+P can be applied to. The average selectivity of this predicate over
+the whole training set is
+E (s) =
+
+M
+
+1
+
+Ok /
+
+M
+
+
+Ik
+
+(2)
+
+1
+
+When predicates involve continuous values, the definition
+of selectivity needs to be modified somewhat. For example, face area is a continuous variable, with a corresponding predicate which checks if it is within a given range:
+
+44
+
+Z. Niu et al. / Computer-Aided Design 69 (2015) 35–50
+
+face_area_in_range(face_id:int, rmin:real,
+rmax:real). Selectivity is now
+ rmax
+ ∞
+P (A) dA
+s=
+P (A) dA /
+rmin
+
+(3)
+
+0
+
+where P (A) is the probability density that an arbitrary face has a
+certain area. In practice, this may be estimated by constructing a
+histogram of face areas for all models.
+We can also estimate the average time needed to execute each
+predicate by processing the same collection of models offline.
+Suppose a query has two predicates p1 and p2 , with average
+costs c1 and c2 and average selectivities s1 and s2 . We can estimate
+the times needed to execute these in different orders to be:
+p1 then p2 : t12 = s1 c1 + s1 s2 c2
+
+(4)
+
+p2 then p1 : t21 = s2 c2 + s1 s2 c1 ,
+and choose the order of execution according to which of these
+numbers is smaller. This analysis may be readily generalized to
+larger numbers of predicates.
+5. Experiments
+We now describe various experiments carried out to determine
+whether and how well the ideas above work in practice, and in
+particular whether they enable features to be found at a reasonable
+speed. We consider separately the optimizations provided by our
+new approach to translation, lazy evaluation, and selectivity, and
+conclude with a test involving some more realistic models.
+5.1. Translation
+Naive translation of a declarative feature definition using nested
+loops has time complexity O(ne ) where e is the number of entities
+in the feature, for a model with n entities. Clearly, for large models,
+and any realistic value of e, this is infeasible. Our previous approach
+to translation achieved approximately O(n2 ) performance for basic
+features (notch, slot, through-hole) with SQLite [17]. When we
+replaced the database engine by PostgreSQL, still using the same
+strategy, the performance was much worse; indeed no feature
+finding results were returned in any reasonable time. Analysis of
+the cause led to the new translation approach given here. We now
+examine how quickly it can find features, using both SQLite and
+PostgreSQL.
+We consider two experiments. We first compared the old
+and new translation approaches using the same database engine
+(SQLite); the experiments show that the expected improved
+computational complexity is observed. Secondly, we compared the
+relative performance of two different database engines (SQLite and
+PostgreSQL).
+5.1.1. Old and new translations using SQLite
+In our comparison of old and new translation approaches, we
+used the same test models as in our previous paper; they comprise
+an increasing number of blocks (2n where n = 0, . . . , 11), each
+containing a feature which may be a notch, slot, or step-rib. Such
+models allow us to see how the performance scales when models
+increase in complexity in a regular way. Fig. 4 shows the models
+for n = 2.
+Fig. 5 gives a log–log plot of the time taken in milliseconds to
+find all features of the given type in each model, versus the total
+number of edges in that model (step-ribs took too long to find
+using the old approach, so no results are presented in that case).
+Performance in this log–log plot approximately follows a straight
+line relationship in each case, indicating that time taken to find
+features is reasonably modeled as t = α np where p is the slope
+
+Fig. 5. Performance comparison between new and old translations using SQLite.
+Table 1
+Exponent of performance of old and new translations using SQLite.
+Translation approach
+Old
+New
+
+Notch
+
+Slot
+
+Step-rib
+
+1.98
+0.89
+
+1.98
+0.90
+
+–
+2.12
+
+of the line and n is the number of entities. (As noted earlier, the
+number of edges is roughly proportional to the number of entities.)
+In practice, as we are interested in the asymptotic behavior of the
+algorithms (for larger models), so we measure the slope past the
+point at which the slope seems to stabilize. The slopes are given in
+Table 1.
+It is clear that, although both translations are effectively
+optimized by the database engine, the computational complexity
+is quite different. The old approach results in close to O(n2 )
+performance for notch and slot features. For step-rib features the
+system failed to return results in an acceptable time—step-ribs
+contain many more entities (9 faces and 12 edges) than notches
+(4 faces and 5 edges) or slots (5 faces and 8 edges). In contrast, the
+new translation approach results in roughly linear performance for
+notch and slot features, and approximately quadratic performance
+for step-rib features.
+5.2. New translation using SQLite and PostgreSQL
+Next, we compare how well the new translation approach
+works in SQLite and PostgreSQL. Performing tests on the same
+models as before leads to the results in Fig. 6; the corresponding
+slopes are given in Table 2. Approximately linear complexity is
+achieved using PostgreSQL.
+This result is significant, as it implies that a system based
+on these ideas should scale to very large industrial models.
+As far as we know, no other published feature finder displays
+linear performance; indeed many papers note the exponential
+complexity of graph based feature finders [12].
+To further understand why PostgreSQL achieves linear performance for step-ribs while SQLite does not, we must further analyze the optimizations used by each database engine. They are
+quite different. Fig. 7 shows part of a typical SQLite query plan for
+slot feature recognition. SQLite optimizes the query mainly by use
+of automatic covering indexes, and no changes are made to the
+order of joins. As temporary index creation requires sorting, the
+time taken must be at least O(n log n). Detailed consideration of
+the query plans reveals that although notch, slot, and step-rib features all use a covering index, they are used quite differently. For
+step-ribs, execution steps like the below are included:
+
+Z. Niu et al. / Computer-Aided Design 69 (2015) 35–50
+
+45
+
+Fig. 9. Carbine.
+
+Fig. 6. Performance of new translation using SQLite and PostgreSQL.
+
+Fig. 10. Switch.
+
+Fig. 7. New translation query plan in SQLite.
+
+Fig. 8. New translation query plan using PostgreSQL.
+
+Fig. 11. CPU heatsink.
+
+Table 2
+Exponent of performance of new translation using SQLite and PostgreSQL.
+Database engine
+SQLite
+PostgreSQL
+
+Notch
+
+Slot
+
+Step-rib
+
+0.89
+0.91
+
+0.90
+0.94
+
+2.12
+0.95
+
+In summary, both query optimizations in SQLite and PostgreSQL
+give nearly linear performance in practice for the simplest features,
+but SQLite can exhibit worse performance for more complex
+features.
+5.3. Real world performance
+
+1
+2
+
+0|0|11| SCAN TABLE full_edge AS full_edge_e1 (~50000
+rows)
+0|1|0| SEARCH TABLE full_edge AS full_edge_e12 USING
+AUTOMATIC COVERING INDEX ( convexity =?) (~7 rows)
+
+where table full_edge is defined as
+1
+
+full_edge (edge INTEGER , face1 INTEGER , face2 INTEGER ,
+convexity INTEGER )
+
+While SQLite processes convexity using a covering index, almost all tuples satisfy the convexity constraint, so the result is almost like a sequential scan of all tuples, leading to O(n2 log n) overall performance. This is not the case for notch and slot features. Experiments show that if we create face and edge indexes explicitly,
+SQLite can also achieve quasi-linear performance for step-ribs.
+Let us now consider the execution plan used by PostgreSQL,
+as illustrated in Fig. 8. Here, first the order of range tables
+is shuffled allowing join re-ordering optimization. Tables are
+accessed sequentially before pairs are jointly processed by hash
+joins. As explained in Section 3, this has time complexity O(n).
+
+Real industrial CAD models are more challenging: large models
+may include upwards of hundreds of thousands or even millions of
+entities. In this case, performance is potentially a serious problem.
+Real models may include more complex features than the simple
+ones used in earlier tests, and consider subfeatures as entities, as
+well as faces, edges and vertices. All of these are big challenges for
+traditional algorithms. In this section, we show tests on several
+larger models to help assess the potential of our approach for
+industrial use.
+First we compare the performance of the current approach in
+this paper with our previous work, using increasingly complex
+models of a carbine, switch and CPU heat sink (see Figs. 9–11); the
+features to be found were again open slots, blind slots, and through
+holes.
+Feature finding (see Table 3) took much less time than when
+using our previous approach for the CPU heat sink and switch.
+Similar times were achieved for the carbine, probably due to its
+
+46
+
+Z. Niu et al. / Computer-Aided Design 69 (2015) 35–50
+
+constraints to illustrate the effectiveness of lazy evaluation. We
+compare results obtained by eager and lazy evaluation, CADfix
+being used to compute face areas.
+We consider five alternative ways to find feature instances:
+
+• Eager evaluation (a). Pre-calculate and cache all areas in a local
+•
+
+•
+
+•
+Fig. 12. Reducer.
+
+•
+
+Table 3
+Time taken to find slots in real models.
+Model
+Number of edges
+Number of slots
+Unoptimized query
+Old translation (SQLite)
+New translation (PostgreSQL)
+
+Carbine
+
+Switch
+
+CPU heatsink
+
+84
+6
+15 h
+50 ms
+47 ms
+
+330
+9
+–
+220 ms
+69 ms
+
+2388
+24
+–
+6940 ms
+107 ms
+
+This leads, for example, to the following different ways of
+finding large through-hole features:
+1
+2
+3
+4
+
+Table 4
+Time taken to find various features on a reducer model with 17 774 edges.
+Feature
+Number of features
+Time taken
+
+5
+6
+
+Open slot
+
+Blind slot
+
+Throughhole
+
+140
+168 ms
+
+146
+176 ms
+
+164
+87 ms
+
+7
+8
+9
+10
+11
+
+simplicity. This is in agreement with our earlier experimental
+finding that the new approach has lower time complexity—it scales
+up better to larger models. These results are very encouraging, and
+show that the current approach can rapidly find features in models
+of realistic complexity. Feature finding took just 0.1 s even for the
+heatsink which has over 2000 edges.
+We have also performed further experiments on real industrial
+models to assess performance. Fig. 12 shows a moderately complex
+reducer model obtained from GrabCAD [62], with 17 774 edges.
+It includes hundreds of open slots, blind slots, through-holes, and
+other features. Our feature recognizer can find such features in this
+model in a fraction of a second: see Table 4.
+More complex features can be defined using subfeatures—
+features can often be decomposed into several similar substructures. Finding such substructures first and then combining
+them into a complete feature simplifies the writing of feature
+definitions. For example, we can define an adjacent-pair-of-blindslots feature, and seek it in the reducer model. This new feature
+comprises two round corner blind slots which are connected by
+short edges. We can first find the slot features (with 17 edges and
+10 faces), and then determine which of those are adjacent and
+connected by short edges. There are 5 slot features, and 4 slot-pair
+features. Finding the slots takes 168 ms, while finding the slot pairs
+takes an additional 56 ms after the slots have been found.
+5.4. Lazy evaluation
+
+12
+13
+
+SELECT full_edge_e1 .edge AS e1 , ... , full_edge_e6 .
+edge AS e6 , full_edge_e1 . face1 AS f1 , ... ,
+full_edge_e2 . face2 AS f4
+FROM
+full_edge full_edge_e6 , ... , full_edge
+full_edge_e1 , face_area fa , face_area fb
+WHERE full_edge_e1 . face1 = full_edge_e2 . face1
+...
+AND full_edge_e4 . face2 = full_edge_e6 . face1
+AND full_edge_e1 . convexity =2 ... AND full_edge_e6 .
+convexity =3
+AND full_edge_e3 .face1 <> full_edge_e2 . face2 ...
+AND full_edge_e1 .face2 <> full_edge_e1 . face1 ...
+AND full_edge_e2 .edge <> full_edge_e1 .edge
+AND fa.face= full_edge_e1 . face2 AND fb.face=
+full_edge_e2 . face2
+AND fa.area > 100 AND fb.area > 100;
+
+Listing 5: Eager evaluation (a).
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+
+SELECT full_edge_e1 .edge AS e1 , ... , full_edge_e6 .
+edge AS e6 , full_edge_e1 . face1 AS f1 , ... ,
+full_edge_e2 . face2 AS f4
+FROM
+full_edge full_edge_e6 , ... , full_edge
+full_edge_e1
+WHERE full_edge_e1 . face1 = full_edge_e2 . face1 ...
+AND full_edge_e4 . face2 = full_edge_e6 . face1
+AND full_edge_e1 . convexity =2 ... AND full_edge_e6 .
+convexity =3
+AND full_edge_e3 .face1 <> full_edge_e2 . face2 ...
+AND full_edge_e1 .face2 <> full_edge_e1 . face1
+AND full_edge_e6 .edge <> full_edge_e5 .edge ...
+AND full_edge_e2 .edge <> full_edge_e1 .edge
+AND calc_area ( full_edge_e1 . face2 ) >100
+AND calc_area ( full_edge_e2 . face2 ) >100;
+
+Listing 6: Eager evaluation (b).
+1
+2
+3
+4
+5
+6
+7
+8
+9
+
+Lazy evaluation and predicate reordering are of greatest benefit
+when finding complex features which involve more than simple
+topological relationships and edge predicates such as convexity.
+We use the problem of finding features satisfying certain area
+
+table, and translate the corresponding constraint into a filter
+predicate in a WHERE clause.
+Eager evaluation (b). Express area computations as remote CAD
+functions, translate constraints into filter predicates in WHERE
+clauses, and evaluate all area computations at execution time
+by calling CADfix.
+Eager evaluation (c). Express area computations as remote CAD
+functions, and translate constraints into filter predicates in
+WHERE clauses. A local table is used to cache returned areas, so
+that CADfix is only asked to compute them once.
+Lazy evaluation (a). Express area computations as remote CAD
+functions, translate them via HAVING clauses, and evaluate all
+area computations at execution time by calling CADfix.
+Lazy evaluation (b). Express area computations as remote CAD
+functions, translate them via HAVING clauses. A local table is
+used to cache returned areas, so that CADfix is only asked to
+compute them once.
+
+10
+11
+
+SELECT full_edge_e1 .edge AS e1 , ... , full_edge_e6 .
+edge AS e6 , full_edge_e1 . face1 AS f1 , ... ,
+full_edge_e2 . face2 AS f4
+FROM
+full_edge full_edge_e6 , ... , full_edge
+full_edge_e1
+WHERE full_edge_e1 . face1 = full_edge_e2 . face1 ...
+AND full_edge_e4 . face2 = full_edge_e6 . face1
+AND full_edge_e1 . convexity =2 ... AND full_edge_e6 .
+convexity =3
+AND full_edge_e3 .face1 <> full_edge_e2 . face2 ...
+AND full_edge_e1 .face2 <> full_edge_e1 . face1
+AND full_edge_e6 .edge <> full_edge_e5 .edge ...
+AND full_edge_e2 .edge <> full_edge_e1 .edge
+AND get_area ( full_edge_e1 . face2 ) >100 AND get_area (
+full_edge_e2 . face2 ) >100;
+
+Listing 7: Eager evaluation (c).
+
+Z. Niu et al. / Computer-Aided Design 69 (2015) 35–50
+Table 5
+Number of features found for several tasks.
+Task
+Number of features, any size
+Number of features, specified size
+
+Task 1
+
+Task 2
+
+Task 3
+
+140
+35
+
+164
+18
+
+164
+142
+
+Table 6
+Total times taken to find features (in milliseconds) for the reducer model, using
+different evaluation strategies, for several tasks.
+
+In this query, the remote CAD predicate get_area is defined as:
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+
+CREATE or replace FUNCTION get_area (face integer )
+RETURNS
+float AS $$ DECLARE RSLT float;
+BEGIN
+SELECT area into rslt FROM face_area WHERE face_area .
+face=$1;
+IF NOT FOUND THEN
+rslt := calc_area ($1);
+INSERT INTO face_area VALUES ($1 ,rslt);
+END IF;
+return rslt;
+END;
+$$ LANGUAGE plpgsql ;
+
+Listing 8: Lazy cache function.
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+
+SELECT full_edge_e1 .edge AS e1 , ..., full_edge_e6 .
+edge AS e6 , full_edge_e1 .face1 AS f1 , ...,
+full_edge_e2 .face2 AS f4
+FROM
+full_edge full_edge_e6 , ..., full_edge
+full_edge_e1
+WHERE full_edge_e1 .face1= full_edge_e2 .face1 ...
+AND full_edge_e4 .face2= full_edge_e6 .face1
+AND full_edge_e1 . convexity =2 ... AND full_edge_e6 .
+convexity =3
+AND full_edge_e3 .face1 <> full_edge_e2 .face2 ...
+AND full_edge_e1 .face2 <> full_edge_e1 .face1
+AND full_edge_e6 .edge <> full_edge_e5 .edge ...
+AND full_edge_e2 .edge <> full_edge_e1 .edge
+GROUP BY full_edge_e1 .edge , ... full_edge_e6 .edge ,
+full_edge_e1 .face1 , ... full_edge_e2 . face2
+HAVING calc_area ( full_edge_e1 .face2) >100
+AND calc_area ( full_edge_e2 .face2) >100;
+
+Listing 9: Lazy evaluation (a)
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+
+SELECT full_edge_e1 .edge AS e1 , ..., full_edge_e6 .
+edge AS e6 , full_edge_e1 .face1 AS f1 , ...,
+full_edge_e2 .face2 AS f4
+FROM
+full_edge full_edge_e6 , ..., full_edge
+full_edge_e1
+WHERE full_edge_e1 .face1= full_edge_e2 .face1 ...
+AND full_edge_e4 .face2= full_edge_e6 .face1
+AND full_edge_e1 . convexity =2 ... AND full_edge_e6 .
+convexity =3
+AND full_edge_e3 .face1 <> full_edge_e2 .face2 ...
+AND full_edge_e1 .face2 <> full_edge_e1 .face1
+AND full_edge_e6 .edge <> full_edge_e5 .edge ...
+AND full_edge_e2 .edge <> full_edge_e1 .edge
+GROUP BY full_edge_e1 .edge , ..., full_edge_e6 .edge ,
+full_edge_e1 .face1 , ..., full_edge_e2 . face2
+HAVING get_area ( full_edge_e1 .face2) > 100 AND
+get_area ( full_edge_e2 .face2) >100;
+
+Listing 10: Lazy evaluation (b).
+
+Task 1. Find open slots with side face area greater than 20, and
+bottom face area greater than 2;
+Task 2. Find all through-holes with side face area less than 550
+and bore area smaller than 50;
+Task 3. Find all through-holes with cylindrical faces area greater
+than 100;
+
+Experiment
+
+Task 1
+
+Task 2
+
+Task 3
+
+Eager evaluation (a)
+Eager evaluation (b)
+Eager evaluation (c)
+Lazy evaluation (a)
+Lazy evaluation (b)
+
+1 216
+40 311
+11 399
+228
+163
+
+1 323
+51 286
+15 471
+1 279
+210
+
+1 314
+53 309
+144 262
+401
+156
+
+As Table 6 shows, the lazy evaluation approach (b) achieved
+the best performance in each case, being about 6 to 8 times
+faster than eager evaluation approach (a), and much better than
+eager evaluation approaches (b) and (c). It is also about twice as
+fast as lazy evaluation approach (a). Using eager evaluation (a)
+takes about the same time for each task, because of the similar
+procedure—first calculate areas of all faces, store them in a local
+table and then perform a filter based query; time is dominated by
+the area calculations. Eager evaluation (b) is slowest: the area of
+each face is evaluated multiple times. Eager evaluation (c) is better,
+as caching means that areas are only computed once. Caching again
+means that lazy evaluation approach (b) performs better than lazy
+evaluation approach (a).
+5.5. Predicate ordering
+For complex models, when multiple time consuming predicates
+must be evaluated, correctly ordering them can improve performance. In this section, we show further experiments which not
+only use lazy evaluation, but also plan execution order based on
+predicate merit. To determine merit requires estimating average
+predicate computation times and selectivity, which is done by offline training on a large model set. For this, we used 826 real industrial models of CPU heat sinks downloaded from [63]. Examples of
+these models are shown in Fig. 13.
+The model in which features are to be found is shown in Fig. 14,
+which, like other CPU heat sinks, includes a large base and fins of
+several different sizes. Each fin is composed of two cylindrical faces
+with two tangentially connected side faces, a top face and a bottom
+edge loop.
+The feature recognition task here is to find small fins, defined as
+fins whose side face area is between 10 and 20 square units, and
+whose top face has perimeter between 18.5 and 18.7 units. This
+requires the predicates
+1
+2
+
+area_in_range ( full_edge_e4 .face2 , 10, 20)
+perimeter_in_range ( full_edge_e1 .face1 , 18.5 , 18.7) ;
+
+These range predicates are translated to enable PostgreSQL to use
+lazy evaluation with caching; the function calc_area is a remote
+CAD function call to CADfix:
+1
+2
+3
+4
+5
+
+We sought the following three types of features to determine
+the impact of lazy evaluation. Table 5 gives the numbers of features
+found and Table 6 gives the times taken to find these features in the
+reducer model in Fig. 12.
+
+47
+
+6
+7
+8
+9
+10
+11
+12
+13
+14
+
+CREATE OR REPLACE FUNCTION area_in_range (face int , lv
+float , hv float ) RETURNS boolean AS
+$$ DECLARE
+RSLT float ; val boolean ;
+BEGIN
+SELECT area INTO rslt
+FROM face_area
+WHERE face_area .face=$1;
+IF NOT FOUND
+THEN rslt := calc_area ($1);
+INSERT INTO face_area VALUES ($1 ,rslt);
+END IF;
+RETURN (( rslt > $2) and (rslt < $3)) ;
+END;
+$$ LANGUAGE plpgsql ;
+
+The area and perimeter distributions determined during
+training are shown in Fig. 15. Average times to compute the area
+and perimeter properties, and their selectivity for the particular
+ranges of values used in the test, are given in Table 7.
+
+48
+
+Z. Niu et al. / Computer-Aided Design 69 (2015) 35–50
+
+Fig. 13. Examples from CPU heatsink training set.
+
+Fig. 14. Model for finding small fins, and detail.
+
+Fig. 15. Histograms of face areas and perimeters for training model dataset.
+
+The target query used to find small fins is as follows, where the
+two predicates in the HAVING clause are the ones being considered
+for reordering:
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+
+SELECT full_edge_e1 .edge AS e1 , ..., full_edge_e12 .
+edge AS e12 , full_edge_e1 .face1 AS f1 , ...,
+full_edge_e9 . face2 AS f6
+FROM
+full_edge full_edge_e12 , ..., full_edge
+full_edge_e1
+WHERE full_edge_e1 . face1= full_edge_e2 .face1 ...
+AND full_edge_e11 .face2= full_edge_e12 .face1
+AND full_edge_e1 . convexity =2 ... AND full_edge_e12 .
+convexity =1
+AND full_edge_e12 .edge <> full_edge_e11 .edge
+...
+AND full_edge_e2 .edge <> full_edge_e1 .edge
+AND face_geometry_is ( full_edge_e1 .face2 ,2006)
+AND face_geometry_is ( full_edge_e3 .face2 ,2006)
+GROUP BY full_edge_e1 .edge , ..., full_edge_e9 .face2
+HAVING area_in_range ( full_edge_e4 .face2 , 10, 20)
+AND perimeter_in_range ( full_edge_e1 .face1 , 18.5 ,
+18.7) ;
+
+Listing 11: Query to find small fins.
+We compared results obtained using our system based on
+the PostgreSQL engine with lazy evaluation, with and without
+predicate reordering. The test was repeated 100 times to give an
+averaged performance result. Each time the PostgreSQL server was
+restarted, warmed up and the OS caches (pagecache, dentries and
+inodes) were cleared.
+For both versions, we timed the SQL query with the predicates
+given in either possible order: area-then-perimeter, or perimeterthen-area. With reordering, the query planner always chooses
+
+Table 7
+Selectivity and cost of target predicates.
+Predicate
+area_in_range
+perimeter_in_range
+
+average execution time
+
+average selectivity
+
+1 ms
+0.003 ms
+
+0.2231
+0.0084
+
+Table 8
+Average feature finding times with and without predicate reordering optimization.
+Method
+No predicate reordering
+With predicate reordering
+
+Area then perimeter
+
+Perimeter then area
+
+498 ms
+392 ms
+
+393 ms
+392 ms
+
+the predicate ordering perimeter-then-area, whichever ordering
+the predicates are initially provided in: the much higher cost
+of computing areas compared to perimeters far outweighs the
+differences in selectivity. Without reordering, predicates are
+simply executed in the sequence given.
+Fig. 16 gives the times taken to find features in each of the
+100 runs in each case, using the different strategies. Without
+reordering, the approaches take different times according to which
+predicate is evaluated first. Computing area first, most runs take
+350–400 ms, while if perimeter is computed first, most runs take
+490–530 ms. However, if reordering is used, no matter how the
+predicates are ordered in the original definition, the times taken in
+both cases have closely similar ranges and distributions. Average
+times are given in Table 8. The overhead required to perform the
+selectivity calculation is negligible.
+
+Z. Niu et al. / Computer-Aided Design 69 (2015) 35–50
+
+49
+
+As effective translation and lazy evaluation already greatly improve performance, predicate ordering only makes a worthwhile
+difference for large models. Most of the time spent is running the
+query itself, rather than the CAD computations, so the saving is
+not much (21% in this case). Nevertheless, for other more complex predicates that the CAD modeler takes longer to process, the
+savings could be greater. While the system can automatically learn
+parameters for predicate ordering, this requires a suitable training
+set. The more similar the models are in this set to the model being
+analyzed, the more effective predicate reordering is likely to be.
+
+be generalized to work for non-manifold models, as there will in
+general only be a small number of faces around each edge, and few
+non-manifold edges, this needs to be thought out in detail.
+Fifthly, different modelers use different internal representations. For example, one modeler may use multiple cylindrical faces
+to represent a complete cylindrical surface, while another modeler may use just one. Unfortunately, this means that the engineer
+writing a feature definition must understand the internal representation used by a particular modeler a definition is intended for:
+feature definitions are unlikely to be interchangeable between
+modelers. This is, of course, a problem for any feature finder which
+works on a boundary representation. While merging such subfaces
+may be a useful step in overcoming this problem, the general problem is probably as hard as the one of translating CAD data between
+different systems, which is a notoriously tricky problem.
+Writing declarative definitions can still be a complex task
+for end users, even if less difficult than devising algorithms.
+Complicated features may have tens of faces and edges, and it is
+not easy to label them, write, and debug a correct and complete
+declaration. A better approach based on a point-and-click interface
+may help to alleviate this burden, and we intend to investigate it
+in future. Finding complex features in the presence of interacting
+features perhaps remains the outstanding problem in feature
+recognition. It is far from clear that even an assisted declarative
+approach will let engineers do this effectively—it may be just too
+hard to take into account all possible interactions. This will only
+become clear if and when engineers start using such a declarative
+approach in practice; industrial feedback is needed to clarify this
+issue.
+As always, dealing with interacting features is difficult, and our
+current work offers no clear way to help in this area. More work
+is needed to understand how to define features in a way that
+takes interactions into account, and report instances of interacting
+features in a way that is useful to the user.
+
+6. Limitations and future work
+
+7. Conclusions
+
+Although the proposed approach shows great promise, there
+are several limitations and issues which warrant further investigation. Firstly, our method of optimization is targeted at features
+with connected entities, such as the faces which make up a pocket.
+We have not so far considered how to optimize disconnected features, e.g. pairs of large, almost parallel faces suitable for a robot to
+grip an object. Further predicates are also likely to be needed for
+greater generality, although the current approach based on unary
+and binary predicates seems sound.
+Secondly, the form of declarations used in this paper do not
+currently permit features with variable numbers of elements, such
+as a ring of holes, a gear, or a row of slots. These are most easily
+defined recursively. Some variants of SQL also allow recursive
+queries, which indicate a potential way of generalizing the method.
+Automatically identifying topological symmetry, and preventing the same feature being returned multiple times is also a
+tricky issue. Adding clauses automatically to remove all symmetries without also throwing away some desired results is difficult,
+yet writing appropriate declarations to do so manually is also difficult. A simple approach, but one which is almost certainly suboptimal, is instead to check for multiple copies of the same feature in
+the returned results, and to delete the unwanted copies. Methods
+are needed which do not have excessive complexity as the number of entities in a feature grows. This problem is closely related to
+the issue of special cases where entities normally expected to be
+different may exceptionally be the same.
+Fourthly, use of the full-edge-form assumes that the models are
+manifold, and while it seems plausible that the approach could
+
+This paper has presented an extensible feature recognition
+system based on declarative feature definitions. It can find simple
+features in large CAD models in linear time in theory, and in a
+fraction of a second in practice. The key to this performance lies
+in making use of mature database optimization techniques. Our
+main contribution is a novel approach to translating declarative
+feature definitions into SQL queries, with improved performance
+over earlier work. Further improvements are achieved by use of
+lazy evaluation to avoid computing complex predicates whose
+results are not needed, and use of selectivity to reorder query
+processing. Our method brings with it various limitations, as just
+discussed, and the opportunities for further work on this approach.
+
+Fig. 16. Times taken for each of 100 runs. N = No reordering of predicates. R =
+Reordering of predicates. A = Area first. P = Perimeter first.
+
+Acknowledgments
+This work was supported by Seventh Framework Programme
+Initial Training Network Funding under Grant No. 289361. The
+authors would also like to thank to Henry Bucklow and others at ITI
+TranscenData who provided CADfix software, CADfix API training
+and models.
+References
+[1] Zhu H, Menq C. B-rep model simplification by automatic fillet/round
+suppressing for efficient automatic feature recognition. Comput-Aided Des
+2002;34(2):109–23.
+[2] Mäntylä M, Nau D, Shah J. Challenges in feature-based manufacturing
+research. Commun ACM 1996;39(2):77–85.
+[3] Han J, Pratt M, Regli WC. Manufacturing feature recognition from solid models:
+a status report. IEEE Trans Robot Autom 2000;16(6):782–96.
+
+50
+
+Z. Niu et al. / Computer-Aided Design 69 (2015) 35–50
+
+[4] Babic B, Nesic N, Miljkovic Z. A review of automated feature recognition with
+rule-based pattern recognition. Comput Ind 2008;59(4):321–37.
+[5] Hughes TJ, Cottrell JA, Bazilevs Y. Isogeometric analysis: Cad, finite elements,
+nurbs, exact geometry and mesh refinement. Comput Methods Appl Mech Eng
+2005;194(39):4135–95.
+[6] Cottrell JA, Hughes TJ, Bazilevs Y. Isogeometric analysis: toward integration of
+CAD and FEA. John Wiley & Sons; 2009.
+[7] Hamri O, Leon JC, Giannini F, Falcidieno B. From cad models to fe simulations
+through a feature-based approach. In: ASME 2004 international design engineering technical conferences and computers and information in engineering
+conference. American Society of Mechanical Engineers; 2004. p. 377–86.
+[8] Lee K, Armstrong CG, Price MA, Lamont J. A small feature suppression/unsuppression system for preparing B-rep models for analysis. In: Proc. 2005 ACM
+symp. solid and physical modeling. ACM; 2005. p. 113–24.
+[9] Gao S, Zhao W, Lin H, Yang F, Chen X. Feature suppression based CAD mesh
+model simplification. Comput-Aided Des 2010;42(12):1178–88.
+[10] Li M, Zhang B, Martin RR. Second-order defeaturing error estimation for
+multiple boundary features. Internat J Numer Methods Engrg 2014;100(5):
+321–46.
+[11] Lockett HL, Guenov MD. Graph-based feature recognition for injection
+moulding based on a mid-surface approach. Comput-Aided Des 2005;37(2):
+251–62.
+[12] Shah JJ, Anderson D, Kim YS, Joshi S. A discourse on geometric feature
+recognition from CAD models. J Comput Inf Sci Eng 2001;1(1):41–51.
+[13] Gadh R, Prinz FB. Recognition of geometric forms using the differential depth
+filter. Comput-Aided Des 1992;24(11):583–98.
+[14] Regli WC, Gupta SK, Nau DS. Towards multiprocessor feature recognition.
+Comput-Aided Des 1997;29(1):37–51.
+[15] Gibson P, Ismail H, Sabin M, Hon K. Interactive programmable feature
+recogniser. CIRP Annal Manuf Technol 1997;46(1):407–10.
+[16] Gibson P, Ismail H, Sabin M. Optimisation approaches in feature recognition.
+Int J Mach Tools Manuf 1999;39(5):805–21.
+[17] Niu Z, Martin RR, Sabin M, Langbein FC, Bucklow H. Applying database
+optimization technologies to feature recognition in CAD. Comput-Aided Des
+Appl 2015;12(3):373–82.
+[18] Garcia-Molina H, Ullman JD, Widom J. Database system implementation.
+Prentice Hall; 2000.
+[19] Kyprianou LK. Shape classification in computer-aided design [Ph.D. thesis],
+University of Cambridge; 1980.
+[20] Marefat M, Kashyap R. Geometric reasoning for recognition of threedimensional object features. IEEE Trans Pattern Anal Mach Intell 1990;12(10):
+949–65.
+[21] Corney J, Clark DE. Method for finding holes and pockets that connect multiple
+faces in 2 1/2d objects. Comput-Aided Des 1991;23(10):658–68.
+[22] Fields MC, Anderson DC. Fast feature extraction for machining applications.
+Comput-Aided Des 1994;26(11):803–13.
+[23] Sonthi R, Kunjur G, Gadh R. Shape feature determination using the curvature
+region representation. In: Proc. 4th ACM symposium on solid modeling and
+applications. ACM; 1997. p. 285–96.
+[24] Verma A, Rajotia S. Feature vector: a graph-based feature recognition
+methodology. Int J Prod Res 2004;42(16):3219–34.
+[25] Little G, Clark DE, Corney JR, Tuttle J. Delta-volume decomposition for multisided components. Comput-Aided Des 1998;30(9):695–705.
+[26] Woo TC. Feature extraction by volume decomposition. In: Conference on
+CAD/CAM technology in mechanical engineering. 1982. p. 76–94.
+[27] Kim YS. Recognition of form features using convex decomposition. ComputAided Des 1992;24(9):461–76.
+[28] Sakurai H, Dave P. Volume decomposition and feature recognition, part ii:
+curved objects. Comput-Aided Des 1996;28(6):519–37.
+[29] Fu M, Ong SK, Lu WF, Lee I, Nee AY. An approach to identify design and
+manufacturing features from a data exchanged part model. Comput-Aided Des
+2003;35(11):979–93.
+[30] Vandenbrande JH, Requicha AA. Spatial reasoning for the automatic recognition of machinable features in solid models. IEEE Trans Pattern Anal Mach Intell 1993;15(12):1269–85.
+[31] Gao S, Shah JJ. Automatic recognition of interacting machining features based
+on minimal condition subgraph. Comput-Aided Des 1998;30(9):727–39.
+[32] Brousseau E, Dimov S, Setchi R. Knowledge acquisition techniques for feature
+recognition in cad models. J Intell Manuf 2008;19(1):21–32.
+
+[33] Sung RC, Corney JR, Clark DE. Automatic assembly feature recognition and
+disassembly sequence generation. J Comput Inf Sci Eng 2001;1(4):291–9.
+[34] Prabhakar S, Henderson MR. Automatic form-feature recognition using
+neural-network-based techniques on boundary representations of solid
+models. Comput-Aided Des 1992;24(7):381–93.
+[35] Öztürk N, Öztürk F. Neural network based non-standard feature recognition to
+integrate cad and cam. Comput Ind 2001;45(2):123–35.
+[36] Sunil V, Pande S. Automatic recognition of machining features using artificial
+neural networks. Int J Adv Manuf Technol 2009;41(9–10):932–47.
+[37] De Martino T, Falcidieno B, Giannini F. An adaptive feature recognition process
+for machining contexts. Adv Eng Softw 1994;20(2):91–105.
+[38] Suh YS, Wozny MJ. Interactive feature extraction for a form feature conversion
+system. In: Proceedings of the fourth ACM symposium on solid modeling and
+applications. ACM; 1997. p. 111–22.
+[39] Spiby P, Schenck D. EXPRESS language reference manual, ISO TC184/SC4
+Document N, 1991. p. 14.
+[40] Medichalam MS, Shah JJ, DSouza R. N-rep: a neutral feature representation
+to support feature mapping and data exchange across applications. In: ASME
+2004 International design engineering technical conferences and computers
+and information in engineering conference. American Society of Mechanical
+Engineers; 2004. p. 599–609.
+[41] Li S, Shah JJ. Recognition of user-defined turning features for mill/turn parts.
+J Comput Inf Sci Eng 2007;7(3):225–35.
+[42] Melton J. Understanding the new SQL: a complete guide. Morgan Kaufmann;
+1993.
+[43] Codd EF. A relational model of data for large shared data banks. Commun ACM
+1970;13(6):377–87.
+[44] Ioannidis YE. Query optimization. ACM Comput Surv 1996;28(1):121–3.
+[45] Chaudhuri S. An overview of query optimization in relational systems. In: Proc.
+17th ACM SIGACT-SIGMOD-SIGART symp. principles of database systems.
+ACM; 1998. p. 34–43.
+[46] Rosenthal A, Galindo-Legaria C. Query graphs, implementing trees, and freelyreorderable outerjoins. ACM SIGMOD Record 1990;19(2):291–9.
+[47] Chaudhuri S, Shim K. An overview of cost-based optimization of queries with
+aggregates. IEEE Data Eng Bull 1995;18(3):3–9.
+[48] Hipp DR. The SQLite query planner, https://www.sqlite.org/optoverview.html;
+2015 [retrieved 11.03.15].
+[49] The PostgreSQL Global Development Group. PostgreSQL, http://www.
+postgresql.org/about/; 2015a [retrieved 11.03.15].
+[50] Burleson DK. Oracle tuning: the definitive reference. Rampant TechPress;
+2010.
+[51] DuBois P. MySQL (Developer’s Library). Sams; 2005.
+[52] Momjian B. Explaining the PostgreSQL query optimizer, http://pgday.ru/files/
+pgmaster14/bruce.momjian.optimizer.pdf, 2012, Retrieved 11 March 2015.
+[53] Gibson P, Ismail H, Sabin M. A feature recognition project. In: Product modeling
+for computer integrated design and manufacture. Chapman & Hall, Ltd.; 1997.
+p. 179–90.
+[54] Hellerstein JM, Stonebraker M. Predicate migration: optimizing queries with
+expensive predicates. ACM; 1993.
+[55] Momjian B. PostgreSQL: Introduction and concepts. New York: AddisonWesley; 2001.
+[56] Geschwinde E, Schönig HJ. PostgreSQL developer’s handbook. Sams Publishing; 2002.
+[57] ITI Transcendata. CADfix, http://www.transcendata.com/products/cadfix;
+2015 [Retrieved 11.03.15].
+[58] Butlin G, Stops C. CAD data repair. In: 5th int. meshing roundtable. 1996.
+p. 7–12.
+[59] Graefe G. The value of merge-join and hash-join in SQL Server. In: VLDB. 1999.
+p. 250–3.
+[60] Garcia P, Korth HF. Database hash-join algorithms on multithreaded
+computer architectures. In: Proc. 3rd conf. computing frontiers. ACM; 2006.
+p. 241–52.
+[61] The PostgreSQL Global Development Group. PostgreSQL statistical information, http://www.postgresql.org/docs/9.1/static/view-pg-stats.html; 2015
+[retrieved 11.03.15].
+[62] GrabCAD, GrabCAD Free CAD Models, https://grabcad.com/library; 2015
+[retrieved 11.03.15].
+[63] Ltd AC. Cpu heat sink, http://www.micforg.co.jp/en; 2015 [retrieved 18.03.15].
+
+

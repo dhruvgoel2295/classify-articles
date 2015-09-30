@@ -1,0 +1,1175 @@
+Computational Geometry 48 (2015) 703–717
+
+Contents lists available at ScienceDirect
+
+Computational Geometry: Theory and
+Applications
+www.elsevier.com/locate/comgeo
+
+On the approximability of covering points by lines and related
+problems ✩
+Adrian Dumitrescu a , Minghui Jiang b,∗
+a
+b
+
+Department of Computer Science, University of Wisconsin–Milwaukee, USA
+Department of Computer Science, Utah State University, Logan, USA
+
+a r t i c l e
+
+i n f o
+
+Article history:
+Received 8 September 2014
+Accepted 19 June 2015
+Available online 23 June 2015
+Keywords:
+Geometric set cover and maximum coverage
+Geometric tours
+NP-hardness
+APX-hardness
+
+a b s t r a c t
+Given a set P of n points in the plane, Covering Points by Lines is the problem of ﬁnding
+a minimum-cardinality set L of lines such that every point p ∈ P is incident to some
+line ∈ L. As a geometric variant of Set Cover, Covering Points by Lines is still NP-hard.
+Moreover, it has been proved to be APX-hard, and hence does not admit any polynomialtime approximation scheme unless P = NP. In contrast to the small constant approximation
+lower bound implied by APX-hardness, the current best approximation ratio for Covering
+Points by Lines is still O (log n), namely the ratio achieved by the greedy algorithm for Set
+Cover.
+In this paper, we give a lower bound of (log n) on the approximation ratio of the greedy
+algorithm for Covering Points by Lines. We also study several related problems including
+Maximum Point Coverage by Lines, Minimum-Link Covering Tour, Minimum-Link Spanning
+Tour, and Min–Max-Turn Hamiltonian Tour. We show that all these problems are either
+APX-hard or at least NP-hard. In particular, our proof of APX-hardness of Min–MaxTurn Hamiltonian Tour sheds light on the diﬃculty of Bounded-Turn-Minimum-Length
+Hamiltonian Tour, a problem proposed by Aggarwal et al. at SODA 1997.
+© 2015 Elsevier B.V. All rights reserved.
+
+1. Introduction
+Given a set U of n elements and a family F of m subsets of U , Set Cover is the problem of ﬁnding a minimum-cardinality
+subfamily F ⊆ F whose union is U . It is well-known that Set Cover can be approximated within H n ≤ ln n + 1 [29,34,17],
+where H n is the nth harmonic number, by a simple greedy algorithm that repeatedly selects a set that covers the most
+remaining elements; a more reﬁned analysis [43] shows that the approximation ratio of the greedy algorithm is in fact
+ln n − ln ln n + (1). On the other hand, Set Cover cannot be approximated in polynomial time within c log n for some
+constant c > 0 unless P = NP [42], and within (1 − ε ) ln n for any ε > 0 unless NP ⊂ TIME(n O (log log n) ) [20]; see also [4,35].
+The ﬁrst problem that we study in this paper is a geometric variant of Set Cover. Given a set P of n points in the plane,
+Covering Points by Lines is the problem of ﬁnding a minimum-cardinality set L of lines such that every point p ∈ P is in
+some line ∈ L. (Without loss of generality, we can assume that n ≥ 2 and that the lines in L are selected from the set L P
+n
+of at most 2 lines with at least two points of P in each line.)
+
+✩
+Supported in part by NSF grant DMS-1001667 awarded to the ﬁrst author. The work of the second author was performed during his sabbatical leave in
+Fall 2012.
+Corresponding author.
+E-mail addresses: dumitres@uwm.edu (A. Dumitrescu), mjiang@cc.usu.edu (M. Jiang).
+
+*
+
+http://dx.doi.org/10.1016/j.comgeo.2015.06.006
+0925-7721/© 2015 Elsevier B.V. All rights reserved.
+
+704
+
+A. Dumitrescu, M. Jiang / Computational Geometry 48 (2015) 703–717
+
+As a restricted version of Set Cover, Covering Points by Lines may appear as a much easier problem. Indeed, in terms
+of parameterized complexity, Set Cover is clearly W[2]-hard when the parameter is the number k of sets in the solution
+(as easily seen by a reduction from the canonical W[2]-hard problem k-Dominating Set), while Covering Points by Lines
+admits very simple FPT algorithms based on standard techniques in parameterized complexity such as bounded search
+tree and kernelization [32]; see also [24,45,30]. In terms of approximability, however, the current best approximation ratio
+for Covering Points by Lines is still the same O (log n) upper bound for Set Cover achieved by the greedy algorithm. No
+matching lower bounds are known for Covering Points by Lines, although it has been proved to be NP-hard [36] and even
+APX-hard [12,31].
+Let X be a ﬁnite set and let R be a system of subsets of an underlying set U ⊇ X . The pair ( X , R) is usually called a
+range space in a geometric setting. The VC-dimension of a range space ( X , R) is the maximum cardinality of a subset A of
+X , so that |{r ∩ A : r ∈ R}| = 2| A | [40, Ch. 15]. Observe that any range space ( P , L) of points P and lines L in the plane
+as well as its dual range space have VC-dimension at most 2. Thus the well-known method for approximating geometric
+variants of Hitting Set and Set Cover based on ε -nets [25,13,19] yields an O (log OPT) approximation ratio for Covering
+Points by Lines, where OPT denotes the size of the optimal solution. This approximation ratio is still O (log n) in the worst
+case. Although the method of ε -nets has been used successfully in obtaining better approximation ratios for geometric Set
+Cover when the sets are “fat” geometric objects [18], Alon’s superlinear lower bound on the minimum size of an ε -net for
+points and lines in the plane [3] rules out the possibility of a constant approximation for Covering Points by Lines by this
+method; see also [41].
+The APX-hardness of Covering Points by Lines implies a constant lower bound on the approximation ratio, in particular,
+the problem does not admit any polynomial-time approximation scheme (PTAS), i.e., a (1 + )-approximation in n O (1) time
+for ﬁxed , unless P = NP; moreover the problem does not admit any quasi-polynomial-time approximation scheme (QPTAS), i.e., a (1 + )-approximation in 2polylog(n/ ) time, unless NP ⊆ DTIME(2polylog n ). See [16,38,39] for other APX-hardness
+and PTAS/QPTAS results for related geometric set cover problems. One may observe that both the local search technique [38]
+and the separator technique [39] for the PTAS/QPTAS results require certain properties of the system of geometric sets, which
+lines in the plane do not have.
+In this paper, we give an asymptotically tight lower bound on the approximation ratio of the greedy algorithm for
+Covering Points by Lines:
+Theorem 1. The approximation ratio of the greedy algorithm for Covering Points by Lines is
+
+(log n).
+
+A problem closely related to Set Cover is the following. Given a set U of n elements, a family F of m subsets of U , and
+a number k, Maximum Coverage is the problem of ﬁnding a subfamily F ⊆ F of k subsets whose union has the maximum
+cardinality. In the setting of Covering Points by Lines, given a set P of n points in the plane and a number k, Maximum
+Point Coverage by Lines is the problem of ﬁnding k lines that cover the maximum number of points in P . For the general
+Maximum Coverage problem, the greedy algorithm that repeatedly selects a set that covers the most remaining elements
+achieves an approximation ratio of 1 − 1/e = 0.632 . . . [26, Section 3.9]; this is also the current best approximation ratio for
+Maximum Point Coverage by Lines. On the other hand, Maximum Coverage cannot be approximated better than 1 − 1/e + ε
+for any ε > 0 unless P = NP [20], while Maximum Point Coverage by Lines is only known to be NP-hard as implied by the
+NP-hardness of Covering Points by Lines [36]. We show that Maximum Point Coverage by Lines is APX-hard, complementing
+the APX-hardness of Covering Points by Lines1 :
+Theorem 2. Maximum Point Coverage by Lines is APX-hard. This holds even if no four of the given points are collinear.
+Theorem 3. (See Brodén et al. [12] and Kumar et al. [31].) Covering Points by Lines is APX-hard [12,31]. This holds even if no four of
+the given points are collinear [12].
+Instead of using lines, we can cover the points using a polygonal chain of line segments. Given a set P of n points
+in the plane, a covering tour is a closed chain of segments that cover all n points in P , and a spanning tour is a covering
+tour in which the endpoints of all segments are points in P . The problem Minimum-Link Covering Tour (respectively,
+Minimum-Link Spanning Tour) aims at ﬁnding a covering tour (respectively, spanning tour) with the minimum number of
+links (i.e., segments). Stein and Wagner [44] presented an O (log n) approximation algorithm for Minimum-Link Covering
+Tour. We note here that a similar method yields an O (log n) approximation algorithm for the Minimum-Link Spanning
+Tour problem. From the other direction, Arkin et al. [6] proved that Minimum-Link Covering Tour is NP-hard. The problem
+Minimum-Link Spanning Tour has not been studied before in terms of its computational complexity, although it is a natural
+variant of Minimum-Link Covering Tour. See also [5,7,28] for other related problems.
+
+1
+We prove the APX-hardness of both problems by the same construction. These results were obtained unaware of the previous APX-hardness results of
+Brodén et al. [12] and Kumar et al. [31] for Covering Points by Lines. In retrospect, we note that the construction in our proof is the exact dual of the
+construction in [12]: we cover points by lines; they cover lines by points. In order to accommodate both problems, however, our core argument (Lemma 1)
+is more reﬁned.
+
+A. Dumitrescu, M. Jiang / Computational Geometry 48 (2015) 703–717
+
+705
+
+Fig. 1. Left: turning angle at p 2 . Right: an obtuse tour of 10 points.
+
+Strengthening the NP-hardness result of Arkin et al. [6], our next theorem shows that Minimum-Link Covering Tour is
+in fact APX-hard:
+Theorem 4. Minimum-Link Covering Tour is APX-hard. This holds even if no four of the given points are collinear.
+We also show that Minimum-Link Spanning Tour is NP-hard:
+Theorem 5. Minimum-Link Spanning Tour is NP-hard. This holds even if no four of the given points are collinear.
+Given a set P of n points in the plane, a Hamiltonian tour is a closed polygonal chain of exactly n segments whose n
+endpoints along the chain are a circular permutation of the n points in P . Note that every Hamiltonian tour is a spanning
+tour, but not vice versa, although every spanning tour can be transformed into a Hamiltonian tour by subdividing some
+segments into chains of shorter collinear segments.
+When three points p 1 , p 2 , p 3 are traversed in this order in a Hamiltonian tour, the turning angle at p 2 , denoted by
+turn( p 1 , p 2 , p 3 ), is equal to π − p 1 p 2 p 3 , where p 1 p 2 p 3 ∈ [0, π ]; see Fig. 1. Note that the turning angle belongs to
+[0, π ], regardless of the direction of the turn (left or right). A tour or path with each turning angle in [0, π /2] is called
+obtuse.
+In the Euclidean Traveling Salesman Problem (ETSP), given a set P of n points in the plane, one seeks a shortest
+Hamiltonian tour that visits each point. However, frequently other parameters are of interest, such as in motion planning,
+where small turning angles are desired. For example, an aircraft or a boat moving at high speed, required to pass through a
+set of given locations, cannot make sharp turns in its motion [1,2,10,22,27,33]. A rough approximation of a smooth trajectory
+is provided by paths or tours that are obtuse. However, not all point sets admit obtuse tours or even obtuse paths. For
+instance, some point sets require turning angles at least 5π /6 in any Hamiltonian path [21]. Moreover, certain point sets
+(e.g., collinear) require the maximum turning angle possible, namely π , in any Hamiltonian tour.
+Aggarwal et al. [1] have studied the following variant of angle-TSP, which we refer to as Min-Sum-Turn Hamiltonian
+Tour: Given n points in the plane, compute a Hamiltonian tour of the points that minimizes the total turning angle. The total
+turning angle of a tour is the sum of the turning angles at each of the n points. They proved that this problem is NP-hard
+and gave a polynomial-time algorithm with approximation ratio O (log n). They also suggested another natural variant of the
+basic angle-TSP problem, where the maximum turning angle at a vertex is bounded and the goal is to minimize the length
+measure.
+Here we study the computational complexity of the following two variants of the angle-TSP problem. The ﬁrst variant
+naturally presents itself, however it does not appear to have been previously studied. The second variant was proposed by
+Aggarwal et al. [1].
+(I) Min–Max-Turn Hamiltonian Tour: Given n points in the plane, compute a Hamiltonian tour that minimizes the maximum turning angle.
+(II) Bounded-Turn-Minimum-Length Hamiltonian Tour: Given n points in the plane and an angle α ∈ [0, π ], compute a
+Hamiltonian tour with each turning angle at most α , if it exists, that has the minimum length.
+We have the following two results for the two variants of angle-TSP:
+Theorem 6. Min–Max-Turn Hamiltonian Tour is APX-hard.
+Theorem 7. Bounded-Turn-Minimum-Length Hamiltonian Tour is NP-hard.
+2. An
+
+(log n) lower bound on the approximation ratio of the greedy algorithm
+
+In this section we prove Theorem 1. Our construction is inspired by a construction of Brimkov et al. [11] for the related
+problem Covering Segments by Points, which is in turn inspired by a classic lower bound construction for Vertex Cover.
+This construction shows that there exist graphs with n vertices on which the greedy algorithm for Vertex Cover achieves a
+ratio of (log n). The idea of the construction is perhaps folklore [37].
+
+706
+
+A. Dumitrescu, M. Jiang / Computational Geometry 48 (2015) 703–717
+
+Fig. 2. A lower bound construction for Vertex Cover and Covering Segments by Points (k = 6 in this example).
+
+Let G k = ( A ∪ B , E ) be a bipartite graph where A is a set of k vertices, B is a set of
+k − 1 subsets B 2 , B 3 , . . . , B k , and E is a set of
+k
+i
+
+k
+k
+i =2 i
+
+k
+k
+i =2 i
+
+vertices partitioned into
+
+· i edges. For 2 ≤ i ≤ k, each subset B i contains
+
+k
+i
+
+vertices which
+
+are connected to
+· i vertices in A, with each vertex in B i connected to exactly i distinct vertices in A. Refer to Fig. 2 for
+an illustration of the graph G k with k = 6.
+Execute the greedy algorithm for Vertex Cover on the bipartite graph G k . In each step of the algorithm, after a vertex
+of the maximum degree is selected, the vertex and its incident edges are removed from the graph. The crucial observation
+here is that before each selection, the degree of each vertex in A is at most the number of subsets B i that are not empty,
+while the degree of each vertex in a non-empty subset B i is exactly i. Thus the vertex of maximum degree selected in each
+step is always from a non-empty subset B i with the maximum index i. A simple induction shows that the greedy algorithm
+always selects vertices from B k , B k−1 , . . . , B 2 , in this order, and stops when all vertices in B are selected. On the other hand,
+the set of vertices in A clearly covers all edges too. Thus the approximation ratio of the greedy algorithm for Vertex Cover
+is at least
+
+|B|
+=
+| A|
+
+k
+k
+i =2 i
+
+k
+
+=
+
+k
+k
+i =1 i
+
+(
+
+)−k
+
+k
+k
+
+=
+i =1
+
+1
+i
+
+≥
+
+k +1
+
+−2≥
+
+1
+x
+
+(
+
+k
+k
+i =1 i ) − 2k
+
+k
+dx − 2 = ln(k + 1) − 2,
+
+1
+
+which is (log n), where n = (k log k) is the number of vertices of G k .
+We now relate Vertex Cover to a geometric problem, Covering Segments by Points: Given a set S of n line segments
+in the plane, ﬁnd a set P of points of minimum size such that each segment in S contains at least one point in P . To
+adapt the construction for Vertex Cover to Covering Segments by Points, Brimkov et al. [11] place the vertices in A and
+B in two parallel lines, with unit distance between consecutive vertices in each line, and with the vertices in each subset
+B i placed consecutively, as illustrated in Fig. 2. Each edge in G k corresponds to a line segment in S with the two vertices
+as the endpoints. Without loss of generality, each point in P is either a vertex in A or B in one of the two parallel lines,
+or the intersection of two or more segments in S between the two parallel lines. Observe that during the execution of the
+greedy algorithm, each intersection between (but in neither of) the two parallel lines is incident to at most one segment
+from the subset of segments incident to the vertices in B i , 2 ≤ i ≤ k; similar to the vertices in A, these intersections are
+never selected by the greedy algorithm. Thus the greedy algorithm still selects the vertices in B to cover the segments, and
+its approximation ratio is still (log n) by the same analysis.
+We next adapt this construction further to the problem Covering Lines by Points: given a set L of n lines in the plane,
+ﬁnd a set P of points of the minimum cardinality such that each line in L contains at least one point in P . Since Covering
+Lines by Points and our original problem Covering Points by Lines are exact duals of each other, any lower bound we obtain
+for the former is also a lower bound for the latter.
+Refer to Fig. 3. The straightforward part of the adaptation simply extends each segment in S to a line in L. This leads
+to more intersections, however, above and below the two parallel lines. As in the construction for Covering Segments by
+Points, we place the vertices in A evenly in the top line, with unit distance between consecutive points. For the vertices
+in B, however, we place them almost evenly in the bottom line, with near-unit distance between consecutive points (for
+convenience), such that the following property is satisﬁed:
+P1: Any intersection of the lines in L, if it is not a vertex in A or B in one of the two parallel lines, it is incident to exactly
+two lines in L.
+To ensure this property, we place the vertices in B incrementally as follows. Let B be the subset of vertices in B that
+have been placed, and let L be the subset of lines in L incident to B . Let Q be the set of points that are intersections of
+the lines in L but are not vertices in A or B. For each point q in Q , and for each vertex a in A, mark the intersection of
+the bottom line and the line through q and a. Place the next vertex b in B in the bottom line to avoid such marks.
+Due to the property P1, the greedy algorithm selects vertices in B k , . . . , B 3 as before. Then, to cover the 2| B 2 | lines
+incident to B 2 , it may select intersections not in the two parallel lines, but the number of points it selects is at least
+
+A. Dumitrescu, M. Jiang / Computational Geometry 48 (2015) 703–717
+
+707
+
+Fig. 3. Adapting the lower bound construction for Covering Segments by Points to Covering Lines by Points.
+
+2| B 2 |/2 = | B 2 | since these lines are in general position. Consequently, the same
+completes the proof of Theorem 1.
+
+(log n) lower bound follows and this
+
+3. APX-hardness of M AXIMUM P OINT C OVERAGE BY L INES and C OVERING P OINTS BY L INES
+In this section we prove Theorems 2 and 3. Given a set V of n variables and a set C of m clauses, where each variable
+has exactly p literals (in p different clauses) and each clause is the disjunction of exactly q literals (of q different variables),
+Ep-Occ-Max-Eq-SAT is the problem of ﬁnding an assignment of the variables in V that satisﬁes the maximum number
+of clauses in C . Note that pn = qm. Berman and Karpinski [8] showed that even the simplest version of this problem,
+E3-Occ-Max-E2-SAT, is APX-hard, and moreover this holds even if the three literals of each variable are neither all positive
+nor all negative; see also [9] for the current best approximation lower bounds for the many variants of Ep-Occ-Max-Eq-SAT
+and related problems. We prove that both Covering Points by Lines and Maximum Point Coverage by Lines are APX-hard by
+two gap-preserving reductions from E3-Occ-Max-E2-SAT (Lemmas 5 and 6, respectively).
+Let ( V , C ) be an instance of E3-Occ-Max-E2-SAT, where V is a set of n variables v i , 1 ≤ i ≤ n, and C is a set of m
+clauses c j , 1 ≤ j ≤ m. We construct a set P of 4n + m points, including four variable points v 1i , v 2i , v 3i , v 4i for each variable
+v i , 1 ≤ i ≤ n, and one clause point c ∗j for each clause c j , 1 ≤ j ≤ m. Assume that the three literals of each variable are
+neither all positive nor all negative. Then each variable has either two positive literals and one negative literal, or two
+negative literals and one positive literal. We place the point set P in the plane (an example appears in Fig. 4) such that no
+line goes through more than two points in P except in the following two cases:
+1. If a variable v i has
+collinear, c ∗s , v 3i , v 4i
+2. If a variable v i has
+collinear, c ∗s , v 2i , v 4i
+
+two positive literals in cr and c s , respectively, and has one negative literal in ct , then cr∗ , v 1i , v 2i are
+are collinear, and ct∗ , v 1i , v 3i are collinear.
+two negative literals in cr and c s , respectively, and has one positive literal in ct , then cr∗ , v 1i , v 3i are
+are collinear, and ct∗ , v 1i , v 2i are collinear.
+
+For any set L of lines, let Li ⊆ L denote the subset of lines incident to the four variable points v 1i , v 2i , v 3i , v 4i of the
+r ,s
+variable v i . For each variable v i , and for each pair of indices {r , s} ⊂ {1, 2, 3, 4}, let e i denote the line through the two
+1, 2
+
+3, 4
+
+1, 3
+
+2, 4
+
+points v ri and v is . We say that a set L of lines is canonical if for each variable v i , |Li | ≤ 2 and Li ⊆ {e i , e i , e i , e i }, and
+moreover, if |Li | = 2, then Li is either
+
+{e 1i ,2 , e 3i ,4 }
+
+or
+
+{e 1i ,3 , e 2i ,4 }.
+
+The following lemma is used by both reductions:
+
+Lemma 1. Any set L of k lines that cover x points in P can be transformed into a canonical set of at most k lines that cover at least x
+(possibly different) points in P .
+Proof. Consider an arbitrary function f : P → L that maps each point p ∈ P to a line
+
+∈ L incident to p; if p is not
+f
+
+incident to any line in L, then p is unmapped, i.e., f ( p ) is undeﬁned. For each variable v i , let Li ⊆ L denote the subset of
+f
+
+f
+
+f
+
+lines to which f maps the four variable points v 1i , v 2i , v 3i , v 4i . Clearly, |Li | ≤ 4. Note that Li ⊆ Li but in general Li is not
+
+708
+
+A. Dumitrescu, M. Jiang / Computational Geometry 48 (2015) 703–717
+
+Fig. 4. The set P of 4 × 2 + 3 = 11 points corresponding to the E3-Occ-Max-E2-SAT instance ( V , C ) where c 1 = v 1 ∨ v 2 , c 2 = v¯ 1 ∨ v 2 , c 3 = v¯ 1 ∨ v¯ 2 .
+
+necessarily the same as Li , because a variable point of v i may be incident to multiple lines in L and is mapped by f to at
+f
+
+most one of them. In the following, we will transform L and update f accordingly, until Li = Li for all variables v i and
+L is canonical. Initially, every covered point is mapped to some line. During the transformation, we maintain the invariant
+that every mapped point is covered by some line (but not necessarily every covered point is mapped to some line) and the
+number of mapped points is non-decreasing.
+Categorize each line ∈ L in one of three types according to f : if there are two variable points of the same variable
+mapped to , then is of type 2; if there are no variable points mapped to , then is of type 0; otherwise, is of type 1.
+Note that each type-1 line either has only one variable point mapped to it, or has two variable points of different variables
+mapped to it.
+f
+
+f
+
+f
+
+In the ﬁrst step, we transform L until |Li | ≤ 2 for each variable v i . If |Li | > 2 for some variable v i , then Li must
+include at least two lines of type 1. Note that each type-1 line in
+
+f
+Li
+
+has exactly one variable point of v i and at most one
+f
+
+other point (either some clause point or a variable point of some other variable) mapped to it. As long as Li includes two
+type-1 lines, we replace them by a line of type 2 (through the two variable points of v i previously mapped to the two
+type-1 lines) and at most one other line of type 0 or 1 (through the at most two other points, if any, previously mapped
+to the two type-1 lines), and then update the function f accordingly (so that the points previously mapped to the two
+f
+
+type-1 lines are mapped to the lines that replace them). This replacement reduces |Li | by 1 (because the other line, if any,
+f
+
+does not have any variable points of v i mapped to it), and does not increase |L j | for any j = i. Repeat such replacement
+f
+|L i
+
+whenever applicable. Eventually we have
+| ≤ 2 for every variable v i .
+In the second step, we transform L until no lines of type 0 are incident to variable points. Consider any line of type 0.
+If is incident to two clause points, then by construction it is not incident to any variable point. Otherwise is incident to
+at most one clause point, and hence can be rotated, if necessary, to avoid all variable points. Note that the function f and
+f
+
+the subsets Li are not changed during this step.
+In the third step, we transform L until it contains no lines of type 1. Consider any line
+f
+
+f
+
+of type 1 in Li , with a variable
+f
+
+point of v i , say v ri , mapped to it. Since |Li | ≤ 2, there is at most one other line besides in Li , with at most two other
+variable points of v i mapped to it. It follows that at least one of the four variable points of v i , say v is , is not mapped to any
+r ,s
+line in L. Replace by the line e i , and update the function f accordingly (ﬁrst unmap the at most two points previously
+r ,s
+r
+mapped to , including v i , then map both v ri and v is to the line e i of type 2).
+In the fourth step, we transform L by considering two cases for each line of type 2:
+1. A line
+
+∈
+
+f
+
+f
+
+of type 2 is in Li with |Li | = 1. Then
+
+is the only line with variable points of v i mapped to it, and
+1, 4 2, 3
+1, 2 3, 4 1, 3 2, 4
+If ∈ {e i , e i }, we replace by any line in {e i , e i , e i , e i }.
+f
+f
+1, 2 3, 4
+1, 3 2, 4
+1 and 2 of type 2 are in Li with |Li | = 2. Then { 1 , 2 } must be either {e i , e i }, or {e i , e i }, or
+1, 4 2, 3
+1, 2 3, 4
+1, 3 2, 4
+If the two lines are {e i , e i }, we replace them by either {e i , e i } or {e i , e i }, arbitrarily.
+
+{e 1i ,2 , e 3i ,4 , e 1i ,3 , e 2i ,4 , e 1i ,4 , e 2i ,3 }.
+
+2. Two lines
+
+{e 1i ,4 , e 2i ,3 }.
+
+After each replacement, we update f accordingly. This completes the transformation of L into canonical form.
+
+✷
+
+For the reduction to Maximum Point Coverage by Lines, we have the following lemma about the construction:
+Lemma 2. There exists an assignment of the variables in V that satisﬁes at least w clauses in C if and only if there exists a set of 2n
+lines that cover at least 4n + w points in P .
+
+A. Dumitrescu, M. Jiang / Computational Geometry 48 (2015) 703–717
+
+709
+
+Proof. We ﬁrst prove the direct implication. Let g : V → {true, false} be an assignment that satisﬁes at least w clauses in C .
+For each variable v i ∈ V , 1 ≤ i ≤ n, select two lines: if g ( v i ) = true, select the line through v 1i and v 2i and the line through
+v 3i and v 4i ; if g ( v i ) = false, select the line through v 1i and v 3i and the line through v 2i and v 4i . By construction, these 2n
+lines cover not only all 4n variable points, but also the at least w clause points for the satisﬁed clauses.
+We next prove the reverse implication. Let L be a set of 2n lines that cover at least 4n + w points in P . We will construct
+an assignment of the variables in V that satisﬁes at least w clauses in C . By Lemma 1, we can assume that L is canonical.
+Consider any line ∈ L. If is not incident to any variable point, then it is incident to at most two clause points, and can be
+replaced by a line through two variable points of some variable while keeping L in canonical form. Repeat such replacement
+whenever applicable. Eventually L includes exactly 2n lines incident to all 4n variable points and at least w clause points.
+1, 2 3, 4
+1, 3 2, 4
+Compose an assignment g : V → {true, false} by setting g ( v i ) to true if Li = {e i , e i } and to false if Li = {e i , e i }. Then
+by construction g satisﬁes at least w clauses. ✷
+For the reduction to Covering Points by Lines, we have the following two lemmas analogous to Lemma 2 about the
+construction:
+Lemma 3. If there exists an assignment of the variables in V that satisﬁes at least w clauses in C , then there exists a set of at most
+2n + (m − w )/2 lines that cover all points in P .
+Proof. Let g : V → {true, false} be an assignment that satisﬁes at least w clauses in C . For each variable v i ∈ V , 1 ≤ i ≤ n,
+select two lines: if g ( v i ) = true, select the line through v 1i and v 2i and the line through v 3i and v 4i ; if g ( v i ) = false, select
+the line through v 1i and v 3i and the line through v 2i and v 4i . By construction, these 2n lines cover not only all 4n variable
+points, but also the at least w clause points for the satisﬁed clauses. To cover the remaining at most m − w clause points
+for the unsatisﬁed clauses, we pair them up arbitrarily and use at most (m − w )/2 additional lines. ✷
+Lemma 4. If there exists a set of at most 2n + (m − w )/2 lines that cover all points in P , then there exists an assignment of the
+variables in V that satisﬁes at least w clauses in C .
+Proof. Let L be a set of at most 2n + (m − w )/2 lines that cover all points in P . We will construct an assignment of the
+variables in V that satisﬁes at least w clauses in C . By Lemma 1, we can assume that L is canonical. Since all points are
+covered, this requires that |Li | = 2 for each i = 1, . . . , n, thus L includes exactly 2n lines incident to the variable points.
+These 2n lines must cover at least w clause points because the other at most (m − w )/2 lines in L can cover at most
+1, 2 3, 4
+m − w clause points. Compose an assignment g : V → {true, false} by setting g ( v i ) to true if Li = {e i , e i } and to false if
+
+Li = {e 1i ,3 , e 2i ,4 }. Then by construction g satisﬁes at least w clauses. ✷
+
+The following lemma implies that Maximum Point Coverage By Lines is APX-hard:
+Lemma 5. For any ε , 0 < ε < 15 , if Maximum Point Coverage by Lines admits a polynomial-time approximation algorithm with
+ratio 1 − ε , then E3-Occ-Max-E2-SAT admits a polynomial-time approximation algorithm with ratio 1 − 5 ε .
+Proof. Let ( V , C ) be an instance of E3-Occ-Max-E2-SAT with n variables and m clauses, where 3n = 2m. Consider the
+following algorithm: ﬁrst construct a set P of points from ( V , C ) (refer back to Fig. 4) and set k (the number of lines) to 2n;
+then run the (1 − ε )-approximation algorithm for Maximum Point Coverage by Lines on the instance ( P , k) to obtain a set
+L of lines, and ﬁnally compose an assignment g : V → {true, false} as in the reverse implication of Lemma 2. The algorithm
+can clearly be implemented in polynomial time. It remains to analyze its approximation ratio.
+Let x∗ be the maximum number of points in P that can be covered by any set of k = 2n lines. Clearly, x∗ ≤ 4n + m. Let
+w ∗ be the maximum number of clauses in C that can be satisﬁed by any assignment of V . Observe that w ∗ ≥ 34 m since a
+random assignment of each variable independently to either true or false with equal probability
+clause of two literals with probability 1 − ( 12 )2 = 34 . Recall that 3n = 2m. Thus we have
+
+x∗ ≤ 4n + m =
+
+11
+3
+
+m≤
+
+11 4
+3 3
+
+w∗ =
+
+44
+9
+
+w∗ < 5 w∗.
+
+1
+2
+
+satisﬁes each disjunctive
+
+(1)
+
+Let x be the number of points in P covered by the lines in L. Let w be the number of clauses in C satisﬁed by the
+assignment g. Lemma 2 implies that w ∗ = x∗ − 4n and by the reverse implication in Lemma 2 we have w ≥ x − 4n. Thus
+w ∗ − w ≤ x∗ − x . It then follows from (1) that
+
+w∗ − w
+w∗
+
+≤5
+
+x∗ − x
+x∗
+
+.
+
+The (1 − ε )-approximation algorithm for Maximum Point Coverage by Lines guarantees the relative error bound (x∗ −
+x )/x∗ ≤ ε . So we have ( w ∗ − w )/ w ∗ ≤ 5 ε and hence w / w ∗ ≥ 1 − 5 ε , as desired. ✷
+
+710
+
+A. Dumitrescu, M. Jiang / Computational Geometry 48 (2015) 703–717
+
+The following lemma, analogous to Lemma 5, implies that Covering Points by Lines is APX-hard:
+1
+Lemma 6. For any ε , 0 < ε < 10
+, if Covering Points by Lines admits a polynomial-time approximation algorithm with ratio 1 + ε ,
+then E3-Occ-Max-E2-SAT admits a polynomial-time approximation algorithm with ratio 1 − 10 ε .
+
+Proof. Let ( V , C ) be an instance of E3-Occ-Max-E2-SAT with n variables and m clauses, where 3n = 2m. Let w ∗ be the
+maximum number of clauses in C that can be satisﬁed by any assignment of V . We have w ∗ ≥ 34 m since a random assignment of each variable independently to either true or false with equal probability
+
+1
+2
+
+satisﬁes each disjunctive clause of two
+
+literals with probability 1 −
+=
+Without loss of generality, we assume that w ∗ ≥ 1/ε , since otherwise the instance
+( V , C ) would have size O (1/ε ) and would admit a straightforward brute-force algorithm running in 2 O (1/ε) time, which is
+constant time for any ﬁxed ε > 0.
+Under the assumption that w ∗ ≥ 1/ε , we have the following algorithm for E3-Occ-Max-E2-SAT: ﬁrst construct a set P of
+points from ( V , C ) (refer back to Fig. 4), then run the (1 + ε )-approximation algorithm for Covering Points by Lines on P to
+obtain a set L of lines, and ﬁnally compose an assignment g : V → {true, false} as in the proof of Lemma 4. The algorithm
+can clearly be implemented in polynomial time. It remains to analyze its approximation ratio.
+Let k∗ be the minimum cardinality of any set of lines that cover P . It is easy to see that k∗ ≤ 2n + m. Recall that w ∗ ≥ 34 m
+and 3n = 2m. Thus we have
+
+( 12 )2
+
+3
+.
+4
+
+k∗ ≤ 2n + m ≤ 3m ≤ 4w ∗ .
+Lemma 3 implies that k∗
+
+(2)
+
+≤ 2n + (m −
+
+w ∗ )/2 . It follows that k∗
+
+≤ 2n + (m −
+
+w∗
+
++ 1)/2 and hence
+
+w ∗ ≤ 2(2n − k∗ ) + m + 1.
+
+(3)
+
+Let k be the number of lines in L. Let w be the number of clauses in C that are satisﬁed by the assignment g. Put
+w := m − 1 − 2(k − 2n). Then
+
+k = 2n + (m − 1 − w )/2 = 2n + (m − w )/2 .
+
+(4)
+
+Note that w := m − 1 − 2(k − 2n) is the smallest integer (there are two such integers) satisfying the equation k = 2n + (m −
+w )/2 . If w < w, then by (the contrapositive of) Lemma 4 we would have k > 2n + (m − w )/2 , which contradicts (4). So
+we must have w ≥ w, that is,
+
+w ≥ m − 1 − 2(k − 2n).
+
+(5)
+
+From (3) and (5), we have
+
+w ∗ − w ≤ 2(2n − k∗ ) + m + 1 − m + 1 + 2(k − 2n) = 2(k − k∗ ) + 2,
+and hence
+
+w∗ − w
+w∗
+
+≤
+
+2(k − k∗ )
+w∗
+
++
+
+2
+w∗
+
+≤
+
+8(k − k∗ )
+k∗
+
++
+
+2
+w∗
+
+,
+
+where the second inequality follows from (2). The (1 + ε )-approximation algorithm for Covering Points by Lines guarantees
+the relative error bound (k − k∗ )/k∗ ≤ ε . Recall our assumption that w ∗ ≥ 1/ε . Consequently we have ( w ∗ − w )/ w ∗ ≤
+8 ε + 2 ε = 10 ε and hence w / w ∗ ≥ 1 − 10 ε , as desired. ✷
+Remark. For simplicity, we did not attempt obtaining the best multiplicative constant factors of
+lemmas. Those expressions can be improved.
+
+ε in the previous two
+
+4. APX-hardness of M INIMUM -L INK C OVERING T OUR
+In this section we prove Theorem 4. We show that Minimum-Link Covering Tour is APX-hard by a gap-preserving
+reduction from Covering Points by Lines,2 which was proved to be APX-hard in Theorem 3.
+Let P be a set of n points for the problem Covering Points by Lines. We will construct a set Q of 3n points for the
+problem Minimum-Link Covering Tour, such that P can be covered by k lines if and only if Q admits a covering tour with
+3k segments.
+
+2
+Arkin et al. [6] proved the NP-hardness of Minimum-Link Covering Tour by a reduction from the same problem Covering Points by Lines, but since
+their reduction is not gap-preserving, their proof does not immediately imply the APX-hardness of Minimum-Link Covering Tour even if Covering Points
+by Lines was known to be APX-hard. It is quite likely, however, that their construction can be combined with our construction in the proof of Theorem 3
+to obtain a gap-preserving reduction directly from E3-Occ-Max-E2-SAT to Minimum-Link Covering Tour.
+
+A. Dumitrescu, M. Jiang / Computational Geometry 48 (2015) 703–717
+
+711
+
+Fig. 5. The construction of Q from P .
+
+Refer to Fig. 5. By an aﬃne transformation, we ﬁrst transform P into a set P of n points such that (i) P is enclosed in
+a circle of some small radius r, say, r = 1/100; (ii) the angle between any two lines 1 and 2 , each incident to at least two
+points in P , is at most some small angle θ , say, 1◦ . Now take an equilateral triangle abc of side length 1 inscribed in an
+equilateral triangle a b c of side length 2, where the three vertices of the smaller triangle are the midpoints of the three
+edges of the larger triangle. The point set Q is the union of three rotated copies of P that we refer to as the three clusters,
+one cluster near each vertex of abc, such that the circle of radius r enclosing each cluster is centered at the vertex, and all
+lines through at least two points in the cluster are at angles at most θ from the edge of a b c that contains the vertex.
+Lemma 7. There exists a set of k lines that cover all points in P if and only if there exists a covering tour with 3k segments for Q .
+Proof. We ﬁrst prove the direct implication. Let L be a set of k lines that cover all points in P . Then by the aﬃne transformation, we have a set L of k lines that cover all points in P , and the 3k lines in the three copies of L corresponding to
+the three copies of P cover all points in Q . These 3k lines can obviously be linked into a covering tour with 3k segments,
+where any three consecutive segments are from three different clusters, and the turns between consecutive segments are
+near the vertices of a b c .
+We next prove the reverse implication. Let T be a covering tour with 3k segments for Q , and let LT be the set of at
+most 3k lines supporting the 3k segments in T . A line is an intra-cluster line if the points in Q that are covered by it, if any,
+are all from the same cluster; it is an inter-cluster line otherwise. By construction, each inter-cluster line covers exactly two
+points, from two different clusters. Let l1 (respectively, l2 ) be the number of intra-cluster (respectively, inter-cluster) lines in
+LT ; then l1 + l2 ≤ 3k. Let na , nb , nc be the numbers of points in clusters near a, b, c, respectively, that are covered by the
+inter-cluster lines; then na + nb + nc = 2l2 . Since any two points in the same cluster can be covered by some intra-cluster line,
+these na + nb + nc points can be covered by at most na /2 + nb /2 + nc /2 intra-cluster lines (instead of l2 inter-cluster
+lines). Since the sum of the three numbers na , nb , nc is even, we have either two of them odd and one even, or all three
+of them even. Thus we have na /2 + nb /2 + nc /2 ≤ (na + nb + nc )/2 + 1 = l2 + 1. It follows that Q can be covered
+by at most l1 + (l2 + 1) ≤ 3k + 1 intra-cluster lines, and hence at least one of the three copies of P can be covered by
+at most (3k + 1)/3 = k lines. The corresponding k lines obtained by reversing the aﬃne transformation cover all points
+in P . ✷
+From the above lemma, we can easily prove the following lemma similar to Lemmas 5 and 6, which implies the APXhardness of Minimum-Link Covering Tour:
+Lemma 8. For any ρ ≥ 1, if Minimum-Link Covering Tour admits a polynomial-time approximation algorithm with ratio
+Covering Points by Lines admits a polynomial-time approximation algorithm with ratio ρ .
+
+ρ , then
+
+5. NP-hardness of M INIMUM -L INK S PANNING T OUR
+In this section we prove Theorem 5. We show that Minimum-Link Spanning Tour is NP-hard by a reduction from a
+variant of the NP-hard problem Hamiltonian Circuit in Cubic Graphs [23], in which the input consists of not only a cubic
+graph G but also some edge e of G that is required to be part of the Hamiltonian circuit. A simple Turing reduction shows
+that this variant is still NP-hard.
+Let G be a cubic graph with n vertices and m edges, where 3n = 2m. Let e = {s, t } be the edge of G that is required to
+be part of the circuit. We ﬁrst obtain a graph G from G, by removing the edge e, and then adding two dummy vertices s
+and t with two new edges {s, s } and {t , t }. Then there exists a Hamiltonian circuit in G containing the edge e if and only
+if there exists a Hamiltonian path in G from s to t . Observe that G has exactly n + 2 vertices and exactly m + 1 edges,
+where n + 2 < m + 1, and moreover every vertex except s and t has degree 3.
+
+712
+
+A. Dumitrescu, M. Jiang / Computational Geometry 48 (2015) 703–717
+
+Fig. 6. Transforming T into a canonical spanning tour that visits each vertex point exactly once.
+
+We next construct a set P of n + 2 + m + 1 points, one vertex point for each vertex, and one edge point for each edge
+in G . The n + 2 vertex points are in some arbitrary convex position, say, on a circle. The m + 1 edge points are in the
+interior of the convex hull of the n + 2 vertex points. Moreover, for each edge e = {u , v }, the edge point of e is in the line
+through the two vertex points of u and v (i.e., in the interior of the segment uv), and is not in any other line containing
+more than two points in P .
+The reduction can clearly be implemented in polynomial time. Then the following lemma establishes the NP-hardness of
+Minimum-Link Spanning Tour:
+Lemma 9. There exists a Hamiltonian path in G from s to t if and only if there exists a spanning tour with m + 2 segments for P .
+Proof. We ﬁrst prove the direct implication. Let H be a Hamiltonian path in G from s to t . We will construct a spanning
+tour with m + 2 segments for P . Corresponding to the Hamiltonian path H that visits all n + 2 vertices in G using n + 1
+edges, there is a polygonal chain of n + 1 segments that connect the n + 2 vertex points in P in the same order, which
+also cover n + 1 edge points. The chain can be extended to visit the remaining (m + 1) − (n + 1) = m − n edge points in
+any order with m − n segments, and ﬁnally closed into a tour with another segment. The total number of segments is
+(n + 1) + (m − n) + 1 = m + 2.
+We next prove the reverse implication. Let T be a spanning tour with m + 2 segments for P . We will ﬁnd a Hamiltonian
+path in G from s to t . We ﬁrst transform T , without increasing the number of segments, into a canonical spanning tour
+that visits each vertex point exactly once.
+Suppose that a vertex point z is visited twice in T . Then there are two pairs of consecutive segments with turns at z.
+Refer to Fig. 6. If, out of these four segments incident to z, there is a segment connecting some point x directly to z with
+no other point of P in the interior of the segment, then we can take a shortcut (as in Fig. 6 left) in the pair of segments
+including xz to skip a visit to z. Otherwise, each of the four segments must connect z to the vertex point of a neighbor of
+the vertex of z in G , going through the corresponding edge point. Recall that every vertex in G has degree at most 3. By
+the pigeonhole principle, at least two of these four segments must be the same segment, say, uz. If the two copies of uz
+are consecutive and form a turn at z in T , then we can shorten both of them to skip a visit to z. Otherwise, one copy of uz
+must form a turn at z with some other segment, say v z, and again we can take a shortcut (as in Fig. 6 right) to skip a visit
+of z. Observe that in both cases, T remains a spanning tour after the transformation.
+Now observe that every edge point is either in the interior of some segment between two vertex points, or at a turning
+point between two consecutive segments. Associate a cost of 1 with each edge point. For each edge point, charge its cost
+to the segments that contain it: if it is in the interior of one segment, charge 1 to the segment; if it is at a turning point
+between two consecutive segments, charge 1/2 to each segment. Observe that
+
+• each segment between two vertex points is charged 1 if the segment contains an edge point, and is charged 0 otherwise;
+
+• each segment between two edge points is charged 1/2 + 1/2 = 1;
+• each segment between a vertex point and an edge point (there must be at least two such segments along the tour since
+there are more edge points than vertex points) is charged exactly 1/2.
+Since the number of edge points in P is m + 1 and the number of segments in T is m + 2, we must have exactly 2 segments
+charged 1/2 each, and exactly m segments charged 1 each, so that m + 1 = 2 · 1/2 + m · 1. It follows that (i) there are
+exactly two segments between vertex points and edge points, and (ii) there is no segment connecting two vertex points
+and containing no edge point. Condition (i) implies that the segments between vertex points are consecutive in the tour.
+Condition (ii) implies that these consecutive segments correspond to a Hamiltonian path in G . Finally, this Hamiltonian
+path must have s and t as the two ends because each of them has exactly one neighbor. ✷
+
+A. Dumitrescu, M. Jiang / Computational Geometry 48 (2015) 703–717
+
+713
+
+Fig. 7. The construction of the point set Q for Min–Max-Turn Hamiltonian Tour (s = 4 × 6 + 3 = 27 in this example).
+
+6. APX-hardness of M IN –M AX-T URN H AMILTONIAN T OUR and NP-hardness of B OUNDED -T URN -M INIMUM -L ENGTH
+H AMILTONIAN T OUR
+In this section we prove Theorems 6 and 7. We ﬁrst show that Min–Max-Turn Hamiltonian Tour is APX-hard by a
+gap-preserving reduction from Covering Points by Lines, which was proved to be APX-hard in Theorem 3. Let P be a set
+of n points for the problem Covering Points by Lines. We will construct a set Q of points for the problem Min–Max-Turn
+Hamiltonian Tour.
+n
+Let L P be the set of at most 2 lines determined by P , where each line in L P goes through at least two points in P
+(we assume without loss of generality that no line in L P is vertical). Let α P be the minimum turning angle determined by
+any three non-collinear points in P ; we will show later in Lemma 12 that 1/α P may be assumed to be polynomial in n. Let
+α := α P /nμ for some suitable constant μ ≥ 1.
+Refer to Fig. 7. We ﬁrst construct a simple closed curve γ that is composed by a half-circle and a polygonal chain joined
+at their endpoints a and b. The polygonal chain consists of s := 2|L P | + 2(|L P | + 1) + 1 = O (n2 ) segments, including 2
+segments from each line in L P , 2(|L P | + 1) vertical segments, and 1 horizontal segment cd. Observe that γ is monotone in
+the horizontal direction, in the sense that the intersection of every vertical line with the region enclosed by γ is a single
+line segment.
+Refer to Fig. 8. We next transform γ into a simple closed curve γ˜ that is not only monotone but also smooth, by
+smoothing the corner between every pair of consecutive segments in the chain into a small circular arc tangent to both
+segments. Then γ˜ is an alternating cycle of s segments (including the horizontal segment cd) and s circular arcs (including
+the half-circle with diameter ab).
+Put t := 9n2 π /α . The point set Q consists of all n points in P and m := s(t + 1 + 2n) points from the curve γ˜ . Take t + 1
+points (including the two endpoints) from each of the s circular arcs, which divide any such arc into t sub-arcs with the
+same central angle at most θ := π /t ≤ α /(9n2 ). Take n more points from each of the two segments adjacent to the circular
+arc, near the shared endpoints, such that the following θ -property is satisﬁed: the angle poq, where p is an endpoint of
+the arc, o is any of the other t points in the arc, and q is any of the n points in the segment containing p, is at most θ .
+Observe that the total number of points is s(t + 1 + 2n).
+We have the following two lemmas about the construction:
+Lemma 10. If there exists a set of k lines that cover all points in P , for some k ≤ n, then there exists a Hamiltonian tour with maximum
+turning angle at most (k + 2)θ for Q .
+
+714
+
+A. Dumitrescu, M. Jiang / Computational Geometry 48 (2015) 703–717
+
+Fig. 8. Smoothing the corner between two consecutive segments into a circular arc tangent to both segments (t = 4 and n = 3 in this example).
+
+Proof. Let L = { 1 , . . . , k } be a set of k lines that cover all points in P ; without loss of generality, L ⊆ L P . We will
+construct a Hamiltonian tour with maximum turning angle at most (k + 2)θ for Q . Index the m points in Q taken from the
+curve γ˜ by the circular order of their locations along the curve: q1 , . . . , qm . Assign each point a color in [0, k]: q i has color
+i mod (k + 1), 1 ≤ i ≤ m.
+The tour consists of k + 1 rounds. In the ith round, 1 ≤ i ≤ k, the tour follows the half-circle from a to b and continues
+along the chain from b to d until it reaches the line i , then takes a shortcut along i from right to left and continues along
+the chain from c to a until it reaches the half-circle again; the tour visits each point of color i in or below the line i while
+following the curve, and visits each point in P that is covered by the line i (if the point was not visited in previous rounds)
+while taking the shortcut. In the last round, the tour follows the curve entirely to visit each point of color 0, and points of
+other colors not visited in previous rounds due to the shortcuts.
+Consider any three consecutive points p 1 , p 2 , p 3 in the tour. If the three points are all in some line i supporting a
+shortcut, then obviously turn( p 1 , p 2 , p 3 ) = 0. Otherwise, the three points must come from some sub-curve of γ˜ consisting
+of a circular arc and an adjacent segment. The number of sub-arcs of this arc that are between p 1 and p 3 is at most 2(k + 1);
+each such sub-arc contributes half of its central angle to the turning angle at p 2 . Taking into account the possibility that
+the three points are not all in the arc and using the θ -property, we have turn( p 1 , p 2 , p 3 ) ≤ 2(k + 1)θ/2 + θ = (k + 2)θ . ✷
+Lemma 11. If there exists a Hamiltonian tour with maximum turning angle at most kθ for Q , for some k ≤ n, then there exists a set of
+k lines that cover all points in P .
+Proof. Let τ be a Hamiltonian tour with maximum turning angle at most kθ for Q . We will ﬁnd a set of k lines that cover
+all points in P .
+Break the tour τ into rounds, such that each round consists of some points in the half-circle followed by some points not
+in the half-circle (i.e., in the chain or in P ). When the angle α is suﬃciently small (hence kθ ≤ kα /(9n2 ) is even smaller),
+in each round the tour must visit some points in the half-circle in order of their x-coordinates, say, from left to right, then
+visit points near some corners of the chain, from right to left. While in the chain, the tour may take shortcuts between
+non-consecutive corners, but since the curve γ˜ is monotone, it can take at most one crossing shortcut from a corner on the
+bd side to a corner on the ac side. Only when taking such a crossing shortcut can the tour visit some points in P . Moreover,
+since kθ ≤ kα /(9n2 ) < α P , the points in P that are visited during each crossing shortcut must be collinear.
+We next show that τ has at most k rounds. Index the t + 1 points in the half-circle from left to right by numbers from
+0 to t, where a has index 0 and b has index t. Consider an arbitrary round. Let r be the number of points in the half-circle
+that are visited in this round. Let i 1 , . . . , i r be the indices of these points, from left to right. Then we must have i 1 ≤ 2k − 1
+because otherwise the turning angle at the point with index i 1 would be greater than (i 1 + 1)θ/2 > 2k θ/2 = kθ . Similarly,
+we must have i r ≥ t − (2k − 1), and i j +2 − i j ≤ 2k for each j, 1 ≤ j ≤ r − 2. Counting in pairs, we have r ≥ 2 r2 , where
+r2 =
+
+t −(2k−1)−(2k−1)
+2k
+
+t
+r
+
+≤
+
+. It follows that the number of rounds in
+
+t
+2
+
+t −(2k−1)−(2k−1)
+2k
+
+≤
+
+t
+2
+
+t −(2k−1)−(2k−1)
+2k
+
+−1
+
+=
+
+τ is at most
+t
+
+t − 6k + 2
+
+k.
+
+1
+It is easy to check that t ≥ 9n2 > 8k2 and hence t −6kt +2 < k+
+. Thus τ has at most k rounds. Finally, since each round has
+k
+at most one crossing shortcut that can cover some collinear points in P , all points in P can be covered by k lines. ✷
+
+A. Dumitrescu, M. Jiang / Computational Geometry 48 (2015) 703–717
+
+715
+
+Unlike the reductions in previous sections, our reduction to Min–Max-Turn Hamiltonian Tour is numerically sensitive
+because the construction depends on a small angle α P and has points placed precisely on circular arcs. Even if we reduce
+from a restricted version of Covering Points by Lines, where the coordinates are polynomial in the number of points (it
+can be checked that our proof for the APX-hardness of Covering Points by Lines fulﬁlls this restriction), it is still not
+immediately clear that the reduction is polynomial. To clarify this, we prove a property concerning lattice points in the next
+lemma, which implies that 1/α P may be assumed to be polynomial in the lattice size N:
+Lemma 12. Let a, b, and c be three non-collinear points in the [0, N ] × [0, N ] section of the integer lattice, where N ≥ 10. Then the
+turning angle of the path (a, b, c ) at point b is at least 1/(3N 2 ).
+Proof. Let β denote the turning angle. We can assume that 0 < β < π /2, since otherwise the inequality holds. Since a, b, c
+are non-collinear lattice points, the tangent function of the turning angle can be expressed as:
+
+tan β = tan(β2 − β1 ) =
+
+tan β2 − tan β1
+1 + tan β1 tan β2
+
+,
+
+1
+where tan β1 = m
+< mn22 = tan β2 , and m1 , m2 , n1 , n2 are nonnegative integers less or equal to N. Write t 1 = tan β1 and
+n1
+t 2 = tan β2 . We distinguish two cases depending on whether the product t 1 t 2 is smaller or larger than 1:
+Case 1: t 1 t 2 ≤ 1. We have
+
+tan β =
+
+t2 − t1
+1 + t1t2
+
+≥
+
+t2 − t1
+2
+
+=
+
+1
+
+m2
+
+2
+
+n2
+
+m1
+
+−
+
+n1
+
+=
+
+m2 n1 − m1 n2
+2n1 n2
+
+≥
+
+1
+2n1 n2
+
+≥
+
+1
+2N 2
+
+.
+
+Case 2: t 1 t 2 ≥ 1. We have
+
+tan β =
+
+=
+
+t2 − t1
+1 + t1t2
+1
+
+n1
+
+2
+
+m1
+
+≥
+
+−
+
+t2 − t1
+2t 1 t 2
+
+n2
+m2
+
+=
+
+=
+
+1
+
+1
+
+2
+
+t1
+
+−
+
+1
+t2
+
+m2 n1 − m1 n2
+2m1m2
+
+≥
+
+1
+2m1m2
+
+≥
+
+1
+2N 2
+
+.
+
+Since N ≥ 10 was assumed, in both cases it follows that β ≥ 1/(3N 2 ), as required.
+
+✷
+
+Having polynomial representation of the small angles and rational points on circular arcs is a non-trivial problem [15,14].
+Without delving too much into technical details such as Lemma 12, we claim that for any δ , 0 < δ < 1, the construction can
+use integers polynomial in n for the coordinates of all points in Q , such that the angle determined by any three points in
+Q deviates by a multiplicative factor at least 1 − δ and at most 1 + δ . Consequently, the reduction is strongly polynomial,
+and we have the following approximate versions of Lemmas 10 and 11:
+Lemma 10 (Approximate version). If there exists a set of k lines that cover all points in P , for some k ≤ n, then there exists a Hamiltonian tour with maximum turning angle at most (1 + δ)(k + 2)θ for Q .
+Lemma 11 (Approximate version). If there exists a Hamiltonian tour with maximum turning angle at most (1 − δ)kθ for Q , for some
+k ≤ n, then there exists a set of k lines that cover all points in P .
+The following lemma shows that Min–Max-Turn Hamiltonian Tour is almost as hard to approximate as Covering Points
+by Lines:
+Lemma 13. For any ρ ≥ 1, if Min–Max-Turn Hamiltonian Tour admits a polynomial-time approximation algorithm with ratio ρ ,
+then Covering Points by Lines admits a polynomial-time approximation algorithm with ratio (1 + ε )ρ for any ε > 0.
+Proof. Let P be a set of n points for Covering Points by Lines. Let k∗ be the minimum number of lines necessary for
+covering all points in P . Without loss of generality, we assume that k∗ ≥ 6/ε , since otherwise a brute-force algorithm can
+ﬁnd k∗ lines to cover P in n O (1/ε) time, which is polynomial time for any ﬁxed ε > 0.
+1+ε
+∗
+Let δ = (ε ) such that 11+δ
+−δ = 1+ε /2 . Under the assumption that k ≥ 6/ε , we have the following algorithm: ﬁrst construct
+a point-set Q from P (refer to Fig. 7), and then run the ρ -approximation algorithm for Min–Max-Turn Hamiltonian Tour
+on Q to obtain a tour of maximum turning angle at most (1 − δ)κ θ for some κ > 0, and ﬁnally obtain a set L of at most
+k = κ lines that cover P by Lemma 11 (approximate version).
+By Lemma 10 (approximate version), the minimum value of the maximum turning angle of a Hamiltonian tour for
+Q is at most (1 + δ)(k∗ + 2)θ (i.e., there exists a Hamiltonian tour with maximum turning angle bounded as such). The
+ρ -approximation algorithm for Min–Max-Turn Hamiltonian Tour guarantees that (1 − δ)κ θ ≤ ρ (1 + δ)(k∗ + 2)θ and hence
+1+δ ∗
+1+δ ∗
+1+δ
+∗
+∗
+κ ≤ ρ 11+δ
+−δ (k + 2). By the assumption that k ≥ 6/ε , we have k = κ ≤ ρ 1−δ (k + 2) + 1 ≤ ρ 1−δ (k + 3) = ρ 1−δ (1 +
+∗
+∗
+3/k∗ )k∗ ≤ ρ 11+δ
+−δ (1 + ε /2)k = ρ (1 + ε )k .
+
+✷
+
+716
+
+A. Dumitrescu, M. Jiang / Computational Geometry 48 (2015) 703–717
+
+Since Covering Points by Lines is APX-hard (Theorem 3), the above lemma implies that Min–Max-Turn Hamiltonian
+Tour is APX-hard too. This completes the proof of Theorem 6.
+Consider the decision versions of the two Hamiltonian Tour problems:
+(I) Min–Max-Turn Hamiltonian Tour (Decision Problem): Given n points in the plane and an angle α ∈ [0, π ], decide
+whether there exists a Hamiltonian tour with maximum turning angle at most α .
+(II) Bounded-Turn-Minimum-Length Hamiltonian Tour (Decision Problem): Given n points in the plane, an angle α ∈
+[0, π ], and a positive number L, decide whether there exists a Hamiltonian tour with maximum turning angle at most
+α and length at most L.
+Observe that the decision problem of Min–Max-Turn Hamiltonian Tour is a special case of the decision problem of
+Bounded-Turn-Minimum-Length Hamiltonian Tour, with the parameter L set to some suﬃciently large number, say, n
+times the diameter of the point set. Thus the APX-hardness (indeed NP-hardness suﬃces) of Min–Max-Turn Hamiltonian
+Tour implies that Bounded-Turn-Minimum-Length Hamiltonian Tour is NP-hard. This completes the proof of Theorem 7.
+Remark. While the decision problem of Bounded-Turn-Minimum-Length Hamiltonian Tour has both an angle constraint
+and a length constraint, it is interesting to note that our proof of its NP-hardness above (via the reduction from the decision
+problem of Min–Max-Turn Hamiltonian Tour) effectively only uses the angle constraint. That is, the problem is already
+hard with the angle constraint alone. On the other hand, if the turning angle is unrestricted, i.e., if α = π , then the problem
+Bounded-Turn-Minimum-Length Hamiltonian Tour is the same as the Euclidean Traveling Salesman Problem, which is
+well known to be NP-hard with the length constraint alone. Our proof sheds light on a different aspect of the diﬃculty of
+the problem.
+7. Concluding remarks
+The obvious question left open by our work is whether Covering Points by Lines admits an approximation algorithm
+with constant ratio. Two other problems are ﬁnding approximation algorithms for Min–Max-Turn Hamiltonian Tour and
+Bounded-Turn-Minimum-Length Hamiltonian Tour, respectively.
+Acknowledgements
+The authors are grateful to anonymous reviewers for bringing to our attention the previous APX-hardness results of
+Brodén et al. [12] and Kumar et al. [31], for suggesting the extension to lines—in our Theorem 1—of the result from [11]
+(Theorem 1, p. 1041) for line segments, and for pertinent advice on polynomial representation of points on circular arcs
+[15,14].
+References
+[1] A. Aggarwal, D. Coppersmith, S. Khanna, R. Motwani, B. Schieber, The angular-metric traveling salesman problem, SIAM J. Comput. 29 (1999) 697–711,
+an extended abstract in: Proceedings of the 8th Annual ACM–SIAM Symposium on Discrete Algorithms, SODA’97, 1997, pp. 221–229.
+[2] P.K. Agarwal, P. Raghavan, H. Tamaki, Motion planning for a steering-constrained robot through moderate obstacles, in: Proceedings of the 27th Annual
+ACM Symposium on Theory of Computing, STOC’95, 1995, pp. 343–352.
+[3] N. Alon, A non-linear lower bound for planar epsilon-nets, Discrete Comput. Geom. 47 (2012) 235–244.
+[4] N. Alon, D. Moshkovitz, S. Safra, Algorithmic construction of sets for k-restrictions, ACM Trans. Algorithms 2 (2006) 153–177.
+[5] E.M. Arkin, M.A. Bender, E.D. Demaine, S.P. Fekete, J.S.B. Mitchell, S. Sethia, Optimal covering tours with turn costs, SIAM J. Comput. 35 (2005) 531–566.
+[6] E.M. Arkin, J.S.B. Mitchell, C.D. Piatko, Minimum-link watchman tours, Inf. Process. Lett. 86 (2003) 203–207.
+[7] S. Bereg, P. Bose, A. Dumitrescu, F. Hurtado, P. Valtr, Traversing a set of points with a minimum number of turns, Discrete Comput. Geom. 41 (2009)
+513–532.
+[8] P. Berman, M. Karpinski, On some tighter inapproximability results, DIMACS technical report 99-23, 1999.
+[9] P. Berman, M. Karpinski, Improved approximation lower bounds on small occurrence optimization, Electron. Colloq. Comput. Complex. TR03-008 (2003).
+[10] J. Boissonat, A. Cérézo, J. Leblond, Shortest paths of bounded curvature in the plane, J. Intell. Robot. Syst. 11 (1994) 5–20.
+[11] V.E. Brimkov, A. Leach, J. Wu, M. Mastroianni, Approximation algorithms for a geometric set cover problem, Discrete Appl. Math. 160 (2012) 1039–1052.
+[12] B. Brodén, M. Hammar, B.J. Nilsson, Guarding lines and 2-link polygons is APX-hard, in: Proceedings of the 13th Canadian Conference on Computational
+Geometry, CCCG’01, 2001, pp. 45–48.
+[13] H. Brönnimann, M.T. Goodrich, Almost optimal set covers in ﬁnite VC-dimension, Discrete Comput. Geom. 14 (1995) 463–479.
+[14] C. Burnikel, Rational points on circles, technical report MPI-I-98-1-023, Max-Planck-Institut für Informatik, 1998.
+[15] J. Canny, B. Donald, E.K. Ressler, A rational rotation method for robust geometric algorithms, in: Proceedings of the 8th Annual Symposium on Computational Geometry, SOCG’92, 1992, pp. 251–260.
+[16] T.M. Chan, E. Grant, Exact algorithms and APX-hardness results for geometric packing and covering problems, Comput. Geom. 47 (2014) 112–124.
+[17] V. Chvátal, A greedy heuristic for the set-covering problem, Math. Oper. Res. 4 (1979) 233–235.
+[18] K.L. Clarkson, K. Varadarajan, Improved approximation algorithms for geometric set cover, Discrete Comput. Geom. 37 (2007) 43–58.
+[19] G. Even, D. Rawitz, S. Shahar, Hitting sets when the VC-dimension is small, Inf. Process. Lett. 95 (2005) 358–362.
+[20] U. Feige, A threshold of ln n for approximating set cover, J. ACM 45 (1998) 634–652.
+[21] S.P. Fekete, G.J. Woeginger, Angle-restricted tours in the plane, Comput. Geom. 8 (1997) 195–218.
+
+A. Dumitrescu, M. Jiang / Computational Geometry 48 (2015) 703–717
+
+717
+
+[22] T. Frachard, Smooth trajectory planning for a car in a structured world, in: Proceedings of the IEEE International Conference on Robotics and Automation, 1989, pp. 318–323.
+[23] M.R. Garey, D.S. Johnson, L. Stockmeyer, Some simpliﬁed NP-complete problems, in: Proceedings of the 6th Annual ACM Symposium on Theory of
+Computing, STOC’74, 1974, pp. 47–63.
+[24] M. Grantson, C. Levcopoulos, Covering a set of points with a minimum number of lines, in: Proceedings of the 22nd European Workshop on Computational Geometry, 2006, pp. 145–148.
+[25] D. Haussler, E. Welzl, ε -Nets and simplex range queries, Discrete Comput. Geom. 2 (2007) 127–151.
+[26] D.S. Hochbaum, Approximation Algorithms for NP-Hard Problems, PWS, 1997.
+[27] P. Jacobs, J. Canny, Planning smooth paths for mobile robots, in: Proceedings of the IEEE International Conference on Robotics and Automation, 1989,
+pp. 2–7.
+[28] M. Jiang, On covering points with minimum turns, Int. J. Comput. Geom. Appl. 25 (2015) 1–9.
+[29] D.S. Johnson, Approximation algorithms for combinatorial problems, J. Comput. Syst. Sci. 9 (1974) 256–278.
+[30] S. Kratsch, G. Philip, S. Ray, Point Line Cover: the easy kernel is essentially tight, in: Proceedings of the 25th Annual ACM–SIAM Symposium on Discrete
+Algorithms, SODA’04, 2014, pp. 1596–1606.
+[31] V.S.A. Kumar, S. Arya, H. Ramesh, Hardness of set cover with intersection 1, in: Proceedings of the 27th International Colloquium on Automata,
+Languages and Programming, ICALP’00, 2000, pp. 624–635.
+[32] S. Langerman, P. Morin, Covering things with things, Discrete Comput. Geom. 33 (2005) 717–729.
+[33] J. Le Ny, E. Frazzoli, E. Feron, The curvature-constrained traveling salesman problem for high point densities, in: Proceedings of the 46th IEEE Conference on Decision and Control, 2007, pp. 5985–5990.
+[34] L. Lovasz, On the ratio of optimal integral and fractional covers, Discrete Math. 13 (1975) 383–390.
+[35] C. Lund, M. Yannakakis, On the hardness of approximating minimization problems, J. ACM 41 (1994) 960–981.
+[36] N. Megiddo, A. Tamir, On the complexity of locating linear facilities in the plane, Oper. Res. Lett. 1 (1982) 194–197.
+[37] J.S.B. Mitchell, Personal communication, December 2013.
+[38] N.H. Mustafa, S. Ray, Improved results on geometric hitting set problems, Discrete Comput. Geom. 44 (2010) 883–895.
+[39] N.H. Mustafa, R. Raman, S. Ray, QPTAS for geometric set-cover problems via optimal separators, arXiv:1403.0835, 2014.
+[40] J. Pach, P.K. Agarwal, Combinatorial Geometry, John Wiley, New York, 1995.
+[41] J. Pach, G. Tardos, Tight lower bounds for the size of epsilon-nets, J. Am. Math. Soc. 26 (2013) 645–658.
+[42] R. Raz, S. Safra, A sub-constant error-probability low-degree test, and a sub-constant error-probability PCP characterization of NP, in: Proceedings of
+the 29th Annual ACM Symposium on Theory of Computing, STOC’97, 1997, pp. 475–484.
+[43] P. Slavík, A tight analysis of the greedy algorithm for set cover, J. Algorithms 25 (1997) 237–254.
+[44] C. Stein, D.P. Wagner, Approximation algorithms for the minimum bends traveling salesman problem, in: Proceedings of the 8th International Conference on Integer Programming and Combinatorial Optimization, IPCO’01, 2001, pp. 406–421.
+[45] J. Wang, W. Li, J. Chen, A parameterized algorithm for the hyperplane-cover problem, Theor. Comput. Sci. 411 (2010) 4005–4009.
+
+

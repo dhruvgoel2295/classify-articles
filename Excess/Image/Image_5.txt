@@ -1,0 +1,108 @@
+Image and Vision Computing 30 (2012) 463–464
+
+Contents lists available at SciVerse ScienceDirect
+
+Image and Vision Computing
+journal homepage: www.elsevier.com/locate/imavis
+
+Can the World-Wide Web Bridge the Semantic Gap?
+Thomas S. Huang
+Beckman Institute University of Illinois Urbana Champaign
+
+a r t i c l e
+
+i n f o
+
+Keywords:
+Opinion paper
+New frontiers in computer vision
+
+a b s t r a c t
+The World-Wide Web provides tremendous resources in Multimedia Data, Ubiquitous Interconnection, and
+Storage/Computing Power. In this short note, we raise but not answer the question: Can the WWW help
+bridge the Semantic Gap in Computer Vision? Even if the answer turns out to be NO, we hope that by exploring these resources, we may gain a deeper understanding of the Semantic Gap challenge.
+© 2011 Elsevier B.V. Open access under CC BY-NC-ND license.
+
+One of the most challenging problems in Computer Vision is: How to
+bridge the Semantic Gap; i.e., how to map low-level relatively easily extractable visual features to high-level Semantic Concepts. The Computer
+Vision community have been working on this problem for many years
+and have made considerable progress, especially in recent several
+years. However, it is still not clear what is the best we can do. A major
+difﬁculty is that a given Semantic Concept can take on many different
+visual appearances. The advent and evolution of the World-Wide Web
+offers new hope for a deeper understanding of the Semantic Gap.
+What we need is HUGE labeled image and video databases; and enough
+computing power to try out various inference algorithms.
+There are tremendous resources on the Web that we can exploit,
+including:
+1. Abundance of multimedia data, esp. images with tags and surrounding texts; and videos with tags, speech/audio sound tracks,
+closed captions, and even transcripts,
+2. Ubiquitous interconnection enabling “Social Computing”,
+3. Emergence of Cloud Computing, making available massive storage
+space and computing power.
+To make it concrete, let us take the task of construction and utilization
+of Web-Scale labeled image databases. For a particular domain (e.g.,
+antural disasters), we crawl the Web (using keyword search) to gather
+a huge amount of multimedia data (in this case, images with associated
+texts). From the texts, using Natural Language Processing, we extract
+key Semantic Concepts and ﬁnd Relationships between the Concepts.
+Then images are attached to each Concept. This labeled image database
+can be represented by a Relational Graph with two types of Nodes: Concept Nodes and Data (image) Nodes. The Links between the Concept
+Nodes are Relations (forming an Ontology); the Links between the Data
+Nodes could be some measure of Visual Similarity); the Links between a
+Data Node and a Concept Node represent Attachment. This is merely a
+simple example of a representation for the STRUCTURE of the multimedia
+database. We call this kind of structure a Multimedia Information
+E-mail address: huang@ifp.uiuc.edu.
+0262-8856 © 2011 Elsevier B.V. Open access under CC BY-NC-ND license.
+doi:10.1016/j.imavis.2011.10.001
+
+Network (MINet). Other possible structures abound. But the important
+point is we do need a STRUCTURED database; putting all the Concepts
+at the same level is untenable, since even for simple domains, the number
+of Concepts could be in the thousands if not millions, making inference
+very difﬁcult if not impossible. We believe imposing an Ontology on the
+Concepts should help. But the challenge is to ﬁnd novel paradigms to do
+inference in the context of an Ontology.
+Another challenge of this approach is this: Because the construction
+of the structured multimedia database is automatic (or semiautomatic), the resulting database will contain errors and uncertainties.
+(a) How do we measure the Quality of the Information (QOI) contained in the database?
+(b) How do we reduce the errors and uncertainties? Perhaps by
+using "Social Computing" (e.g., Amazon's Mechanical Turk)?
+(c) Find Robust inference methods which will give adequate performance even in the presence of errors and uncertainties.
+(d) Storage and computing requirements. Here perhaps Cloud
+Computing could help. However, current Cloud Computing
+systems are mainly for document processing, not suitable for
+working with high-dimensional scientiﬁc data. We need new
+paradigms of Cloud Computing for what we do.
+In the above I have outlined some of our very preliminary thoughts.
+My students (Guojun Qi, Min-Hsuan Tsai, Shen-Fu Tsai, Shiyu Chang,
+and Liangliang Cao - now at IBM TJ Watson Research Center) and I (in
+collaboration with Profs. Jiawei Han, Tarek Abdelzaher, and Dan Roth
+at Illinois; Prof. Heng Ji at CUNY; Dr. Charu Aggarwal, IBM; Dr. Feng
+Tang, HP Labs, and Prof. Jiebo Luo, University of Rocheter) are exploring
+some of these issues [1–6]. And we hope that what we do will throw
+some light on the Grand Challenge of Bridging the Semantic Gap.
+References
+[1] L. Cao, J. Yu, J. Luo, T. S. Huang, Enhancing semantic and geographic annotation of
+web images via logistic canonical correlation regression, in: Proc. of ACM Multimedia, 2009.
+[2] M.-H. Tsai, S.-F. Tsai, T. S. Huang, Hierarchical image feature extraction and classiﬁcation, in: Proc. of ACM Multimedia, 2010.
+
+464
+
+T.S. Huang / Image and Vision Computing 30 (2012) 463–464
+
+[3] Y. Lin, F. Lv, S. Zhu, M. Yang, T. Cour, K. Yu, L. Cao, T. S. Huang, Large-scale image
+classiﬁcation: Fast feature extraction and SVM training, in: IEEE Conference on
+Computer Vision and Pattern Recognition, 2011.
+[4] G.-J. Qi, C. Aggarwal, Y. Rui, Q. Tian, S. Chang, T. Huang, Towards cross-category
+knowledge propagation for learning visual concepts, in: IEEE Conference on Computer Vision and Pattern Recognition, 2011.
+
+[5] G.-J. Qi, C. Aggarwal, T. Huang, Towards semantic knowledge propagation from
+text corpus to web images, in: Proc. of International World Wide Web conference,
+2011.
+[6] G.-J. Qi, C. Aggarwal, Q. Tian, H. Ji, T. Huang, Exploring context and content links in
+social media: A latent space method, IEEE Transactions on Pattern Analysis and
+Machine Intelligence, 2011.
+
+

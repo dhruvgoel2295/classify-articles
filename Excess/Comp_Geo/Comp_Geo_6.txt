@@ -1,0 +1,732 @@
+Computational Geometry 48 (2015) 539–551
+
+Contents lists available at ScienceDirect
+
+Computational Geometry: Theory and
+Applications
+www.elsevier.com/locate/comgeo
+
+On the complexity of higher order abstract Voronoi
+diagrams ✩
+Cecilia Bohler a,∗ , Panagiotis Cheilaris b , Rolf Klein a , Chih-Hung Liu a ,
+Evanthia Papadopoulou b , Maksym Zavershynskyi b
+a
+b
+
+University of Bonn, Institute of Computer Science I, D-53113 Bonn, Germany
+University of Lugano, Faculty of Informatics, CH-6904 Lugano, Switzerland
+
+a r t i c l e
+
+i n f o
+
+Article history:
+Received 22 May 2014
+Accepted 1 April 2015
+Available online 5 May 2015
+Keywords:
+Abstract Voronoi diagrams
+Computational geometry
+Distance problems
+Higher order Voronoi diagrams
+Voronoi diagrams
+
+a b s t r a c t
+Abstract Voronoi diagrams (AVDs) are based on bisecting curves enjoying simple
+combinatorial properties, rather than on the geometric notions of sites and circles. They
+serve as a unifying concept. Once the bisector system of any concrete type of Voronoi
+diagram is shown to fulﬁll the AVD properties, structural results and eﬃcient algorithms
+become available without further effort.
+In a concrete order-k Voronoi diagram, all points are placed into the same region that have
+the same k nearest neighbors among the given sites. This paper is the ﬁrst to study abstract
+Voronoi diagrams of arbitrary order k. We prove that their complexity in the plane is upper
+bounded by 2k(n − k). So far, an O (k(n − k)) bound has been shown only for point sites
+in the Euclidean and L p planes, and, recently, for line segments, in the L p metric. These
+proofs made extensive use of the geometry of the sites.
+Our result on AVDs implies a 2k(n − k) upper bound for a wide range of cases for
+which only trivial upper complexity bounds were previously known, and a slightly sharper
+bound for the known cases. Also, our proof shows that the reasons for this bound are
+combinatorial properties of certain permutation sequences.
+© 2015 Elsevier B.V. All rights reserved.
+
+1. Introduction
+Voronoi diagrams are useful structures, known in many areas of science. The underlying idea goes back to Descartes [13].
+There are sites p , q that exert inﬂuence on their surrounding space, M. Each point of M is assigned to that site p (resp. to
+those sites p 1 , . . . , pk ) for which the inﬂuence is strongest. Points assigned to the same site(s) form Voronoi regions.
+The nature of the sites, the measure of inﬂuence, and space M can vary. The order, k, can range from 1 to n − 1 if n
+sites are given. For k = 1 the standard nearest Voronoi diagram results, while for k = n − 1 the farthest Voronoi diagram
+is obtained, where all points of M having the same farthest site belong in the same Voronoi region. In this paper we are
+interested in values of k between 1 and n − 1; here an order-k Voronoi region contains all points that have the same k
+nearest sites. Observe that the order of the Voronoi diagram has nothing to do with the dimension of the space of its
+
+✩
+This work was supported by the European Science Foundation (ESF) in the EUROCORES collaborative research project EuroGIGA/VORONOI and SNF
+project 200020-149658. Further, Chih-Hung Liu is currently sponsored by the Alexander von Humboldt Foundation, Germany.
+Corresponding author.
+E-mail address: bohler@cs.uni-bonn.de (C. Bohler).
+
+*
+
+http://dx.doi.org/10.1016/j.comgeo.2015.04.008
+0925-7721/© 2015 Elsevier B.V. All rights reserved.
+
+540
+
+C. Bohler et al. / Computational Geometry 48 (2015) 539–551
+
+Fig. 1. Order-2 diagrams of points and line segments. The shadowed region in the left picture belongs to the sites p and q and is connected, in the right
+picture the shadowed faces belong to the region of s1 and s2 which is disconnected.
+
+embedding. In this paper we consider diagrams in the 2-dimensional plane. For more Voronoi diagrams see the surveys and
+monographs [5–7,11,14,24].
+A lot of attention has been given to nearest Voronoi diagrams in the plane. Many concrete cases have the following
+features in common. The locus of all points at identical distance to two sites p , q is an unbounded curve J ( p , q). It bisects
+the plane into two domains, D ( p , q) and D (q, p ); domain D ( p , q) consists of all points closer to p than to q. Intersecting
+all D ( p , q), where q = p for a ﬁxed p, results in the Voronoi region VR( p , S ) of p with respect to site set S. It equals the
+set of all points with unique nearest neighbor p in S. If geodesics exist, Voronoi regions are pathwise connected, and the
+union of their closures covers the plane, since each point has at least one nearest neighbor in S.
+In abstract Voronoi diagrams [17,18] (AVDs, for short) no sites or distance measures are given. Instead, one takes as
+primary objects unbounded curves J ( p , q) = J (q, p ), homeomorphic to unbounded lines, together with the domains D ( p , q)
+and D (q, p ) they separate. Nearest abstract Voronoi regions are deﬁned by
+
+VR( p , S ) :=
+
+D ( p , q),
+q∈ S \{ p }
+
+and now one requires that the following properties hold true for each nonempty subset S of S.
+(A1) Each nearest Voronoi region VR( p , S ) is pathwise connected.
+(A2) Each point of the plane belongs to the closure of a nearest Voronoi region VR( p , S ).
+Two more, rather technical, assumptions on the curves J ( p , q) are stated in Deﬁnition 1 below. It has been shown that the
+resulting nearest AVDs—the plane minus all Voronoi regions—are planar graphs of complexity O (n). They can be constructed,
+by randomized incremental construction, in O (n log n) many steps [18,19,22]. Moreover, properties (A1) and (A2) need only
+be checked for all subsets S of size three [18]. This makes it easier to verify that a concrete Voronoi diagram is under the
+umbrella of the AVD concept. Examples of such applications can be found in [1–3,8,16,22]. Farthest abstract Voronoi diagrams
+consist of regions VR∗ ( p , S ) := q∈ S \{ p } D (q, p ). They have been shown to be trees of complexity O (n), computable in
+expected O (n log n) many steps [23].
+In this paper we consider, for the ﬁrst time, general order-k abstract Voronoi regions, deﬁned by
+
+VRk ( P , S ) :=
+
+D ( p , q),
+p ∈ P , q∈ S \ P
+
+for each subset P of S of size k. The order-k abstract Voronoi diagram V k ( S ) is deﬁned to be the complement of all order-k
+Voronoi regions in the plane; it equals the collection of all edges that separate order-k Voronoi regions (Lemma 4). In
+addition to properties (A1) and (A2) we shall assume the following for each nonempty subset S of S.
+(A3) No nearest Voronoi region VR( p , S ) is empty.
+Observe that our axioms are required to hold only for the nearest-, i.e. for the order-1 Voronoi diagram. In Lemma 1 we
+prove that property (A3) need only be tested for all subsets S of size four. Clearly, (A3) holds in all concrete cases where
+each nearest region contains its site.
+Fig. 1 shows two concrete order-2 diagrams of points and line segments under the Euclidean metric. We observe that
+the order-2 Voronoi region of line segments s1 , s2 is disconnected, whereas for points the higher-order regions are still
+connected. In general, a Voronoi region in V 2 ( S ) can have n − 1 connected components [25]. Fig. 2 depicts a curve system
+fulﬁlling all the required properties, and the resulting abstract Voronoi diagrams of orders 1 to 4. An index p placed next
+to a curve indicates the side of the curve where D ( p , q) lies. The dashed curves represent arcs of the bisectors that do not
+appear as Voronoi edges in the diagram. The order-2 region of p 1 and p 2 consists of four connected components.
+
+C. Bohler et al. / Computational Geometry 48 (2015) 539–551
+
+541
+
+Fig. 2. AVD of 5 sites in all orders.
+
+In this paper we are proving the following result on the number of 2-dimen-sional faces of order-k abstract Voronoi
+diagrams.
+Theorem 1. (Short version.) The abstract order-k Voronoi diagram V k ( S ) has at most 2k(n − k) many faces.
+So far, an O (k(n − k)) bound had been shown only for points [20,21], and recently for line-segments [25], in the L p
+metric.1 The structural properties of the diagram for line segments turned out surprisingly different from those for points,
+including disconnected Voronoi regions and a lack of symmetry between the number of unbounded regions in the order-k
+and order-(n − k) diagrams. The differences clearly propagate in the abstract setting. The proofs of these results are based
+on geometric arguments, including results on k-sets,2 point-line duality and ≤ k-levels in arrangements. None of these
+arguments applies to abstract Voronoi diagrams.
+However, the upper bound on k-sets established in [4] had a combinatorial proof; it was obtained by analyzing the
+cyclic permutation sequences that result when projecting n point sites onto a rotating line. In such a sequence, consecutive
+n
+permutations differ by a switch of adjacent elements, and permutations at distance 2 are inverse to each other.
+In this paper we prove Theorem 1 using combinatorial arguments. We traverse the unbounded edges of higher order
+AVDs, and obtain a strictly larger class of cyclic permutation sequences, where consecutive permutations differ by switches
+and any two elements switch exactly twice. Our proof is based on a tight upper bound to the number of switches that can
+occur among the ﬁrst k + 1 elements; see Lemma 9. It is interesting to observe that in our class, each permutation sequence
+can be realized by an AVD (Lemma 10), while this is not the case for the sequences obtained by point projection [15].
+It is tempting to think that one could easily use the techniques from Clarkson and Shor [12] to prove these bounds. But
+for abstract Voronoi diagrams there appear some special phenomena which complicate this task, as will be discussed in the
+conclusion, Section 6.
+To avoid technical complications we are assuming, in the ﬁrst 4 sections of this paper, that any two input curves J ( p , q)
+intersect in a ﬁnite number of points, these intersections are transversal, and that Voronoi vertices are of degree 3. How to
+get rid of the ﬁrst assumption has been shown for the case of nearest AVDs in [18]. In Section 5 we show that also vertices
+of higher degree than 3 can be allowed.
+Theorem 1 implies a 2k(n − k) upper complexity bound on a wide range of order-k Voronoi diagrams for which no good
+bounds were previously known. For example, sites may be disjoint convex objects of constant complexity in L 2 or under the
+
+In the L 1 and L ∞ metrics, the bound is slightly tighter, i.e., O ((n − k)2 ) for k > n/2 [25].
+We call a subset of size k of n points a k-set if it can be separated by a line passing through two other points. Such k-sets correspond to unbounded
+order-(k + 1) Voronoi edges.
+1
+2
+
+542
+
+C. Bohler et al. / Computational Geometry 48 (2015) 539–551
+
+Fig. 3. An AVD of 4 sites p , q, r , s. In each diagram of three of these sites no Voronoi region is empty (the regions of p are shaded) but in the diagram of
+all 4 sites the region of p is empty.
+
+Hausdorff metric. For point sites, distance can be measured by any metric d satisfying the following conditions: points in
+general position have unbounded bisector curves; d-circles are of constant algebraic complexity; each d-circle contains an
+L 2 -circle and vice versa; for any two points a = c there is a third point b = a, c such that d(a, c ) = d(a, b) + d(b, c ) holds. This
+includes all convex distance functions of constant complexity, but also the Karlsruhe metric where motions are constrained
+to radial or circular segments with respect to a ﬁxed center point. A third example are point sites with additive weights
+a p , aq that satisfy |a p − aq | < | p − q|, for any two sites p = q; see [6] for a discussion of these examples.
+Using Theorem 1, the ﬁrst algorithm computing the abstract order-k Voronoi diagram has been presented in [10]. It runs
+in expected time O (kn1+ ).
+The rest of this paper is organized as follows. In Section 2 we present some basic facts about AVDs. Then, in Section 3,
+permutation sequences will be studied, in order to establish an upper bound to the number of unbounded Voronoi edges of
+order at most k. This will lead, in Section 4, to a tight upper bound for the number of faces of order k. Finally, in Section 5
+we show how to get rid of the general position assumption and maintain the same result for the number of order-k faces.
+A preliminary version of this work with incomplete proofs and without generalizations appeared in [9].
+2. Preliminaries
+In this section we present some basic facts on abstract Voronoi diagrams of various orders.
+Deﬁnition 1. A curve system J := { J ( p , q) : p = q ∈ S } is called admissible if it fulﬁlls, axioms (A1), (A2), (A3) stated in the
+introduction, and in addition the following ones.
+(A4) Each curve J ( p , q), where p = q, is unbounded. After stereographic projection to the sphere, it can be completed to a
+closed Jordan curve through the north pole.
+(A5) Any two curves J ( p , q) and J (r , t ) have only ﬁnitely many intersection points, and these intersections are transversal.
+Axiom (A4) implies that each bisecting curve J ( p , q) is homeomorphic to an unbounded line in the plane. As part of
+the Jordan curve theorem, J ( p , q) separates the plane into two domains, the two dominance regions D ( p , q) and D (q, p ).
+Further, for each point z on J ( p , q) there exists a suﬃciently small neighborhood U ( z), such that U ( z) \ J ( p , q) consists of
+exactly two connected components, see also [18, Theorem 4] for a more detailed discussion.
+Each transversal intersection v between two related bisectors J ( p , q) and J ( p , r ) is a Voronoi vertex in the order-1
+diagram of { p , q, r }, and J (q, r ) runs also through v, compare [17]. Together with the Euler formula and our axioms we
+obtain that any two related bisectors J ( p , q) and J ( p , r ) may intersect in at most two points.
+Fortunately, veriﬁcation of our axioms can be based on constant size examples. Pairs and quadruples of sites are clearly
+suﬃcient to verify axioms (A4) and (A5). Axioms (A1) and (A2) can be veriﬁed by checking all subsets of S of size 3, see [18,
+Section 4.3]. For axiom (A3) we need to check subsets of size 4 as shown in the following lemma; checking subsets of size 3
+is not always enough, as shown in Fig. 3.
+Lemma 1. To verify axiom (A3), assuming that axioms (A1) and (A2) hold, it is suﬃcient to check all subsets S of S of size 4.
+Proof. If all bisecting curves are straight lines, (A3) follows from Helly’s theorem on convex sets, stating that for a ﬁnite
+collection of convex sets in the plane, if each intersection of 3 of these sets is nonempty, then the intersection of the whole
+collection is nonempty.
+Our bisecting curves J ( p , q) do not necessarily deﬁne convex domains D ( p , q) from which the Voronoi region VR( p , S ) =
+q∈ S \{ p } D ( p , q ) is constructed. This is why a new proof is needed.
+So, assume that VR( p , S ) is nonempty for all subsets S of size 4. Let | S | > 4 and for the sake of a contradiction
+assume that VR( p , S ) = ∅. Let q1 , q2 , q3 ∈ S \ { p } be pairwise different. By induction on the size of S, there exist points
+xi ∈ VR( p , S \ {qi }), i ∈ {1, 2, 3}. Since no point lies in VR( p , S ), we have xi ∈ D (qi , p ). By (A1), there are paths P i j connecting
+
+C. Bohler et al. / Computational Geometry 48 (2015) 539–551
+
+543
+
+Fig. 4. In the proof of Lemma 1, curves J ( p , q1 ) and J ( p , q2 ) meet at point w.
+
+Fig. 5. Discussion of three cases.
+
+xi and x j in VR( p , S \ {q i , q j }) ⊆ D ( p , qk ), where {i , j , k} = {1, 2, 3}. Because VR( p , S ) may not be empty, P i j has to be
+contained in D (q i , p ) ∪ D (q j , p ), thus when traversing P i j from xi to x j one must cross J ( p , q j ) ﬁrst, before one crosses
+J ( p , qi ). W.l.o.g. we can assume that P i j intersects J ( p , q i ) and J ( p , q j ) exactly once each.
+Let x1 be the ﬁrst point of P 13 one meets, when traversing P 12 from its intersection with J ( p , q2 ) in the direction of
+x1 , let x2 be the ﬁrst point on P 23 one meets, when traversing P 12 from its intersection with J ( p , q1 ) in the direction of
+x2 , and let x3 be the ﬁrst point on P 23 one meets, when traversing P 13 from its intersection with J ( p , q1 ) in the direction
+of x3 . Because P 23 cannot intersect P 12 in D (q1 , p ), P 13 cannot intersect P 12 in D (q2 , p ), and P 12 cannot intersect P 23 in
+D (q3 , p ), the points x1 , x2 and x2 together with the segments of P 12 , P 23 , and P 13 in between form a simple closed curve
+which bounds a domain D.
+We have xi in D (qi , p ) and in D ( p , q) for all q ∈ S \ {q i } and J ( p , qi ) may not intersect P jk for {i , j , k} = {1, 2, 3}.
+Further, because P 12 ⊆ D (q1 , p ) ∪ D (q2 , p ) the two bisectors J ( p , q1 ) and J ( p , q2 ) must intersect transversally in a point w
+contained in the domain D; see Fig. 4. The two bisectors J ( p , q1 ) and J ( p , q2 ) divide the domain D into four subdomains
+around w, A ⊆ D (q1 , p ) ∩ D (q2 , p ), B ⊆ D ( p , q1 ) ∩ D (q2 , p ), C ⊆ D ( p , q2 ) ∩ D ( p , q1 ), and E ⊆ D ( p , q2 ) ∩ D (q1 , p ).
+The bisector J ( p , q3 ) enters D through P 13 and E such that the segment of P 13 in the direction of x1 is in D ( p , q3 ) and
+the segment in the direction of x3 is in D (q3 , p ). J ( p , q3 ) leaves D through B and P 23 such that the segment of P 23 in the
+direction of x2 is in D ( p , q3 ) and the segment in the direction of x3 is in D (q3 , p ). Because J ( p , q3 ) may intersect J ( p , q1 )
+and J ( p , q2 ) in at most two points, if it traverses A then it cannot traverse C and vice versa, and it can traverse A and C in
+at most one segment.
+Now there are three cases, see Fig. 5.
+Case 1: J ( p , q3 ) traverses A. Then it forms a bounded domain of the farthest region VR∗ ( p , { p , q1 , q2 , q3 }) in A incident to
+w. This contradicts Lemma 7 (given later) whose proof is independent from this lemma.
+Case 2: J ( p , q3 ) traverses C . Then it bounds VR( p , { p , q1 , q2 , q3 }) in C incident to w. Let x ∈ VR( p , { p , q1 , q2 , q3 }). Because
+VR( p , S ) = ∅ there must be q ∈ S \ { p , q1 , q2 , q3 } such that x ∈ D (q, p ). But the boundary of the domain D is
+contained in D ( p , q), implying that J ( p , q) is closed—a contradiction to (A4).
+Case 3: J ( p , q3 ) traverses neither A nor C and must hence run through w. Since VR( p , { p , q1 , q2 , q3 }) must not be empty,
+by (A3), J ( p , q3 ) has to traverse through D ( p , q1 ) ∩ D ( p , q2 ), but then it must intersect J ( p , q1 ) or J ( p , q2 ) in
+another point, resulting in a disconnection of VR( p , { p , q1 , q3 }) or VR( p , { p, q2 , q3 }) that contradicts (A1). ✷
+The following fact will be very useful in the sequel. Its proof can be found in [18, Lemma 5].
+Lemma 2. For all p , q, r in S, D ( p , q) ∩ D (q, r ) ⊆ D ( p , r ) holds.
+
+544
+
+C. Bohler et al. / Computational Geometry 48 (2015) 539–551
+
+Fig. 6. A new vertex v to the left and an old vertex to the right. Solid curves indicate the Voronoi edges and dashed ones the prolongations of the bisectors.
+
+Consequently, a total ordering of the set S is possible for x ∈
+/
+
+p ,q∈ S
+
+J ( p , q), where
+
+p <x q :⇐⇒ x ∈ D ( p , q).
+Informally, one can interpret p <x q as “x is closer to p than to q”. We will write p < q if it is clear which x ∈ R2 we are
+referring to.
+As a direct consequence we show that property (A2) holds also for abstract order-k Voronoi regions.
+Lemma 3. Let J = { J ( p , q) : p = q ∈ S } be an admissible curve system. Then for each k ∈ {1, . . . , n − 1}
+
+R2 =
+
+VRk ( P , S ).
+P ⊆ S ,| P |=k
+
+Proof. Let x ∈ R2 . If x is not contained in any bisecting curve J ( p , q) then it belongs to the order-k region VRk ( P , S ), where
+P = { p 1 , . . . , pk } are the k smallest elements of S with respect to the ordering <x . Otherwise, x lies on the boundary of a
+domain D ⊂ R2 \ p =q∈ S J ( p , q), and D fully belongs to an order-k region. ✷
+The proofs of the following Lemmata 4 and 5 are similar to the proof of Lemma 3. Lemma 5 indicates that two neighboring regions differ in exactly one site.
+Lemma 4.
+
+V k(S) =
+
+VRk ( P , S ) ∩ VRk ( P , S )
+P =P ⊂S
+| P |=| P |=k
+
+Lemma 5. If the intersection E := VRk ( P , S ) ∩ VRk ( P , S ) is not empty, there are sites p ∈ P and p ∈ P such that P \ { p } = P \ { p },
+and E ⊆ J ( p , p ) holds. For each point x ∈ VRk ( P , S ) near E, index p is the k-th with respect to <x , while for points x in VRk ( P , S )
+index p appears at position k.
+In particular, D ( p , p ) is on the same side of J ( p , p ) as VRk ( P , S ).
+If F , F are connected components (faces) of VRk ( P , S ) and VRk ( P , S ), respectively, the intersection F ∩ F can be empty,
+or otherwise be of dimension 0 (Voronoi vertices) or 1 (Voronoi edges).
+For the next lemma we assume that all vertices are of degree 3. Recall that if two related bisectors J ( p , q) and J ( p , r )
+intersect in a point v, then J (q, r ) runs also through v, [17], and v is a Voronoi vertex of the order-1 Voronoi diagram of
+{ p , q, r }. Thus, when assuming that all Voronoi vertices are of degree 3, no other bisector related to one of the sites p , q, r
+can run through v.
+Let P 1 , P 2 , P 3 ⊂ S be the sets deﬁning the adjacent to v order-k Voronoi regions in clockwise order, see Fig. 6. As with
+the concrete order-k Voronoi diagrams, vertex v can be of two types, depending on the nature of sets P 1 , P 2 , P 3 [20]. There
+are two cases. In the ﬁrst case, there exists a set H ⊂ S of size k − 1 and three more sites p , q, r ∈ S satisfying
+
+P 1 = H ∪ { p }, P 2 = H ∪ {q}, P 3 = H ∪ {r }.
+Then vertex v is called new in V k ( S ), or of nearest type. In the second case, there is a subset K ⊂ S of size k − 2 and three
+more sites p , q, r ∈ S such that
+
+P 1 = K ∪ { p , r }, P 2 = K ∪ {q, r }, P 3 = K ∪ { p , q}.
+Then vertex v is called old in V k ( S ), or of farthest type.
+To see that these are indeed the only two cases, we walk around v in clockwise order along the boundary of an
+-neighborhood, see Fig. 6. Let the edge between P 1 and P 2 belong to the bisector J ( p , q), such that P 1 ⊆ D ( p , q) and
+P 2 ⊆ D (q, p ). If q is still last in the ordering of the sites when we reach the edge between P 2 and P 3 , then this edge must
+
+C. Bohler et al. / Computational Geometry 48 (2015) 539–551
+
+545
+
+Fig. 7. Farthest AVDs cannot contain bounded regions.
+
+belong to the bisector J (q, r ) for an r ∈ S \ { p , q}. Thus, bisector J (r , p ) must run through v, and because no other bisector
+related to r may contain v, a segment of J (r , p ) deﬁnes the edge between P 2 and P 3 . Thus, we have the ﬁrst case.
+If q is no longer last in this ordering, then we must have crossed a bisector J (q, r ) related to q while traversing P 2 . Again,
+J ( p , r ) must contain v, and thus, no other bisector related to r may run through v. Thus, r is in last position when we reach
+the edge between P 2 and P 3 and the edge must belong to J (r , p ). Next, because all bisector intersections are transversal
+(A5), we cross the bisector J ( p , q), and p changes its position in the ordering with q, which is now in last position. The
+next bisector is J (q, r ), and because q is in last position, this deﬁnes the edge between P 2 and P 3 . This implies the second
+case and no other conﬁguration is possible.
+The proof of the following lemma follows quite directly from these deﬁnitions.
+Lemma 6. Let v be a new vertex in V k ( S ). Then v is an old vertex of V k+1 ( S ), and v lies in the interior of a face of V k+2 ( S ), i.e., v is
+not a vertex of V k+2 ( S ). Furthermore, every edge of V k ( S ) is enclosed by a face of V k+1 ( S ).
+Already in [23] it has been shown that farthest abstract Voronoi diagrams are trees, under a slightly different deﬁnition
+of admissible curves. In this paper we give a short alternative proof of this fact based on our axioms (A1)–(A5).
+Lemma 7. The farthest abstract Voronoi diagram V ∗ ( S ) is a tree.
+Proof. Let | S | = n. Suppose some farthest region VR∗ ( p , S ) has a face F that is bounded. Let its boundary consist of edges
+e 1 , . . . , e i in this order, such that each edge e j is a segment of a bisector J ( p , q j ). The sites q j need not be pairwise
+different, but consecutive edges belong to different bisecting curves. Let x j be the intersection point between e j and e j +1
+on the boundary of F , and xi the intersection point between e i and e 1 on F , see Fig. 7.
+If n = 1, then there exists no bounded Voronoi region. If n = 2, there can be at most one edge e 1 on the boundary of
+V ∗ ( p , S ), implying that e 1 and J ( p , q1 ) would be closed a contradiction to (A4).
+Now let n > 2, and let i ≥ 2. By induction on n, VR∗ ( p , S \ {qi }) is unbounded (it still contains F and is thus not empty).
+Let z be a point in F , then there exists an unbounded arc L ⊆ V ∗ ( p , S \ {qi }) emanating from z to inﬁnity. L may not
+intersect any J ( p , q1 ), . . . , J ( p , qi ) except for J ( p , q i ), thus it must leave F through J ( p , q i ), w.l.o.g. let its last intersection
+with the boundary of F be on e i .
+Because of (A5), there is a point x in the -neighborhood of xi −1 contained in D ( p , q i −1 ) ∩ D ( p , qi ) and a point y in the
+-neighborhood of xi contained in D ( p , q1 ) ∩ D ( p , qi ). We claim that any path πx, y from x to y must intersect J ( p , q i ) or L.
+This is immediate, because by construction x and y are on the same side of the unbounded curve J ( p , q i ) and on opposite
+sides of L.
+Because of (A3), there exists a point w ∈ VR( p , { p , q1 , qi −1 , qi }) (q1 may be equal to q i ). The point w is also contained
+in both VR( p , { p , q1 , qi }) and VR( p , { p , q i −1 , qi }). The point y is contained in VR( p , { p , q1 , qi }) and because of (A1) there
+exists a path π y w from y to w in VR( p , { p , q1 , qi }) and thus intersecting neither L nor J ( p , q i ). The point x is contained
+in VR( p , { p , q i −1 , qi }) and thus there exists a path πxw from x to w in VR( p , { p , q i −1 , qi }) also intersecting neither L nor
+J ( p , qi ). But then the concatenation of πxw and π y w is a path connecting x and y without intersecting L and J ( p , q i ), a
+contradiction.
+It remains to show that V ∗ ( S ) is connected. Suppose there is a curve C separating parts of V ∗ ( S ). Then C ⊂ VR∗ ( p , S )
+for a p ∈ S, C ∩ D ( p , q) = ∅ for all q ∈ S \ { p } and there are q = r ∈ S such that D ( p , q) lies on one side of C and D ( p , r ) on
+the other side. But then VR( p , { p , q, r }) would be empty. ✷
+
+546
+
+C. Bohler et al. / Computational Geometry 48 (2015) 539–551
+
+3. Bounding the number of unbounded edges of V ≤k ( S )
+Let Γ be a closed Jordan curve in R2 large enough such that no pair of bisectors cross on or outside of Γ (axiom (A5)),
+each bisector crosses Γ exactly twice and these intersections are transversal (axiom (A4)). One could choose Γ as the
+boundary of a suﬃciently small neighborhood of the north pole of the sphere, projected stereographically to the plane,
+such that for any bisector J ( p , q), the set Γ \ J ( p , q) consist of exactly two connected components. This is possible by
+Lemma 2.3.1 in [17].
+If we traverse Γ around the Voronoi diagram, the ordering <x on S changes whenever we cross a bisector J ( p , q). Here
+indices p and q change their relation according to <x .
+Lemma 8. When we cross a bisector J ( p , q), then p and q change their places in the ordering <x along Γ . Further, they are adjacent
+to each other just before and after the crossing.
+Proof. Let p i < p j , and assume that we cross J ( p i , p j ), which means that p i < p j changes to p j < p i . Let pk < p i , p j
+before we cross J ( p i , p j ). Because of the construction of Γ no other bisector has been crossed at the same time, thus
+pk < p i , p j remains. The same happens for a pk > p i , p j . Now let p i < pk < p j before we cross J ( p i , p j ). Then we still have
+p i < pk < p j afterwards, but now p j < p i , a contradiction to the transitivity. Thus p i and p j must have been adjacent right
+before and after we cross J ( p i , p j ) and hence they change their places in the ordering. ✷
+We call such a change in the ordering of S a switch between the two sites p and q, which must be adjacent. There can
+be only one switch at a time and each pair of sites switches exactly two times while walking one round around Γ , resulting
+in n(n − 1) switches altogether.
+Every time a switch among the ﬁrst k + 1 elements of the ordering occurs, there is an unbounded edge of a Voronoi
+diagram of order ≤ k. This means that the maximum number of unbounded edges of all diagrams of order ≤ k is equal to the
+maximum number of switches among the ﬁrst k + 1 elements in the ordering.
+Permutation sequences and estimates for the maximum number of switches among the ﬁrst k elements have been used
+in [4] to bound the number of k-sets of n points in the plane. These sequences resulted from projecting n points in general
+n
+position onto a rotating line. Hence, they were of length 2N, where N = 2 , and they had the following properties. Adjacent
+permutations differ by a transposition of adjacent elements, and any two permutations a distance N apart are inverse to
+each other. It has been shown in [15] that not every permutation of this type can be realized by a point set.
+In the following lemma we introduce a larger class of permutation sequences that ﬁts the AVD framework. Recall that a
+switch can occur only between to adjacent elements in the ordering.
+Lemma 9. Let P ( S ) be a cyclic sequence of permutations P 0 , . . . , P N = P 0 such that
+(i) P i +1 differs from P i by a switch;
+(ii) each pair of sites p , q ∈ S switches exactly two times in P ( S ).
+Then the number of switches occurring in P ( S ) among the ﬁrst k + 1 sites is upper bounded by k(2n − k − 1). Furthermore, this bound
+is tight.
+Proof. Call a switch good if it involves at least one of the k ﬁrst sites of a permutation; otherwise call it bad. Let S =
+{ p 1 , . . . , pn } and the initial ordering of the sites in the ﬁrst permutation be p 1 < . . . < pn . For i ∈ {k + 2, . . . , n}, deﬁne B i as
+the set of bad switches where p i is switching with a site in { p 1 , . . . , p i −1 }. We remark that the sets B i , for i ∈ {k + 2, . . . , n},
+are pairwise disjoint. If p i is not involved in a good switch, then all its 2i − 2 switches with sites in { p 1 , . . . , p i −1 } are bad.
+Otherwise, for p i to be involved in a good switch, it must ﬁrst be involved in at least i − k − 1 bad switches with sites in
+{ p 1 , . . . , p i −1 }, in order to reach the ﬁrst k + 1 positions, and since P 0 = P N , p i has to be involved in as many bad switches
+in order to return to its original place in the ordering. In both cases, | B i | ≥ 2(i − k − 1). Because of (ii), the total number of
+n
+switches is N = 2 2 . Therefore the number of good switches is at most
+
+2
+
+n
+2
+
+n
+
+−
+
+|Bi | ≤ 2
+i =k+2
+
+n
+2
+
+n−k−1
+
+−2
+
+j = k(2n − k − 1),
+j =1
+
+where j = i − k − 1.
+To show that the bound is tight, let again the initial ordering of the ﬁrst permutation be p 1 < . . . < pn . We switch each
+p i with p i −1 , . . . , p 1 in decreasing index order such that p i now is the ﬁrst element and then in inverse order back to
+its original position. Start with i = 2 and continue until i = n. Then the number of switches among the ﬁrst k + 1 sites is
+n−k−1
+n
+exactly 2 2 − 2 j =1 j. ✷
+In contradistinction to the result in [15], each such permutation sequence can be realized by an AVD. The following
+Lemma 10 will be used for proving that the upper bound shown in Lemma 11 is tight.
+
+C. Bohler et al. / Computational Geometry 48 (2015) 539–551
+
+547
+
+Fig. 8. Illustrations of cases (1) to (3) in the proof of Lemma 10.
+
+Lemma 10. Let P ( S ) be a sequence of permutations as in Lemma 9. There exists an abstract Voronoi diagram where the ordering of
+the sites along Γ changes according to P ( S ).
+Proof. We show that for | S | = 3 each P ( S ) fulﬁlling the above properties can be realized by an AVD. If | S | ≥ 3, we can
+consider V ( S ) such that each triple p , q, r of sites changes its ordering on Γ according to P ( S ). This is possible because if
+the curve system of each triple of sites is admissible then the curve system of S is admissible, too; see [18]. Now if there
+are two bisectors J ( p , q) and J (r , t ) having a different order on Γ than p , q, r , t have in P ( S ), then p , q, r , t are pairwise
+different, and neither of the bisectors J ( p , r ), J ( p , t ), J (q, r ) or J (q, t ) can occur between the two bisectors J ( p , q) and
+J (r , t ) on Γ . Otherwise, suppose w.l.o.g. that J ( p , r ) occurs between J ( p , q) and J (r , t ); then { p , q, r } would not have the
+same ordering on Γ as in P ( S ), a contradiction to our assumption. Thus the bisectors J ( p , q) and J (r , t ) can be deformed
+such that their ordering on Γ changes, but the structure of V ( S ) remains the same.
+Now let S = { p , q, r }. Then there are three different cases:
+(1) Each site switches into the ﬁrst position exactly once.
+(2) One site switches into the ﬁrst position exactly twice; it cannot do so more often because then it would have to switch
+with one of the other sites more often than twice. Further, it implies that all other sites must switch themselves into
+ﬁrst position exactly once.
+(3) One site never moves to ﬁrst position. This implies that both the other sites switch to ﬁrst position exactly once;
+otherwise, either one site would remain in ﬁrst position during the whole permutation, but then it would never switch
+with any other site, or the two other sites would have to switch more than twice.
+Let P 0 = ( p , q, r ). Then there are two possibilities for P 1 in case (1): Either P 1 = (q, p , r ), which leads to the sequence
+P 0 = ( p , q, r )
+P 1 = (q, p , r )
+P 2 = (q, r , p ), otherwise r never switches into ﬁrst position or p switches into ﬁrst position twice
+P 3 = (r , q, p ), otherwise r never switches into ﬁrst position
+P 4 = (r , p , q), otherwise q switches into ﬁrst position a second time
+P 5 = ( p , r , q), otherwise p and q switch more than twice
+P 6 = ( p , q, r ), otherwise P 0 = P 6 ;
+or P 1 = ( p , r , q), which leads to the same permutation sequence in inverse order.
+Assume that p is the site that switches into ﬁrst position twice in case (2). Then we get the following permutation sequence:
+P 0 = ( p , q, r )
+P 1 = (q, p , r ), then
+P 2 = ( p , q, r ), otherwise P 2 = (q, r , p ) which leads to the permutation sequence as in case (1)
+P 3 = ( p , r , q), otherwise p and q switch more than twice
+P 4 = (r , p , q), otherwise r never switches into ﬁrst position
+P 5 = ( p , r , q), otherwise p and q switch more than twice
+P 6 = ( p , q, r ), otherwise P 0 = P 6 ;
+or in inverse order.
+Assume that r is the site that never switches into ﬁrst position in case (3). Then we get the following permutation sequence:
+P 0 = ( p , q, r )
+P 1 = (q, p , r ), then
+P 2 = (q, r , p ), otherwise p switches into ﬁrst position twice
+P 3 = (q, p , r ), otherwise r switches into ﬁrst position
+P 4 = ( p , q, r ), otherwise p and r switch more than twice
+P 5 = ( p , r , q), otherwise p and q switch more than twice
+P 6 = ( p , q, r ), otherwise P 0 = P 6 ;
+or in inverse order.
+These permutation sequences can be realized by the AVDs depicted in Fig. 8.
+
+✷
+
+548
+
+C. Bohler et al. / Computational Geometry 48 (2015) 539–551
+
+Let S i be the number of unbounded edges in V i ( S ). If an edge e has got two unbounded endpieces, i.e. edge e bounding
+a p- and q-region is the whole bisector J ( p , q), then e is counted twice as an unbounded edge.
+Lemma 11. Let k ∈ {1, . . . , n − 1}. Then,
+k
+
+k(k + 1) ≤
+
+S i ≤ k(2n − k − 1).
+i =1
+
+Both bounds can be attained.
+Proof. The second bound follows directly from Lemma 9. The ﬁrst bound follows from the fact that the minimum number
+of switches among the ﬁrst (k + 1) sites is greater or equal to the total number of switches, n(n − 1), minus the maximum
+number of switches among the last (n − k) sites, which again is equal to the maximum number of switches among the ﬁrst
+(n − k) sites. Using Lemma 9 this implies
+k
+
+S i ≥ n(n − 1) − (n − k − 1)(2n − (n − k − 1) − 1) = k(k + 1).
+i =1
+
+The tightness of the bounds follows from Lemma 10.
+
+✷
+
+4. Bounding the number of faces of V k ( S )
+In the following, we assume that each Voronoi vertex is of degree 3. The following two lemmata give combinatorial
+proofs for facts that were previously shown by geometric arguments [20,25].
+Lemma 12. Let H be a subset of S of size k + 1 and F a face of VRk+1 ( H , S ). The portion of V k ( S ) enclosed in F is exactly the farthest
+Voronoi diagram V ∗ ( H ) intersected with F .
+Proof. “⇒”: Let x ∈ F and suppose x ∈ VRk ( H , S ) for H ⊂ S of size k. Since F ⊆ VRk+1 ( H , S ) it follows that x ∈ D ( p , q) for
+all p ∈ H and q ∈ S \ H , implying H ⊂ H . Let H \ H = {r }, then x ∈ D ( p , r ) for all p ∈ H and hence x ∈ VR∗ (r , H ).
+“⇐”: Let x ∈ F and x ∈ VR∗ (r , H ). Then x ∈ D ( p , q) for all p ∈ H and q ∈ S \ H and x ∈ D ( p , r ) for all p ∈ H \ {r }. This
+implies x ∈ VRk ( H \ {r }, S ). ✷
+Lemma 13. Let F be a face of VRk ( H , S ), H ⊆ S, | H | = k ≥ 2. Then V ∗ ( H ) ∩ F is a nonempty tree.
+Proof. First we show that V ∗ ( H ) ∩ F is not empty by assuming the opposite. Then there is a p ∈ H such that F ⊆ VR∗ ( p , H ).
+Let F ⊆ VRk ( H , S ) be a face of V k ( S ) adjacent to F along an edge e. By Lemma 5, we have H = U ∪ {q} and H = U ∪ {q },
+where q, q are different and not contained in U . Also, e ⊆ J (q, q ) holds. If p were in U , we would obtain F ⊆ D ( p , q) and
+F ⊆ V ∗ ( p , H ) ⊆ D (q, p ), hence e ⊆ J ( p , q)—a contradiction to axiom (A5). Thus, p ∈
+/ U , which means p = q. Now Lemma 5
+implies that each edge on the boundary of F has to be a segment of a curve J ( p , q j ) such that D ( p , q j ) lies on the F -side.
+Let q1 , . . . , qi be the sites for which there is such an edge e on the boundary of F . Then VR1 ( p , { p , q1 , . . . , qi }) = F , because
+nearest Voronoi regions are connected thanks to axiom (A1). But from F ⊆ V ∗ ( p , H ) it follows that VR1 ( p , H ) ⊆ R2 \ F , and
+hence, VR1 ( p , S ) ⊆ F ∩ R2 \ F = ∅, a contradiction to axiom (A3).
+Next we show that V ∗ ( H ) ∩ F is a tree. Because of Lemma 7 it is clear that it is a forest. So it remains to prove that it is
+connected. Otherwise, there would be a domain D ⊂ F , bounded by two paths P 1 , P 2 ⊂ F of V ∗ ( H ) and two disconnected
+segments e 1 and e 2 of the boundary of F . There is an index p ∈ H such that D ⊆ VR∗ ( p , H ). Since V ∗ ( H ) is a tree, by
+Lemma 7, the upper (or: the lower) two endpoints of P 1 and P 2 must be connected by a path P in V ∗ ( H ) that belongs to
+the boundary of VR∗ ( p , H ); see Fig. 9. Here path P connects the endpoints of e 1 ; both curves together encircle a domain
+D , which is part of VR∗ ( p , H ). By deﬁnition of the farthest Voronoi diagram and because e 1 is on the boundary of F
+and contained in VR∗ ( p , H ), there are q1 , . . . , qi , such that e 1 ∪ P consists of segments of J ( p , q1 ), . . . , J ( p , qi ), and all
+D ( p , q j ) are situated outside of D ; compare Lemma 5. But then VR∗ ( p , { p , q1 , . . . , qi }) would be bounded, a contradiction
+to Lemma 7. ✷
+Lemma 14. Let F be a face of VRk+1 ( H , S ) and m the number of Voronoi vertices of V k ( S ) enclosed in its interior. Then F encloses
+2m + 1 Voronoi edges of V k ( S ).
+Proof. See Lemmata 12 and 13.
+
+✷
+
+The formulae in the next two lemmata originate in [20]. Below we include their proofs from [25] for completeness.
+
+C. Bohler et al. / Computational Geometry 48 (2015) 539–551
+
+549
+
+Fig. 9. The intersection of an order-k face F and the farthest Voronoi diagram of its deﬁning sites must be a tree.
+
+Lemma 15. Let F k , E k , V k and S k denote, respectively, the number of faces, edges, vertices, and unbounded edges in V k ( S ). Then,
+
+E k = 3( F k − 1) − S k
+
+(1)
+
+V k = 2( F k − 1) − S k .
+
+(2)
+
+Proof. Consider V k ( S ) ∪ Γ , cut off all edges outside of Γ , and let G be the resulting graph. Then G is a connected planar
+graph and for its number of faces, f , of vertices, v, and edges, e, we have f = F k + 1, v = V k + S k , e = E k + S k . Because
+of the general position assumption each vertex is of degree 3 and hence 2e = 3v. Now the Euler formula v − e + f = c + 1
+implies the lemma. ✷
+Lemma 16. The number of faces in an AVD of order k is
+k −1
+
+F k = 2kn − k2 − n + 1 −
+
+Si.
+i =1
+
+Proof. Let V k , V k and V k be the number of Voronoi vertices, new Voronoi vertices and old Voronoi vertices in V k ( S ),
+respectively. Then because of Lemma 6 we have V k = V k + V k = V k + V k−1 .
+Claim 1: F k+2 = E k+1 − 2V k .
+Because of Lemma 6, every old vertex of V k+1 ( S ) lies in the interior of a face of V k+2 ( S ). Consider a face F i of V k+2 ( S ).
+Let mi be the number of old vertices of V k+1 ( S ) enclosed in its interior. Then F i encloses e i = 2mi + 1 edges of V k+1 ( S );
+see Lemma 14. If we sum up through all the faces in V k+2 ( S ), we obtain
+F k +2
+
+F k +2
+
+ei = 2
+i =1
+
+Note that
+
+m i + F k +2 .
+i =1
+
+F k+2
+j =1
+
+m j = V k+1 = V k and
+
+F k+2
+j =1
+
+e j = E k+1 , hence F k+2 = E k+1 − 2V k .
+
+Claim 2: The number of faces in V 1 ( S ) is F 1 = n and the number of faces in V 2 ( S ) is F 2 = 3(n − 1) − S 1 .
+The ﬁrst part follows from axioms (A1) and (A3). To prove the second part, consider a face of V 2 ( S ). There are no
+old vertices in V 1 ( S ), therefore the face encloses exactly one edge of V 1 ( S ) and hence F 2 = E 1 . Eq. (1) implies F 2 =
+3(n − 1) − S 1 .
+Now we sum up F k+2 and F k+3 to obtain
+
+F k+3 = E k+2 + E k+1 − F k+2 − 2V k+1 − 2V k = E k+2 + E k+1 − F k+2 − 2V k+1 ;
+(see Claim 1). Substituting (1) and (2) of Lemma 15 into it results in
+
+F k+3 = 2F k+2 − F k+1 − 2 − S k+2 + S k+1 .
+Using the iterative formula, the base cases F 1 = n and F 2 = 3(n − 1) − S 1 , we derive the lemma by strong induction.
+Theorem 1. The number of faces F k in an AVD of order k is bounded as follows
+
+n − k + 1 ≤ F k ≤ 2k(n − k) + k + 1 − n
+
+≤ 2k(n − k)
+∈ O (k(n − k)).
+Both the upper bound 2k(n − k) + k + 1 − n and the lower bound n − k + 1 can be attained.
+
+✷
+
+550
+
+C. Bohler et al. / Computational Geometry 48 (2015) 539–551
+
+Fig. 10. Proof of Lemma 17.
+
+Proof. Lemma 11 implies tight bounds k(k − 1) ≤
+theorem. ✷
+
+k−1
+i =1
+
+S i ≤ (k − 1)(2n − k). Together with Lemma 16 this proves the
+
+5. Generalizations
+In [18] it has been shown, with some technical effort, that it is not necessary to require only ﬁnitely many intersection
+points between each pair of bisecting curves J ( p , q) and J (r , t ). The abstract Voronoi diagram is still a ﬁnite planar graph
+with ﬁnitely many vertices even if bisectors intersect in inﬁnitely many points. With the same proofs one can show that
+this is also true for higher order AVDs. Observe that bisector intersections have to be considered only when resulting in a
+Voronoi vertex of some order. Thus in axiom (A5) it would suﬃce to require only transversal intersections.
+Another natural question is, whether the general position assumption, where each Voronoi vertex is of degree 3, is really
+necessary. We can show that it is not and the number of faces of an order k AVD can only decrease if vertices have higher
+degree than 3 and all bisectors intersect transversally. First we prove that all “pieces of pie” around an order k vertex are
+from different order k Voronoi regions.
+Lemma 17. Let v be a vertex of V k ( S ). All faces adjacent to v are from pairwise different Voronoi regions and if we walk around v, no
+face appears more than once.
+Proof. The proof that no face appears more than once is analogous to the proof of the simple connectivity of order-1
+Voronoi regions, see [18].
+Suppose there are two different faces F 1 and F 2 incident to v, both belonging to the same order k Voronoi region of
+H ⊆ S. For k = 1 the regions are connected and we have a contradiction.
+So let k ≥ 2. Let the left border-edge of F 1 incident to v belong to the bisector J ( p 1 , q1 ) and the right one to J ( p 2 , q2 )
+such that p 1 , p 2 ∈ H and q1 , q2 ∈
+/ H , in other words VRk ( H , S ) ⊆ D ( p 1 , q1 ) and ⊆ D ( p 2 , q2 ), see Fig. 10. Because F 2 is also
+a face of the region of H , the bisector J ( p 1 , q1 ) has to pass on the left side between F 1 and F 2 and J ( p 2 , q2 ) has to pass
+on the right side between F 1 and F 2 . But then { p 1 , q1 } = { p 2 , q2 } and the two bisectors J ( p 1 , q1 ) and J ( p 2 , q2 ) intersect
+non-transversally in v contradicting axiom (A5). ✷
+Now we can prove a more relaxed version of Theorem 1.
+Theorem 2. Let V k ( S ) be an AVD of order k, satisfying axioms (A1) to (A5), with vertex degree ≥ 3 for all Voronoi vertices. Then the
+number of faces of V k ( S ) is bounded from above by 2k(n − k).
+Proof. For each vertex v of V k ( S ) with degree ≥ 4 consider a suﬃciently small ε -neighborhood U ε ( v ) around v, such that
+no other intersection between bisectors lies in U ε ( v ). Use the perturbation technique of [17] to obtain degree 3 vertices in
+U ε ( v ). Because of Lemma 17 the modiﬁed Voronoi diagram V k ( S ) has got at least as many faces as V k ( S ). Now Theorem 1
+implies that V k ( S ) has got at most 2k(n − k) many faces. ✷
+6. Concluding remarks
+One may wonder if the Clarkson–Shor technique [12] can be applied to get the same complexity bound. The Clarkson–
+Shor technique proves that for point sites in the Euclidean metric V k ( S ) has at most 2k(n − k − 1) new Voronoi vertices,
+leading to at most 4kn − 4k2 − 2n Voronoi vertices. However, there are three problems in applying this technique to the
+abstract setting. Let V k, S , V k, S , and V k, S be the numbers of Voronoi vertices, new Voronoi vertices, and old Voronoi vertices
+of V k ( S ), respectively, and let F k, S and S k, S be the numbers of faces and unbounded faces of V k ( S ), respectively.
+First, it is shown that V k, S + V n−k, S is 2k(n − k − 1). This proof depends on the fact that in the Euclidean metric,
+V 1, R + V r −1, R is 2r − 4 for any r-element subset R of S. However, the equation V 1, R + V r −1, R = 2r − 4 does not hold in the
+
+C. Bohler et al. / Computational Geometry 48 (2015) 539–551
+
+551
+
+abstract version since S 1, R is not necessarily S r −1, R . Actually, r − 2 ≤ V 1, R + V r −1, R ≤ 2r − 4. It is not clear how to make
+use of this inequality and their technique to derive an upper bound. Second, the Clarkson–Shor technique mainly focuses
+on the upper bound. No bound for the minimum number of faces in V k ( S ) is derived. Last but not least, if we assume that
+V 1, R + V r −1, R = 2r − 4 holds, by the Euler formula, we have an upper bound of 2k(n − k) + S k, S /2 + 1 − n, but our derived
+upper bound is 2k(n − k) + k + 1 − n. In the abstract version, it is trivial to ﬁnd a case in which S k, S /2 > k. Moreover, since
+we prove the existence of an instance satisfying the bound 2k(n − k) + k + 1 − n, our bound is tight.
+Another natural question is whether axioms weaker than (A1)–(A5) can still imply Theorem 1. In Section 5, we showed
+that axiom (A5) can be simpliﬁed, requiring only transversal intersections, and the general position assumption can be
+omitted. However, what about disconnected and empty Voronoi regions?
+References
+[1] M. Abellanas, F. Hurtado, B. Palop, Transportation networks and Voronoi diagrams, in: Proceedings International Symposium on Voronoi Diagrams in
+Science and Engineering, 2004.
+[2] H.-K. Ahn, O. Cheong, R. van Oostrum, Casting a polyhedron with directional uncertainty, Comput. Geom. 26 (2) (2003) 129–141.
+[3] O. Aichholzer, F. Aurenhammer, B. Palop, Quickest paths, straight skeletons, and the city Voronoi diagram, Discrete Comput. Geom. 31 (7) (2004) 17–35.
+[4] N. Alon, E. Györi, The number of small semispaces of a ﬁnite set of points in the plane, J. Comb. Theory, Ser. A 41 (1) (1986) 154–157.
+[5] F. Aurenhammer, Voronoi diagrams: a survey of a fundamental geometric data structure, ACM Comput. Surv. 23 (3) (1991) 345–405.
+[6] F. Aurenhammer, R. Klein, Voronoi diagrams, in: J.R. Sack, G. Urrutia (Eds.), Handbook on Computational Geometry, Elsevier, 1999, pp. 201–290.
+[7] F. Aurenhammer, R. Klein, D.-T. Lee, Voronoi Diagrams and Delaunay Triangulations, World Scientiﬁc Publishing Company, 2013.
+[8] S.W. Bae, K.-Y. Chwa, Voronoi diagrams for a transportation network on the Euclidean plane, Int. J. Comput. Geom. Appl. 16 (2006) 117–144.
+[9] C. Bohler, P. Cheilaris, R. Klein, C.H. Liu, E. Papadopoulou, M. Zavershynskyi, On the complexity of higher order abstract Voronoi diagrams, in: Proceedings International Colloquium on Automata Languages and Programming, 2013, pp. 208–219.
+[10] C. Bohler, C.H. Liu, E. Papadopoulou, M. Zavershynskyi, A randomized divide and conquer algorithm for higher-order abstract Voronoi diagrams, in:
+Proceedings of the 25th International Symposium on Algorithms and Computations, Jeonju, Korea, 2014, pp. 27–37.
+[11] J.D. Boissonnat, C. Wormser, M. Yvinec, Curved Voronoi diagrams, in: J.D. Boissonnat, M. Teillaud (Eds.), Effective Computational Geometry for Curves
+and Surfaces, in: Mathematics and Visualization, Springer, 2006.
+[12] K. Clarkson, P. Shor, Applications of random sampling in computational geometry, II, Discrete Comput. Geom. 4 (1989) 387–421.
+[13] R. Descartes, Principia Philosophiae, Ludovicus Elzevirius, Amsterdam, 1644.
+[14] S. Fortune, Voronoi diagrams and Delaunay triangulations, in: J.E. Goodman, J. O’Rourke (Eds.), Handbook of Discrete and Computational Geometry,
+CRC Press LLC, 1997, pp. 377–388, Chapter 20.
+[15] J.E. Goodman, R. Pollack, On the combinatorial classiﬁcation of non-degenerate conﬁgurations in the plane, J. Comb. Theory, Ser. A 29 (1980) 220–235.
+[16] M.I. Karavelas, M. Yvinec, The Voronoi diagram of planar convex objects, in: 11th European Symposium on Algorithms, ESA’03, in: LNCS, vol. 2832,
+2003, pp. 337–348.
+[17] R. Klein, Concrete and Abstract Voronoi Diagrams, LNCS, vol. 400, Springer-Verlag, 1987.
+[18] R. Klein, E. Langetepe, Z. Nilforoushan, Abstract Voronoi diagrams revisited, Comput. Geom. 42 (9) (2009) 885–902.
+[19] R. Klein, K. Mehlhorn, St. Meiser, Randomized incremental construction of abstract Voronoi diagrams, Comput. Geom. 3 (1993) 157–184.
+[20] D.-T. Lee, On k-nearest neighbor Voronoi diagrams in the plane, IEEE Trans. Comput. 31 (6) (1982) 478–487.
+[21] C.-H. Liu, E. Papadopoulou, D.-T. Lee, An output-sensitive approach for the L 1 / L ∞ k-nearest-neighbor Voronoi diagram, in: 19th European Symposium
+on Algorithms, ESA ’11, in: LNCS, vol. 6942, 2011, pp. 70–81.
+[22] K. Mehlhorn, St. Meiser, C. Ó’Dúnlaing, On the construction of abstract Voronoi diagrams, Discrete Comput. Geom. 6 (1991) 211–224.
+[23] K. Mehlhorn, St. Meiser, R. Rasch, Furthest site abstract Voronoi diagrams, Int. J. Comput. Geom. Appl. 11 (6) (2001) 583–616.
+[24] A. Okabe, B. Boots, K. Sugihara, S.N. Chiu, Spatial Tessellations: Concepts and Applications of Voronoi Diagrams, Wiley Series in Probability and Statistics, 2000.
+[25] E. Papadopoulou, M. Zavershynskyi, The higher order Voronoi diagram of line segments, Algorithmica (2014), http://dx.doi.org/10.1007/s00453-0149950-0, in press.
+
+

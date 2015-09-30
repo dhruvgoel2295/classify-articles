@@ -1,0 +1,1647 @@
+Neural Networks 71 (2015) 45–54
+
+Contents lists available at ScienceDirect
+
+Neural Networks
+journal homepage: www.elsevier.com/locate/neunet
+
+A novel multivariate performance optimization method based on
+sparse coding and hyper-predictor learning
+Jiachen Yang a , Zhiyong Ding a , Fei Guo a,∗ , Huogen Wang a , Nick Hughes b
+a
+
+School of Electronic Information Engineering, Tianjin University, Tianjin 300072, China
+
+b
+
+College of Information Science and Technology, University of Nebraska Omaha, Omaha, NE 68182, United States
+
+article
+
+info
+
+Article history:
+Received 25 March 2015
+Received in revised form 5 June 2015
+Accepted 23 July 2015
+Available online 4 August 2015
+Keywords:
+Pattern classification
+Loss function
+Multivariate performance measures
+Sparse coding
+Joint learning
+Alternate optimization
+
+abstract
+In this paper, we investigate the problem of optimization of multivariate performance measures, and propose a novel algorithm for it. Different from traditional machine learning methods which optimize simple loss functions to learn prediction function, the problem studied in this paper is how to learn effective
+hyper-predictor for a tuple of data points, so that a complex loss function corresponding to a multivariate performance measure can be minimized. We propose to present the tuple of data points to a tuple of
+sparse codes via a dictionary, and then apply a linear function to compare a sparse code against a given
+candidate class label. To learn the dictionary, sparse codes, and parameter of the linear function, we propose a joint optimization problem. In this problem, the both the reconstruction error and sparsity of sparse
+code, and the upper bound of the complex loss function are minimized. Moreover, the upper bound of the
+loss function is approximated by the sparse codes and the linear function parameter. To optimize this
+problem, we develop an iterative algorithm based on descent gradient methods to learn the sparse codes
+and hyper-predictor parameter alternately. Experiment results on some benchmark data sets show the
+advantage of the proposed methods over other state-of-the-art algorithms.
+© 2015 Elsevier Ltd. All rights reserved.
+
+1. Introduction
+In traditional machine learning methods, we usually use a loss
+function to compare the true class label of a data point against
+its predicted class label. By optimizing the loss functions over all
+the training set, we seek an optimal prediction function, named
+a classifier (Bhuyan & Gao, 2011; Kang & Choi, 2014; Micheloni,
+Rani, Kumar, & Foresti, 2012; Roy, Mackin, & Mukhopadhyay,
+2013; Wang, Bensmail, & Gao, 2012). For example, in support
+vector machine (SVM), a hinge loss function is minimized, and in
+linear regression (LR), a logistic loss function is used (Couellan,
+Jan, Jorquera, & Georgé, 2015; Patil, Fatangare, & Kulkarni, 2015;
+Pragidis, Gogas, Plakandaras, & Papadimitriou, 2015; Şiray, Toker,
+& Kaçiranlar, 2015). However, when we evaluate the performance
+of a class label predictor, we usually consider a tuple of data
+points, and use a complex multivariate performance measure
+over the considered tuple of data points, which is different from
+the loss functions used in the training procedure significantly
+
+∗
+
+Corresponding author. Tel.: +86 13821820218.
+E-mail addresses: gfjy001@yahoo.com (F. Guo), Nick.Hughes1@yahoo.com
+(N. Hughes).
+http://dx.doi.org/10.1016/j.neunet.2015.07.011
+0893-6080/© 2015 Elsevier Ltd. All rights reserved.
+
+(Joachims, 2005; Mao & Tsang, 2013; Walker et al., 2011; Zhang,
+Saha, & Vishwanathan, 2011, 2012). For example, we may use
+area under receiver operating characteristic curve (AUC) as a
+multivariate performance measure to evaluate the classification
+performance of SVM. Because SVM class label predictor is trained
+by minimizing the loss functions over training data points, it
+cannot be guaranteed to minimize the loss function corresponding
+to AUC. Many other multivariate performance measures are also
+defined to compare a true class label tuple of a data point tuple
+against its predicted class label tuple, and they can also be used
+for different machine learning applications. Some examples of the
+multivariate performance measures are F-score (Gao et al., 2014;
+Zemmoudj, Kemmouche, & Chibani, 2014), precision–recall curve
+eleven point (PRBEP) (Boyd, Eng, & Page, 2013; Lopes & Bontempi,
+2014), and Matthews correlation coefficient (MCC) (Kumari, Nath,
+& Chaube, 2015; Shepperd, 2015). To seek the optimal multivariate
+performance measures on a given tuple of data points, recently,
+the problem of multivariate performance measure optimization
+is proposed. This problem is defined as a problem of learning a
+hyper-predictor for a tuple of data points to predict a tuple of
+class labels. The hyper-predictor is learned so that a multivariate
+performance measure used to compare the true class label tuple
+and the predicted class label tuple can be optimized directly.
+
+46
+
+J. Yang et al. / Neural Networks 71 (2015) 45–54
+
+1.1. Related works
+Some methods have been proposed to solve the problem of
+multivariate performance measures. For example,
+
+• Joachims (2005) proposed a SVM method to optimize multivariate nonlinear performance measures, including F-score, AUC
+etc. This method takes a multivariate predictor, and gives an
+algorithm to train the multivariate SVM in polynomial time
+for large classes so that the potentially non-linear performance
+measures can be optimized. Moreover, the translational SVM
+with hinge loss function can be treated as a special case of this
+method.
+• Zhang et al. (2011) proposed a smoothing strategy for multivariate performance score optimization, in particular PRBEP and
+AUC. The proposed method combines Nesterov’s accelerated
+gradient algorithm and the smoothing strategy, and obtains an
+optimization algorithm. This algorithm converges to a given accurate solution in a limited number of iterations corresponding
+to the accurate.
+• Mao and Tsang (2013) proposed a generalized sparse regularizer for multivariate performance measure optimization. Based
+on this regularizer, a unified feature selection and general loss
+function optimization are developed. The formulation of the
+problem is solved by a two-layer cutting plane algorithm, and
+the convergence is presented. Moreover, it can also be used to
+optimize the multivariate measures of multiple-instance learning problems.
+• Li, Tsang, and Zhou (2013) proposed to learn a nonlinear classifier for optimization of nonlinear and nonsmooth performance
+measures by novel two-step approach. Firstly, a nonlinear auxiliary classifier with existing learning methods is trained, and
+then it is adapted for specific performance measures. The classifier adaptation can be reduced to a quadratic program problem,
+similar to the method introduced in Joachims (2005).
+1.2. Contributions
+In this paper, we try to investigate the usage of sparse coding
+in the problem of multivariate performance optimization. Sparse
+coding is an important and popular data representation method,
+and it represents a given data point by reconstructing it with regard
+to a dictionary (Al-Shedivat, Wang, Alzahrani, Huang, & Gao, 2014;
+Li, 2015; Wang, Bensmail, & Gao, 2013; Wang & Gao, 2014). The
+reconstruction coefficients are imposed to be sparse, and used as a
+new representation of the data point. Sparse coding has been used
+widely in both machine learning and computer vision communities
+for pattern classification problems. For example, Mairal, Bach,
+Ponce, Sapiro, and Zisserman (2009) proposed to learn the sparse
+codes and a classifier jointly on a training set. However, the loss
+function used in this method is a traditional logistic loss. In this
+paper, we ask the following question: how can we learn the sparse
+codes and its corresponding class prediction function to optimize
+a multivariate performance measure? To answer this question, we
+propose a novel multivariate performance optimization method.
+In this method, we try to learn sparse codes from the tuple of
+training data points, and apply a linear function to match the sparse
+code tuple against a candidate class label. Based on the linear
+function, we design a hyper-predictor to predict the optimal class
+label tuple. Moreover, the loss function of the desired multivariate
+performance measure is used to compare the prediction of the
+hyper-predictor and the true class label tuple, and minimized to
+optimize the multivariate performance measure. The contributions
+of this paper are of two fold:
+1. We proposed a joint model of sparse coding and multivariate performance measure optimization. We learn both the
+
+sparse codes and the hyper-predictor to optimize the desired
+multivariate performance measure. The input of the hyperprediction function is the tuple of the sparse codes, and the output is a class label tuple, which is further compared to the true
+class label tuple by a multivariate performance measure. A joint
+optimization problem is constructed for this problem. In the
+objective function of the optimization problem, both the reconstruction error and the sparsity of the sparse code are considered. Simultaneously, the multivariate loss function of the
+multivariate performance function is also included in the objective. The multivariate loss function may be very complex, and
+even does not have a close form, thus it is difficult to optimize it
+directly. We seek its upper bound, and approximate it as a linear
+function of the hyper-predictor function.
+2. We proposed a novel iterative algorithm to optimize the
+proposed problem. We adapt the alternate optimization
+strategy, and optimize the sparse code, dictionary and the
+hyper-predictor function alternately in an iterative algorithm.
+Both sparse codes and hyper-predictor parameters are learned
+by gradient descent methods, and the dictionary is learned by
+Lagrange multiplier method.
+1.3. Paper organization
+This paper is organized as follows. In Section 2, we introduce the proposed multivariate performance measure optimization method. In Section 3, the proposed method is evaluated
+experimentally and compared to state-of-the-art multivariate performance measure optimization methods. In Section 4, the paper is
+concluded with future works.
+2. Proposed method
+In this section, we introduce the proposed method. We first
+model the problem with an optimization problem, then solve it
+with an iterative optimization strategy, and finally develop an iterative algorithm based on the optimization results.
+2.1. Problem formulation
+Suppose we have a tuple of n training data points, x =
+(x1 , . . . , xn ), and its corresponding class label tuple is denoted as
+y = (y1 , . . . , yn ), where xi ∈ Rd is the d-dimensional feature
+vector of the ith training data point, and yi ∈ {+1, −1} is the binary
+label of the ith training data point. We can use a machine learning
+∗
+method to predict the class label tuple, y = (y∗1 , . . . , y∗n ), where
+∗
+yi is the predicted class label of the ith data point. A multivariate
+∗
+performance measure, ∆(y, y ), is defined to compare a predicted
+∗
+class label tuple y of a data point tuple against its true class label
+tuple y. To learn a hyper-predictor to map a data point tuple x to
+∗
+an optimal class label tuple y , we should learn it to minimize a
+∗
+desired pre-defined multivariate performance measure, ∆(y, y ).
+The proposed learning framework is shown in the flowchart in
+Fig. 1.
+We propose to present the data points to their sparse codes by
+sparse coding method, and then use a linear hyper-predictor to
+predict the class label tuple. We consider the following problems
+in the learning procedure,
+
+• Sparse coding of data tuple: To represent the data points in
+the data tuple, we propose to reconstruct each data point in the
+data tuple by using a dictionary,
+xi ≈
+
+m
+
+
+sij dj = Dsi ,
+
+i = 1, . . . , n,
+
+(1)
+
+j =1
+
+where dj ∈ Rd is the jth dictionary element of the dictionary,
+and D = [d1 , . . . , dm ] is the dictionary matrix with its jth
+
+J. Yang et al. / Neural Networks 71 (2015) 45–54
+
+47
+
+Fig. 1. Flowchart of the proposed learning framework.
+
+column as the jth dictionary element, and m is the number
+of the dictionary elements. sij is the coefficient of the jth
+dictionary element for the reconstruction of the ith data point,
+and si = [si1 , . . . , sim ]⊤ ∈ Rm is the coefficient vector for the
+reconstruction of the ith data point. We assume that for each
+data point, only a few dictionary elements are used, thus its
+coefficient should be sparse, and we also call it sparse code of
+the data point. To learn the dictionary and the sparse codes
+of the data tuple, we propose to minimize the reconstruction
+error and encourage the sparsity of the sparse codes, and the
+following optimization problem is obtained over the data tuple,
+n
+
+
+
+min
+
+D,si |ni=1
+
+∥xi − Dsi ∥22 + C1 ∥si ∥1 ,
+
+i =1
+
+(2)
+
+∥ ∥ ≤ c , ∀ j = 1 , . . . , m.
+
+′
+
+n
+
+
+(3)
+
+where w ∈ R is the parameter vector of the function. Then
+′
+the candidate class label tuple y which archives the largest re′
+sponse of f (s, y ) will be output as the optimal class label tuple,
+y = arg max f (s, y )
+∗
+
+′
+
+where Y = {+1, −1} is the hyper-space of the candidate class
+label tuple. To learn the linear function parameter vector w for
+the hyper-predictor and the sparse codes, we propose to learn
+it by minimizing a loss function of a pre-defined multivariate
+∗
+performance measure, ∆(y , y). To reduce the complexity of
+the linear function, we also propose to minimize the squared
+ℓ2 norm of the linear function parameter w. Thus we propose
+the following optimization problem to learn w,
+n
+
+w,si |ni=1
+
+2
+
+
+
+y′′ :y′′ ∈Y
+
+τy′′
+
+τy′′ F (y′′ ) ≥ ∆(y∗ , y),
+
+(6)
+
+(y′′i − yi )w⊤ si + ∆(y′′ , y),
+
+(7)
+
+if F (y ) ≥ F (y ), ∀ y
+otherwise.
+
+(8)
+
+y′′ :y′′ ∈Y
+
+where
+F (y ) =
+′′
+
+n
+
+
+
+∥w∥ + C3 ∆(y , y) ,
+2
+2
+
+and
+
+
+=
+
+1,
+0,
+
+′′
+
+′′′
+
+∗
+
+′′′
+
+∈Y
+
+Proof. According to (4), since y achieves a maximum f (s, y ), we
+have
+∗
+
+′
+
+f (s, y ) ≥ f (s, y)
+∗
+
+⇒ f (s, y∗ ) − f (s, y) ≥ 0
+⇒ f (s, y∗ ) − f (s, y) + ∆(y∗ , y) ≥ ∆(y∗ , y).
+
+(9)
+
+Substituting (3) to the left-hand side of (9), and according to the
+′′
+definition of function F (y ) in (7), we have
+f (s, y ) − f (s, y) + ∆(y , y)
+
+=
+
+n
+
+
+∗
+
+n
+
+
+y∗i w⊤ si −
+
+i=1
+
+=
+
+n
+
+
+yi w⊤ si + ∆(y , y)
+∗
+
+i=1
+
+(y∗i − yi )w⊤ si + ∆(y∗ , y)
+
+i=1
+
+(4)
+
+y′ ∈Y
+
+min
+
+1
+
+
+
+∗
+
+y′i w⊤ si ,
+m
+
+C2
+
+∗
+
+τ
+
+i =1
+
+
+
+Theorem 1. The upper bound of ∆(y , y) can be obtained as follows,
+
+y′′
+
+In the objective function, the first part of each term is the
+reconstruction error measured by squared ℓ2 norm, and the
+second part is the sparsity measured by the ℓ1 norm of si . C1
+is a tradeoff parameter to control the sparsity of si . If we have a
+larger value of C1 , the learned si will be more sparse. The optimal
+value of this parameter can be selected by linear search or cross
+validation.
+• Learning of hyper-predictor: We apply a linear function, f (s,
+′
+y ), to compare the tuple of sparse codes of the data tuple, s =
+(s1 , . . . , sn ), against a candidate class tuple, y′ = (y′1 , . . . , y′n ),
+f (s, y ) =
+
+∗
+
+i=1
+
+
+
+dj 22
+
+s.t.
+
+of ∆(y , y) is difficult, thus we seek its upper bound and mini∗
+mize its upper bound to optimize ∆(y , y).
+
+= F (y∗ ).
+
+(10)
+
+Thus (9) can be rewritten as
+F (y ) ≥ ∆(y , y).
+∗
+
+∗
+
+(11)
+
+To find the upper bound of F (y ), we scan all the candidate class
+label tuples y′′ ∈ Y, and seek the one or more candidates which
+′′
+can achieve the maximum F (y ), and we can see the maximum
+′′
+∗
+F (y ) is an upper bound of F (y ),
+∗
+
+max F (y ) ≥ F (y ).
+′′
+
+(5)
+
+where C2 and C3 are other tradeoff parameters. C2 is the weight
+of the model complexity penalty term, and a larger C2 can lead
+to a simpler model. C3 is the weight of the loss functions over the
+training data points, and a larger value of C3 can lead the model
+to fit the training set better. The values of C2 and C3 can be selected by linear search of cross validation. Direct minimization
+
+∗
+
+(12)
+
+y′′ ∈Y
+
+Moreover, we also define an indicator τy′′ for each y to indicate
+′′
+′′
+if y achieves the maximum F (y ), as in (8). In this way, we can
+rewrite the left-hand side of (12) as follows,
+′′
+
+max F (y ) =
+′′
+
+y′′ ∈Y
+
+1
+
+
+y′′ :y′′ ∈Y
+
+
+τy′′
+
+y′′ :y′′ ∈Y
+
+τy′′ F (y′′ ).
+
+(13)
+
+48
+
+J. Yang et al. / Neural Networks 71 (2015) 45–54
+
+Thus we have
+1
+
+
+τy′′
+
+
+y′′ :y′′ ∈Y
+
+τy′′ F (y′′ ) = max F (y′′ )
+y′′ ∈Y
+
+y′′ :y′′ ∈Y
+
+≥ F (y∗ ) ≥ ∆(y∗ , y).
+
+(14)
+
+Instead of minimizing ∆(y , y), we minimize its upper bound
+in (6), and (5) is turned out to
+∗
+
+
+
+C
+
+min
+
+w,si |ni=1
+
+=
+
+2
+
+
+2
+
+C2
+
+
+y′′ :y′′ ∈Y
+
+C3
+
+∥w∥22 +
+
+2
+
+C3
+
+∥w∥22 +
+
+
+y′′ :y′′ ∈Y
+
+
+×
+
+
+τy′′
+
+
+τy′′
+
+τy′′ F (y′′ )
+
+y′′ :y′′ ∈Y
+
+τy′′
+
+y′′ :y′′ ∈Y
+
+n
+
+
+(y′′i − yi )w⊤ si + ∆(y′′ , y)
+
+
+
+
+
+Fig. 2. Flowchart of the alternate optimization strategy.
+
+.
+
+(15)
+
+
+
+
+i=1
+
+min
+
+
+n
+
+
+
+∥xi − Dsi ∥22 + C1 ∥si ∥1
+i=1
+
++
+
+C2
+2
+
+C3
+
+∥w∥22 +
+
+
+
+
+y′′ :y′′ ∈Y
+
+
+×
+
+τy′′
+
+1
+|si1 |
+
+1
+, . . . , |sim
+|
+
+diagonal element as
+
+The overall optimization problem is obtained by combining
+both problems in (2) and (15),
+
+D,si |ni=1 ,w
+
+
+
+where diag
+
+τy′′
+
+y′′ :y′′ ∈Y
+
+is a diagonal matrix with its jth
+
+To make the objective function a smooth
+
+function, we fix the sparse code elements in the diagonal matrix
+as the elements of the previous iteration. Moreover, we note that
+τy′′ is also a function of si as shown in (8). We also first calculate
+by using sparse codes solved in the previous iteration, and then fix
+it when we consider si in the current iteration. In this way, (17) is
+changed to
+
+min
+
+
+n
+
+′′
+′′
+⊤
+,
+(yi − yi )w si + ∆(y , y)
+
+1
+.
+|sij |
+
+
+
+si
+
+
+
+
+
+g (si ) = ∥xi − Dsi ∥22 + C1 s⊤
+i diag
+
+
+
+|spre
+i1 |
+
+
+
+
+i =1
+
+s.t. ∥dj ∥22 ≤ c , ∀ j = 1, . . . , m.
+
+(16)
+
+C3
+
++
+
+In this problem, we learn the dictionary, sparse codes, and the
+hyper-predictor parameter jointly.
+
+
+y′′ :y′′ ∈Y
+
+
+pre
+y′′ y′′ :y′′ ∈Y
+
+τ
+
+1
+
+′′
+⊤
+τypre
+′′ (yi − yi )w si
+
+
+
+
+
+,...,
+
+
+
+1
+
+si
+
+|spre
+im |
+
+,
+
+(19)
+
+
+
+
+pre
+
+where sij is the jth element of si solved in previous iteration, and
+
+τ
+
+2.2. Problem optimization
+To optimize the problem in (16), we use the alternate optimization strategy. In an iterative algorithm, the variables are updated in
+turn. When the sparse codes are optimized, the linear function parameter and the dictionary are fixed. When the linear function parameter is optimized, the sparse codes and the dictionary are fixed.
+When the dictionary is optimized, the sparse codes and the linear
+function parameter is fixed. This strategy is shown in a flowchart
+in Fig. 2.
+2.2.1. Optimization of sparse codes
+When we try to optimize the sparse codes, we fix the dictionary
+and the linear function parameter, and optimize the sparse codes
+one by one, i.e., when one sparse code si is considered, other
+sparse codes si′ |i′ ̸=i are fixed. Thus we turn the problem in (16)
+to the following optimization problem by only considering si , and
+removing terms irrelevant to si ,
+
+
+
+
+min ∥xi − Dsi ∥22 + C1 ∥si ∥1 +
+si 
+
+
+C3
+
+
+y′′ :y′′ ∈Y
+
+
+τy′′
+
+τy′′ (y′′i − yi )w⊤ si
+
+y′′ :y′′ ∈Y
+
+
+
+
+
+.
+
+pre
+y′′
+
+is τy′′ calculated using previous solved si and w. To seek its
+minimization, we update si by descending it to its gradient of the
+object g (si ),
+pre
+
+scur
+← si
+i
+
+pre
+
+∇ g (si ) = 2D⊤ (xi − Dsi ) + 2C1 diag
+
+∥si ∥1 =
+
+j =1
+
+|sij | =
+
+m
+
+s2ij
+j=1
+
+|sij |
+
+⊤
+
+= si diag
+
+
+
+1
+
+|si1 |
+
+,...,
+
+1
+
+|sim |
+
+
+
+(18)
+
+
+y′′ :y′′ ∈Y
+
+
+τy′′
+
+
+
+1
+
+|spre
+i1 |
+
+,...,
+
+τy′′ (y′′i − yi )w.
+
+1
+
+|spre
+im |
+
+
+si
+(21)
+
+y′′ :y′′ ∈Y
+
+2.2.2. Optimization of linear function parameter
+By only considering w in (16), fixing sparse codes, dictionary,
+and τy′′ as results of previous iteration, and removing the terms irrelevant to w, we turn (16) to
+
+min
+w
+
+
+
+
+
+h(w) =
+
+
+
+
+
+si ,
+
+C3
+
++
+
+We rewrite the sparsity term in (17), ∥si ∥1 , as follows,
+m
+
+
+(20)
+
+i
+
+where scur
+is the sparse code updated in current iteration, si is the
+i
+sparse code solved in previous iteration, η is the descent step, and
+∇ g (si ) is the gradient of g (si ), which is defined as
+
+
+
+(17)
+
+− η∇ g (si )|si =spre ,
+
+×
+
+C2
+2
+
+∥w∥22 +
+
+C3
+
+
+y′′ :y′′ ∈Y
+
+
+pre
+y′′
+
+τ
+
+y′′ :y′′ ∈Y
+
+
+n
+
+′′
+′′
+⊤
+(yi − yi )w si + ∆(y , y)
+.
+i =1
+
+τypre
+′′
+
+(22)
+
+J. Yang et al. / Neural Networks 71 (2015) 45–54
+
+To minimize this objective function, we update w by descending it
+to the gradient of h(w),
+wcur ← wpre − η∇ h(w)|w=wpre ,
+
+(23)
+
+where ∇ h(w) is the gradient of h(w), which is defined as
+C3
+
+∇ h(w) = C2 w +
+
+
+y′′ :y′′ ∈Y
+
+
+pre
+y′′
+
+τ
+
+y′′ :y′′ ∈Y
+
+τypre
+′′
+
+n
+
+(y′′i − yi )si .
+
+(24)
+
+i=1
+
+2.2.3. Optimization of dictionary
+To optimize the dictionary matrix D, we remove the terms irrelevant to D from the objective, fix the other variables, and obtain
+the following optimization problem,
+
+Algorithm 1 Iterative learning algorithm of joint learning of sparse
+code and hyper-predictor parameter for multivariate performance
+measure optimization (JSCHP).
+Input: A training tuple of n data points x = (x1 , · · · , xn ), and its
+corresponding class label tuple y = (y1 , · · · , yn );
+Input: Tradeoff parameters C1 , C2 , C3 .
+Input: Maximum iteration number T ;
+Initialize s0i |ni=1 , w0 and αj |m
+j =1 ;
+for t = 1, · · · , T do
+Update Dt by the updating rule in (27) and fixing sit −1 |ni=1 and
+αjt −1 |m
+j=1 ,
+t
+
+D =
+
+
+n
+
+
+min
+
+
+
+s.t.
+
+∥dj ∥22 ≤ c , ∀ j = 1, . . . , m.
+
+∥xi −
+
+∥ ,
+
+Dsi 22
+
+
+(25)
+
+i=1
+
+
+αj |m
+j=1
+
+n
+
+
+min L(D, αj |m
+j =1 ) =
+D
+
+=
+
+
+
+∥xi − Dsi ∥22 +
+
+
+
+i=1
+n
+
+=
+
+∥xi − Dsi ∥22 +
+
+i=1
+m
+
+n
+
+
+
+j =1
+
+∥xi −
+
+m
+
+
+
+
+αj ∥dj ∥22 − c
+
+j=1
+
+
+
+=
+
+sti −1
+
+αj c ,
++ 2C1 diag
+
+,··· ,α
+
+t −1
+m
+
+)
+
+(28)
+
+xi − Dt si
+
+1
+
+,··· ,
+
+
+1
+
+|stim−1 |
+
+
+sti −1
+
+
+
+
++
+
+αj ≥ 0, j = 1, . . . , m,
+
+(26)
+
+where αj is the Lagrange multiplier for the constraint ∥dj ∥22 ≤ c,
+diag (α1 , . . . , αm ) is a diagonal matrix with its diagonal elements
+as α1 , . . . , αm , and L(D, αj |m
+j=1 ) is the Lagrange function. To minimize the Lagrange function with regard to D, we set its gradient
+with regard to D to zero, and we have
+n
+
+
+xi s⊤
+i
+
+i =1
+
+(27)
+
+ −1
+si s⊤
+i + diag (α1 , . . . , αm )
+
+.
+
+i=1
+
+To solve the Lagrange multiplier variables, we use the gradient ascent algorithm to obtain α1 , . . . , αm in each iteration. After we obtain α1 , . . . , αm , we can obtain D according to (27).
+2.3. Iterative algorithm
+Based on the optimization results, we develop a novel iterative
+algorithm, named JSCHP. The algorithm is described in Algorithm
+1. As we can see from the algorithm, the iterations are repeated T
+times, and in each iteration, the variables are updated sequentially.
+The flowchart of the proposed iterative algorithm is given in Fig. 3.
+The novelty of this algorithm is of three folds:
+1. This algorithm is the first algorithm to learn the sparse codes,
+dictionary and hyper-predictor jointly.
+2. This algorithm is the first algorithm to use gradient descent
+principle to update the hyper-predictor parameters. Traditional
+hyper-predictor parameter learning method for multivariate
+performance optimization is based on solving a quadratic programming problem in each iteration, which is time-consuming.
+Our algorithm gives up the quadratic programming problem,
+and instead, we used a simple gradient descent rule to update
+the parameters efficiently.
+
+
+
+y′′ :y′′ ∈Y
+
+τy′′
+
+τy′′ (y′′i − yi )wt −1 .
+
+(29)
+
+y′′ :y′′ ∈Y
+
+
+t
+
+t −1
+
+w =w
+
+− η C2 wt −1
+C3
+
+
+
+y′′ :y′′ ∈Y
+
+(xi − Dsi ) si + 2Ddiag (α1 , . . . , αm ) = 0,
+
+n
+
+
+C3
+
+end for
+Update wt by the updating rule in (23) and fixing wt −1 ,
+
++ 
+
+⊤
+
+i=1
+n
+
+
+
+
+|sti1−1 |
+
+∥
+
+j =1
+
+⇒D=
+
+⊤
+
+
+
+
+ 
++ Tr Ddiag (α1 , . . . , αm )D⊤ −
+αj c ,
+
+
+
+− η 2Dt
+
+Dsi 22
+m
+
+∇ LD = −2
+
++ diag (α
+
+t −1
+1
+
+
+sti
+
+j =1
+
+i=1
+
+s.t.
+
+ −1
+⊤
+sti −1 sti −1
+
+for i = 1, · · · , n do
+Update sti by the updating rule in (20) and fixing sit −1 and Dt ,
+
+m
+
+αj ∥dj ∥22 −
+
+×
+
+n
+
+i=1
+
+The dual optimization problem for this problem is
+max
+
+
+⊤
+xi sti −1
+
+i=1
+
+n
+D
+
+49
+
+τy′′
+
+y′′ :y′′ ∈Y
+fixing sti ni=1
+
+
+n
+
+τy′′
+(y′′i − yi )sti 
+
+(30)
+
+i =1
+
+Update αjt |m
+| and using gradient ascent;
+j=1 by
+end for
+Output: The sparse codes sTi |ni=1 , dictionary matrix DT , and
+hyper-predictor parameter wT .
+3. This algorithm is also the first algorithm to solve the sparse
+codes using the gradient descent rule. Traditional sparse coding algorithm solves the sparse codes by optimizing a ℓ2 norm
+regularized problem directly, which is not convex and timeconsuming. We convert the ℓ1 norm regularization to a ℓ2 norm
+regularization, which can be easily solved by gradient descent
+because it is convex.
+Please note that the input of the iterative algorithm requires the
+parameters C1 , C2 and C3 . C1 is the weight of the sparsity term of
+the sparse code, C2 is the weight of the model complexity term, and
+C3 is the weight of the losses over the training set.
+3. Experiments
+In this experiment, we evaluate the proposed algorithm and
+compare it against state-of-the-art multivariate performance optimization methods.
+3.1. Data sets
+In the experiment, we used the following three data sets.
+
+50
+
+J. Yang et al. / Neural Networks 71 (2015) 45–54
+
+Fig. 3. The flowchart of the iterative algorithm of JSCHP.
+
+• VANET misbehavior data set: The first data set is for the
+problem of detecting misbehaving network nodes of Vehicular
+Ad Hoc Networks (VANETs) (Grover, Prajapati, Laxmi, & Gaur,
+2011). To construct this data set, we used NCTUns-5.0 simulator
+to conduct simulations, and collected data of 1395 nodes. These
+nodes belong to two different classes, which are honest nodes
+and misbehaving nodes. The number of honest nodes is 837,
+and the number of the misbehaving nodes is 558. Given a
+candidate node, the problem of misbehavior detection is to
+predict if is an honest node, or a misbehaving node. Thus
+this is a binary classification problem. To extract the features
+from each node, we calculate multifarious features, including
+speed-deviation of node, received signal strength (RSS), number
+of packets delivered, dropped packets etc.
+• Profile injection attacks data set: The second data set is for the
+problem of detecting profile injection attacks in collaborative
+recommender systems (Zhang & Zhou, 2014). It is well known
+
+that collaborative recommender systems are vulnerable to
+profile injection attacks. Injection attacks are defined as
+malicious users inserting fake profiles into the rating database,
+and biasing the systems’ output. To construct the data set, we
+randomly select 1000 genuine user profiles from Movielens 1M
+data set as positive data points, and randomly generate 300
+attacking fake user profiles as negative data points. The problem
+of profile injection attacks detection is to classify a candidate
+user profile to genuine user or fake user. To extract features
+from each user profile, we first calculate its rating series based
+on the novelty and popularity of items, and then use the
+empirical mode decomposition (EMD) to decompose its rating
+series, and finally extract Hilbert spectrum based features.
+• UT-kinect 3D action data set: The third data set is for the problem of recognizing human actions from 3D body data. In this
+data set, there are 200 3D body data samples, and each 3D body
+data sample is treated as a data point. These data points belong to 10 different action classes. The number of data points
+
+J. Yang et al. / Neural Networks 71 (2015) 45–54
+
+(a) F 1 score.
+
+(b) PRBEP.
+
+51
+
+(c) AUC.
+
+Fig. 4. Results of comparison to state-of-the-art on VANET misbehavior data set.
+
+for each class is 20. The 10 classes are listed as follows: walk, sit
+down, stand up, pickup, carry, throw, push, pull, wave and clap
+hands (Xia, Chen, & Aggarwal, 2012). To extract features from
+each data point, we calculate the histogram of the 3D joints of
+each data point.
+
+positive rate are defined as follows,
+true positive rate
+
+=
+
+Number of correctly classified positive data points
+Total number of positive test data points
+
+,
+(33)
+
+false positive rate
+3.2. Experiment setup
+
+=
+
+To perform the experiments, we used the 10-fold cross validation. A data set is split into 10 folds randomly. Each fold was used as
+a test set in turn. The remaining 9 folds were combined and used
+as a training set. Given a desired multivariate performance measure, we performed the proposed algorithm on the training set to
+learn the dictionary and the classifier parameter. Then we used
+the learned dictionary and the classifier to classify the test data
+points. Finally, we compared the classification results of the test
+data points against the true class labels using the given multivariate performance measure.
+The following multivariate performance measures were used.
+
+• F1 score: The first multivariate performance measure is the F1
+score, and it is defined as
+F 1 score
+2 × Number of correctly classified positive data points
+
+= 
+
+
+
+2 × Number of correctly classified positive data points
+.
++ Number of wrongly classified data points
+
+(31)
+
+• PRBEP: The third multivariate performance measure is PRBEP,
+precision–recall curve eleven point. It is defined as a point
+where precision and recall values are equal to each other. The
+precision–recall curve is obtained by plotting precisions against
+recalls. Precision and recall are defined as,
+precision =
+recall =
+
+Number of correctly classified positive data points
+
+Number of data points classified as positive
+Number of correctly classified positive data points
+Total number of positive test data points
+
+,
+(32)
+
+.
+
+We can generate different groups of precisions and recalls,
+and plot precisions against corresponding recalls to obtain the
+precision–recall curve. The point in the curve where precision
+is equal to the recall is defined as PRBEP.
+• AUC: The second multivariate performance measure is the AUC,
+area under operating characteristic curve. Operating characteristic curve is defined as a curve obtained by plotting true positive rate against false positive rate. True positive rate and false
+
+Number of wrongly classified negative data points
+Total number of negative test data points
+
+.
+
+By changing a threshold parameter of the classifier, we can have
+different groups of true positive rates and false positive rates.
+Plotting true positive rates against its corresponding false positive rates, the operating characteristic curve can be obtained.
+3.3. Experiment results
+3.3.1. Comparison to state-of-the-art
+In this experiment, we first compared the proposed algorithm JSCHP to some state-of-the-art machine learning algorithms
+for multivariate performance optimization, including the cuttingplane subspace pursuit (CPSP) (Joachims, 2005), multivariate performance measure smoothing (MPMS) (Zhang et al., 2012), feature
+selection based multivariate performance measure optimization
+(FSMPM) (Mao & Tsang, 2013), and classifier adaptation based multivariate performance measure optimization (CAMPM) (Li et al.,
+2013). The boxplots of different performances measures of the 10fold cross validation over different data sets are given in Figs. 4–6.
+From these figures, we can see that the proposed algorithm JSCHP
+outperforms the compared algorithms in most cases. For example,
+in the experiments over VANET misbehavior data set, when PRBEP
+performance is considered, only JSCHP algorithm achieves a median value higher than 0.6, while the media values of all other algorithms are lower than 0.6. Moreover, in the experiments over
+UT-kinect 3D action data set, we can see that the median value of
+the F 1 scores of JSCHP is even higher than the 75th percentile values of other algorithms. These are strong evidences that the proposed algorithm is more effective than the compared algorithms
+for the problem of optimizing multivariate performance measures.
+It is also interesting to see that AUC seems an easier multivariate
+performance measure to optimized than F 1 score and PRBEP. In all
+the experiments over three data sets, the observed AUC values are
+higher than corresponding F 1 scores and PRBEP values. The results
+of CAMPM, FSMPM and MPMS are comparable to each other, and
+better than CPSP.
+3.3.2. Parameter sensitivity
+We are also interested in the sensitivity of the proposed algorithm against three tradeoff parameters C1 , C2 and C3 . Thus we var-
+
+52
+
+J. Yang et al. / Neural Networks 71 (2015) 45–54
+
+(a) F 1 score.
+
+(b) PRBEP.
+
+(c) AUC.
+
+Fig. 5. Results of comparison to state-of-the-art on profile injection attacks data set.
+
+(a) F 1 score.
+
+(b) PRBEP.
+
+(c) AUC.
+
+Fig. 6. Results of comparison to state-of-the-art on UT-kinect 3D action data set.
+
+ied the tradeoff parameters C1 , C2 and C3 contemporaneously to
+compute the sensitivity of the algorithm to the parameters. The
+average F1 scores of the proposed algorithm of combinations of different values of these parameters are given in Fig. 7. From Fig. 7(a)
+and (b), we can see that when C1 is increasing, the performances
+are also being improved. C1 is the weight of the sparsity term of
+the sparse code, and from the experiment results, we can conclude that when we have a larger sparsity penalty, the performance
+can be better. This means that a sparse representation is important for learning hyper-predictor to optimize multivariate performance measures. It is well known that sparse representation can
+benefit the learning of a good classifier using common and simple
+performance measures. However, it is still unknown if such sparse
+representation can also benefit the learning of hyper-predictor for
+complex multivariate performance measure optimization. Our experiments answer this question, and we find that the sparsity of
+the presentation is also important for the optimization of complex
+multivariate performance measures, just like it works for the simple performance measure optimization. From Fig. 7(a) and (c), we
+can see that the improvement of the performances against the C2
+parameter is not clear. However, the performance is stable for different parameters. This parameter is the weight for the complexity
+of the hyper-predictor parameter. From the results, we cannot conclude that a simpler predictor can optimize the multivariate performance measure better than a complex predictor. From Fig. 7(b)
+and (c), we can see that a larger C3 can also improve the performance. This is because C3 is the weight of the upper bound of the
+corresponding loss function. A larger C3 can lead to a better solution for the minimization of the loss function, and thus leads to a
+better performance measure.
+
+3.3.3. Running time
+We are also interested in the running time of the proposed
+algorithm and the compared algorithms. The boxplots of running
+time of different algorithms of the 10-fold cross validation over
+UT-kinect 3D action data set are given in Fig. 8. It is obvious that
+the proposed algorithm has shorter running time than the other
+algorithms. A possible reason is that the other algorithms are based
+on cutting-plane algorithm. In this algorithm, in each iteration, an
+active set is maintained, and a quadratic programming algorithm
+is solved over this active set. The solving of the quadratic algorithm
+is time consuming. Moreover, to update the active set, we need to
+seek a maximization over all possible class label tuples. However,
+in our algorithm, we only seek a maximization in the class label
+tuple space to approximate the upper bound, and no quadratic
+programming problem is considered, while only a gradient descent
+updating procedure is conducted.
+4. Conclusion and future works
+In this paper, we proposed a novel method for the problem of
+multivariate performance measure optimization. This method is
+based on joint learning of sparse codes of data point tuple and a
+hyper-predictor to predict the class label tuple. In this way, the
+sparse code learning is guided by the minimization of the multivariate loss function corresponding to the desired multivariate
+performance measure. Moreover, we also proposed a novel upper
+bound approximation of the multivariate loss function. We model
+the learning problem as a minimization problem and solve it by developing an iterative algorithm based on gradient descent method.
+
+J. Yang et al. / Neural Networks 71 (2015) 45–54
+
+(a) C1 and C2 .
+
+53
+
+(b) C1 and C3 .
+
+(c) C2 and C3 .
+Fig. 7. Parameter sensitivity curves of F1 scores over UT-kinect 3D action data set.
+
+References
+
+Fig. 8. Boxplots of running time of 10-fold cross validation over UT-kinect 3D action
+data set.
+
+The proposed algorithm is compared to state-of-the-art multivariate performance measure optimization algorithms, and the results
+show its advantage. In the future, we will consider to extend the
+proposed framework to structured label prediction problem, since
+it is similar to multivariate performance measure optimization.
+Acknowledgments
+This research is partially supported by the National Natural
+Science Foundation of China (Grant Nos. 61471260 and 61271324),
+and the Program for New Century Excellent Talents in University
+(Grant No. NCET-12-0400).
+
+Al-Shedivat, M., Wang, J. J.-Y., Alzahrani, M., Huang, J., & Gao, X. (2014). Supervised
+transfer sparse coding. In Proceedings of the national conference on artificial
+intelligence, Vol. 3 (pp. 1665–1672).
+Bhuyan, M., & Gao, X. (2011). A protein-dependent side-chain rotamer library. BMC
+Bioinformatics, 12(Suppl 14), S10.
+Boyd, K., Eng, K., & Page, C. (2013). Area under the precision–recall curve: Point
+estimates and confidence intervals. In Lecture notes in computer science (LNAI,
+PART 3): Vol. 8190 (pp. 451–466). Including subseries Lecture Notes in Artificial
+Intelligence and Lecture Notes in Bioinformatics.
+Couellan, N., Jan, S., Jorquera, T., & Georgé, J.-P. (2015). Self-adaptive support
+vector machine: A multi-agent optimization perspective. Expert Systems with
+Applications, 42(9), 4284–4298.
+Gao, J., Tian, H., Yang, Y., Yu, X., Li, C., & Rao, N. (2014). A novel algorithm to enhance
+p300 in single trials: Application to Lie detection using f-score and SVM. PLoS
+One, 9(11).
+Grover, J., Prajapati, N., Laxmi, V., & Gaur, M. (2011). Machine learning approach for
+multiple misbehavior detection in vanet. In Communications in computer and
+information science (CCIS, PART 3): Vol. 192 (pp. 644–653).
+Joachims, T. (2005). A support vector method for multivariate performance
+measures. In ICML 2005—Proceedings of the 22nd international conference on
+machine learning (pp. 377–384).
+Kang, H., & Choi, S. (2014). Bayesian common spatial patterns for multi-subject eeg
+classification. Neural Networks, 57, 39–50.
+Kumari, P., Nath, A., & Chaube, R. (2015). Identification of human drug targets using
+machine-learning algorithms. Computers in Biology and Medicine, 56, 175–181.
+Li, Y. (2015). Robust content fingerprinting algorithm based on sparse coding. IEEE
+Signal Processing Letters, 22(9), 1254–1258.
+Li, N., Tsang, I., & Zhou, Z.-H. (2013). Efficient optimization of performance measures
+by classifier adaptation. IEEE Transactions on Pattern Analysis and Machine
+Intelligence, 35(6), 1370–1382.
+Lopes, M., & Bontempi, G. (2014). On the null distribution of the precision and
+recall curve. In Lecture notes in computer science (LNAI, PART 2): Vol. 8725
+(pp. 322–337). Including subseries Lecture Notes in Artificial Intelligence and
+Lecture Notes in Bioinformatics.
+Mairal, J., Bach, F., Ponce, J., Sapiro, G., & Zisserman, A. (2009). Supervised dictionary
+learning. In Advances in neural information processing systems 21—Proceedings of
+the 2008 conference (pp. 1033–1040).
+
+54
+
+J. Yang et al. / Neural Networks 71 (2015) 45–54
+
+Mao, Q., & Tsang, I.-H. (2013). A feature selection method for multivariate
+performance measures. IEEE Transactions on Pattern Analysis and Machine
+Intelligence, 35(9), 2051–2063.
+Micheloni, C., Rani, A., Kumar, S., & Foresti, G. (2012). A balanced neural tree for
+pattern classification. Neural Networks, 27, 81–90.
+Patil, P., Fatangare, Y., & Kulkarni, P. (2015). Semi-supervised learning algorithm for
+online electricity data streams. Advances in Intelligent Systems and Computing,
+324, 349–358.
+Pragidis, I., Gogas, P., Plakandaras, V., & Papadimitriou, T. (2015). Fiscal shocks and
+asymmetric effects: A comparative analysis. Journal of Economic Asymmetries,
+12(1), 22–33.
+Roy, A., Mackin, P., & Mukhopadhyay, S. (2013). Methods for pattern selection,
+class-specific feature selection and classification for automated learning. Neural
+Networks, 41, 113–129.
+Shepperd, M. (2015). How do i know whether to trust a research result? IEEE
+Software, 32(1), 106–109.
+Şiray, G. Ü, Toker, S., & Kaçiranlar, S. (2015). On the restricted Liu estimator
+in the logistic regression model. Communications in Statistics: Simulation and
+Computation, 44(1), 217–232.
+Walker, D., Wiseman, G., Belcher, B., Dewi, S., Campbell, J., & Baydack, R. (2011).
+Multivariate performance measures for evaluating speckle suppression filters
+for multitemporal multi-incident sar imagery. Canadian Journal of Remote
+Sensing, 37(1), 55–68.
+
+Wang, J. J.-Y., Bensmail, H., & Gao, X. (2012). Multiple graph regularized protein
+domain ranking. BMC Bioinformatics, 13(1), 307.
+Wang, J. J.-Y., Bensmail, H., & Gao, X. (2013). Joint learning and weighting of visual
+vocabulary for bag-of-feature based tissue classification. Pattern Recognition,
+46(12), 3249–3255.
+Wang, J. J.-Y., & Gao, X. (2014). Semi-supervised sparse coding. In Proceedings of the
+international joint conference on neural networks (pp. 1630–1637).
+Xia, L., Chen, C.-C., & Aggarwal, J. (2012). View invariant human action recognition
+using histograms of 3D joints. In 2012 IEEE computer society conference on
+computer vision and pattern recognition workshops (CVPRW) (pp. 20–27). IEEE.
+Zemmoudj, S., Kemmouche, A., & Chibani, Y. (2014). Feature selection and
+classification for urban data using improved f-score with support vector
+machine. In 6th International conference on soft computing and pattern
+recognition, SoCPaR 2014 (pp. 371–375).
+Zhang, X., Saha, A., & Vishwanathan, S. (2011). Smoothing multivariate performance
+measures. In Proceedings of the 27th conference on uncertainty in artificial
+intelligence, UAI 2011 (pp. 814–821).
+Zhang, X., Saha, A., & Vishwanathan, S. (2012). Smoothing multivariate performance
+measures. Journal of Machine Learning Research, 13, 3623–3680.
+Zhang, F., & Zhou, Q. (2014). HHT-SVM: An online method for detecting profile
+injection attacks in collaborative recommender systems. Knowledge-Based
+Systems, 65, 96–105.
+
+

@@ -1,0 +1,632 @@
+Robotics and Autonomous Systems 73 (2015) 16–23
+
+Contents lists available at ScienceDirect
+
+Robotics and Autonomous Systems
+journal homepage: www.elsevier.com/locate/robot
+
+An adaptive control strategy for postural stability using a wearable
+robot
+Vijaykumar Rajasekaran a,∗ , Joan Aranda a , Alicia Casals a , Jose L. Pons b
+a
+
+Robotics group, Institute for Bioengineering of Catalonia and Universitat Politècnica de Catalunya, BarcelonaTech, Carrer Baldiri Reixac, 4-8, Tower I,
+Planta 8, 08028 Barcelona, Spain
+b
+
+Neural Rehabilitation Group, Cajal Institute, Spanish National Scientific Research Council, Av. Doctor Arce, 37, 28002 Madrid, Spain
+
+highlights
+•
+•
+•
+•
+•
+
+Assisted exoskeleton control inspired by human balance control.
+Adaptive impedance control for effective postural stabilization.
+Postural stability in presence of external perturbations.
+Evaluation of control strategies based on individual joint control or combined action.
+Postural stability training for individuals with neuro-muscular disorders.
+
+article
+
+info
+
+Article history:
+Available online 10 December 2014
+Keywords:
+Exoskeleton controls
+Postural stability
+Balance controls
+Adaptive control
+
+abstract
+Wearable robots are expected to expand the use of robotics in rehabilitation since they can widen the
+assistance application context. An important aspect of a rehabilitation therapy, in terms of lower extremity assistance, is balance control. In this article, we propose and evaluate an adaptive control strategy for
+robotic rehabilitation therapies to guarantee static stability using a wearable robot. Postural balance control can be implemented either acting on the hip, on the ankle joint or on both, depending on the kind
+of perturbation acting on the subject: internal or external. Internal perturbations can be produced by any
+voluntary movement of the body, such as bending the trunk. External perturbations, in the form of an
+impact force, are applied by the exoskeleton without any prior notice to observe the proactive response
+of the subject. We have used a 6 degree of freedom planar lower limb exoskeleton, H1, to perform this
+analysis. The developed control strategy has been designed to provide the necessary assistance, related
+to balance recovery and postural stability, under the ‘‘Assist-as-needed’’ paradigm. The interaction forces
+between orthosis and subject are monitored, as they play a relevant role in the definition of assistive and
+resistive movements to be applied to the joints. The proposed method has been tested with 5 healthy
+subjects in presence of internal and external disturbances. The results demonstrate that knowing the stability limit of each subject, in combination with a therapeutically selected scaling factor, the proposed
+adaptive control helps in providing an effective assistance in therapy. This method is efficient in handling
+the individual and combined effect of external perturbations acting on any joint movements.
+© 2014 Elsevier B.V. All rights reserved.
+
+1. Introduction
+Robots in rehabilitation can be classified as assistive and therapeutic robots. Wearable robots are mainly oriented to assist individuals in performing their activities of daily living [1], while they
+
+∗
+
+Corresponding author.
+E-mail addresses: vrajasekaran@ibecbarcelona.eu (V. Rajasekaran),
+joan.aranda@upc.edu (J. Aranda), acasals@ibecbarcelona.eu (A. Casals),
+jose.pons@csic.es (J.L. Pons).
+http://dx.doi.org/10.1016/j.robot.2014.11.014
+0921-8890/© 2014 Elsevier B.V. All rights reserved.
+
+have rarely been used as therapeutic robots. The goal of therapeutic
+robots is training and enhancing the patient capabilities affected by
+neuro-muscular deterioration, such as: chronic degenerative low
+back pain, head injury, stroke, peripheral neuropathies and cerebral palsy [2].
+Studies on human’s dynamic and static stability are widely used
+to understand the equilibrium conditions of human body balance.
+These studies have been used to implement control strategies in
+humanoids [3,4] as well as in exoskeletons [5]. To develop a realistic control hypothesis, it is essential to understand how humans
+
+V. Rajasekaran et al. / Robotics and Autonomous Systems 73 (2015) 16–23
+
+perceive balance, as well as the strategies involved in balance training. An analysis about the existing control methods in rehabilitation robots is also needed to understand the level of assistance to
+be provided. Hence, this section is divided into three subsections:
+human balance control, robot rehabilitation therapies and strategies for balance training.
+
+17
+
+Another challenge is to provide the capability to react to the human–orthosis interaction forces according to the kind of movement, flexion or extension. The next subsection discusses these
+possible actions and reactions involved in balance training scenarios.
+1.3. Strategies for balance training
+
+1.1. Human balance control
+Balance is a generic term that relies on the dynamics of body
+posture with the goal of preventing falls. A degradation of balance
+control in humans as a result of neuromusculoskeletal disorders
+is an evident fact, for instance, in patients with spinal cord injury
+or stroke. Balance training in the presence of external perturbations [6] is considered as one of the important factors in evaluating
+patient’s rehabilitation performance. Balance control can be oriented to achieve either postural or static stability (quiet standing),
+or dynamic stability in terms of walking. Many researchers have
+attempted to perturb the human balance system in a large number of ways in order to quantify the human response. Reactive responses can be studied by introducing involuntary or unexpected
+perturbations. Similarly, to emulate a proactive response of an assistive orthosis we have to deal with voluntarily initiated perturbations. Researchers normally use an inverted pendulum model to
+validate and analyze strategies for postural stability [7,8]. Thus referring to the human body, this model acts based on the variable
+COM (Center of Mass) and the center of pressure (COP). The analytic relation between COP and COM and the horizontal acceleration of COM has been studied using the inverted pendulum model
+too; i.e. COP–COM is proportional to the horizontal acceleration of
+the COM in both sagittal and frontal planes. Gage et al. [7] formally
+evaluated the performance of this model and found that it has similar characteristics to those of the human postural balance taken
+during a quiet standing posture.
+1.2. Robotic rehabilitation therapies
+Robot based rehabilitation therapies are expanding their levels of assistance. The most familiar therapeutic robot, Lokomat,
+has been widely accepted as an assistive tool for individuals with
+Spinal Cord Injury (SCI) and stroke. Lokomat uses impedance control based on a patient-adaptive gait pattern [9] by monitoring the
+measured position errors as well as the interaction forces between
+orthosis and patient. A similar approach is employed in interactive gait rehabilitation using the exoskeleton LOPES [10]. LOPES
+uses an impedance-based approach to perform a bidirectional control in accordance to the interaction between patient and robot:
+patient-in-charge and robot-in-charge. Another gait and balance
+therapy device KineAssist has been developed to provide partial
+body weight support and postural control of the torso [11]. The
+design of KineAssist provides three degrees of freedom (DoF) for
+the trunk and prevents the subjects from falling or losing balance. A force-based controller has been used in an Active leg exoskeleton (ALEX ), which executes the desired trajectory based on
+the forces applied by the user, ensuring safe and effective gait rehabilitation [12]. A 3-DoF therapeutic robot for lower limbs [13],
+Physiotherabot, is used to assist patients by continuously monitoring the feedback data (position and forces) and by switching between impedance and trajectory control. The impedance control
+of this robot manipulator works in combination with a rule-based
+scheme, consisting of impedance parameters of each joint for specific exercises.
+In this work, the main objective is to realize a similar impedance
+based approach on a wearable robot, but with no external body
+weight compensation. The lack of a body weight support system
+complicates the action of the exoskeleton in maintaining balance.
+
+Humans use multiple strategies in order to maintain their equilibrium while standing and walking [2,7]. A study conducted by
+Kuo and Zajac [14], shows the multi joint strategies involved in
+maintaining a standing posture in the presence of a constraint like
+blocking the knee movement. Winter et al. [15] demonstrated that
+the muscles controlling the sway motion along the medial/lateral
+direction apply a simple spring stiffness control that maintains balance. The motor mechanisms involved in human balance control
+have been studied and analyzed by Winter et al. [16]. They developed a spring damping balance system the stiffness of which varies
+according to the oscillations of the inverted pendulum model.
+The studies carried out on human balance and the motor strategies involved in maintaining postural stability have paved the way
+to the design of methods that ensure the right robotic ‘‘Assistanceas-needed’’. Thus, the goal of assistive robotic systems is not to
+override the human control, but to involve the user in the control
+so as to avoid slacking. Vallery et al. [17] suggested an open loop
+triggered assistive system to ensure the right robot operation acting only when a loss of equilibrium is detected. This type of open
+loop assistance avoids instability caused by the lack of synchronization between two active controllers working in combination
+(human and robot). In this case, they use a variable speed control
+moment gyroscope to reduce power and torque requirements.
+In this work, we analyze a control method that assists the patient in balance training based on previous studies performed on
+humans [2,8]. The projection of the COM (COMp ) of the body plays
+an important role in the control of human balance. The COMp helps
+to detect the loss of stability and to provide assistance to the patient only when needed. From Section 1.3, we conclude that stiffness based control approaches play an important role in balance
+control, since a variable stiffness of the joint helps to avoid slacking and an open loop system assures an actuation only when a loss
+of stability is detected.
+2. Control strategies
+Balance control strategies can be analyzed by studying the evolution of the COM and COP of the human body. The efforts required
+to maintain balance imply the training of muscle activations as
+well as the coordination of the movement, which also helps the
+patient to progress towards the walking stage. As mentioned by
+Winter et al. [2], a control strategy aiming to ensure postural stability can follow three possible strategies: Ankle, Hip and their combined actuation. These strategies should be adapted according to
+the magnitude of perturbations. The knee joint is maintained fixed
+throughout this study, but this does not mean that the knee muscles are inactive [14]. In fact, a knee interaction force is found in
+all cases, which means that the patient contributes to maintain the
+joint rigidness.
+The control strategy presented in this article is based on the assistance and resistance to be applied on the subject in accordance
+to the monitored COMp and joint movements. As explained in Section 1.1, two types of perturbations are commonly used to study
+postural stability in humans. The analysis of internal perturbations
+is used to determine the limits of stability, by requesting the user
+to bend up to their stability limits. These internal perturbations depend on the user’s movements and the human–orthosis interaction. The internal perturbation analysis thus acts as an initial stage
+
+18
+
+V. Rajasekaran et al. / Robotics and Autonomous Systems 73 (2015) 16–23
+
+Fig. 1. Schematic representation of the variable stiffness control strategy.
+
+for the posterior analysis of the effects of external perturbations,
+since the controller uses these learned limits to define a threshold
+that is used to prevent the subject from falling. In humans, the ankle and hip joint strategies vary in function of the magnitude of the
+perceived disturbance, and their combined effect varies as a result
+of the coupled action of the joints. In this study, we analyze each
+strategy individually in the presence of human–orthosis interaction.
+2.1. Ankle strategy
+A widely discussed strategy in controlling the movement or
+maintaining the posture of the body in the anterior/posterior (A/P)
+direction is the ankle-strategy. This strategy is applied in case of
+small perturbations affecting posture, due to the action of the ankle
+muscles to maintain equilibrium and can be evaluated by analyzing
+the evolution of the center of pressure in postural stability. The role
+of the ankle joint in postural stability can be studied by maintaining
+a high stiffness on the hip and knee joints of the exoskeleton. The
+stiffness of the ankle joint is varied proportionally to its distance
+to the limits of stability, which have been measured previously for
+each individual using a Wii platform.
+2.2. Hip strategy
+In humans, when the ankle strategy fails to control posture due
+to the action of high perturbations, a hip strategy responds by producing a flexion and extension movement. In this strategy, the upper body moves in the direction opposite to the movement of the
+lower part, thus changing the angular momentum. In order to make
+the patient proactive in maintaining their equilibrium, the stiffness
+of the hip joint is reduced. The flexion and extension of the hip
+movement cause a displacement of the COM, thus ensuring postural stability. In this study, the hip strategy involves the patient
+maintaining the COMp within the limits of stability based on the
+values obtained from a sensory platform. If the subject is unable
+to control its postural stability, or if the posture moves beyond the
+stability limits, the exoskeleton varies the hip joint’s stiffness, thus
+preventing the subject from proceeding further in the same direction. In this method, subjects are not allowed to move their knee
+and ankle joints and this helps in studying the individual active response of the hip to a perturbation. By maintaining the knee and
+ankle joint with high stiffness the hip joint is responsible for maintaining the postural stability, in accordance with the magnitude of
+perturbation.
+2.3. Combined strategy
+In the combined strategy only the knee joint maintains a high
+stiffness value and both the hip and ankle are controlled through a
+variable stiffness, which depends on the stability limits computed
+
+in combination with the COMp . The human–orthosis interaction
+forces are monitored to evaluate the coupled action of the joints.
+The combination of hip and ankle actions helps to face large perturbations, which may imply different recovery speeds. This method
+also helps to maintain the COMp within the limits by adequately
+coordinating the movement of the hip and ankle joints. The stiffness values of the hip and ankle joints are varied independently, in
+accordance with the movement of the subject.
+In this work, an adaptive control strategy has been developed
+to assist the patient to recover balance when a loss of stability is
+detected. A wearable exoskeleton, H1, is used to perform this study
+and a Wii platform is used to obtain the COMp and thus determine
+the stability limits in the initialization phase (see Sections 3.1 and
+3.2). The controller applies a variable stiffness to the joints of
+the exoskeleton, depending on their position in relation with the
+stability limits. The exoskeleton provides the joint angles (θact ) and
+interaction forces (Fint ) as the measured variables to monitor the
+subject’s condition, as shown in Fig. 1.
+In the hip and ankle strategies, the controller limits the stiffness parameter of either the hip or the ankle respectively. In the
+combined strategy, the controller adapts to the subject’s movement and limits the stiffness value by the effect of the hip and ankle decoupled movements. The limit of stability for every joint is
+obtained from the initial analysis using the human–orthosis interaction and the COMp .
+The controller applies a variable stiffness to the joints, which
+value depends on their positions with respect to the stability limits and it is bounded, within a predefined range Klow –Khigh . To adapt
+the therapy to the patient conditions, the therapist can define the
+limits of the free movement of the subject, previous to the robotic
+intervention, by applying a so called scaling factor (s). This scaling factor, which can be modified based on the subject’s recovery
+progress, reduces the range of movement defined by the joint stability limits, modifying the bounding area defined by Klow , Khigh and
+θact , as shown in Fig. 2. This resulting bounding area ensures stability by limiting the body movement during the external perturbation analysis. As shown in Fig. 2, a higher scaling factor defines a
+wider range of free movement and similarly, a small scaling factor
+restricts this range of free movement.
+The stiffness of a joint is defined by three intervals determined
+by the relation between the actual joint position and then resulting
+joint limits after applying the scaling factor. Its value is calculated
+as follows:
+(i) if θact > θlos , then K = Khigh
+(ii) if θact < s ∗ θlos , then K = Klow
+(iii) if s ∗ θlos < θact < θlos , then K value is given by the following
+equation:
+
+
+K = Klow +
+
+Khigh − Klow
+
+θlos − s ∗ θlos
+
+
+
+(θact − s ∗ θlos )
+
+(1)
+
+V. Rajasekaran et al. / Robotics and Autonomous Systems 73 (2015) 16–23
+
+19
+
+Fig. 2. Variation of Stiffness (K ) function depends on the defined scaling factor (s).
+
+where K is the stiffness of the joint, s is the scaling factor, θlos is
+the limit of stability, θact is the current position of the joint and,
+Klow and Khigh represent the minimum and maximum stiffness
+value of the joint respectively.
+The terms Klow and Khigh are used to limit the stiffness value of
+the joints and they are defined heuristically. Since a high stiffness
+value (>90%) would practically be a position control approach, it is
+essential to limit this high stiffness in such a way that the subject
+is able to bring himself to a stable position. Similarly a low stiffness
+value (<10%) would leave the patient completely free and this
+would not ensure any postural stability. Hence, after a series of
+experiments performed with the subjects, the values of Klow = 20%
+and Khigh = 75% have been chosen as the limits of stiffness to be
+applied to each joint to ensure stability and to prevent the orthosis
+or the patient from taking over completely. This Khigh = 75% is the
+stiffness value considered in the knee joint for the three control
+strategies. For the hip and ankle control strategies the ankle and
+hip joint stiffness is also maintained at Khigh respectively.
+3. Experimental setup
+Five healthy subjects around the age group of 25–35 (height:
+1.71 ± 0.08 m, weight: 77.5 ± 5.5 kg) were chosen for this study
+which involves both male (3) and female (2) candidates. The stability limits for all the subjects were measured individually using an
+exoskeleton. These limits determine the degree of assistance and
+resistance to be applied to each individual subject. Since the physical parameters of the subjects differed in a narrow range, their average has been taken as the limits of stability. The experimental
+architecture in this analytic study consists of two levels of control:
+high and low level control. The high level control involves a pressure sensor platform (Wii) and the monitoring of the positions and
+interaction forces of all the joints during the initialization phase. In
+the execution phase, this high level control is responsible for calculating the required stiffness value in order to obtain a desired
+behavior. The low level control, embedded in the exoskeleton controller, is responsible for applying the suitable torque to the joints
+in proportion to the position error and the input stiffness.
+3.1. Exoskeleton
+A wearable 6 DoF (degrees of freedom) lower limb exoskeleton,
+H1, has been used in this study. The exoskeleton was built in the
+framework of the Hyper* project. The exoskeleton, shown in Fig. 3,
+consists of 6 joints: hip, knee and ankle for each leg, each joint is
+powered by DC motors coupled with harmonic drive gears. Each
+joint is endowed with an encoder to measure the angles and the
+joint links contains a strain gauge to measure the human–orthosis
+interaction forces. The mechanical structure allows both active
+and passive movements along the sagittal plane. The exoskeleton
+
+Fig. 3. A healthy subject training with HYPER Exoskeleton, H1, on the Wii platform.
+
+control modes are: position or trajectory control, torque control
+and impedance control. A CAN (Controller area network) bus
+connects all the exoskeleton elements, both the low and high level
+controllers. A detailed description of the exoskeleton structure and
+other parameters involved can be found in [18,19]. In this work,
+we have used impedance control with variable stiffness in order to
+ensure a safe therapeutic experience, following a similar approach
+to that of human muscles behavior.
+3.2. Wii platform
+The Wii platform is one of the most widely known active virtual devices, which is also used to monitor the patient’s COMp in
+research. The Wii Balance board is a weighing scale that uses Bluetooth technology and contains four pressure sensors which are
+used to measure the center of balance [20]. In the present work,
+the Wii platform is used to determine the limits of stability of each
+individual during the initialization phase. The Wii platform is connected to the high level control to track the COMp values and the
+support polygon, by which the limits of stability are determined.
+In this phase, the high level control also monitors the joint angles
+and interaction forces. The former are used to detect the postural
+limits and the latter to determine whether an assistive or resistive
+action is required.
+3.3. Experimental protocol
+The two types of perturbations were applied to each subject following successively the three balance control strategies, explained
+
+20
+
+V. Rajasekaran et al. / Robotics and Autonomous Systems 73 (2015) 16–23
+Table 1
+Stability limits obtained as a result of internal perturbation.
+Strategy
+Hip
+Ankle
+Combined
+
+Fig. 4. Direction of the angles and interaction forces along with the applied impact
+torque.
+
+in Section 2, and their effects were evaluated. Internal perturbations were self-induced by the subjects, making forward and backward movements of the trunk. In the initial phase, the subjects
+were instructed to reach the maximum flexion angles of their hip
+and ankle joints, both in the case of individual and their combined
+effect, by wearing the exoskeleton. These maximum angles were
+recorded and defined as the limits of stability (θlos ) along with the
+COMp , obtained using the Wii platform. The interaction forces of
+each joint were monitored to evaluate the performance of the subject and the exoskeleton. In the execution phase, the exoskeleton
+generates the external perturbations, by applying an impact torque
+to the hip joint (10 Nm) and to the ankle joint (5 Nm) at random
+time instants ‘t’ for both the individual and combined strategies.
+The motor torque was applied in the forward direction, i.e., flexion
+in hip joint and plantar-flexion in the ankle joint, as shown in Fig. 4,
+emulating the behavior of an exertive force. The subjects were
+blinded to the time instant and amount of torque being applied,
+thus preventing them from applying any external forces in advance
+to stabilize themselves. The number of trials to be performed was
+decided using the z-test for the normally distributed data. The selected minimum sample number returned a power value of 0.9231,
+for the combined strategy and 0.8453 and 0.8893 for the ankle and
+hip strategies respectively. Hence, each subject performed three
+trials for each strategy and the time instants of torque application
+were also different for each trial. Since this study involves healthy
+subjects, the scaling factor for limiting the free movement was defined as 0.9, such as to allow a wide range of movement. The main
+goal of this analysis is to evaluate the reactive response of the
+exoskeleton and the recovery time. The reactive response of the
+exoskeleton prevented the subject from progressing beyond the
+stability limits or from falling. This response was evaluated by observing the deviation from the stable position, while maintaining
+the interaction forces within their predefined limits.
+4. Results and discussion
+The role of each strategy, as explained in the previous sections,
+is evaluated here. The internal perturbations, caused by the subject
+with the upper body motion, alter the inertial parameters between
+the different links of the body. This change in motion becomes
+evident as they produce sudden changes of COMp values, which
+in turn affects the postural stability. The measured change of interaction forces is used to evaluate the existence of perturbations
+perceived when a loss of stability is produced. Table 1 shows the
+average limit of stability obtained as a result of the internal perturbation analysis and the resulting interaction forces performed by
+the subjects.
+
+(θ los ) (deg)
+
+Limits of stability
+
+Interaction forces
+(Fint ) (N)
+
+−20 and +30
+−5 and +15
+Hip −20 and +20
+Ankle 0 and +15
+
+−10 and +10
+−5 and 20
+Hip −5 and +10
+Ankle 0 and +15
+
+The relation between angles and interaction forces in the presence of internal perturbations in the ankle and hip joints can be
+studied from Figs. 5 and 6, respectively for a specific individual and
+session. The interaction forces in the hip joint are found to be lower
+than those measured in the ankle joint. This difference in magnitude can be due to the effect of the body kinematics, as explained
+in Section 2.1, since the ankle joint applies higher forces in order to
+maintain posture, as shown in Fig. 5. The angles of the ankle joint
+are quite limited in movement, contrary to what happens in the
+hip joint, where angles have a wider range of freedom.
+The combined effect of both the hip and ankle joints acting in
+the presence of internal perturbations proves to be an efficient
+method to achieve postural stability. The interaction forces of each
+joint show that their movements complement the negative aspects
+of individual ankle and hip strategies, and this helps to maintain
+postural stability. In Fig. 7, the hip joint takes over the control when
+the ankle joint is approaching its upper limit (i.e. approx. 300 ms).
+This can be seen by the variation of the hip angles and by the shift
+of the interaction forces.
+With reference to the external perturbations, since the subjects
+did not know the instant at which the impact torques were applied, they produced an unstable movement. The exoskeleton detects the loss of stability and reacts when necessary. The squared
+region in Figs. 8–10 indicates the onset of torque application on
+the joint and the recovery time period. The recovery time for each
+joint varies depending on the perturbation and also on the subject’s movement. In order to explain the context of recovery period
+and onset of the applied perturbations, one such trial of a subject is
+presented in which the perturbation was applied. The trajectory of
+the ankle strategy, in Fig. 8, demonstrates an unstable movement
+(1100–1400 ms) which is a response to the perturbation applied at
+time 1100 ms. The recovery stage appears after 200 ms which prevents the subject from losing stability by increasing stiffness. As explained in the previous sections, the ankle joint is suitable only for
+small perturbations and this is evident from the big oscillations resulting from the ankle joint trajectories. The measured interaction
+forces are in a similar range for both the internal and external perturbation analysis, which indicates the response of the ankle joint
+for the applied impact torque. Fig. 9 shows the hip trajectory movement in the presence of the applied external perturbation at instant
+3900 ms. The reactive response of the exoskeleton prevented the
+subject from reaching their stability limits and the recovery time
+for this subject was found to be 125 ms. The average recovery time
+in the ankle strategy was found to be 250 ms (σ = 6.2), whereas
+the hip joint was able to stabilize itself in a shorter time, 150 ms
+(σ = 4.08).
+In the combined strategy, the hip and ankle joints are perturbed at the same time (400 ms). Since both hip and ankle
+are in action, the combined effect helps to recover the postural stability. In Fig. 10, the behavior of the interaction forces
+at 500 ms shows big oscillations in the ankle joint due to
+impact torque, whereas the hip joint performs with limited
+oscillations. After the series of experiments performed, the recovery time is found to be shorter when using a combined strategy (approx. 150–200 ms), thus being able to ensure a better
+
+V. Rajasekaran et al. / Robotics and Autonomous Systems 73 (2015) 16–23
+
+21
+
+Fig. 5. Ankle strategy: angles (deg) and interaction forces (N) of the ankle joint in the presence of internal perturbations.
+
+Fig. 6. Hip strategy: angles (deg) and interaction forces (N) of the hip joint in the presence of internal perturbations.
+
+Fig. 7. Combined strategy: angles (deg) and interaction forces (N) of the hip and the ankle joints in presence of internal perturbations. The flexion movement of the hip
+joint is observed when the ankle joint reaches its limit (approx. 250 ms) followed by the limited movement in the ankle.
+
+postural stability. The exoskeleton is able to regulate the stiffness
+of the joints in accordance with the learned stability limits. From
+the joint limits attained for each strategy, as shown in Table 2, it
+is evident that the proposed joint stiffness control of the orthosis
+
+prevents the patient from surpassing the stability limits (shown
+in Table 1), thus ensuring postural stability. In comparison with
+Table 1, it is noticeable that the interaction forces obtained from
+the combined strategy are in a similar range. This ensures that no
+
+22
+
+V. Rajasekaran et al. / Robotics and Autonomous Systems 73 (2015) 16–23
+
+Fig. 8. Ankle strategy: angles (deg) and interaction forces (N) of the ankle joint in the presence of an external perturbation. An impact torque of 5 Nm is applied in the ankle
+joint at 100 ms and the exoskeleton assists the subject by not surpassing the limit.
+
+Fig. 9. Hip strategy: angles (deg) and interaction forces (N) of the hip joint in the presence of an external perturbation. At 3900 ms, an impact torque of 10 Nm is applied in
+the hip joint. The recovery time for this subject is found to be 125 ms, indicating the onset of stabilization.
+
+Fig. 10. Combined strategy: angles (deg) and interaction forces (N) of the hip and ankle joints in the presence of an external perturbation during the same experiment. At
+400 ms, an impact torque is applied on both the hip (10 Nm) and ankle (5 Nm) joints. The flexion/extension movement of the hip joint in combination with the ankle flexion
+contributes to the stabilization at 700 ms.
+
+V. Rajasekaran et al. / Robotics and Autonomous Systems 73 (2015) 16–23
+Table 2
+Position and interaction forces obtained after external perturbation.
+Strategy
+
+Joint angles
+(θ act ) (deg)
+
+Interaction forces
+Fint (N)
+
+Hip
+Ankle
+
+−15 and +25
+0 and +15
+Hip −5 and +20
+Ankle 0 and +10
+
+−5 and +10
+−10 and 10
+Hip −5 and+10
+Ankle −10 and +15
+
+Combined
+
+extra efforts are required from the human to maintain postural
+stability. This comparison demonstrates the adaptation of the exoskeleton and the assistance provided by the same.
+5. Conclusions
+Postural balance control is a common rehabilitation therapy for
+which the use of an exoskeleton offers high benefits. This therapy
+focuses on moving the ankle or hip separately, fixing the rest of
+the joints. By using an exoskeleton, we can select to act on any
+joint individually or in a combined way. The goal of this work was
+to compare the performance of the orthosis with three different
+balance control strategies: ankle, hip or combined. The obtained
+results showed that the reactive responses of the exoskeleton and
+the recovery time can guarantee stability.
+The results demonstrate that the combined action of ankle and
+hip that humans do for posture stabilization can be also applied to
+an assistive exoskeleton. This strategy can be applied to deal with
+any kind of perturbation irrespective of its effect on individual or
+combined joint actions. The evaluation of the strategy takes into
+account the interaction forces between the orthosis and the subject. The assistance is provided with a decoupled control mode in
+order to ensure stability throughout the therapy by acting on both
+hip and ankle. The interaction forces are smaller in the case of the
+combined effect and this is due to the coupling effect of the hip and
+ankle joints. A reduction in the interaction forces also shows a reduction in recovery time. Future works will address the evaluation
+of real therapies on individuals with spinal cord injury or stroke.
+Acknowledgments
+This work was supported by the project HYPER (Hybrid Neuroprosthetic and Neurorobotic devices for functional compensation and rehabilitation of motor disorders), Grant CSD2009-00067
+CONSOLIDER INGENIO 2010 from MINECO (Spanish Ministry for
+Science and Education).
+References
+[1] J.L. Pons, R. Ceres, L. Calderon, Introduction to wearable robotics, in: Wearable
+Robotics — Biomechatronic Exoskeletons, John Wiley & Sons, Ltd., 2008,
+pp. 1–16.
+[2] D.A. Winter, Human balance and posture control during standing and walking,
+Gait & Posture 3 (1995) 193–214.
+[3] C. Azevedo, P. Poignet, B. Espiau, Artificial locomotion control: from human to
+robots, Robot. Auton. Syst. 47 (4) (2004) 203–223.
+[4] H. Hauser, G. Neumann, A.J. Ijspeert, W. Maass, Biologically inspired kinematic
+synergies provide a new paradigm for balance control of humanoid robots, in:
+7th IEEE-RAS International Conference on Humanoid Robots, Pittsburgh, PA,
+2007.
+[5] A. Forner-Cordero, J.L. Pons, M. Wisse, Basis for bioinspiration and
+biomimetism in wearable robots, in: Wearable Robots — Biomechatronic
+Exoskeletons, John Wiley & Sons, Ltd., 2008, pp. 17–45.
+[6] F.B. Horak, S.M. Henry, A. Shumway-Cook, Postural perturbations: new
+insights for treatment of balance disorders, Phys. Ther. 77 (5) (1997) 517–533.
+[7] W.H. Gage, D.A. Winter, J.S. Frank, Kinematic and kinetic validity of the
+inverted pendulum model in quiet standing, Gait & Posture 19 (2004)
+124–132.
+[8] D.A. Winter, F. Prince, A. Patla, Validity of the inverted pendulum model of
+balance in quiet standing, Gait & Posture 5 (1997) 153–154.
+[9] S. Jezernik, G. Colombo, M. Morari, Automatic gait-pattern adaptation
+algorithms for rehabilitation with a 4-dof robotic orthosis, IEEE Trans. Robot.
+Autom. 20 (3) (2004) 574–582.
+
+23
+
+[10] J. Veneman, R. Kruidhof, E.E. Hekman, R. Ekkelenkamp, E.H. Van Asseldonk,
+H. van der Kooij, Design and evaluation of the LOPES exoskeleton robot for
+interactive gait rehabilitation, IEEE Trans. Neural Syst. Rehabil. Eng. (2007)
+379–386.
+[11] J. Patton, D.A. Brown, M. Peshkin, J.J. Santos-Munné, A. Makhlin, E. Lewis,
+J.E. Colgate, D. Schwandt, KineAssist: design and development of a robotic
+overground gait and balance therapy device, Top. Stroke Rehabil. (2008)
+131–139.
+[12] S.K. Banala, S.K. Agrawal, J.P. Scholz, Active leg exoskeleton (ALEX) for
+gait rehabilitation of motor-impaired patients, in: IEEE 10th International
+Conference on Rehabilitation Robotics, Noordwlijk, Netherlands, 2007.
+[13] A. Erhan, M.A. Adli, The design and control of a therapeutic exercise robot for
+lower limb rehabilitation: physiotherabot, Mechatronics (2011) 509–522.
+[14] A.D. Kuo, F.E. Zajac, Human standing posture: multi-joint movement strategies
+based on biomechanical constraints, Prog. Brain Res. 97 (1993) 349–358.
+[15] D.A. Winter, A. Patla, F. Prince, Stiffness control of balance during quiet
+standing, Gait & Posture 5 (1997) 154–155.
+[16] D.A. Winter, A.E. Patla, M. Ishac, W.H. Gage, Motor mechanisms of balance
+during quiet standing, J. Electromyography Kinesiol. 13 (2003) 49–56.
+[17] H. Vallery, A. Bögel, C. O’Brien, D. Li, R. Riener, Robotic assistance for human
+balance, in: Proceedings of the Dynamic Walking Conference, Florida, 2012.
+[18] M. Bortole, A.J. Del-Ama, E. Rocon, J.C. Moreno, F. Brunetti, J.L. Pons, A
+robotic exoskeleton for overground gait rehabilitation, in: IEEE International
+Conference on Robotics and Automation, Karlsruhe, Germany, 2013.
+[19] M. Bortole, J.L. Pons, Development of an exoskeleton for lower limb rehabilitation, in: Converging Clinical and Engineering Research on Neurorehabilitation,
+Springer, 2013, pp. 85–90.
+[20] R.A. Clark, A.L. Bryant, Y. Pua, P. McCrory, K. Bennell, M. Hunt, Validity and
+reliability of the Nintendo Wii Balance Board for assessment of standing
+balance, Gait & Posture 31 (3) (2010) 307–310.
+
+Vijaykumar Rajasekaran received Master’s degree in
+Robotics and Control from the Ecole Centrale de Nantes,
+France and Warsaw University of Technology, Poland in
+2010. He is currently pursuing Doctorate in Biomedical
+Engineering in the Universitat Politéchnica de Catalunya,
+Spain and also associated with the Robotics group of
+Institute for Bioengineering of Catalunya (IBEC), Barcelona
+as a Research assistant. His research interests are in the
+scope of human movement science, control strategies for
+gait analysis in rehabilitation robots and bipeds.
+
+Joan Aranda is a Senior Researcher at IBEC and Associate
+Professor at UPC, with specialization in Computer Science
+& Engineering at the graduate level (UPC 1989) and Image
+Processing, Computer Vision and Robotics at Master and
+Ph.D. level (UPC 1997). His research focuses on 3D visual
+sensing, object tracking, vision based robot control and human–robot interaction, mainly in industrial and medical
+applications. He is the author of more than 80 publications
+in these areas. He has participated in several national and
+European RDT projects, now heading InHANDS: Interactive robotics for Human Assistance in Domestic Scenarios.
+He has been involved in some organizing and program committees of national and
+international conferences, having been Financial Chair of IEEE ICRA 2005, and Publication Chair of WCCI 2010.
+
+Alicia Casals is a professor at the Universitat Politècnica
+de Catalunya (UPC), and group leader of Robotics at
+the Institute for Bioengineering of Catalonia (IBEC). Her
+research is oriented to improve human–robot interaction
+through multimodal perception, focused mainly in the
+area of medical robotics. In this field she is working both in
+rehabilitation, assistance and surgical applications, having
+all in common the need of the robot to adapt to the user’s
+intention and the context. She is currently leading several
+projects in these fields. Her background is in Electrical and
+Electronic Engineering and Ph.D. in Computer Vision.
+Jose L. Pons is with CSIC since 1993 and has actively participated in a number of National, European and International
+RTD projects in the area of rehabilitation robotics, new actuators and control technologies. In particular, he was a coordinator of EU GAIT, EU MANUS and EU ESBiRRo projects.
+In addition, he is currently coordinating several national
+scope and European projects, e.g. EU NeuroTREMOR, EU
+Biomot and HYPER. His research interests span the development and application of novel technologies in the field
+of neurorehabilitation of motor conditions of neurological
+origin, and in particular Rehabilitation Robotics and Neuroprosthetics founded on the understanding of neurophysiological mechanisms underlying motor control in humans.
+
+

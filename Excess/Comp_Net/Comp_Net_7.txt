@@ -1,0 +1,1416 @@
+Computer Networks 91 (2015) 57–67
+
+Contents lists available at ScienceDirect
+
+Computer Networks
+journal homepage: www.elsevier.com/locate/comnet
+
+Investigation on MDP-based radio access technology selection
+in heterogeneous wireless networks
+Elissar Khloussy a,∗, Xavier Gelabert b, Yuming Jiang a
+a
+b
+
+Norwegian University of Science and Technology, Trondheim, Norway
+Huawei Technologies Sweden AB, Kista 16440, Sweden
+
+a r t i c l e
+
+i n f o
+
+Article history:
+Received 6 November 2014
+Revised 6 July 2015
+Accepted 17 August 2015
+Available online 24 August 2015
+Keywords:
+Radio access technology (RAT) selection
+Markov Decision Processes (MDPs)
+Heterogeneous wireless networks
+Poisson Point Process
+
+a b s t r a c t
+The new generation of wireless networks is characterized by heterogeneity i.e. the coexistence
+of two or more radio access technologies (RAT) in the same geographical area. While this
+coexistence of RATs offers various advantages, it also imposes many challenges for the network
+operator, whose aim is to maximize the generated revenue while satisfying the customers’
+increasing demands. One important mechanism in heterogeneous wireless networks (HWN)
+is the RAT selection. It is normally triggered when a new call arrives, and provides the decision
+on whether the call can be admitted or not, and by which RAT it has to be served. Different
+approaches can be used to tackle the problem of RAT selection in HWNs. In this paper, we
+study Markov Decision Process (MDP)-based RAT selection in a cellular/WLAN heterogeneous
+network where the maximization of the revenue is considered as objective. An optimal RAT
+selection policy is therefore derived. The performance of the optimal scheme is evaluated in
+comparison with two other policies, namely Cellular-First policy and Load Balancing policy.
+© 2015 Elsevier B.V. All rights reserved.
+
+1. Introduction
+The new generation of wireless networks is characterized
+by heterogeneity where two or more radio access technologies (RATs) coexist in the same geographical area. The coexisting RATs may have different, but often complementary
+characteristics in terms of coverage, latency and link capacity. This trend of multiplicity of RATs is also expected to be
+dominating in the future for the many advantages it offers.
+These advantages include, among others, multiple connectivity options, and an expansion of the coverage at a relatively
+low structure cost [1]. However, this imposes additional challenges for the operator especially in ﬁnding means of coordination among the coexisting RATs.
+Getting full advantage of the combined features of the
+deployed RATs is crucial for the network operator. On one
+∗
+
+Corresponding author. Tel.: +4745676511.
+E-mail addresses: khloussy@item.ntnu.no (E. Khloussy), xavier.gelabert@
+huawei.com (X. Gelabert), jiang@item.ntnu.no (Y. Jiang).
+http://dx.doi.org/10.1016/j.comnet.2015.08.005
+1389-1286/© 2015 Elsevier B.V. All rights reserved.
+
+hand, this can be explained by the fast increase of demands
+from users with high Quality of Service (QoS) requirements,
+coupled with the proliferation of bandwidth-hungry applications widely available on smart phones, and electronic devices. On the other hand, the wireless resources are very
+scarce as compared to the growing demands. Therefore, the
+operator has interest in making the best utilization of all
+available resources to increase the capacity of the network
+and meet, as much as possible, the users’ expectations and
+demands.
+Heterogeneous wireless networks (HWNs) provide many
+opportunities for capacity improvement. Considering the
+case of a cellular/WLAN overlay network, WLAN can play
+an important role in alleviating some of the problems encountered by the cellular network in terms of congestion and coverage (WLAN oﬄoading [2]). By deploying access points (APs) in speciﬁc targeted areas such as cell
+edges, and hotspots, considerable amount of traﬃc can
+be carried by the WLAN [3], thus increasing the network
+capacity.
+
+58
+
+E. Khloussy et al. / Computer Networks 91 (2015) 57–67
+
+Cellular and WLAN have complementary characteristics.
+On one hand, broadband cellular networks such as 3GPP Long
+Term Evolution (LTE) can implement quite complex resource
+management schemes, more eﬃcient QoS and wider coverage than WLAN. On the other hand, WLAN is characterized
+by its cheap deployment and access costs, small coverage and
+limited QoS guarantees. A network operator can, through an
+eﬃcient management of the joint pool of resources of both
+RATs, take advantage of their combined features to increase
+the overall system performance and consequently generate
+higher proﬁt.
+Managing resources in HWNs involves setting up policies
+that regulate the amount and type of traﬃc served by each of
+the RATs. These regulations may vary depending on whether
+the adopted scheme is user-centric or operator-centric. For
+instance, considering the user’s perspective, the objective is
+usually to guarantee the best achievable QoS such as low delay and blocking probabilities or high throughput. The operator, however, would be more interested in maximizing the
+network’s capacity in order to accommodate the maximum
+number of users and increase the generated revenue.
+A well known key mechanism for resource management
+in HWNs scenarios is RAT selection. It consists of taking a decision, at each arrival of a new call request, on whether to
+accept this call or not, and the RAT to which it can be admitted. A well-designed RAT selection policy allows a better assignment of the traﬃc to the available access networks, increasing the number of sessions that the system can
+accommodate.
+Different approaches can be used to tackle the RAT selection problem in HWNs. In the present work, we investigate
+Markov Decision Process (MDP)-based RAT selection with
+the objective of maximizing the operator’s revenue. Different user proﬁles with their respective QoS requirements and
+charged prices are considered, and a preferential treatment is
+provided to the proﬁle that is charged higher fees. Moreover,
+the spatial distribution of the base stations (BSs) and APs (for
+the cellular and WLAN respectively), and that of the users in
+the HWN are taken into account in modeling the traﬃc.
+The main contributions of this paper can be summarized
+as follows:
+(1) Investigation of the MDP-based approach for RAT
+selection, with focus on revenue maximization as
+objective.
+(2) Considering the operator’s policy of granting different
+levels of priority to the different classes of service, the
+reﬂection of this policy by tuning the parameters of
+the MDP model is discussed.
+(3) The coverage probability of WLAN is analytically modeled with the help of Poisson Point Process (PPP).
+(4) The spatial distribution of the users is also captured
+with PPP.
+(5) Evaluation of the performance of the MDP-based RAT
+selection with comparison to two other static RAT selection schemes.
+(6) Highlight on the role of WLAN in traﬃc oﬄoading and
+improving the perceived QoS.
+The remaining of the paper consists of the following
+parts: Section 2 presents the motivation and related work
+in the literature. Section 3 describes the system model. In
+
+Section 4, the components of the MDP problem are presented. Section 5 discusses the revenue maximization problem. Section 6 presents and analyzes the obtained results. Finally, we conclude this study in Section 7.
+2. Motivation and related work
+Broadband cellular networks, despite their great
+promises, might not be able to fulﬁll the expected increase in demands of data traﬃc in the near future [4]. This
+incites the network operators to be in perpetual search for
+solutions that alleviate the problem of increasing traﬃc load,
+and WLAN has been considered as one appealing candidate
+to complement the cellular network. For example, WiFi
+oﬄoading is of great importance for the different advantages
+it provides, namely the usage of unlicensed spectrum, being
+a well-established technology, and more importantly all new
+smart phones, and electronic devices planned for 4G have
+the features of WiFi radio embedded, a trend that is likely to
+continue for 5G as well.
+In order for the network operator to beneﬁt from the
+WLAN capacity to alleviate the load on cellular network, a
+strategy for the distribution of traﬃc among the two RATs is
+needed. This can be partly realized through the implementation of an eﬃcient RAT selection mechanism. While different
+approaches can be used in dealing with RAT selection problem, MDP is a good candidate for this optimization owing to
+its appealing properties.
+MDP can be deﬁned as a Markov chain with the addition
+of an action model and a performance criterion. It has been
+widely applied in various areas such as ecology, economics,
+and network routing [5]. In the case of RAT selection problems, MDP is also an intuitive stochastic control approach.
+Even though MDP suffers from a dimensionality problem
+when the number of states in the MDP is increased to represent a large number of connections, some approaches have
+been suggested in the literature (such as in [6]) where approximation solutions are provided. One other example can
+be found in [7] where a reduced dimension MDP-based call
+admission control scheme has been proposed. The results in
+[7] show a great reduction in the complexity of the original
+MDP model, making it practical and cost-effective for implementation in HWNs. We believe, with such solutions, the effectiveness and the promising results of MDP-based schemes
+can be exploited by the network operators. Nevertheless, in
+this paper, our focus is on investigating the effectiveness of
+using MDP to maximize revenue generation in HWNs. For
+this reason, we shall only consider the original MDP, leaving
+its simpliﬁcation to future study.
+In the literature, several RAT selection policies have been
+proposed. In [5], a threshold-based framework for call admission control has been provided and different objective
+functions have been proposed and investigated. In [8], the
+authors proposed a heuristic RAT selection scheme in colocated wireless networks which aims to enhance the user’s
+QoS in terms of minimizing the call blocking probability. In
+[17], a stochastic process algebra is used to build a framework for network selection strategies in 3G-WLAN networks. Different strategies are evaluated, namely general
+non-deterministic strategies (random strategy and relative
+received signal strength (RRSS)-based strategy), WLAN-ﬁrst
+
+E. Khloussy et al. / Computer Networks 91 (2015) 57–67
+
+59
+
+and service-based. The considered performance measures
+(average throughput, handover rates and RAT blocking probability) which aim to compare the performance of the different schemes, take into account the user’s and the network
+operator’s perspectives. However, no speciﬁc objective function is considered. Few RAT selection schemes have been proposed with the aim of maximizing the operator’s revenue
+such as [9,10]. However, the adopted pricing scheme is not
+taken into consideration. Pricing is a very important factor,
+and has a direct impact on the network’s generated revenue.
+An important aspect in cellular/WLAN HWNs scenarios is
+the spatial distribution of BSs, APs and users. Some of the
+proposed RAT selection schemes in the literature took the
+users and BSs’ distribution into account such as [11,12]. However this has been done through a decomposition of the cell
+into rings and sectors, and by considering users belonging
+to the same zone to be having the same geometrical property. None of the mentioned work has included an analytical
+model for the spatial distribution of the APs and the users.
+
+and tractable model for HWNs, by offering a statistical modeling for the spatial distribution of users and base stations
+of each tier. In fact, PPP model has been used extensively
+for modeling unplanned networks [14] which is typically the
+case of WLAN APs’ deployment. In our considered scenario,
+the different aspects of the PPP model can be described as
+follows:
+
+3. System model
+
+3.2.1. Coverage probability
+The cellular system has global coverage i.e. all users in the
+considered HWN fall under the coverage of the cellular RAT.
+Therefore, the coverage probability of cellular is Pc,1 = 1.
+As for the coverage probability of WLAN, it can be derived
+with the help of PPP as follows. First, we assume that each
+AP covers a circular area of known radius R, i.e. the transmission of each AP can be received clearly by users residing at a distance not exceeding R. Second, the interference
+from neighboring APs is considered negligible. Hence, a typical user is said to be under the coverage of WLAN if the distance r separating this user from the nearest AP is less than R.
+Therefore, the probability that a user is under WLAN coverage is equivalent to the cumulative distribution function of r,
+namely P[r < R]. Without loss of generality, we consider that
+the typical user is located at the origin of the plane under
+consideration [14]. Then, knowing that the null probability of
+a 2D Poisson process in an area Z is exp( − λZ ) [15], we can
+derive the coverage probability of the WLAN Pc, 2 as follows:
+
+3.1. Network architecture
+We consider the case of a cellular/WLAN overlay network
+such as, for example, in [13]. A typical example that can be
+met nowadays is an LTE/WiFi HWN. The traﬃc arrivals to the
+different base stations are independently distributed. Hence,
+and without loss of generality, we can shift our focus to a single cell Ctarg that corresponds to the coverage area of one cellular BS. The cellular RAT has global coverage, overlaying the
+WLAN i.e. within the coverage of the considered BS there exist one or more WLAN AP(s).
+In the studied system, we consider two user proﬁles or
+classes, namely class 1 and class 2 with different priority levels. Class 1 traﬃc, which is charged higher price, is granted
+higher priority. It targets mainly the business sector’ users
+who have strict requirements on QoS, and are less sensitive
+to the charged prices. Class 2 traﬃc has normal priority and
+targets individual users who prefer to pay low monthly fees
+and can tolerate some degradation of their perceived QoS. All
+users belonging to the same proﬁle are charged identically.
+The role of the MDP-based RAT selection scheme is to
+ﬁnd the optimal distribution of the traﬃc among the existing RATs which leads to the maximization of the objective
+function (the revenue in our case).
+3.2. Spatial distribution
+Because of the overlay nature of our studied HWN scenario, a connection request might occur either in an area that
+is covered by the cellular RAT only, or in a dual coverage area.
+In the latter case, the call can be admitted to the cellular or
+the WLAN depending on the decision provided by the RAT
+selection policy. Here arises the need of getting knowledge
+regarding the spatial distribution of the three players in this
+scenario, namely the BSs, APs, and the users. The considered
+network architecture can be seen as a 2-tier heterogeneous
+network, where tier-1 is the cellular and tier-2 is the WLAN
+RAT. A spatial point process, such as PPP provides a concise
+
+• The positions of BSs/APs belonging to tier-k are modeled
+according to a homogeneous PPP φ (k) with intensity λ(k) ,
+where λ(k) is deﬁned as the number of BSs/APs per area
+unit, and k ∈ {1, 2} with k = 1 refers to the cellular RAT
+and k = 2 refers to the WLAN.
+• Users are also scattered in the plane according to an homogeneous PPP φ (u) with intensity λ(u) users per area
+unit, independently of φ (k) .
+Through PPP modeling, different metrics can be captured.
+In the following, we derive (1) the probability for a user to be
+under tier-k’s coverage, and (2) the traﬃc arrival rates.
+
+(2) R2
+
+P[r > R] = P[φ (2) ∩ b(0, R) = 0] = e−π λ
+
+(1)
+
+where b(0, R) is the Euclidean ball of radius R centered at origin. Hence, the coverage probability of tier-2 is given by:
+(2) R2
+
+Pc,2 = P[r < R] = 1 − P[r > R] = 1 − e−π λ
+
+(2)
+
+3.2.2. Traﬃc arrivals and holding times
+Having two user proﬁles generating traﬃc to the system,
+we deﬁne ψ as the ratio of class 2 users to the total number
+of users, and (1 − ψ) that of class 1 users to the total number
+of users residing in the system. And with the assumption that
+users of class i, i ∈ {1, 2} generate traﬃc following a Poisson
+distribution with average σ i calls/s, the traﬃc arrival rates λ1
+and λ2 of classes 1 and 2 respectively can be easily derived as
+follows:
+
+λ1 = σ1 (1 − ψ)λ(u) |Ctarg | arrivals/s
+
+(3)
+
+λ2 = σ2 ψλ(u) |Ctarg | arrivals/s
+
+(4)
+
+where |Ctarg | is the area of the targeted cell Ctarg (in area unit).
+
+60
+
+E. Khloussy et al. / Computer Networks 91 (2015) 57–67
+
+As for the call holding time for class i, traﬃc of both
+classes is assumed to be inelastic, i.e. the average duration of
+the service is independent of the allocated number of channels, and following exponential distribution with mean 1/μi ,
+i ∈ {1, 2}.
+4. Markov Decision Process formulation
+An MDP model is provided to derive the optimal RAT selection policy which maximizes our objective function. This
+model can be uniquely identiﬁed by ﬁve components: the
+state space, decision epochs, action space, state dynamics
+and the reward function. We deﬁne each of these components in the following sections.
+4.1. State space
+The state space represents the number of ongoing sessions in the HWN i.e. the number of class 1 sessions being
+served in the cellular RAT, number of class 1 sessions being
+served in the WLAN, and similarly, number of class 2 sessions being served in cellular and those in WLAN. For ease
+of representation in MDP, we model the problem with one
+particular AP in WLAN that we call the targeted AP. Hence,
+a 4D-MDP serves to build our model. On the other hand, we
+assume a ﬁxed total capacity for both RATs, each being partitioned into a ﬁxed number of basic bandwidth units (bbu) as
+in, e.g. [13,16,18]. This implies that a limited number of sessions can be served simultaneously by each RAT. The total
+capacities of the cellular and the WLAN RATs can be deﬁned
+as integers that we denote by C1 and C2 , respectively. Any
+new arriving call that cannot be granted its required amount
+of bbu is blocked. Thus, by restricting the number of ongoing connections in the system, the delivered QoS to different
+connections can be maintained at a certain target level. Considering that each session of class i requires bi bbu, we can
+deﬁne the following row vectors:
+• state vector of the cellular RAT: s1 = [n1,1 , n1,2 ] ∈ Z2+
+• state vector of the WLAN RAT: s2 = [n2,1 , n2,2 ] ∈ Z2+
+• state vector of the system: s = [s1 , s2 ] = [n1,1 , n1,2 , n2,1 ,
+n2,2 ]
+where nj, i denotes the number of sessions of class i in RAT j,
+and Z+ represents the set of non-negative integer numbers.
+Hence, the state space S of the system, which is the set of all
+feasible states where the QoS conditions in both RATs are not
+violated, becomes:
+
+S = s = [s1 , s2 ] = [n1,1 , n1,2 , n2,1 , n2,2 ] ∈ Z4+ ,
+n1,1 · b1 + n1,2 · b2 ≤ C1 , n2,1 · b1 + n2,2 · b2 ≤ C2 }
+
+(5)
+
+4.2. Decision epochs and actions
+At each arrival of a class i session request, i ∈ {1, 2}, the
+RAT selection policy makes a decision on the admission of
+the new session. A decision epoch occurs at each new session
+request. It is deﬁned as the time following immediately an
+arrival event. As for the events of call completion, they do
+not require any decision to be taken by the system.
+The action taken following each decision epoch can be deﬁned as a vector a = [a1 , a2 ] where ai denotes the action resulting from the arrival of a class i session. A decision can be
+
+either to admit the arriving session to cellular RAT, admit it
+to WLAN or block it. ai can be deﬁned as follows:
+
+ai =
+
+⎧
+⎨−1, if the session is admitted to cellular,
+⎩
+
+1, if the session is admitted to WLAN,
+0,
+
+if the session is blocked.
+
+The action space of the MDP is deﬁned as the set of vectors
+a as follows:
+
+A = {a = [a1 , a2 ], a1 ∈ {−1, 0, 1}, a2 ∈ {−1, 0, 1}}
+
+(6)
+
+However, for a given state s ∈ S, the decision should always lead to a state s that is also in S. Moreover, when
+the system is in state (0,0,0,0), the action (0,0) should be
+avoided in order for the system to keep evolving. Hence,
+for a given state s = [n1,1 , n1,2 , n2,1 , n2,2 ] ∈ S, the state action
+space As ⊂ A is given by:
+
+As = a ∈ A : ai = −1 if [s1 + eui , s2 ] ∈
+/ S,
+ai = 1 if [s1 , s2 + eui ] ∈
+/ S,
+/ S and [s1 , s2 + eui ] ∈
+/ S,
+ai = 0 if [s1 + eui , s2 ] ∈
+a = (0, 0) if s = (0, 0, 0, 0)
+
+(7)
+
+where eui ∈ {0, 1}I is a row vector of zeros except for the ith
+element which is equal to 1, (I being the number of traﬃc
+classes, I = 2). s1 + eui corresponds to an increase of the sessions of the ith class by 1 in the cellular RAT. s2 + eui corresponds to an increase of the sessions of the ith class by 1 in
+the WLAN. The admission of a class 1 session, to either cellular RAT or WLAN, might involve the vertical handover of
+one or more class 2 sessions. This handover can be performed
+from cellular to WLAN or vice versa.
+
+4.3. State dynamics
+The state dynamics of the MDP are deﬁned by two parameters, namely the expected sojourn time and the transition
+probabilities.
+
+4.3.1. Expected sojourn time
+The sojourn time τ (s, a) is deﬁned as the expected time
+for the system to stay in state s ∈ S given that action a
+∈ As is chosen, until a new state is entered. The sojourn
+time is used to compute the transition probabilities for a
+continuous-time MDP, and its value can be expressed [5,9] as
+follows:
+
+τ (s, a) =
+
+2
+
+i=1
+
+λi |ai | +
+
+2
+
+2
+
+−1
+
+n j,i μi
+
+(8)
+
+i=1 j=1
+
+where λi is the arrival rate for class i traﬃc, i ∈ {1, 2}, deﬁned
+by (3) and (4) for i = 1 and i = 2 respectively, and 1/μi is the
+mean value of the call holding time of class i.
+
+4.3.2. Transition probabilities
+Let Pss (a) denote the transition probability from state s =
+[s1 , s2 ] ∈ S to state s ∈ S, s = s , provided that action a ∈ As is
+
+E. Khloussy et al. / Computer Networks 91 (2015) 57–67
+
+61
+
+Fig. 1. RAT selection module.
+
+chosen. Pss (a) can thus be written as:
+
+Pss (a)
+
+=
+
+⎧
+λ1 δ( − a1 )τ (s, a),
+⎪
+⎪λ δ( − a )τ (s, a)h,
+⎪
+1
+1
+⎪
+⎪
+⎪
+⎪
+⎪
+⎪
+⎪λ2 δ( − a2 )τ (s, a),
+⎪
+⎪
+∗
+⎪
+λ1 Pc,2
+δ(a1 )τ (s, a),
+⎪
+⎪
+⎪
+∗
+⎨λ1 Pc,2
+δ(a1 )τ (s, a)h,
+⎪
+∗
+⎪
+λ2 Pc,2
+δ(a2 )τ (s, a),
+⎪
+⎪
+⎪
+μ
+n
+⎪
+1 1,1 τ (s, a),
+⎪
+⎪
+⎪
+μ2 n1,2 τ (s, a),
+⎪
+⎪
+⎪
+μ1 n2,1 τ (s, a),
+⎪
+⎪
+⎪
+⎪
+⎩μ2 n2,2 τ (s, a),
+0,
+
+if s = [s1 + eu1 , s2 ],
+if s = [s1 + eu1 − nh,2 · eu2 , s2
++nh,2 · eu2 ],
+if s = [s1 + eu2 , s2 ],
+if s = [s1 , s2 + eu1 ],
+if s = [s1 + nh,2 · eu2 , s2 + eu1
+(9)
+−nh,2 · eu2 ],
+if s = [s1 , s2 + eu2 ],
+if s = [s1 − eu1 , s2 ],
+if s = [s1 − eu2 , s2 ],
+if s = [s1 , s2 − eu1 ],
+if s = [s1 , s2 − eu2 ],
+otherwise,
+
+∗ is the probability of coverage of the targeted AP:
+where Pc,2
+∗ =
+Pc,2
+
+Pc,2
+
+|Ctarg |λ(2)
+
+, nh, 2 represents the number of class 2 ses-
+
+sions that were handed off from one RAT to another to free
+resources for the newly admitted class 1 session, 0 ≤ nh,2 ≤
+b1
+,
+b2
+
+h is a variable that takes 1 as value if a vertical handover
+
+was performed, and 0 otherwise, and δ (x) is a function deﬁned as:
+
+0, if x ≤ 0
+1, if x > 0
+
+5. Pricing scheme and revenue maximization problem
+
+4.4. Policy and reward function
+For each state s = [s1 , s2 ] ∈ S, an action a ∈ As is chosen
+is a set of admissible
+according to a policy π s ∈ , where
+policies deﬁned as:
+
+= {π : S → A|πs ∈ As , ∀s ∈ S}
+
+(10)
+
+The reward function for choosing action a ∈ As , when the
+system is in state s ∈ S can be deﬁned as follows:
+
+r(s, a) = w1,1 · δ( − a1 ) − kc,w · nh,2 · h
++w2,1 · δ(a1 ) − kw,c · nh,2 · h
++w1,2 · δ( − a2 ) + w2,2 · δ(a2 )
+
+where w j,i ∈ R+ is the weight associated with the admission of a class i session into RAT j, R+ being the set of nonnegative real numbers, kc, w is the cost associated for handing off a class 2 session from the cellular network to WLAN,
+and kw, c is the cost associated for handing off a class 2 session from WLAN to the cellular network. The ﬁrst two lines
+in (11) show that the gain obtained from the admission of a
+class 1 session to the cellular network (resp. WLAN) is computed as the weight associated to this admission minus the
+cost incurred by the eventual handover of class 2 sessions.
+This reﬂects the fact that the handover is not favorable unless the gain obtained is the highest achievable gain among
+all possible solutions. However, the admission of a class 2 session, being a low-priority traﬃc, does not invoke any kind of
+handover.
+By solving the MDP, an optimal policy π ∗ that maximizes
+the reward function can be found. The values of the weights
+and the handover costs in the reward function (11) have to
+be deﬁned based on the objective that the operator wants
+to maximize. The RAT selection module will, based on the
+optimal policy provided by the MDP, decide on the admission
+or rejection for every arriving session as explained in Fig. 1.
+A summary of the notations used in the paper is presented in Table 1.
+
+(11)
+
+Pricing of services is highly important, and has a substantial impact on user satisfaction and operator revenue. Various
+pricing schemes have been proposed and studied in the literature. These schemes include ﬂat-pricing, volume-based, and
+dynamic pricing. A comprehensive survey on pricing practices and their predominance in different parts of the world
+can be found in [19].
+Pricing and revenue are tightly related. The term revenue, as used in this paper, indicates the charges collected
+from the subscribers in monetary unit (MU). It is function
+of the charged prices and the number of subscribers belonging to the different offered proﬁles. In our studied scenario, we try to maximize the network’s income by prioritizing the admission of class 1 users to the system, for their
+
+62
+
+E. Khloussy et al. / Computer Networks 91 (2015) 57–67
+Table 1
+Table of notations.
+Symbol
+
+Description
+
+Ctarg
+
+Coverage area of the targeted base station in the cellular RAT
+Poisson Point Process distribution of RAT k
+Poisson Point Process distribution of users
+Radius of the circular area covered by an AP
+Distance separating a typical user from the nearest AP
+Number of BS/AP per unit area of RAT k
+Number of camping users per unit area
+The arrival rate of class i
+Coverage probability of RAT k
+Ratio of class 2 users to the total number of users
+The average number of calls per second generated by a class i user
+The average call holding time of class i
+Capacity (number of channels) of RAT k
+Number of bbu required to serve a class i user
+number of sessions of class i in RAT j
+The state vector of RAT k
+The state vector of the system
+The state space of the system
+The action resulting from the arrival of a class i session
+Vector representing the action taken following a decision epoch
+The action space of the MDP
+The action space of state s
+Expected sojourn time in state s when action a is chosen
+Transition probability from state s to state s when action a is chosen
+Probability of coverage of the targeted AP
+Number of class 2 sessions that were handed off from one RAT to another
+A variable that designates if a vertical handover was performed or not for class 2 traﬃc
+Policy chosen at state s
+Set of admissible policies
+Reward function for state s when action a is chosen
+Weight associated for admitting a class i session in RAT j
+Optimal RAT selection policy
+Price charged for user of class i
+The revenue or charges collected from the admission of class 1 and class 2 sessions
+Traﬃc load of class i
+Cost associated to the handoff of a class 2 session from cellular to WLAN
+Cost associated to the handoff of a class 2 session from WLAN to cellular
+
+φ (k)
+φ (u)
+R
+r
+
+λ(k)
+λ(u)
+λi
+pc, k
+
+ψ
+σi
+1/μi
+
+Ck
+bi
+nj, i
+sk
+s
+S
+ai
+a
+A
+As
+τ (s, a)
+Pss (a)
+∗
+Pc,2
+nh, 2
+h
+
+πs
+
+r(s, a)
+wj, i
+
+π∗
+
+Pri
+Rev
+
+ρi
+
+kc, w
+kw, c
+
+Table 2
+System parameters.
+Parameter
+
+Symbol
+
+Value
+
+Cellular capacity
+WLAN capacity
+Number of bbu required per class 1 session
+Number of bbu required per class 2 session
+Traﬃc intensity of class 1 (λ1 /μ1 )
+Traﬃc intensity of class 2 (λ2 /μ2 )
+Average session holding time for class 1
+Average session holding time for class 2
+Cost of handoff of class 2 session from cellular to WLAN
+Cost of handoff of class 2 seesion from WLAN to cellular
+
+C1
+C2
+b1
+b2
+
+30 bbu
+5 bbu
+2 bbu
+1 bbu
+2–14 E
+6E
+200 s
+150 s
+0.5
+0.3
+
+higher contribution in the generated revenue. This can be reﬂected by the appropriate choice of the weights in the reward
+function (11).
+The weights are important system parameters that affect
+the decisions taken by the admission controller, and different
+combinations of weights may lead to different optimal policies π ∗ . By varying the values of these weights, the network
+operator can shape the admitted traﬃc, in order to reach a
+speciﬁc goal, such as balancing the traﬃc load, increasing the
+generated revenue, or it could be a combination of more than
+one objective.
+
+ρ1
+ρ2
+1/μ1
+1/μ2
+
+kc, w
+kw, c
+
+6. Numerical results
+In this section, the performance of the optimal MDPbased RAT selection scheme is analyzed. To solve the MDP
+problem and ﬁnd the optimal policy, we used the relative
+value iteration algorithm from the MDP toolbox (developed
+by [20]). The system parameters used in our analysis are depicted in Table 2. A higher value was assigned to kc, w than
+that of kw, c because the handover to WLAN comes at a higher
+risk due to its local coverage. We also assume hereby that the
+price Pri , charged for class i, is chosen as: Pr1 = 2 · Pr2 .
+
+E. Khloussy et al. / Computer Networks 91 (2015) 57–67
+
+6.1. Performance evaluation
+
+6.2. Performance metrics
+The following performance metrics were chosen to compare the abovementioned schemes.
+6.2.1. Average revenue
+The average revenue (in MU) depends on the charged
+prices as well as the average number of sessions that the system can admit for each of the user proﬁles. It can be computed as:
+
+30
+Optimal
+Cellular−First
+Load Balancing
+
+Average Revenue [MU]
+
+25
+
+20
+
+15
+
+10
+
+5
+
+2
+
+4
+
+6
+
+8
+ρ1 [E]
+
+10
+
+12
+
+14
+
+12
+
+14
+
+12
+
+14
+
+Fig. 2. Average revenue [MU].
+0.2
+Optimal
+Cellular−First
+Load Balancing
+
+0.18
+0.16
+Class 1 Blocking Probability
+
+The aim of the MDP-based scheme is to ﬁnd the optimal
+policy for RAT selection that maximizes the deﬁned objective function. We analyze the performance of this “ Optimal”
+scheme by comparing it to the performance of two static
+policies which we model with the help of Markov chain. The
+ﬁrst scheme is the “ Cellular-First” scheme which works as
+follows: all arriving traﬃc is admitted to the cellular RAT as
+long as this latter has available resources. When the cellular
+network becomes overloaded, class 2 traﬃc is sent to WLAN
+while class 1 traﬃc is admitted to the cellular network if it
+was possible to free the needed resources by handing off a
+part of class 2 traﬃc to WLAN. In case the handover was not
+possible, the traﬃc is sent to WLAN if this latter had enough
+resources, and blocked otherwise. The second scheme, called
+“ Load Balancing” policy, as suggested in [21], works as follows: when a session arrives, it is admitted to the RAT where
+its admission results in the minimum load (the load of a
+RAT being the ratio of occupied channels over the total available channels). In the case where the admission of the session results in same load for all existing RATs, the policy selects randomly the RAT to accommodate the newly arriving
+session.
+
+63
+
+0.14
+0.12
+0.1
+0.08
+0.06
+0.04
+0.02
+0
+
+2
+
+4
+
+6
+
+E[Rev] = Pr1 · E[n1,1 + n2,1 ] + Pr2 · E[n1,2 + n2,2 ]
+
+8
+ρ1 [E]
+
+10
+
+Fig. 3. Class 1 blocking probability.
+
+6.3. Results
+The values of the considered performance metrics for the
+Optimal RAT selection scheme, as well as for the Cellular-First
+and Load Balancing schemes are depicted in Figs. 2–4. These
+values are for load of class 1 traﬃc ρ 1 varying from 2 to 14
+Erlang (E), load of class 2 traﬃc ρ2 = 6 E, and for coverage
+∗ = 0.6. The values for the
+probability of the targeted AP Pc,2
+weights in the reward function are chosen as follows: w1,1 =
+2, w1,2 = 2, w2,1 = 1 and w2,2 = 1, where a higher weight
+is assigned for the admission of class 1 traﬃc, reﬂecting the
+higher priority granted to this latter.
+
+0.14
+Optimal
+Cellular−First
+Load Balancing
+
+0.12
+Class 2 Blocking Probability
+
+6.2.2. Blocking probability
+A class i session is blocked, in general, when none of the
+two RATs has free bi bbus available, or when the session is
+initiated out of the coverage of the WLAN and the cellular
+RAT has no enough free resources to accommodate it. In the
+case of Optimal and Cellular-First, where handover of class 2
+traﬃc is allowed, the computation of the blocking probability
+of class 1 takes also into account whether a vertical handover
+of class 2 session(s) makes the admission of class 1 traﬃc to
+a congested network possible or not.
+
+0.1
+0.08
+0.06
+0.04
+0.02
+0
+
+2
+
+4
+
+6
+
+8
+ρ [E]
+
+10
+
+1
+
+Fig. 4. Class 2 blocking probability.
+
+Among the three studied policies, the Optimal policy provides the highest revenue (Fig. 2). The Optimal policy is hence
+able to ﬁnd the optimal traﬃc distribution that can generate
+the highest proﬁt among the compared policies. Cellular-First
+policy achieves lower revenue than the Optimal policy, but is
+
+64
+
+E. Khloussy et al. / Computer Networks 91 (2015) 57–67
+31
+
+Average Revenue [MU]
+
+30
+
+Set 1
+Set 2
+Set 3
+Set 4
+Set 5
+Set 6
+Set 7
+Set 8
+Set 9
+
+29
+
+28
+
+27
+
+26
+
+25
+10
+
+10.5
+
+11
+
+11.5
+
+12
+
+ρ [E]
+
+12.5
+
+13
+
+13.5
+
+14
+
+1
+
+Fig. 5. Revenue obtained for varying traﬃc load.
+
+able to outperform the Load Balancing policy, which is due
+to the fact that admitting to cellular RAT ﬁrst will take better advantage from the large capacity and global coverage of
+this network, while WLAN is used only as extension to the
+cellular RAT when this is needed.
+In terms of blocking probabilities, the results show that
+the Load Balancing policy achieves the lowest blocking probabilities for both class 1 and class 2 traﬃc. This is because this
+policy takes the load of the RAT as criterion for the decision of
+admission of the incoming traﬃc, which makes the probability of a call being blocked lower than with the two other policies. The blocking probabilities obtained through the Optimal
+policy are higher than the two other policies. This can be explained by the choice of the weights that is revenue-based
+only and does not account for the difference in the QoS of the
+two networks. Assigning equal weights for the admission of
+a class i session to both cellular RAT and WLAN means that
+the Optimal policy will not differentiate between the different grades of QoS that an admitted session might undergo in
+the different RATs.
+For an operator, whose interest is to maximize the proﬁt
+generated from its HWN, MDP solution is a good candidate.
+It not only guarantees the highest proﬁt, but it also keeps the
+QoS at a comparable level to the ones obtained with the Load
+Balancing scheme.
+
+6.4. Effect of the weights
+The decisions taken by the Optimal policy are directly affected by the values of the weights (w1, 1 , w1, 2 , w2, 1 and w2, 2 )
+in the reward function. It is therefore important to have a
+good insight on the choice of these weights. For this purpose, we experiment hereby with different combinations of
+weights values and analyze their impact on the average revenue. Nine sets of weights were selected for this comparison
+as shown in Table 3. For ease of illustration, we assign the
+value of 2 to Pr1 and 1 to Pr2 . The weights wj, i in the nine deﬁned sets were chosen in a way that a weight for the admission of a class i session varies between 0 and Pri , which is an
+intuitive choice having the maximization of revenue as our
+
+Table 3
+The different selected sets of weights.
+Sets
+
+w1, 1
+
+w2, 1
+
+w1, 2
+
+w2, 2
+
+Set 1
+Set 2
+Set 3
+Set 4
+Set 5
+Set 6
+Set 7
+Set 8
+Set 9
+
+2
+2
+2
+2
+2
+2
+2
+2
+2
+
+2
+1
+0
+2
+2
+1
+1
+0
+0
+
+1
+1
+1
+0
+1
+0
+1
+0
+1
+
+1
+1
+1
+1
+0
+1
+0
+1
+0
+
+objective. However, w1, 1 was ﬁxed to Pr1 to reﬂect the higher
+priority granted to class 1 traﬃc to be admitted to cellular
+RAT where a better QoS can be offered.
+First, we examine the revenue obtained by the different
+sets of weights for a varying traﬃc load of class 1, and for load
+of class 2 ρ2 = 6 E (Fig. 5). The plots show how the achieved
+revenue can vary with the chosen set of weights. Among all
+sets, set 9 performed the worst. This is obviously due to the
+fact that, in this latter, the weights for admission to WLAN
+for class 1 and class 2 is set to zero meaning that the MDP
+will favor the admission of both traﬃc to the Cellular RAT,
+and the beneﬁt from the capacity of WLAN is minimal. The
+highest revenue was obtained from set 2 when the load of
+the system was relatively low (ρ 1 < 12). However, when the
+load increases, set 1 outperforms set 2. This can be explained
+as follows: when the traﬃc is low compared to the system
+capacity, it is more beneﬁcial to assign lower value for w2, 1
+(such as in set 2) which is translated by a lower admission
+of class 1 traﬃc to WLAN, while the cellular RAT has enough
+capacity to accommodate the incoming traﬃc. On the other
+hand, when the system is overloaded, the capacity of
+cellular RAT will not be enough to serve the traﬃc, and admitting more traﬃc to WLAN would result in an increase of
+the system capacity and, consequently, a higher revenue can
+be achieved.
+Due to the heterogeneous nature of the traﬃc, we also
+compared the revenue achieved by the nine sets of weights
+
+E. Khloussy et al. / Computer Networks 91 (2015) 57–67
+
+65
+
+20
+
+19
+
+Average Revenue [MU]
+
+18
+
+17
+
+16
+
+15
+
+Set 1
+Set 2
+Set 3
+Set 4
+Set 5
+Set 6
+Set 7
+Set 8
+Set 9
+
+14
+
+13
+0.4
+
+0.45
+
+0.5
+
+0.55
+
+0.6
+
+0.65
+
+0.7
+
+0.75
+
+0.8
+
+ρ1 / (ρ1 + ρ2) [E]
+
+Fig. 6. Revenue obtained by the different sets of weights for traﬃc mix ρ1 + ρ2 = 10 E.
+32
+
+31.5
+
+31
+
+Average Revenue [MU]
+
+30.5
+
+30
+
+29.5
+
+29
+
+28.5
+
+28
+
+27.5
+
+27
+0.6
+
+0.65
+
+0.7
+
+ρ1 /(ρ1+ρ2) [E]
+
+0.75
+
+0.8
+
+Fig. 7. Revenue obtained by the different sets of weights for traﬃc mix ρ1 + ρ2 = 20 E.
+
+for different values of traﬃc mix (ρ1 + ρ2 ), namely (1) low
+traﬃc mix and (2) high traﬃc mix. In Fig. 6, the revenue is
+depicted for a low value of traﬃc mix (ρ1 + ρ2 =10 E). When
+ρ
+class 2 traﬃc is dominating, i.e. ρ +1ρ is low, the performance
+1
+2
+of all sets of weights is very close except for set 6 and set
+8 (plot of set 6 overlaps with that of set 8 in Fig. 6). This is
+because these two sets favor the admission of class 2 sessions to WLAN. However, when class 1 traﬃc dominates i.e.
+ρ1
+ρ1 +ρ2 > 0.6, the weights for the admission of class 2 traﬃc
+become less important, and therefore the revenue obtained
+from sets 6 and 8 becomes closer to that of the other sets of
+weights.
+The revenues obtained from the different sets of weights
+for a high traﬃc mix (ρ1 + ρ2 =20 E) are depicted in Fig. 7.
+In this case, we see a clearer differentiation of the revenues
+obtained from the different weights, and the highest revenue
+is obtained by set 1, which complies with the results deduced
+from Fig. 5. The results obtained hereby showed that the set
+of weights that provides the maximum revenue varies with
+the traﬃc load and traﬃc mix. The network operator can
+therefore, based on an a priori knowledge of the traﬃc distribution and patterns, use the appropriate set of weights in
+order to maximize the gained proﬁt.
+
+6.5. Effect of the coverage probability of WLAN
+In Section 6.3, we evaluated the performance of the MDPbased RAT selection scheme along with two other policies,
+for the same value of the coverage probability of WLAN. Because of its importance, we try hereby to further investigate
+this parameter. Two values of the WLAN coverage probabil∗ = 0.6 and P ∗ = 0.3, and the
+ity are considered, namely Pc,2
+c,2
+results provided by the MDP-based RAT selection policy for
+these two values are shown in Figs. 8–10, where ρ 1 varies
+from 2 to 14 E, and ρ 2 is ﬁxed to 6 E. In terms of revenue,
+it is shown that, due to a loss in the WLAN resources, it is
+not possible to achieve the same revenue as when WLAN has
+wider coverage (Fig. 8). Similarly, a negative effect on the
+blocking probability for both classes of services can be noticed (Figs. 9 and 10). When the WLAN has very low coverage, it is no more capable of alleviating the load of cellular
+RAT which becomes congested faster. Therefore, the role that
+WLAN can play in increasing the capacity of the cellular network is important, allowing the system to serve a larger number of users. A wider coverage of the WLAN results not only
+in higher generated revenue but also in a better QoS for both
+class 1 and class 2 traﬃc.
+
+66
+
+E. Khloussy et al. / Computer Networks 91 (2015) 57–67
+
+7. Conclusion
+32
+WLAN coverage = 60%
+WLAN coverage = 30%
+
+30
+
+Average Revenue [MU]
+
+28
+26
+24
+22
+20
+18
+16
+14
+12
+
+2
+
+4
+
+6
+
+8
+ρ1 [E]
+
+10
+
+12
+
+14
+
+Fig. 8. Average revenue [MU].
+
+0.25
+
+References
+
+WLAN coverage = 60%
+WLAN coverage = 30%
+
+Class 1 Blocking Probability
+
+0.2
+
+0.15
+
+0.1
+
+0.05
+
+0
+
+2
+
+4
+
+6
+
+8
+ρ [E]
+
+10
+
+12
+
+14
+
+12
+
+14
+
+1
+
+Fig. 9. Class 1 blocking probability.
+
+0.16
+WLAN coverage = 60%
+WLAN coverage = 30%
+
+Class 2 Blocking Probability
+
+0.14
+0.12
+0.1
+0.08
+0.06
+0.04
+0.02
+0
+
+2
+
+4
+
+6
+
+RAT selection strategies are key components in heterogeneous wireless systems, where more than one RAT coexist, and multiple user proﬁles are supported each having
+different QoS requirements. In this paper, we study the performance of MDP-based RAT selection in a cellular/WLAN
+heterogeneous network, with the objective of maximizing the revenue of the overall system. For performance evaluation, we compared the Optimal policy derived from MDP to
+two other RAT selection policies: Cellular-First and Load Balancing. The results show that, even though the MDP-based
+Optimal scheme makes a negative effect on the blocking
+probabilities, it achieves the highest revenue among all policies. In addition, to better understand and provide insights
+into the MDP-based scheme, the impact of the weights in the
+MDP objective function has been investigated for different
+traﬃc loads and traﬃc mix values. Finally, the importance
+of the role that WLAN plays in oﬄoading the cellular RAT is
+highlighted.
+
+8
+ρ1 [E]
+
+10
+
+Fig. 10. Class 2 blocking probability.
+
+[1] S.P. Yeh, S. Talwar, G. Wu, N. Himayat, K. Johnsson, Capacity and coverage enhancement in heterogeneous networks, IEEE Wirel. Commun. 18
+(3) (2011) 32–38, doi:10.1109/MWC.2011.5876498.
+[2] 3GPP TS 23.261, IP ﬂow mobility and seamless Wireless Local Area Network (WLAN) oﬄoad, 2010.
+[3] K. Lee, J. Lee, Y. Yi, I. Rhee, S. Chong, Mobile data oﬄoading:
+how much can WiFi deliver?, Proceedings of the 6th International
+Conference on Emerging Networking EXperiments and Technologies, Co-NEXT’10, ACM, New York, NY, USA, 2010, pp. 26:1–26:12,
+doi:10.1145/1921168.1921203.
+[4] Cisco, Visual Networking Index: Global Mobile Data Traﬃc Forecast
+Update, 2012-2017. http://www.cisco.com/en/US/solutions/collateral/
+ns341/ns525/ns537/ns705/ns827/white_paper_c11-520862.pdf/, 2013.
+[5] H. Chen, C.-C. Cheng, H.-H. Yeh, Guard-channel-based incremental and
+dynamic optimization on call admission control for next-generation
+QoS-aware heterogeneous systems, IEEE Trans. Veh. Technol. 57 (5)
+(2008) 3064–3082.
+[6] L. Li, M.L. Littman, Lazy approximation for solving continuous ﬁnitehorizon MDPs, in: Proceedings of Association for the Advancement of
+Artiﬁcial Intelligence, AAAI, vol. 5, 2005, pp. 1175–1180.
+[7] H. Chen, C.-C. Cheng, W.-H. Chung, H.-H. Yeh, A reduced dimension MDP-based call admission control scheme for next generation
+telecommunications, in: Proceedings of the 8th International Wireless Communications and Mobile Computing Conference, IWCMC, IEEE,
+2012, pp. 984–989.
+[8] O.E. Falowo, H.A. Chan, Heuristic RAT selection policy to minimize call
+blocking probability in next generation wireless networks, Wirel. Commun. Mobile Comput. 10 (2) (2010) 214–229.
+[9] D. Kumar, E. Altman, J.-M. Kelif, Globally optimal user-network association in an 802.11 WLAN & 3G UMTS hybrid cell, in: L. Mason, T. Drwiega, J. Yan (Eds.), Managing Traﬃc Performance in Converged Networks, vol. 4516, Springer Berlin Heidelberg, Berlin, Heidelberg, 2007,
+pp. 1173–1187.
+[10] F. Yu, V. Krishnamurthy, Optimal joint session admission control in integrated WLAN and CDMA cellular networks with vertical handoff, IEEE
+Trans. Mobile Comput. 6 (1) (2007) 126–139.
+[11] M. Coupechoux, J.-M. Kelif, P. Godlewski, SMDP approach for JRRM
+analysis in heterogeneous networks, in: Proceedings of the 14th European Wireless Conference, EW, 2008, pp. 1–7.
+[12] K. Khawam, M. Ibrahim, S. Tohme, Centralised multi-class access control in a WiMAX-UMTS hybrid network, in: Proceedings of the 21st International Symposium on Personal Indoor and Mobile Radio Communications (PIMRC), IEEE, 2010, pp. 1265–1270.
+[13] E. Stevens-Navarro, Y. Lin, V. Wong, An MDP-based vertical handoff decision algorithm for heterogeneous wireless networks, IEEE Trans. Veh.
+Technol. 57 (2) (2008) 1243–1254, doi:10.1109/TVT.2007.907072.
+[14] H.-S. Jo, Y.J. Sang, P. Xia, J. Andrews, Heterogeneous cellular networks
+with ﬂexible cell association: a comprehensive downlink SINR analysis,
+in: IEEE Trans. Wirel. Commun., 11, 2012, pp. 3484–3495.
+
+E. Khloussy et al. / Computer Networks 91 (2015) 57–67
+[15] J. Andrews, F. Baccelli, R. Ganti, A new tractable model for cellular coverage, in: Proceedings of the 48th Annual Allerton Conference on Communication, Control, and Computing, Allerton, 2010, pp. 1204–1211.
+[16] O.E. Falowo, H.A. Chan, Multiple-RAT selection for reducing call blocking/dropping probability in cooperative heterogeneous wireless networks, EURASIP J. Wirel. Commun. Netw. 2012 (1) (2012) 1–12.
+[17] H. Wang, H.I. Laurenson, J. Hillston, A general performance evaluation
+framework for network selection strategies in 3G-WLAN interworking
+networks, IEEE Trans. Mobile Comput. 12 (5) (2013) 868–884.
+[18] Y. Wang, K. Pedersen, P. Mogensen, T. Sorensen, Carrier load balancing methods with bursty traﬃc for LTE-advanced systems, in:
+Proceedings of the 20th International Symposium on Personal, Indoor and Mobile Radio Communications, IEEE, 2009, pp. 22–26,
+doi:10.1109/PIMRC.2009.5450152.
+[19] S. Sen, C. Joe-Wong, S. Ha, M. Chiang, Pricing data: A look at past proposals, current plans, and future trends. CoRR, arXiv:1201.4197.
+[20] I. Chades, G. Chapron, M.J. Cros, F. Garcia, R. Sabbadin, Mdptoolbox:
+a multi-platform toolbox to solve stochastic dynamic programming
+problems, Ecography 37 (2014) 916–920.
+[21] X. Gelabert, O. Sallent, J. Pérez-Romero, R. Agustí, Performance evaluation of radio access selection strategies in constrained multiaccess/multi-service wireless networks, Comput. Netw. 55 (1) (2011)
+173–192.
+Elissar Khloussy received the B.S degree and M.S.
+degree in computer engineering from the Conservatoire Nationale Des Arts et Métiers-Paris, in
+2001 and 2003 respectively. She is now a Ph.D.
+candidate at the Telematics Department, Norwegian Univeristy of Science and Technology, Norway. Her current research interest is the radio
+resource management in heterogeneous wireless
+networks.
+
+Xavier Gelabert received the M.S. degree in electrical engineering from the Royal Institute of
+Technology (KTH), Stockholm, Sweden, in 2003
+and the joint B.S. and M.S. degree in telecommunication engineering and the Ph.D. degree
+from the Technical University of Catalonia (UPC),
+Barcelona, Spain, in 2004 and 2010, respectively.
+In the second half of 2008, he was a Visiting Researcher with the Broadband Wireless Networking Laboratory (BWN-Lab), Georgia Institute of
+Technology (GATech), Atlanta, GA, USA. In 2010,
+he was with the Institute of Telecommunications
+and Multimedia Applications (iTEAM), Valencia,
+Spain. In 2011, he joined Orange Labs in Issy-les-Moulineaux, France, as a
+postdoctoral researcher. In the ﬁrst half of 2012, he was with King’s College London (KCL), London, U.K. Since June 2012, he has been with Huawei
+Technologies Sweden AB, Kista, Sweden, where he is currently a Research
+Specialist.
+
+67
+
+Yuming Jiang received his BSc from Peking University, China, in 1988, MEng from Beijing Institute of Technology, China, in 1991, and Ph.D.
+from National University of Singapore, Singapore,
+in 2001. He worked with Motorola from 1996 to
+1997. From 2001 to 2003, he was a Member of
+Technical Staff and Research Scientist with the Institute for Infocomm Research, Singapore. From
+2003 to 2004, he was an Adjunct Assistant Professor with the Electrical and Computer Engineering Department, National University of Singapore. From 2004 to 2005, he was with the Centre for Quantiﬁable Quality of Service in Communication Systems (Q2S), Norwegian University of Science and Technology (NTNU), Norway, supported in part by the Fellowship Programme of
+European Research Consortium for Informatics and Mathematics (ERCIM).
+He visited Northwestern University, USA from 2009 to 2010. Since 2005,
+he has been with the Department of Telematics, NTNU, as a Professor. He
+was Co-Chair of IEEE Globecom2005 – General Conference Symposium, TPC
+Co-Chair of 67th IEEE Vehicular Technology Conference (VTC) 2008, General/TPC Co-Chair of International Symposium on Wireless Communication
+Systems (ISWCS) 2007–2010, and General Chair of IFIP Networking 2014
+Conference. He is ﬁrst author of the book “Stochastic Network Calculus”. His
+research interests are the provision, analysis and management of quality of
+service guarantees in communication networks. In the area of network calculus, his focus has been on developing models and investigating their basic
+properties for stochastic network calculus (snetcal), and recently also on applying snetcal to performance analysis of wireless networks.
+
+

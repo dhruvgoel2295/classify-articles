@@ -1,0 +1,993 @@
+Discrete Mathematics 311 (2011) 1910–1917
+
+Contents lists available at ScienceDirect
+
+Discrete Mathematics
+journal homepage: www.elsevier.com/locate/disc
+
+Linear choosability of sparse graphs
+Daniel W. Cranston a,∗ , Gexin Yu b,1
+a
+
+Department of Mathematics and Applied Mathematics, Virginia Commonwealth University, Richmond, VA 23284, United States
+
+b
+
+Department of Mathematics, College of William & Mary, Williamsburg, VA 23185, United States
+
+article
+
+info
+
+Article history:
+Received 8 October 2010
+Received in revised form 7 May 2011
+Accepted 15 May 2011
+Available online 12 June 2011
+Keywords:
+Linear coloring
+List coloring
+Planar graph
+Discharging method
+Maximum average degree
+
+abstract
+A linear coloring is a proper coloring such that each pair of color classes induces a union
+of disjoint paths. We study the linear list chromatic number, denoted lcℓ (G), of sparse
+graphs. The maximum average degree of a graph G, denoted mad(G), is the maximum of
+the average degrees of all subgraphs of G. It is clear that any graph G with maximum degree
+∆(G) satisfies lcℓ (G) ≥ ⌈∆(G)/2⌉ + 1. In this paper, we prove the following results: (1) if
+mad(G) < 12/5 and ∆(G) ≥ 3, then lcℓ (G) = ⌈∆(G)/2⌉ + 1, and we give an infinite family
+of examples to show that this result is best possible; (2) if mad(G) < 3 and ∆(G) ≥ 9, then
+lcℓ (G) ≤ ⌈∆(G)/2⌉ + 2, and we give an infinite family of examples to show that the bound
+on mad(G) cannot be increased in general; (3) if G is planar and has girth at least 5, then
+lcℓ (G) ≤ ⌈∆(G)/2⌉ + 4.
+© 2011 Elsevier B.V. All rights reserved.
+
+1. Introduction
+In 1973, Grünbaum introduced acyclic colorings [3], which are proper colorings with the additional property that each
+pair of color classes induces a forest. In 1997, Hind, Molloy, and Reed introduced frugal colorings [4]. A proper coloring is
+k-frugal if the subgraph induced by each pair of color classes has maximum degree less than k. Yuster [8] combined the
+ideas of acyclic coloring and 3-frugal coloring in the notion of a linear coloring, which is a proper coloring such that each pair
+of color classes induces a union of disjoint paths—also called a linear forest. We write lc(G) to denote the linear chromatic
+number of G, which is the smallest integer k such that G has a proper k-coloring in which every pair of color classes induces
+a linear forest.
+We begin by noting easy 
+upper and
+ lower bounds on lc(G). If G is a graph with maximum degree ∆(G), then we have the
+naive lower bound lc(G) ≥ ∆(G)/2 + 1, since each color can appear on at most two neighbors of a vertex of maximum
+degree. Observe that lc(G) ≤ χ (G2 ) ≤ ∆(G2 ) + 1 ≤ ∆(G)2 + 1, where χ (G) denotes the chromatic number of G and G2 is
+the square graph of G. Yuster [8] constructed an infinite family of graphs such that lc(G) ≥ C1 ∆(G)3/2 , for some constant C1 .
+He also proved an upper bound of lc(G) ≤ C2 ∆(G)3/2 , for some constant C2 and for
+large ∆(G).
+ sufficiently
+
+Note that trees with maximum degree ∆(G) have linear chromatic number ∆(G)/2 + 1, i.e., the naive lower bound
+holds with equality (for example, we can color greedily in the order of a breadth-first search from an arbitrary vertex). This
+equality for trees suggests that sparse graphs might have linear chromatic number close to the
+ naive lower bound. To be
+more precise: Does there exist a constant C such that every sparse graph G satisfies lc(G) ≤ ∆(G)/2 + C ? To state the
+previous results related to this question, we first introduce some more notation.
+We start with linear list colorings, which are linear colorings from assigned lists. Formally, let lcℓ (G) be the linear list
+chromatic number of G, that is, the smallest integer k such that if each vertex v ∈ V (G) is given a list L(v) with |L(v)| ≥ k,
+
+∗
+
+Corresponding author.
+E-mail addresses: dcranston@vcu.edu, dcransto@gmail.com (D.W. Cranston), gyu@wm.edu (G. Yu).
+
+1 Research supported in part by the NSF grant DMS-0852452.
+0012-365X/$ – see front matter © 2011 Elsevier B.V. All rights reserved.
+doi:10.1016/j.disc.2011.05.017
+
+D.W. Cranston, G. Yu / Discrete Mathematics 311 (2011) 1910–1917
+
+1911
+
+then G has a linear coloring such that each vertex v gets a color c (v) from its list L(v). When all the lists are the same, linear
+list coloring is the same as linear coloring. General list coloring was first introduced by Erdös, Rubin, and Taylor [1] and
+independently by Vizing [7] in the 1970s, and it has been well explored since then [5].
+Linear list colorings were first studied by Esperet, Montassier, and Raspaud [2]. The maximum average degree of a graph
+2|E (H )|
+G, denoted mad(G), is the maximum of the average degrees of all of its subgraphs, i.e., mad(G) = maxH ⊆G |V (H )| . Observe
+that the family of all trees is precisely the set of connected graphs with mad(G) < 2 (so indeed we are generalizing our
+motivating example, trees). The following results were shown in [2]:
+Theorem A ([2]). Let G be a graph:
+
+
+
+(1) If mad(G) < 8/3, then lcℓ (G) ≤ ∆(G)/2 + 3.
+
+
+(2) If mad(G) < 5/2, then lcℓ (G) ≤ ∆(G)/2 + 2.
+
+
+(3) If mad(G) < 16/7 and ∆(G) ≥ 3, then lcℓ (G) = ∆(G)/2 + 1.
+The girth of a graph G, denoted g (G), or simply g, is the length of its shortest cycle. By an easy application of Euler’s
+formula, we see that every planar graph G with girth g satisfies mad(G) < 2g /(g − 2). So we can obtain some results on
+planar graphs from the above results. Raspaud and Wang [6] proved somewhat stronger results for planar graphs.
+Theorem B ([6]). Let G be a planar graph:
+
+
+
+(1) If g (G) ≥ 5, then lc(G) ≤ ∆(G)/2 + 14.
+
+
+(2) If g (G) ≥ 6, then lc(G) ≤ ∆(G)/2 + 4.
+
+
+(3) If g (G) ≥ 13 and ∆(G) ≥ 3, then lc(G) = ∆(G)/2 + 1.
+Our goal in the paper is to improve the results in the above two theorems. We prove the following.
+Theorem 1. Let G be a graph:
+
+
+
+(1) If G is planar and has g (G) ≥ 5, then lcℓ (G) ≤ ∆(G)/2 + 4.
+
+
+(2) If mad(G) < 3 and ∆(G) ≥ 9, then lcℓ (G) ≤ ∆(G)/2 + 2.
+
+
+(3) If mad(G) < 12/5 and ∆(G) ≥ 3, then lcℓ (G) = ∆(G)/2 + 1.
+Raspaud and Wang [6] conjectured that the bound in Theorem 1(2) holds for all planar graphs with girth at least 6. Since
+every such graph G has mad(G) < 3, our result proves their conjecture for graphs with ∆(G) ≥ 9. Since mad(K3,3 ) = 3 and
+lc(K3,3 ) = 5, we can construct an infinite family of sparse graphs G containing K3,3 such that mad(G) = 3, ∆(G) = 4, and
+
+
+lc(G) > ∆(G)/2 + 2. Thus, the maximum degree condition in Theorem 1(2) cannot be lower than 5.
+We also note that lc(K2,3 ) = 4 >
+
+
+
+∆(K2,3 )/2 + 1 and mad(K2,3 ) = 12/5. Thus, we can construct an infinite family
+
+
+of sparse graphs containing K2,3 with maximum degree at most 4. All such graphs have lc(G) = ∆(G)/2 + 2 and can be
+made sparse enough so that mad(G) = mad(K2,3 ) = 12/5. So the bound on mad(G) in Theorem 1(3) is sharp.
+The proofs of our three results all follow the same outline. First, we prove a structural lemma; this says that each
+graph under consideration must contain at least one from a list of ‘‘configurations’’. Second, we prove that any minimal
+counterexample to our theorem cannot contain any of these configurations. In this second step, we begin with a linear list
+coloring of part of the graph, and show how to extend it to the whole graph. As we extend the coloring, we often say that
+we ‘‘choose c (v) ∈ L(v)’’; by this we mean that we pick some color c (v) from L(v) and use c (v) to color vertex v . In the
+following three sections, we will prove our three main results, respectively.
+For convenience, we introduce the following notation. A k-vertex is a vertex of degree k. A k+ -vertex (k− -vertex) is a
+vertex of degree at least (at most) k. A k-thread is a path of k + 2 vertices, where each of the k internal vertices has degree
+2, and each of the end vertices has degree at least 3.
+2. Planar with girth at least 5 implies lcℓ (G ) ≤ ⌈
+
+∆(G )
+2
+
+⌉+4
+
+Lemma 1. If G is a planar graph with δ(G) ≥ 2 and with girth at least 5, then G contains one of the following two configurations:
+
+(RC1) a 2-vertex adjacent to a 5− -vertex,
+(RC2) a 5-face with four incident 3-vertices and the fifth incident vertex of degree at most 5.
+Proof. We use the discharging method, with initial charge µ(f ) = d(f )−5 for each face f and initial charge µ(v) = 23 d(v)−5
+∑
+∑
+for each vertex v . By Euler’s formula, we have v∈V (G) µ(v) + f ∈F (G) µ(f ) = (3|E | − 5|V |) + (2|E | − 5|F |) = −5(|F | −
+|E | + |V |) = −10. We redistribute charge via the following two discharging rules:
+(R1) Each 4+ -vertex v sends charge
+
+3
+d(v)−5
+2
+
+d(v)
+
+to each incident face (for each time they touch).
+
+(R2) Each face sends charge 1 to each incident 2-vertex and charge
+
+1
+6
+
+to each incident 3-vertex (for each time they touch).
+
+1912
+
+D.W. Cranston, G. Yu / Discrete Mathematics 311 (2011) 1910–1917
+
+When we write ‘‘for each time they touch’’, we mean that if a vertex v is a cut-vertex and appears k times on a facial
+walk around face f , then the rule for sending charge between v and f should be applied k times. Otherwise, (for example) a
+2-vertex that is a cut-vertex would not receive sufficient charge from its one incident face.
+Now we will show that if G contains neither configuration (RC1) nor (RC2), then each vertex and each face finishes
+with nonnegative charge. This is a contradiction, since the discharging rules preserve the sum of the charges (which begins
+negative). We write µ∗ (v) and µ∗ (f ) to denote the charge at vertex v or face f after we apply all discharging rules. If d(v) = 2,
+then µ∗ (v) = ( 32 (2) − 5) + 2(1) = 0. If d(v) = 3, then µ∗ (v) = ( 32 (3) − 5) + 3( 61 ) = 0. By design, each 4+ -vertex finishes
+with charge 0. So, we now consider the final charge on each face.
+Let f be a face of G. For each pair, u1 and u2 , of adjacent vertices on f , we compute the net charge given from f to u1 and
+u2 . If neither of u1 and u2 is a 2-vertex, then each vertex receives charge at most 16 from f , so the net charge given from f
+to u1 and u2 is at most 2( 16 ) =
+
+1
+.
+3
+
+If one of u1 and u2 , say u1 , is a 2-vertex, then, since G does not contain (RC1), we have
+
+d(u2 ) ≥ 6. Hence, the net charge given from f to u1 and u2 is at most 1 −
+
+2
+3
+
+= 13 . (This is true because as the degree of a
+
+vertex increases beyond 6, the charge it gives to each incident face increases beyond 23 .) By a simple counting argument, we
+
+see that the net total charge given from f to all incident vertices is at most 12 ( 13 d(f )) = 16 d(f ). Since µ(f ) = d(f ) − 5, we
+see that µ∗ (f ) ≥ 0 when d(f ) ≥ 6. Now we consider 5-faces.
++
+Suppose f is a 5-face. Let n2 , n3 , and n6+ denote the number of2-vertices,
+ 3-vertices, and 6 -vertices incident to f . Note
+that µ∗ (f ) ≥ −n2 − 16 n3 + 23 n6+ . From (RC1), we have n2 ≤ d(f )/2 = 2. If n2 = 2, then n3 = 0 and n6+ = 3, so
+
+µ∗ (v) ≥ −2 − 16 (0) + 32 (3) = 0. If n2 = 1, then n6+ ≥ 2, so n3 ≤ 2. Hence, µ∗ (f ) ≥ −1 − 16 (2) + 23 (2) = 0.
+Suppose now that f is a 5-face and n2 = 0. Since we have no copy of (RC2), we have either n3 = 4 and n6+ = 1, or
+we have n3 ≤ 3. In the first case, we get µ∗ (f ) ≥ −0 − 61 (4) + 23 (1) = 0. In the second case, note that f has at least two
+4+ -vertices, each of which gives f charge at least 14 . Thus µ∗ (f ) ≥ −0 − 61 (3) + 14 (2) = 0. Hence, every face and every
+vertex has nonnegative charge. This contradiction completes the proof.
+
+In Sections 3 and 4, we will only assume bounded maximum average degree (rather than planarity and a girth bound).
+However, in the proof of the preceding lemma, we needed the stronger hypothesis of planar with girth at least 5. Specifically,
+we
+ usedthis hypothesis when considering 5-faces. Our proof relied heavily on the fact that for a 5-face f we have n2 ≤
+d(f )/2 < d(f )/2.
+Now we use Lemma 1 to prove the following linear list coloring result, which immediately implies Theorem 1(1). For
+technical reasons, we phrase all of our theorems in terms of an integer M such that ∆(G) ≤ M. (Without this technical
+strengthening, when we consider a subgraph H such that ∆(H ) < ∆(G), we get complications.) Of course, the interesting
+case is when M = ∆(G).
+Theorem 2. Let M be an integer. If G is a planar graph with ∆(G) ≤ M and girth at least 5, then lcℓ (G) ≤
+
+M 
+2
+
++ 4.
+M 
+
+Proof. Suppose the theorem is false. Let G be a minimal counterexample and let the list assignment L of size 2 + 4 be
+such that G has no linear list coloring from L. Note that G must be connected. Suppose G has a 1-vertex u with neighbor v .
+′
+By minimality, G − u has a linear list coloring
+ M from L. LetLM(−u1)denote the list of colors in L(u) that neither appear on v , nor
+′
+appear twice in N (v). Note that |L (u)| ≥ ( 2 + 4) − ( 2
++ 1) = 4. Thus, if G has a 1-vertex u, we can extend a linear
+list coloring of G − u to G. So we may assume that δ(G) ≥ 2. Since G is a planar graph with δ(G) ≥ 2 and girth at least 5, G
+contains one of the two configurations specified in Lemma 1.
+Case (RC1): First, suppose that G contains a 2-vertex u adjacent to a 5− -vertex v . Let w be the other neighbor of u. By
+minimality, G − u has a linear list coloring from L. In order to avoid creating any 2-colored cycles and to also avoid creating
+any vertices that have three neighbors with the same color, it is sufficient to avoid coloring u with any color that appears two
+′
+or more times in N (v) ∪ N (w). Furthermore, u must not
+used on v or
+the list
+
+a color
+ (M
+ on w
+ . Let
+LM(u) denote
+ 
+ of colors
+ receive
+−1)+(5−1)
+M
+in L(u) that may still be used on u. We have |L′ (u)| ≥
++
+4
+−
++
+2
+=
++ 4 − M2 + 3 = 1.
+2
+2
+2
+Thus, we can extend a linear list coloring of G − u to a linear list coloring of G.
+Case (RC2): Suppose instead that G contains a 5-face f with four incident 3-vertices and with the fifth incident vertex of
+degree at most 5. We label the vertices as follows: let u1 , u2 , u3 , and u4 denote successive 3-vertices, and let v2 and v3 denote
+the neighbors of u2 and u3 not on f .
+By minimality, G − {u2 , u3 } has a linear list coloring from L. Now we will extend the coloring to u2 and u3 . Let L′ (u2 ) and
+L′ (u3 ) denote the colors in L(u2 ) and L(u3 ) that are still available for use on u2 and u3 . When we color u2 , we clearly must
+avoid the colors on u1 and v2 . We also want to avoid creating a 2-colored cycle or a vertex that has three neighbors with the
+same color. To do this, it suffices to avoid any color that appears
+on two
+ (M −1)+
+ ormore
+ vertices′ at distance
+ M two
+ from
+uM2. Thisgives
+2 +2
+M
+us an upper bound on the number of forbidden colors: 2 +
+=
++
+3.
+So
+|
+L
+(
+u
+)|
+=
++
+4
+−
++ 3 ≥ 1.
+2
+2
+2
+2
+2
+An analogous count shows that |L′ (u3 )| ≥ 1. However, we might have L′ (u2 ) = L′ (u3 ). Thus, we now refine this argument
+to show that |L′ (u2 )| ≥ 2 or |L′ (u3 )| ≥ 2.
+First suppose that c (u1 ) = c (v2 ). Since the colors on u1 and v2 are the same, these two vertices only forbid a single color
+from use on u2 , rather than the two colors we accounted for above. Thus we get |L′ (u2 )| ≥ 2. As above, |L′ (u3 )| ≥ 1, so
+we first color u3 , then color u2 with a color not on u3 . This gives the desired linear coloring of G. Hence, we conclude that
+c (u1 ) ̸= c (v2 ).
+
+D.W. Cranston, G. Yu / Discrete Mathematics 311 (2011) 1910–1917
+
+1913
+
+Since c (u1 ) ̸= c (v2 ), when we color u3 , we need not fear creating three neighbors of u2 with the same color. Further, we
+need not worry about giving u3 the same color as either u1 or v2 , for the following reason. Any 2-colored cycle that contains
+u3 and either u1 or v2 must also contain u2 and either u4 or v3 . Thus, by requiring that u2 does not get a color that appears on
+two or more vertices at distance two, we avoid such a 2-colored cycle. So in fact, u3 only needs
+ to
+ avoid
+ colors
+ that appear
+
+ on
+v3 , on u4 , or on at least two vertices of N (u4 ) ∪ N (v3 ). This observation gives us |L′ (u3 )| ≥ M2 + 4 − (M −21)+2 + 2 =
+
+ M 
+2
+
+  
+
++ 4 − M2 + 2 = 2. So we can color u2 , then color u3 with a color not on u2 . This gives the desired linear list
+
+coloring, and completes the proof.
+
+A similar,
+ ∆(but
+ more detailed, argument proves that if G is a planar graph with girth at least 5 and ∆(G) ≥ 15, then
+G)
+lcℓ (G) ≤
++ 3. A brief sketch of this proof is as follows. First, we can refine Lemma 1 to show that if ∆(G) ≥ 15,
+2
+then in (RC2) at most two neighbors of u1 , u2 , u3 , and u4 can have high degree. (The key insight is that our present argument
+only requires that each 6+ -vertex give charge 23 to each incident face; not charge ( 32 d(v) − 5)/d(v). Thus, these high degree
+vertices have lots of extra charge that they can send to adjacent 3-vertices.) With a more careful analysis, we can
+ show that
+∆(G)
+both the original configuration (RC1) and this strengthened version of (RC2) are reducible even with only
++ 3 colors.
+2
+3. mad(G ) < 3 and ∆(G ) ≥ 9 imply lcℓ (G ) ≤ ⌈
+
+∆(G )
+2
+
+⌉+2
+
+Lemma 2. If G is a graph with mad(G) < 3, δ(G) ≥ 2, and ∆(G) ≥ 9, then G contains one of the following five configurations:
+
+(RC1)
+(RC2)
+(RC3)
+(RC4)
+(RC5)
+
+ d(v) 
+
+ d(w) 
+
+ ∆(G) 
+
+a 2-vertex u adjacent to vertices v and w such that
++ 2 < 2 + 2,
+2
+a 3-vertex u adjacent to a 2-vertex and to two other vertices v and w , such that d(v) + d(w) ≤ 8,
+a 3-vertex adjacent to two 2-vertices,
+a 4-vertex adjacent to four 2-vertices,
+a 5-vertex u that is adjacent to four 2-vertices, each of which is adjacent to another 8− -vertex; and u is also adjacent to a
+fifth 3− -vertex.
+
+In fact, the hypothesis ∆(G) ≥ 9 cannot be omitted (though the lower bound can possibly be reduced), as we show after
+we prove the lemma.
+Proof. We use discharging, with initial charge µ(v) = d(v) − 3 for each vertex v . Since mad(G) < 3, the sum of the initial
+charges is negative. Note that only the 2-vertices have negative charge, so we design our discharging rules to pass charge to
+the 2-vertices. We redistribute the charge via the following three discharging rules:
+(R1) Every 4-vertex gives charge
+(R2) Every 5-vertex gives charge
+5
+14
+
+1
+3
+3
+7
+
+to each adjacent 2-vertex.
+to each adjacent 2-vertex that is also adjacent to another 8− -vertex, and it gives charge
+
+to every adjacent 3-vertex and every other adjacent 2-vertex.
+d(v)−3
+
+(R3) Every 6+ -vertex v gives charge d(v) to each adjacent 2-vertex and 3-vertex.
+(R4) Every 3-vertex gives its charge (that it received from rules (R2) and (R3)) to its adjacent 2-vertex (if it has one).
+We will show that if G contains none of the five configurations (RC1)–(RC5), then each vertex finishes with nonnegative
+charge, which is a contradiction. The following observation is an immediate corollary of the fact that G contains no copy of
+(RC1). We will use this observation below, to show that every vertex finishes with nonnegative charge.
+Observation 1. Suppose that a 2-vertex u has neighbors v and w .
+
+(i) If d(v) ∈ {3, 4}, then d(w) = ∆(G) if ∆(G) is odd, and d(w) ≥ ∆(G) − 1 if ∆(G) is even.
+(ii) If d(v) ∈ {5, 6}, then d(w) ≥ ∆(G) − 2 if ∆(G) is odd, and d(w) ≥ ∆(G) − 3 if ∆(G) is even.
+We now use Observation 1 to show that every vertex finishes with nonnegative charge. It is clear from (R3) that every
+6+ -vertex finishes with nonnegative charge. The same is true for 3-vertices. So we consider 4-vertices, 5-vertices, and 2vertices.
+Suppose d(u) = 4. Since G contains no copy of (RC4), every 4-vertex u is adjacent to at most three 2-vertices. Thus, we
+have µ∗ (u) ≥ µ(u) − 3( 13 ) = 1 − 3( 31 ) = 0.
+Suppose d(u) = 5. If u has two or more neighbors that each receive charge at most
+
+3( ) − 2(
+3
+7
+
+5
+14
+
+) = 2−
+
+14
+7
+
+5
+14
+
+from u, then µ∗ (u) ≥ µ(u) −
+
+= 0. Similarly, if u has one neighbor that receives no charge from u, then µ∗ (u) ≥ µ(u) − 4( 37 ) > 0.
+
+Hence, we may assume that u sends charge to each neighbor, and that it sends charge 73 to at least four of its neighbors.
+However, this assumption implies that G contains a copy of configuration (RC5), which is a contradiction.
+Finally, suppose d(u) = 2. Let the neighbors of u be v and w . Since µ(u) = −1, it suffices to show that u always receives
+charge at least 1. If d(v) ≥ 6 and d(w) ≥ 6, then v and w each give u charge at least 12 . So we may assume that d(v) ≤ 5.
+Suppose d(v) = 5. Since ∆(G) ≥ 9, Observation 1 implies that d(w) ≥ 7. If d(w) ∈ {7, 8}, then u receives charge at least
+3
+5
++ 47 = 1. If d(w) ≥ 9, then u receives charge at least 14
++ 69 > 1.
+7
+
+1914
+
+D.W. Cranston, G. Yu / Discrete Mathematics 311 (2011) 1910–1917
+
+(a) (RC3).
+
+(b) (RC4).
+
+(c) (RC5).
+
+Fig. 1. Configurations (RC3), (RC4), and (RC5) from Lemma 2 and Theorem 3.
+
+If d(v) = 4, then Observation 1 implies that d(w) ≥ 9, so u receives charge at least
+
+1
+3
+
++
+
+6
+9
+
+= 1. If d(v) = 3, then the
+
+absence of (RC2) implies that at least one neighbor x of v has degree at least 5, so v receives charge at least
+
+v can have at most one adjacent 2-vertex, u gets charge at least
+6
+5
++ 14
+> 1.
+9
+
+5
+14
+
+5
+14
+
+from x. Since
+
+from v . Hence, the total charge that u receives is at least
+
+Now we give two examples to show that the hypothesis ∆(G) ≥ 9, in Lemma 2 above, cannot be omitted. (We do
+suspect, however, that this hypothesis can be replaced by ∆(G) ≥ 7, or perhaps even by ∆(G) ≥ 5.) We first give an
+example with maximum degree 3. Let G be the dodecahedron, and let E be a matching in G of size 6, such that every face
+of G contains one edge of E. Form 
+G from G by subdividing each edge of the matching. The girth of 
+G is 6, so (by an easy
+application of Euler’s formula), mad(
+G) < 3. Despite having mad(
+G) < 3, 
+G does not contain any of the five configurations
+(RC1)–(RC5) in Lemma 2. Now we give an example with maximum degree 4. Let G be the octahedron, and let E be a perfect
+matching in G. Form 
+G from G by subdividing every edge of G except the three edges of E. The average degree of 
+G is
+(4 × 6 + 2 × 9)/(6 + 9) = 14
+; it is an easy exercise to verify that mad(
+G) = 14
+. Again 
+G contains none of the configurations
+5
+5
+(RC1)–(RC5).
+Now we use Lemma 2 to prove the following linear list coloring result, which immediately implies Theorem 1(2).
+Theorem 3. Let M ≥ 9 be an integer. If G is a graph with mad(G) < 3 and ∆(G) ≤ M, then lcℓ (G) ≤
+
+M 
+2
+
++ 2.
+M 
+
+Proof. Suppose the theorem is false. Let G be a minimal counterexample and let the list assignment L of size
+
+2
+
++ 2 be such
+
+that G has no linear list coloring from L. Since M ≥ 9, we have |L(v)| = M2 + 2 ≥ 7 for every v ∈ V . Note that G must be
+connected. Suppose G has a 1-vertex u with neighbor v . By minimality, G − u has a linear list coloring
+L′(u) denote
+ M  from
+ L.
+Let
+
+M −1
+the list of colors in L(u) that neither appear on v , nor appear twice in N (v). Note that |L′ (u)| ≥
++
+2
+−
++ 1 = 2.
+2
+2
+Thus, if G has a 1-vertex u, we can extend a linear list coloring of G − u to G. So we may assume that δ(G) ≥ 2.
+Since G is a graph with δ(G) ≥ 2 and mad(G) < 3, G contains one of the five configurations (RC1)–(RC5) specified in
+Lemma 2. We consider each of these five configurations in turn, and in each case we construct a linear coloring of G from L.
+Case
+ d(v) (RC1):
+ Suppose
+  Mthat
+ G contains configuration (RC1). Let u be a 2-vertex adjacent to vertices v and w such that
++ d(w)
+< 2 + 2. By the minimality of G, subgraph G − u has a linear list coloring c.
+2
+2
+If c (v) ̸= c (w), then u can receive any color except forc (v), c (w)
+those
+ ,and
+ colors
+ d(v) thatappear
+ twice on N (v)or
+twice
+d(v)−1
+d(w)−1
+d(w)
+M
+on N (w). So the number of colors forbidden is at most 2 +
++
+=
++
+.
+Since
+|
+L
+(
+u
+)|
+=
++ 2,
+2
+2
+2
+2
+2
+
+ 
+
+ d(v) 
+
+ d(w) 
+
+and since 2 +
+< M2 + 2, we can extend the coloring to u. So we assume instead that c (v) = c (w) = 1.
+2
+If c (v) = c (w), then (similar to that above), u can receive anycolor except forc (v)and 
+those
+ dcolors
+ that appear twice
+(d(v)−1)+(d(w)−1)
+d(v)
+(w)
+on N (v) ∪ N (w). The number of forbidden colors is at most 1 +
+≤
++
+. So, once again, we
+2
+2
+2
+can extend the coloring to u.
+Case (RC2): Suppose that G contains configuration (RC2). Let u be a 3-vertex adjacent to a 2-vertex and to two other neighbors
+v and w with d(v) + d(w) ≤ 8. By the minimality of G, subgraph G − u has a linear list coloring from L. If all three neighbors
+of u have the same color, then we will not get a linear coloring of G no matter how we color u. In this case, we can recolor
+the 2-vertex and still have a linear coloring of G − u. Now we will extend the coloring to u.
+Let L′ (u) denote the colors in L(u) that are still available for use on u. When we color u, we clearly must avoid the colors
+on its three neighbors. We also want to avoid creating a 2-colored cycle or a vertex that has three neighbors with the same
+color. To do this, it suffices to avoid any color that appears
+on two or more vertices at
+two
+u. This
+ (d(v)−
+ ddistance
+ from 
+ gives us
+1)+(d(w)−1)+1
+(v)+d(w)−1
+7
+an upper bound on the number of forbidden colors: 3 +
+=
+3
++
+≤
+3
++
+= 6. Since
+2
+2
+2
+|L(u)| ≥ 7, we have |L′ (u)| ≥ 1. Thus, we can extend the coloring to u.
+Case (RC3): Suppose that G contains configuration (RC3), shown in Fig. 1. Let u be a 3-vertex that has neighbors v1 , v2 , and
+v3 with d(v1 ) = d(v2 ) = 2 and d(v) = 3. Let N (vi ) = {wi , u} for i ∈ {1, 2}. By the minimality of G, subgraph G − {u, v1 , v2 }
+has a linear list coloring c from L. For each uncolored vertex z ∈ {u, v1 , v2 }, let L′ (z ) denote the colors in L(z ) that are still
+available for use on z. Note that |L′ (z )| ≥ 2 for each uncolored vertex z.
+Suppose that L′ (u) = {c (w1 ), c (w2 )}; this means that c (v3 ) ̸∈ {c (w1 ), c (w2 )}. Color u with c (w1 ). Now choose
+c (v1 ) ∈ L′ (v1 ) − c (v3 ) and c (v2 ) ∈ L′ (v2 ) − c (w1 ). This is a valid linear coloring of G.
+
+ 
+
+D.W. Cranston, G. Yu / Discrete Mathematics 311 (2011) 1910–1917
+
+1915
+
+Suppose instead that L′ (u) \ {c (w1 ), c (w2 )} ̸= ∅. Choose c (u) ∈ L′ (u) − {c (w1 ), c (w2 )}, choose c (v1 ) ∈ L′ (v1 ) − c (u),
+and choose c (v2 ) ∈ L′ (v2 ) − c (u). This coloring is proper and contains no 2-alternating path through u. Hence, it is a linear
+coloring unless c (v1 ) = c (v2 ) = c (v3 ). If no other choice of c (v1 ) and c (v2 ) can avoid this problem, then we can conclude
+that L′ (v1 ) = L′ (v2 ) = {c (v3 ), c1 } (for some color c1 ); further L′ (u) − {c (w1 ), c (w2 )} = {c1 }. Suppose we are in this case.
+If c (w1 ) ̸= c (w2 ), then, without loss of generality, L′ (u) = {c (w1 ), c1 }. Now let c (u) = c (w1 ), c (v1 ) = c1 , and
+c (v2 ) = c (v3 ) This is a valid linear coloring. So, by relabeling, we may assume that c (w1 ) = c (w2 ) = 1, c (v3 ) = 2,
+and c1 = 3. Thus L′ (v1 ) = L′ (v2 ) = {2, 3} and L′ (u) = {1, 3}.
+Note that {2, 3} ⊆ L′ (vi ) implies that 2 and 3 each appear at most once in N (wi ) (for i ∈ {1, 2}). If 3 does not appear on
+both N (w1 ) and N (w2 ), then let c (v1 ) = c (v2 ) = 3 and c (u) = 1. If 2 does not appear on both N (w1 ) and N (w2 ), then let
+c (u) = 1, c (v1 ) = 2, c (v2 ) = 3 (or c (u) = 1, c (v1 ) = 3, c (v2 ) = 2). So, we can assume that 2 and 3 each appear once on
+both N (w1 ) and N (w2 ). However, now |L′ (vi )| ≥ (⌈ M2 ⌉ + 2) − (⌊ M 2−3 ⌋ + 1) ≥ 3, which is a contradiction.
+Case (RC4): Suppose that G contains configuration (RC4), shown in Fig. 1. Let u be a 4-vertex and let N (u) = {vi : 1 ≤ i ≤
+4 such that d(vi ) = 2}. Also let N (vi ) = {u, wi } for 1 ≤ i ≤ 4. By the minimality of G, subgraph G − {u, v1 , v2 , v3 , v4 }
+′
+has a linear list coloring from L. Foreach
+ uncolored vertex z, let L (z ) denote the list of colors still available for z. Note that
+M
+′
+′
+|L (vi )| ≥ 2 and |L (u)| = |L(u)| = 2 + 2 ≥ 7, since M ≥ 9.
+We can color the vi ’s from their lists so that every color is used on at most two vi ’s, as follows. If some color c is available
+for use on two or more vi ’s, then use c on exactly two of them, and color each of the remaining vi ’s with another color (which
+could be the same for both of them). Otherwise, all the vi ’s have disjoint lists of available colors, so color them arbitrarily.
+If the four colors on the vi ’s are all distinct, then color u with a fifth color. If c (v1 ) = c (v2 ) but c (v1 ), c (v3 ), and c (v4 ) are
+all distinct, then choose c (u) so that c (u) ̸∈ {c (v1 ), c (v3 ), c (v4 ), c (w1 )}. Finally, if c (v1 ) = c (v2 ) and c (v3 ) = c (v4 ) (which
+together imply c (v1 ) ̸= c (v3 )), then choose c (u) so that c (u) ̸∈ {c (v1 ), c (v3 ), c (w1 ), c (w3 )}.
+Case (RC5): Suppose that G contains configuration (RC5), shown in Fig. 1. Let u be a 5-vertex and let N (u) = {vi : 1 ≤ i ≤ 5},
+such that d(vi ) = 2 for 1 ≤ i ≤ 4 and d(v5 ) ≤ 3. Also let N (vi ) = {u, wi } for 1 ≤ i ≤ 4, where d(wi ) ≤ 8. By the minimality
+of G, subgraph G − {u, v1 , v2 , v3 , v4 } has a linear coloring c from L. For each uncolored vertex z ∈ {u, v1 , v2 , v3 , v4 }, let L′ (z )
+denote the list of colors still available for z. Since d(wi ) ≤ 8, we have |L′ (vi )| ≥ 3. Conversely, |L′ (u)| ≥ M2 +2−( 22 +1) =
+
+≥ 5, since M ≥ 9. Now let L′′ (vi ) = L′ (vi ) − c (v5 ); note that |L′′ (vi )| ≥ 2. We now extend the coloring by using the
+lists L′ (u) and L′′ (vi ). We can completely ignore v5 (since we deleted c (v5 ) from the lists), so the analysis is exactly the same
+M 
+2
+
+as in Case (RC4).
+As we explained in the Introduction, this theorem immediately yields the following corollary.
+Corollary 1. If graph G is planar, has girth at least 6, and ∆(G) ≥ 9, then lcℓ (G) ≤
+
+ ∆(G) 
+2
+
++ 2.
+
+Although our proof of Theorem 3 relies heavily on the hypothesis ∆(G) ≥ 9, we suspect that the Theorem is trueeven
+∆(G)
+when this hypothesis is removed. Namely, we conjecture that every graph G with mad(G) < 3 satisfies lcℓ (G) ≤
++ 2.
+2
+If true, this result is best possible, as shown by the graph K3,3 , since lcℓ (K3,3 ) = 5. Furthermore, every graph G with K3,3 ⊆ G,
+mad(G) = 3, and ∆(G) ∈ {3, 4} shows that this result is best possible.
+4. mad(G ) <
+
+12
+5
+
+implies lcℓ (G ) = ⌈
+
+∆( G )
+2
+
+⌉+1
+
+In this section, we prove that if G is a graph with ∆(G) ≥ 3 and mad(G) <
+we prove an upper bound that matches the trivial lower bound lcℓ (G) ≥
+
+12
+,
+5
+
+ ∆(G) 
+2
+
+bound on mad(G) is best possible, as demonstrated by K2,3 , since mad(K2,3 ) =
+Lemma 3. If G is a graph with mad(G) <
+
+12
+5
+
+then lcℓ (G) =
+
+ ∆(G) 
+2
+
++ 1. For such graphs,
+
++ 1. Recall (from the Introduction) that our
+ ∆(K2,3 ) 
+and lcℓ (K2,3 ) >
++ 1.
+2
+
+12
+5
+
+and δ(G) ≥ 2, then G contains one of the following four configurations:
+
+(RC1) a 3 -thread,
+(RC2) a 3-vertex v incident to two 1+ -threads and one 2-thread, such that the vertex at distance two from v along each 1+ -thread
++
+
+is a 3− -vertex,
+(RC3) adjacent 3-vertices with at least seven 2-vertices in their incident threads,
+(RC4) a path of three vertices uwv with d(u) = d(w) = d(v) = 3 such that w is incident to a 2-thread and u and v are each
+incident to two 2-threads.
+Proof. We use discharging, with initial charge µ(v) = d(v) − 12
+for each vertex v . Since mad(G) <
+5
+initial charges is negative. We use the following three discharging rules:
+(R1) Every 2-vertex gets charge
+
+1
+5
+
+12
+,
+5
+
+the sum of the
+
+from each of the endpoints of its thread.
+
+(R2) Every 3-vertex incident to two 2-threads gets charge
+(R3) Every 3-vertex incident to a 1-thread gets charge
+
+1
+5
+
+1
+5
+
+from its 3+ -neighbor.
+
+from the other endpoint of the 1-thread if it is a 4+ -vertex.
+
+Now we will show that if G contains none of the configurations (RC1)–(RC4), then every vertex finishes with nonnegative
+charge, which is a contradiction. If d(v) = 2, then µ∗ (v) = d(v) − 12
++ 2( 15 ) = 0. If d(v) ≥ 4, then, since G contains no
+5
+
+1916
+
+D.W. Cranston, G. Yu / Discrete Mathematics 311 (2011) 1910–1917
+
+(a) (RC2).
+
+(b) (RC3).
+
+(c) (RC4).
+
+Fig. 2. Configurations (RC2), (RC3), and (RC4) from Lemma 3 and Theorem 4.
+
+3+ -threads (by (RC1)), v gives away charge
+
+1
+5
+
+to each of at most 2d(v) 2-vertices. Note further that if v gives away charge
+
+to t 3-vertices via (R2) and/or (R3), for some constant t, then v gives away charge
+
+1
+5
+
+1
+5
+
+to at most 2d(v) − t 2-vertices. Thus,
+
+we have µ∗ (v) ≥ d(v) − 12
+− 15 (2d(v)) = 53 (d(v) − 4) ≥ 0. So we only need to consider 3-vertices.
+5
+Let d(v) = 3. Suppose v has at most three 2-vertices in its incident threads. If v does not give away charge by (R2), then
+− 3( 15 ) = 0. If v does give charge by (R2), then, since G contains no
+v gives away charge at most 3( 15 ), so µ∗ (v) ≥ 3 − 12
+5
+copy of (RC3), v has at most two 2-vertices in its incident threads. Thus v gives away charge at most 3( 15 ), unless both v is
+incident to a 2-thread and also v gives away charge by (R2) to two distinct vertices. However, this situation cannot occur,
+since it implies that G contains a copy of (RC4), which is a contradiction.
+Suppose instead that v has at least four 2-vertices in its incident threads. Since G contains no copy of (RC2), either v
+is incident to two 2-threads and also adjacent to a 3+ -vertex, or v is incident to two 1-threads and one 2-thread and the
+other end of at least one 1-thread is a 4+ -vertex. In each case, v gives away charge 4( 15 ) and receives charge at least 15 , so
+
+µ∗ (v) ≥ 3 −
+
+12
+5
+
+− 4( 51 ) +
+
+1
+5
+
+= 0.
+
+Now we use Lemma 3 to prove the following linear list coloring result.
+Theorem 4. Let M ≥ 3 be an integer. If G is a graph with mad(G) <
+
+12
+5
+
+and ∆(G) ≤ M, then lcℓ (G) =
+
+M 
+2
+
+Proof. Suppose the theorem is false. Let G be a minimal counterexample and let list assignment L, of size
+
++ 1.
+M 
+2
+
++ 1, be such
+
+that G has no linear list coloring from L. Since M ≥ 3, we have |L(v)| = 2 + 1 ≥ 3 for all v ∈ V . Note that G must
+be connected. Suppose that G contains a 1-vertex u with neighbor v . By the minimality of G, subgraph G − {u} has a linear
+′
+list coloring
+ Mfrom
+ L. Let LM(u−)1 denote the list of colors in L(u) that neither appear on v nor appear twice in N (v). Note that
+′
+|L (u)| ≥ ( 2 + 1) − 2 − 1 ≥ 1. Thus, if G has a 1-vertex u, we can extend a linear list coloring of G − u to G. So we
+may assume that δ(G) ≥ 2.
+Since G has δ(G) ≥ 2 and mad(G) < 12
+, G contains one of the four configurations specified in Lemma 3. We consider
+5
+each of these four configurations in turn, and in each case we construct a linear coloring of G from L.
+Case (RC1): Suppose that G contains (RC1): a 3+ -thread. Let u, u1 , u2 , u3 , u4 be part of the thread, that is, d(u) ≥ 3,
+d(u1 ) = d(u2 ) = d(u3 ) = 2, and d(u4 ) ≥ 2. By the minimality of G, subgraph G − {u2 } has a linear coloring from L. If
+c (u1 ) = c (u3 ), then |L(u2 )| ≥ 2, so we choose c (u2 ) ∈ L(u2 ) − {c (u)}. If c (u1 ) ̸= c (u3 ), then |L(u2 )| ≥ 1, so we choose
+c (u2 ) ∈ L(u2 ). Note that either c (u2 ) ̸= c (u) or c (u1 ) ̸= c (u3 ), so we have not created a 2-colored cycle.
+Case (RC2): Suppose instead that G contains (RC2), shown in Fig. 2. Let u be a 3-vertex that is incident to one 2-thread
+u, u1 , u′1 , u′′1 with d(u′′1 ) ≥ 3 and incident to two 1+ -threads u, u2 , u′2 and u, u3 , u′3 with 2 ≤ d(u′2 ) ≤ 3 and 2 ≤ d(u′3 ) ≤ 3.
+By the minimality of G, subgraph G − {u, u1 , u2 , u3 } has a linear coloring from L. Now we will extend the coloring to G.
+For each uncolored vertex z ∈ {u, u1 , u2 , u3 }, let L′ (z ) denote the colors in L(z ) that are still available for use on z. When
+we extend the coloring, we obviously must get a proper coloring. In addition, we must avoid creating 2-colored cycles and
+avoid creating vertices with 3 neighbors of the same color. Note that |L′ (u1 )| ≥ 2, |L′ (u2 )| ≥ 1, and |L′ (u3 )| ≥ 1.
+Suppose |L′ (u2 ) ∪ L′ (u3 )| ≥ 2. We choose c (u2 ) ∈ L′ (u2 ) and c (u3 ) ∈ L′ (u3 ) such that c (u2 ) ̸= c (u3 ). Next we choose
+c (u) ∈ L′ (u) − {c (u2 ), c (u3 )}. If c (u) ̸= c (u′1 ), then we choose c (u1 ) ∈ L′ (u1 ) − {c (u)}. If instead c (u) = c (u′1 ), then we
+choose c (u1 ) ∈ L′ (u1 ) − {c (u′′1 )}. This gives a valid linear coloring.
+Suppose instead that |L′ (u2 ) ∪ L′ (u3 )| = 1. Thus L′ (u2 ) = L′ (u3 ) = {a}, for some color a. Clearly, we must choose
+c (u2 ) = c (u3 ) = a. Note that this happens only if both d(u′2 ) = d(u′3 ) = 3 and the two other neighbors of u′2 (and u′3 ) have
+the same color. Now we choose c (u1 ) ∈ L(u1 ) − {a, c (u′1 )} and c (u) ∈ L(u) − {a}.
+Since c (u1 ) ̸= a, we have not created any vertex with 3 neighbors of the same color, and we have not created any 2colored cycle passing through u1 . Since c (u2 ) does not appear on the other neighbors of u′2 , we have not created any 2-colored
+cycle passing through u2 .
+Case (RC3): Now suppose instead that G contains (RC3): two adjacent 3-vertices with at least seven 2-vertices in their
+incident threads (shown in Fig. 2). We label the vertices as follows: let u and v be the adjacent 3-vertices, u is incident
+to two 2-threads u, u1 , u′1 , u′′1 and u, u2 , u′2 , u′′2 and v is incident to one 2-thread v, v1 , v1′ , v1′′ and one 1+ -thread v, v2 , v2′ .
+By the minimality of G, subgraph G − {u, v, u1 , u2 , v1 } has a linear coloring from L. Now we will extend the coloring
+to G. For each vertex z ∈ {u, v, u1 , u2 , v1 }, let L′ (z ) denote the colors in L(z ) that are still available for use on z. When we
+
+M 
+
+D.W. Cranston, G. Yu / Discrete Mathematics 311 (2011) 1910–1917
+
+1917
+
+extend the coloring, we obviously must get a proper coloring. In addition, we must avoid creating 2-colored cycles and
+avoid creating vertices with 3 neighbors of the same color. Note that |L′ (u1 )| ≥ 2, |L′ (u2 )| ≥ 2, |L′ (v1 )| ≥ 2, |L′ (u)| ≥ 3, and
+|L′ (v)| ≥ 3; we may assume that equality holds in each case.
+Since |L′ (u)| = 3 > 2 = |L′ (u1 )|, we can choose c (u) ∈ L′ (u)− L′ (u1 ). If c (u) = c (v2 ), then choose c (v1 ) ∈ L′ (v1 )−{c (u)}
+and c (v) ∈ L′ (v) − {c (v1 )}. If instead c (u) ̸= c (v2 ), then choose c (v) ∈ L′ (v) − {c (u)}.
+Now if c (v) ̸= c (v1′ ), then choose c (v1′ ) ∈ L′ (v1 ) − {c (v)}; if c (v) = c (v1′ ), then choose c (v1′ ) ∈ L′ (v1 ) − {c (v1′′ )}.
+Next, choose c (u1 ) ∈ L′ (u1 ) − {c (v)}. Finally, if c (u) = c (u′2 ), then choose c (u2 ) ∈ L′ (u2 ) − {c (u′′2 )}; otherwise, choose
+c (u2 ) ∈ L′ (u2 ) − {c (u)}.
+Recall that c (u1 ) ̸= c (v) and either c (u) ̸= c (v2 ) or c (v1 ) ̸= c (v2 ); thus, we do not create any vertices with three
+neighbors of the same color. By construction, we have no 2-colored cycles through u2 or v1 . Further, c (u1 ) ̸= c (v), so we do
+not create any 2-colored cycles.
+Case (RC4): Suppose that G contains (RC4). We label the vertices as follows: let u, w, v be the path; let u, u1 , u′1 , u′′1
+and u, u2 , u′2 , u′′2 be the 2-threads incident to u; let v, v1 , v1′ , v1′′ and v, v2 , v2′ , v2′′ be the 2-threads incident to v ; and let
+w, w1 , w1′ , w1′′ be the 2-thread incident to w .
+By the minimality of G, subgraph G − {u, u1 , u2 , v, v1 , v2 , w, w1 } has a linear coloring from L. Now we will extend the
+coloring to G. For each vertex z ∈ {u, u1 , u2 , v, v1 , v2 , w, w1 }, let L′ (z ) denote the colors in L(z ) that are still available for use
+on z. When we extend the coloring, we obviously must get a proper coloring. In addition, we must avoid creating 2-colored
+cycles and avoid creating vertices with 3 neighbors of the same color. We will show explicitly how to color u, u1 , u2 , w ,
+and w1 (and we will color v , v1 , and v2 , analogously). We consider two subcases. In fact, we may have one ‘‘side’’ (u, u1 ,
+u′1 , u2 , and u′2 ) that is in Subcase (i) and the other side that is in Subcase (ii); this is not a problem, since we color the sides
+independently.
+Subcase (i): Suppose that c (u′1 ) = c (u′2 ). If c (u′1 ) ̸∈ L′ (u), then we can choose c (u1 ) ∈ L′ (u1 ) and c (u2 ) ∈ L′ (u2 ) such that
+c (u1 ) ̸= c (u2 ), and afterward we choose c (u) ∈ L′ (u) − {c (u′1 ), c (u1 ), c (u2 )}. If c (u′1 ) ∈ L′ (u), then let c (u) = c (u′1 ). Choose
+c (v) analogously. In this instance, we wait to choose c (u1 ) and c (u2 ) until after we choose c (w).
+If c (u) = c (v), then choose c (w1 ) ∈ L′ (w1 ) − {c (u)} and c (w) ∈ L′ (w) − {c (w1 ), c (u)}. If c (u) ̸= c (v), then
+choose c (w) ∈ L′ (w) − {c (u), c (v)} and c (w1 ) ∈ L′ (w1 ) − {c (w)}. Finally, choose c (u1 ) ∈ L′ (u1 ) − {c (u), c (u′′1 )} and
+c (u2 ) ∈ L′ (u2 ) − {c (u), c (w)} (if we have not chosen these colors yet; recall that c (u) = c (u′1 ), so c (u1 ) ̸= c (u); analogously,
+c (u2 ) ̸= c (w)).
+Subcase (ii): c (u′1 ) ̸= c (u′2 ). Choose c (u) ∈ L′ (u) − {c (u′1 ), c (u′2 )}. Choose c (v) analogously. Now color w and w1 as above.
+Finally, we will color u1 , u2 , v1 , and v2 , as below.
+If we can, we choose c (u1 ) ∈ L′ (u1 ) − {c (u)}, and c (u2 ) ∈ L′ (u2 ) − {c (u)} such that either c (u1 ) ̸= c (w) or
+c (u2 ) ̸= c (w). If this is impossible, then L′ (u1 ) = L′ (u2 ) = {c (u), c (w)}; furthermore, L(u) = {c (u), c (u′1 ), c (u′2 )}. Now
+let c (u1 ) = c (u2 ) = c (u) and recolor u with a new color in L′ (u) − {c (u1 ), c (w1 ), c (w)} (note that c (w) ̸∈ L′ (u)). Finally,
+color v1 , v2 , and v analogously.
+It is clear that we have created a proper coloring. It is also straightforward to verify that we did not create any vertices
+with 3 neighbors of the same color, and we did not create any 2-colored cycles.
+This theorem immediately yields the following corollary.
+Corollary 2. If graph G is planar with girth at least 12 and ∆(G) ≥ 3, then lcℓ (G) =
+
+ ∆(G) 
+2
+
++ 1.
+
+References
+[1]
+[2]
+[3]
+[4]
+[5]
+[6]
+[7]
+[8]
+
+P. Erdös, A.L. Rubin, H. Taylor, Choosability in graphs, Congr. Numer. 26 (1979) 125–157.
+L. Esperet, M. Montassier, A. Raspaud, Linear choosability of graphs, Discrete Math. 308 (2008) 3938–3950.
+B. Grünbaum, Acyclic colorings of planar graphs, Israel J. Math. 14 (1973) 390–408.
+H. Hind, M. Molloy, B. Reed, Colouring a graph frugally, Combinatorica 17 (4) (1997) 469–482.
+T.R. Jensen, B. Toft, Graph Coloring Problems, John Wiley & Sons, New York, 1995.
+A. Raspaud, W. Wang, Linear coloring of planar graphs with large girth, Discrete Math. 309 (2009) 5678–5686.
+V.G. Vizing, Coloring the vertices of a graph in prescribed colors, Metody Diskret. Analiz. 19 (1976) 3–10 (in Russian).
+R. Yuster, Linear coloring of graphs, Discrete Math. 185 (1998) 293–297.
+
+

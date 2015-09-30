@@ -1,0 +1,1079 @@
+Robotics and Autonomous Systems 73 (2015) 111–122
+
+Contents lists available at ScienceDirect
+
+Robotics and Autonomous Systems
+journal homepage: www.elsevier.com/locate/robot
+
+A proprioceptive neuromuscular facilitation integrated robotic
+ankle–foot system for post stroke rehabilitation
+Zhihao Zhou a , Yuan Zhou b , Ninghua Wang b , Fan Gao c , Kunlin Wei d , Qining Wang a,∗
+a
+
+The Robotics Research Group, College of Engineering, Peking University, Beijing 100871, China
+
+b
+
+Department of Rehabilitation Medicine, First Hospital, Peking University, Beijing 100034, China
+
+c
+
+Department of Health Care Sciences, University of Texas Southwestern Medical Center, Dallas, USA
+
+d
+
+Department of Psychology, Peking University, Beijing 100871, China
+
+highlights
+•
+•
+•
+•
+
+We developed a proprioceptive neuromuscular facilitation (PNF) integrated robotic ankle–foot system for post stroke rehabilitation.
+It is the first time that PNF method has been used in ankle spasticity/contracture rehabilitation.
+Five able-bodied subjects participated in the experiments and five stroke patients were recruited with a six-week PNF treatment.
+The proposed system can offer more effective treatment than passive stretching in improvement of both passive and active joint properties.
+
+article
+
+info
+
+Article history:
+Available online 2 October 2014
+Keywords:
+Proprioceptive neuromuscular facilitation
+Robotic ankle–foot system
+Ankle rehabilitation
+Spasticity/contracture
+Stroke
+
+abstract
+Ankle joint with spasticity and/or contracture can severely disable the mobility and the independence of
+stroke survivors. In this paper, we developed a proprioceptive neuromuscular facilitation (PNF) integrated
+robotic ankle–foot system for post stroke rehabilitation. The system consists of a robotic platform and a
+control system with graphic user interface. We employ five normal subjects to test the reliability and
+feasibility of the proposed system. To validate the effectiveness of the PNF integrated robotic system, we
+recruit five stroke patients and carry out a six-week PNF treatment. Treatment outcome was evaluated
+quantitatively in passive and active joint properties. The passive hysteresis loop shows that the maximum
+dorsiflexion angle increases from 32.9° ± 1.5° to 42.0° ± 3.2° (p = 0.014) while the resistance torque
+decreases from 45.6 Nm ± 5.8 N m to 29.8 N m ± 4.4 N m (p = 0.019). The active joint properties are
+improved significantly with the training score increasing from 5.7 ± 0.9 to 8.1 ± 0.6, and getting close
+to that of normal subjects (9.5 ± 0.3). In addition, muscle strength has a rising trend as time goes on. The
+results demonstrate that the proposed PNF integrated robotic ankle–foot rehabilitation system is effective
+in improving ankle spasticity and/or contracture and is a promising solution in clinical rehabilitation.
+© 2014 Elsevier B.V. All rights reserved.
+
+1. Introduction
+Human ankle joint as a very flexible and complex skeletal structure plays an important role in providing forward propulsion force
+during terminal stance phase and maintaining body balance and
+smooth gait during the whole gait cycle [1]. Cerebrovascular accident (CVA), or stroke, is one of the leading causes of ankle disability [2,3]. For those patients, the ankle joint with spasticity
+and/or contracture can severely disable the mobility and the independence of stroke survivors [4–8]. The spasticity is resulted
+
+∗
+
+Corresponding author. Tel.: +86 10 6276 9138; fax: +86 10 6276 9138.
+E-mail address: qiningwang@pku.edu.cn (Q. Wang).
+
+http://dx.doi.org/10.1016/j.robot.2014.09.023
+0921-8890/© 2014 Elsevier B.V. All rights reserved.
+
+from the hypertonus and reflex hyperactivity of skeleton muscles
+[9,10]. Such spasticity in flexor muscles of stroke patients is a more
+common syndrome than extensor muscles. It reduces the range of
+motion (ROM) of ankle joint and may cause severe physical pain.
+Moreover, lack of mobilization and prolonged spasticity may further change the structure of muscle fibers and connective tissues
+and finally lead to permanent contracture as a result. About 34%
+of stroke survivors have developed ankle contracture [8,11,12].
+Therefore, one of the greatest challenges in stroke survivors’ rehabilitation is to improve their ankle spasticity and/or contracture,
+which can seriously influence its normal functional activities.
+In clinic, the ankle joint with spasticity and/or contracture
+is generally rehabilitated via physiotherapy [13–15]. During the
+treatment, patient’s ankle is manually moved within its ROM by
+
+112
+
+Z. Zhou et al. / Robotics and Autonomous Systems 73 (2015) 111–122
+
+a physical therapist. Physical rehabilitation is in need of a longterm continuous operation as short-term treatment is less effective
+and usually insufficient to make patients fully recuperation [16].
+Even if the patients have temporarily recovered from short-term
+treatment, they tend to relapse and have future problems [13,17].
+In addition, for some severe patients, their ankle joints have a very
+high stiffness and can hardly be stretched by therapists, even with
+strong arms. Above all, manual stretching is very time-consuming,
+strenuous and laborious to physical therapists. Therefore, manual
+rehabilitation may not last long, partly due to the limitation of
+stretching frequency and duration time.
+In view of shortcomings of physiotherapy, a robotic ankle–foot rehabilitation system has been proposed to support
+physicians in providing a high-intensity therapy for the stroke
+patients [18]. Robotic technology can transform rehabilitation
+from labor-intensive operations to robot-assisted operations,
+which can implement different kinds of rehabilitation methods [19]. The robotic system can offer an adequate stretching force
+and sustaining long-term training, which can cover the limitation of manual stretching [20]. It can also record rich information,
+such as velocity, ROM, joint torque, electromyography (EMG) signals. Those useful signals can facilitate patient diagnosis, functional
+assessment, therapy customization and rehabilitation history
+recording. Thus, robotic rehabilitation is gradually being thought
+to be as good as or even better than manual therapy [21]. There are
+mainly two kinds of robotic ankle–foot rehabilitation systems [20]:
+one kind is mobile systems, e.g. [22–24], mainly focusing on improving walking gait and the other one is platform-based systems
+aiming at improvement of ankle performance. For ankle joint with
+spasticity/contracture induced by the hypertonus and reflex hyperactivity of flexor muscles, the primary work is to alleviate the
+spasticity of crus muscle [5,6]. Before walking rehabilitation using
+wearable systems, patients with ankle joint spasticity/contracture,
+especially those severe patients, have to use a platform-based system to ensure reliability and improve current performance.
+Recently, several research groups have developed different
+robotic platform-based ankle–foot rehabilitation devices [25–33].
+Continuous passive motion (CPM) is mainly applied in those devices. It has been confirmed in their studies that passive stretching is effective in treating the ankle joint with spasticity and/or
+contracture. CPM devices can provide regular and consistent passive stretching. The ankle joint is moved between two predefined
+positions which usually not cover the whole ankle ROM. Therefore, calf muscle may not be fully stretched into the extreme position of dorsiflexion where the spasticity and/or contracture is
+significant. In addition, most of the ankle CPM devices run at a set
+velocity and do not provide motions with velocity change during
+one reciprocation. Different from those devices, Zhang et al. has
+developed an intelligent stretching device for the patients with
+contracture/spasticity and the stretching velocity is inversely proportional to the joint resistance torque [25–27]. However, during
+passive stretching since lower limb is totally relaxed, the improvement of muscle strength and coordination are limited and patients
+can hardly get functional recovery. In addition, passive stretching is
+only a kind of mechanically reciprocating motion without involving patient’s active participation, which makes their acceptance
+and initiative not high.
+To address these problems, we choose an active rehabilitation
+method, namely proprioceptive neuromuscular facilitation (PNF)
+technique. Different from the passive stretching, here the active
+method is specified from the subject point of view, which means
+the active participation of the patient. Common PNF stretching
+involves a shortening contraction of the opposing muscle to place
+the target muscle on stretch. It was firstly proposed by Kabat and
+Knott for the rehabilitation of polio patients with paralysis [34].
+Klein et al. reported that PNF treatment in elderly will significantly
+
+improve flexibility, ROM, muscle strength and ADL function [35].
+The PNF is even found effective to increase muscle volume and
+alter muscle fiber types [36]. Thus, PNF is widely used for physical
+therapist and athletic trainers [37]. Above all, PNF technique can
+cover the problems in the previous treatment and is more effective
+than passive stretching [38]. Moreover, the active participation in
+PNF treatment can improve their compliance and initiative.
+In this paper, we develop a PNF integrated robotic ankle–foot
+system for ankle joint with spasticity/contracture of post stroke
+rehabilitation. The robotic system can provide the required motion of plantar flexion and dorsiflexion, and has nine degrees of
+freedom (DOFs) to conveniently adjust the position of footplate for
+the sake of avoiding misalignment between biological ankle axis
+and robotic system axis [39]. A graphic user interface (GUI) developed in the Labview environment is customized friendly and
+concisely for both patients and operators. Moreover, in consideration of the safety in human–machine interaction (HMI) [40],
+protection on control system and GUI, mechanical limits and emergency switches are all designed in the proposed system. Five post
+stroke patients participate in our pilot experiment and accept a
+course of six-week PNF rehabilitation treatment using the robotic
+ankle–foot system. Experimental results including changes of both
+passive and active properties of ankle joint after training show the
+improvement of spasticity and/or contracture.
+This paper is organized as follows. Section 2 presents the details
+of the robotic ankle–foot rehabilitation system. PNF technique,
+experiment protocol and evaluation methods are illustrated
+in Section 3. Performance of the proposed robotic ankle–foot
+rehabilitation system and results of PNF rehabilitation for five post
+stroke patients are shown in Section 4. Finally, we make discussion
+in Section 5 and conclude in Section 6.
+2. Robotic ankle–foot system
+This section presents the main technical solutions of the robotic
+ankle–foot system (see Fig. 1) which is functionally divided into
+two parts: GUI (top layer) and hardware (bottom layer). Three
+subsystems are implemented on the platform and described
+hereafter. They contains the mechanical design, the sensory and
+control system, and the graphical user interface. Safety of patients
+for the rehabilitation devices is placed at the first place. Once the
+danger happens, it would cause a destructive injury to patients.
+Therefore, protection on control system and GUI, mechanical stops
+and emergency switches are redundantly designed to ensure the
+absolute safety of patient in our system.
+2.1. Mechanical design
+The proposed robotic ankle–foot rehabilitation system consists
+of an immobile base that contains a comfortable seat, a motor
+suite (dunkermotoren Inc.), an adjustable sliding platform in three
+degrees of freedom which is used to move the motor bracket to
+an appropriate position, an adjustable leg support and a control
+cabinet (see Fig. 2). The motor and the footplate are fixed on the
+sliding platform. The leg support can be adjusted in four degrees
+of freedom and the leg was strapped to the leg support by the
+leg belt. The adjustable sliding platform and leg support together
+ensure that ankle axis is aligned with the motor shaft while knee
+is flexed at a fixed degree for each training. They are all locked
+by the lock plungers after being adjusted to the desired position.
+Since the rehabilitation technique that we are adopted is a kind of
+active method which need the patient to perform his maximum
+force during the treatment, the hardware structure must have
+high mechanical strength and stiffness to make the patient and
+guarantee the device to be at a relative standstill. Therefore the
+
+Z. Zhou et al. / Robotics and Autonomous Systems 73 (2015) 111–122
+
+113
+
+Fig. 1. The overall structure of the proposed robotic ankle–foot rehabilitation system. The top layer is the GUI and the bottom layer is the hardware.
+
+Fig. 2. The proposed robotic ankle–foot rehabilitation system. It consists of the immobile base, the sliding platform, the leg support, the control and power supply cabinet
+and the sensory system including the inclinometer and the EMG acquisition system. The sliding platform has three DOFs of translation along x, y and z. The leg support has
+four DOFs of translation along x, y and z and rotation along y.
+
+mechanical structure of the device will be more difficult and
+complex than CPM devices.
+As shown in Fig. 3, the motor is fixed on the motor bracket
+and the footplate is fixed on the motor shaft through the side
+plate. The motor suite consists of a DC motor and an inline gearbox
+with a 250:1 gear ratio which increases the loading capacity of the
+motor up to 100 N m. It also has an inline rotation encoder for
+speed-closed control. Considering interaction between human and
+machine, the safety of the robotic platform is quite important. In
+this study, rotation limits of the footplate are set both in the motor
+drive and control module. The system will stop running if the
+obliquity of the footplate is out of the prescribed range. In addition,
+a mechanical limit stop is set to constrain the range of motion.
+The motor bracket with location holes on the perimeter is used
+to place the mechanical limit stops in our system. The separation
+angle of two adjacent location holes is 5°. Two stop pins on the
+motor bracket are used for limiting the rotation range of the swing
+pin, which is fixed on the motor shaft. Besides, the operator and the
+patient all have their own handhold emergency switch and either
+of them could shut down the motor by pressing their own switch.
+The footplate can move along the side plate to ensure that
+the rotating axis of footplate is aligned with biological ankle axis
+
+(see Fig. 3). The two DOFs can satisfy the foot size for different
+patient. In experimental protocol, we firstly measure the height
+of foot (distance from the bottom of foot to the lateral malleolus)
+which is represented by D0 and the length of foot (distance from
+the heel of foot to the lateral malleolus) which is represented by D1 .
+Before the ankle is placed on the footplate, we adjust the footplate
+position depending on D0 and D1 to avoid the misalignment in the
+process of rotation. Then the foot is secured on the footplate by
+velcro at the dorsal foot and the heel.
+2.2. Control system
+To obtain as much useful information as possible, placement
+positions of sensors used in the system are carefully determined
+(see Figs. 1 and 2). One uni-axial torque sensor (Transducer
+Techniques, Inc.) is mounted on the shaft to measure the resistance
+torque. An inclinometer is attached to the underneath of footplate
+which can record the joint angle with the reference to the ground.
+It is self-designed and its output range is ±90°. Two-channels
+EMG system (Delsys Inc.) is used to measure EMG signals of
+gastrocnemius muscle and soleus muscle. In addition, an inline
+
+114
+
+Z. Zhou et al. / Robotics and Autonomous Systems 73 (2015) 111–122
+
+The joint torque when the muscles are relaxed can be obtained
+by
+Tank (t ) = Tres (t ) = Ja θ¨ (t ) + Ba θ˙ (t ) + Ka θ (t )
+
+(2)
+
+where Ja , Ba and Ka are joint stiffness, viscous damping and foot
+inertia of ankle. And the joint torque when the muscles are
+contracted can be obtained by
+Tank (t ) = Tmuscle (t ).
+
+Fig. 3. Schematic diagram of the motor suite and the footplate. The footplate has
+two DOFs of translation along x and z which is adjusted according to D0 and D1 .
+
+rotation encoder can calculate rotational speed of footplate. All
+of those signals are fed into the Labview program through a USB
+data acquisition (DAQ) card (NI Inc.) with the sampling rate at
+1 kHz. Thereinto, the resistance torque and the joint angle are
+simply processed through a second order Butterworth low-pass
+filter with a cut-off frequency of 20 Hz. The raw EMG signals are
+firstly bandpass filtered through a fourth order Butterworth filter
+with a cutoff frequency of 20 and 450 Hz, then full-wave rectified,
+and low-pass filtered through another fourth order Butterworth
+filter with a cutoff frequency of 5 Hz. Then it is filtered by moving
+average with a window length of two hundred sample points. The
+processed EMG signals also need to subtracts the measured offset
+when the muscles are relaxed. The relationship between torque
+and EMG signals of gastrocnemius and soleus is shown in Fig. 4. The
+correlation coefficient between torque and EMG of gastrocnemius
+is 0.4392 while the correlation coefficient between torque and
+EMG of soleus is 0.9576. The gastrocnemius muscle runs from its
+two heads above the knee to the heel, so we choose soleus muscle
+as feedback in our treatment also due to its high correlation. It can
+demonstrate that the filter method can make soleus EMG signal
+being accurately in correspondence with joint torque.
+The proposed robotic ankle–foot rehabilitation system is
+modeled as a double pendulum using Newton–Euler formulation.
+The combined dynamics of robotic system and human subject is
+given by
+
+¨ t ) + Bs θ˙ (t ) + Ks θ (t ) = Tm (t ) + Tgrav (t ) + Tank (t )
+Js θ(
+
+(1)
+
+where Js , Bs and Ks are the inertia, damping and stiffness of the
+system which are estimated according to the motor specification
+and the mechanical model in the Solidworks Software. θ (t ) was the
+joint flexion angle. Tm (t ), Tgrav (t ) and Tank (t ) are the motor output
+torque, gravitational torque and ankle joint torque, respectively.
+
+(3)
+
+The system is driven by a DC motor controlled by a customized
+driver. As shown in Fig. 5, the control strategy implements a double
+closed-loop system with the current control as the inner-loop and
+the speed control or position control as the outer-loop which is
+switched based on motor status.
+The velocity is controlled in such a way that it was inversely
+proportional to the resistance torque [27]. Thus, when the position
+of the ankle joint gets closed to the extreme position of ROM, the
+increasing resistance slows down the motor gradually and at the
+same time the muscle–tendons involved are stretched slowly and
+safely. In the middle of ROM where the resistance is usually low,
+the motor stretches the slack muscles at higher speed. Certainly, if
+the resistance is high in the middle, the movement would also be
+slowed down accordingly. Specifically, θd and θp are the extreme
+position of the joint ROM in ankle dorsiflexion and plantar flexion,
+respectively (both are positive numbers). Tp is a specified peak
+resistance torque when the motor reaches the mechanical stops.
+If Tres (t ) is beyond the Tp , the system will shut down immediately
+as a kind of self-protection. It can serve as a safe value to protect the
+patient and the system. vmin and vmax (two positive numbers) are
+the minimum and maximum speeds (for stretching in the middle
+of ROM) which are predetermined, respectively. C1 and C2 are
+two constants and are empirically selected according to the range
+of velocity and resistance torque. C2 scales the 1/Tres (t ) to the
+appropriate stretching velocity.
+When the position θ (t ) is in the middle of ROM, the motor
+velocity v(t ) is calculated by
+
+
+vmin
+
+
+
+C2
+v(t ) = C1 +
+
+|T (t )|
+
+
+vmax
+
+vt
+
+vmin
+
+vmin < vt < vmax
+vt
+
+(4)
+
+vmax
+
+where vmin and vmax (two positive numbers) are the minimum
+and maximum speeds (for stretching in the middle of ROM) which
+are predetermined, respectively. C1 and C2 are two constants
+and are empirically selected according to the range of velocity
+and resistance torque. C2 scales the 1/Tres (t ) to the appropriate
+
+Fig. 4. Relationship between torque and EMG signals of gastrocnemius (Gas) and soleus (Sol). All of them were filtered.
+
+Z. Zhou et al. / Robotics and Autonomous Systems 73 (2015) 111–122
+
+115
+
+Fig. 5. Control flow diagram of the ankle rehabilitation system.
+
+Fig. 6. The main interface (or homepage) of the customized graphical user interface developed in the Labview environment.
+
+stretching velocity. In our system, C1 and C2 are 7.5 and 0.05
+respectively.
+When the position θ (t ) reaches the end of ROM, namely θd or
+θp , the motor velocity v(t ) is zero. The motor driver implements
+a position close-loop by PID controller and current closed-loop
+serves as the inner-loop.
+
+perform isometric contraction with the soleus muscle activated
+and maintains the soleus EMG in the target percentage range of
+MVC for seconds (Hold time). A countdown clock is used to display
+the remaining time of relax time and hold time. And each trial
+will have a training score to the patient which will be explained
+in Section 3.
+
+2.3. Graphical user interface
+
+3. Method
+
+A customized GUI is developed in Labview environment for
+the robotic ankle–foot rehabilitation system. All interfaces are
+concise and friendly so that the patients can easily understand.
+They are also convenient to operate by the therapist. As shown
+in Fig. 6, it is the main interface (or called homepage) of our
+GUI, where we can operate patients database and enter into each
+training interface according to the rehabilitation protocol. Some
+individual information like name, age and height needs to input
+when adding a new patient. Also we can choose a previous patient
+from patients database and set wanted paths of saving data.
+According to the rehabilitation protocol in the homepage, we can
+enter into corresponding sub interfaces in sequence.
+‘PNF stretching’ as the key interface during treatment is shown
+in Fig. 7. Two windows display to the operator and the patient,
+like Fig. 7(a) and (b). ROM of dorsiflexion and maximum voluntary
+contraction (MVC) of EMG have been recorded in the step of ‘ROM
+Measurement’ and ‘MVC Measurement’, which are the default
+value in ‘PNF stretching’. Total trials number, hold time, relax time
+and target need to set by the operator. Those parameters all can
+be updated when the software is running. The patient is asked to
+
+3.1. Proprioceptive neuromuscular facilitation (PNF)
+PNF stretching is commonly used in clinical environments to
+enhance both active and passive ROM with the ultimate goal
+being to optimize motor performance and rehabilitation. Proprioception means ‘sense of self’. In human limbs, the proprioceptor provides information about joint angles, muscle length, and
+muscle tension, which give information about the position of the
+limb in space. The Golgi tendon organs (GTO) serves as one kind of
+proprioceptive sensory receptor organs in our body. It can provide
+information about changes in muscle tension. One end of GTO is
+connected to the muscle fibers and the other end merges into the
+tendon bundles. When the central nervous system sends a message
+to the agonist muscle to contract, (here the agonist muscles are
+gastrocnemius and soleus muscle), these target muscles develop
+active force. Due to the applied force, GTO gets compressed, and
+triggers Golgi tendon reflex (GT reflex), which can relax and
+lengthen the target muscle (here the target muscles are also gastrocnemius and soleus muscle). So the patient actively contracts
+his gastrocnemius and soleus muscle, meanwhile makes these
+
+116
+
+Z. Zhou et al. / Robotics and Autonomous Systems 73 (2015) 111–122
+
+(a) Interface for operators.
+
+(b) Interface for patients—1.
+
+(c) Interface for patients—2.
+
+Fig. 7. Sub interface: PNF stretching. (a) is the interface for operator. (b) is the interface for patients when patients relax muscles in neural position and (c) is the one when
+patients contract muscles to step the footplate.
+
+(a) Direct hold-relax PNF.
+
+(b) Indirect hold-relax PNF.
+Fig. 8. Principles of two kind of PNF methods. Direct hold-relax PNF and indirect hold-relax PNF are shown in subfigure (a) and (b), respectively.
+
+muscles get further relaxed. The repetition of this process facilitates the patient to further contract and relax his ankle joint. Since
+the target muscle is also the agonist, this technique is usually called
+direct hold-relax PNF [41,42] (see Fig. 8(a)).
+On the other hand, there is an indirect hold-relax PNF technique (see Fig. 8(b)). In human body, there exists a neural phenomenon called reciprocal inhibition. When the agonist muscle
+(muscle causing movement) starts to contract, the tension in the
+antagonist muscle (muscle opposing movement) is inhibited by
+impulses from motor neurons, and thus must simultaneously relax.
+With reciprocal inhibition as one muscle contracts, the opposing
+(antagonist) muscle will relax and allow more movement around
+the joint. In this case the target muscle is the opposing muscle (antagonist) and this technique is called indirect hold-reflex PNF.
+In this study, we currently only adopt the direct hold-relax PNF
+technique in our system. We can intuitively discover that direct
+hold-relax PNF is more easy to take in than indirect hold-relax PNF
+because it can directly improve the lost or deficient dorsiflexion
+
+motion. But considering hypertonus of back muscle due to spasticity and/or contracture, the patient is very hard to actively dorsiflexion according to indirect hold-reflex PNF. Therefore indirect PNF is
+more suitable for their primary rehabilitation. When spasticity has
+been largely alleviated, indirect hold-relax PNF maybe be needed.
+3.2. Subjects and experiment protocol
+Five chronic stroke patients with ankle spasticity and/or
+contracture (Ashworth scale >1 around ankle joint) participated
+in the study. Detail information was shown in Table 1. The stroke
+subjects’ age was 65.6 ± 9.0 years, height was 170.4 ± 11.0 cm
+and weight was 71.0 ± 12.6 kg. Two of them were left impaired
+side and others were right. Their first stroke occurred 42.8 ± 13.3
+months ago. All the stroke patients were able to walk in an
+abnormal gait without any mechanical aid, and able to generate
+plantar flexion using the calf muscles. They were all from the
+Department of Rehabilitation Medicine, First Hospital, Peking
+
+Z. Zhou et al. / Robotics and Autonomous Systems 73 (2015) 111–122
+
+117
+
+Table 1
+Subject data.
+Patient no.
+
+Age (year)
+
+Gender (M/F)
+
+Height (cm)
+
+Weight (kg)
+
+Impaired side (L/R)
+
+Injury duration (Month)
+
+1
+2
+3
+4
+5
+Mean ± Std
+
+77
+65
+72
+58
+56
+65.6 ± 9.0
+
+M
+M
+M
+M
+M
+/
+
+156
+170
+165
+185
+176
+170.4 ± 11.0
+
+51
+85
+69
+76
+74
+71.0 ± 12.6
+
+L
+L
+R
+R
+R
+/
+
+50
+59
+26
+46
+33
+42.8 ± 13.3
+
+University and they gave written and informed consent before
+the experiment. All procedures were approved by the institutional
+review board of the First Hospital, Peking University. The training
+was carried out 3 times a week and lasted for 6 weeks. In addition,
+we also recruited five normal subjects to check the system before
+patients’ experiments. Their age was 27.2 ± 1.8 years, height was
+165.6 ± 8.7 cm and weight was 65.8 ± 9.9 kg, and two of them
+were female. Test data of both sides were measured. The purpose
+of those normal subjects was to evaluation the feasibility of the
+overall system.
+The experiment protocol mainly involved three steps, namely
+preparation, initialization and stretching:
+3.2.1. Step I: preparation
+D0 and D1 of the subject’s foot were measured in order to properly adjust the position of the device. It could ensure that the ankle joint was able to align with the axis of the motor shaft. The
+subject seated comfortably with knee flexed at 30° which was determined after multiple comparison. The lower leg was strapped
+to the leg support and the foot was attached to the footplate. The
+skin was cleaned and conditioned with warm water before attaching the electrode pads. Surface EMG electrodes were placed according to the recommendation of the SENIAM Protocol (Surface
+ElectroMyoGraphy for the Non-Invasive Assessment of Muscles) to
+detect soleus muscle EMG [43].
+3.2.2. Step II: initialization
+At the beginning of each stretching, the extreme position in ankle dorsiflexion was measured which was the maximum angle the
+patient was able to reach. At first, subject’s foot was moved passively to its dorsiflexion. When the extreme position was reached
+according to real-time feedback of patient, the operator would shut
+down the motor and the system would record the maximum angle
+value. With the ankle at the extreme dorsiflexion position, subject
+was asked to perform maximum voluntary contraction (MVC) in
+plantar flexion direction by activating the soleus muscle and the
+EMG signal was collected at the same time. MVC value of EMG generally needed to be measured up to three times. The peak value of
+MVC was recorded for normalization in the PNF stretching.
+3.2.3. Step III: stretching
+During the PNF stretching, the ankle joint was passively rotated
+from its neutral position to the extreme dorsiflexion position. Then,
+the subject was asked to perform isometric contraction with the
+soleus muscle activated and maintained the soleus EMG in the
+range of 50% ± 10% MVC for 15 s. The target range and the hold
+duration time were adjusted based on actual condition of different
+subjects and the rehabilitation phase. The processed EMG feedback
+and the target range were provided through a customized GUI in
+the patient monitor. After the 15 s muscle activation, ankle joint
+was moved back to its neutral position to relax the muscle. The
+break between each PNF stretching was 10 s. Each training session
+was 30 min including about 30 trails. Before and after each training,
+ankle joint was passively rotated between its neutral position and
+extreme dorsiflexion position for about 1 min to warm up and relax
+the soleus and gastrocnemius muscle, respectively.
+
+3.3. Evaluation
+The robotic ankle–foot system can be available not only to treat
+the ankle joint with spasticity and/or contracture but also to quantitatively evaluate the effectiveness based on the rehabilitationinduced changes in joint biomechanical properties. Improvement
+of passive and active properties of ankle joint will be described
+hereafter.
+3.3.1. Passive properties of ankle joint
+Since spasticity and/or contracture can reduce the joint ROM
+(mainly in dorsiflexion direction) and largely increase dorsiflexion resistance torque (plantar flexor muscle resistance torque),
+changes of them are effectively physical size improvements.
+Throughout the stretching treatment, the robotic system measures
+the passive ROM and the resistance torque. The ROM measures
+were divided into dorsiflexion ROM, plantar flexion ROM and total ROM. Here we only pay more attention to the dorsiflexion ROM
+since spasticity/contracture can cause drop-foot and we do not
+want them to do some plantar flexion motion within its ROM.
+Passive joint dynamic properties in terms of joint stiffness and
+viscosity before/after PNF rehabilitation are evaluated quantitatively. They are measured as the slope of the torque–angle relationship (hysteresis loop) and the slope of torque–velocity relationship [4,25]. In hysteresis loop, the ascending curve represents
+the passive dorsiflexion phase and the descend curve represents
+the plantar flexion phase, as show in Fig. 9. θ –τ and θ ′ –τ ′ represent the torque–angle relationship before and after rehabilitation,
+respectively. The changes of them can reflect improvement of passive biomechanical properties.
+Before the whole rehabilitation treatment, we measure and
+record the maximum dorsiflexion angle θm which the patient can
+be ability to reach passively. Meanwhile, corresponding resistance
+torque τm at the position θm is also measured. We did not directly
+compare (θm , τm ) and (θm′ , τm′ ) between before and after the PNF
+rehabilitation treatment and it may be meaningless, because
+obviously the larger joint angle, and the larger resistance torque.
+Therefore, maximum dorsiflexion angle θ˜ and θm′ under the same
+resistance torque τm′ before and after rehabilitation are compared
+and so are maximum resistance torque τm and τ˜ at the same angle
+position θm , as shown in Fig. 9.
+3.3.2. Active properties of ankle joint
+For stroke patients, because of brain dysfunctions related to disease of the blood vessels supplying the brain, it leads to loss of
+muscle inhibition and cause spasticity. PNF can improve patients’
+control for their back muscles through reconstruction of nerve
+function because the treatment needs patients to perform isometric contraction with the soleus muscle activated and to track target curve. In addition, PNF as a active rehabilitation therapy can
+strengthen the muscle force indicated by the active output torque
+of ankle joint. Those advantages are what the passive stretching
+does not have.
+We propose a training Score to quantitatively evaluate the
+outcome of PNF stretching. It can reflect active properties of ankle
+joint comprehensively. We assume that P is the feedback value
+
+118
+
+Z. Zhou et al. / Robotics and Autonomous Systems 73 (2015) 111–122
+
+Fig. 9. Torque–angle relationship (hysteresis loop) during ankle stretching in dorsi- and plantar flexion, obtained from subject 3. The x-axis is the dorsiflexion angle and the
+Y -axis is the resistance torque. (θ, τ ) and (θ ′ , τ ′ ) represent the torque–angle relationship before and after rehabilitation, respectively. The variable with subscript ‘m ’ refers
+to the maximum value.
+
+Table 2
+Comparison of maximum dorsiflexion angle θ˜ and θm′ under the same resistance torque τm′ and maximum resistance torque τm and τ˜ at the same position θm between before
+and after PNF rehabilitation.
+Patient no.
+
+θm (deg)
+
+τm (N m)
+
+τ˜ (N m)
+
+θm′ (deg)
+
+τm′ (N m)
+
+θ˜ (deg)
+
+1
+2
+3
+4
+5
+Mean ± SE
+
+43.8
+40.1
+37.0
+31.5
+35.9
+37.6 ± 2.1
+
+45.4
+61.3
+55.6
+31.7
+33.8
+45.6 ± 5.8
+
+20.7
+36.5
+43.2
+28.1
+21.4
+29.8 ± 4.4
+
+51.5
+44.0
+39.0
+32.0
+43.7
+42.0 ± 3.2
+
+35.6
+42.9
+46.7
+27.5
+34.4
+37.4 ± 3.4
+
+37.4
+30.4
+32.5
+29.3
+35.1
+32.9 ± 1.5
+
+for patient during PNF training, which refers to the ratio between
+current measured EMG value and MVC or the ratio between current
+torque and maximum active joint torque. Pt refers to the target
+ratio and the target range is Pt ± Er in our system which are showed
+in GUI (Fig. 7). Patients are asked to perform isometric contraction
+to reach Pt and maintain P within the target range during the
+predefined time T . Then we calculate the average value across T
+and the training Score of each trial is defined as
+Score = mean(sgn(P − Pt ))
+
+(5)
+
+where sgn(x) is defined as
+
+
+1
+
+
+ Er − |x|
+sgn(x) =
+Er − Ed
+
+
+
+0
+
+| x| < E d
+Ed
+
+|x|
+
+Er
+
+(6)
+
+| x| > E r
+
+where Ed ( 0) is the value of deadband around 0 and Er ( 0) is
+the value of target range around 0 (Fig. 10). They are empirically
+determined to be 0.02(2%) and 0.1(10%), respectively. Finally we
+multiply Score by 10.0 to map it from 0–1 to 0–10. In our experiment, default value of T and Pt are 15 s and 50%, respectively. For
+instance, if real-time P is 56% or 44%, sgn (P − Pt ) equals to 0.5.
+To avoid some disturbance, data including two seconds of starting and ending respectively during each stretching are discarded
+and not counted for the score. Each treatment is 30 min containing
+about 20–30 trials PNF stretching. Final score for one treatment is
+calculated through averaging all trials score in the day.
+4. Experimental results
+4.1. Changes in passive properties of ankle joint
+The increase in ankle ROM and the decrease in resistance
+torque were consistently observed, indicating that ankle joint was
+
+Fig. 10. Function sgn(x). Ed ( 0) is the value of deadband around 0 and Er ( 0) is
+the value of target range around 0.
+
+more compliant than before and spasticity/contracture had been
+alleviated effectively. Comparison of the maximum dorsiflexion
+angle θ˜ and θm′ under the same resistance torque τm′ before and
+after the treatment were shown in 6th and 4th columns of Table 2.
+And we also conducted a comparison of the maximum resistance
+torque τm and τ˜ in the same position θm before and after the
+PNF rehabilitation treatment, as shown in 2nd and 3rd columns of
+Table 2. Over multiple patients, the dorsiflexion angle increased
+from 32.9° ± 1.5° to 42.0° ± 3.2° while the resistance torque
+decreased from 45.6 N m ± 5.8 N m to 29.8 N m ± 4.4 N m.
+Furthermore, the τ˜ showed significantly lower than τm (p = 0.019)
+while the θm′ showed significantly larger than θ˜ (p = 0.014).
+Those can demonstrate that PNF is effective for treatment for ankle
+spasticity and contracture.
+The rehabilitation treatment of our system can result in considerable changes in joint properties characterized by joint stiffness
+and viscosity. They are calculated from the relationship between
+
+Z. Zhou et al. / Robotics and Autonomous Systems 73 (2015) 111–122
+
+119
+
+Fig. 11. Changes in torque–angle relationship (1st row), stiffness–angle relationship (2nd row), and viscosity–angle relationship (3rd row) of spastic ankles caused by
+the six-week PNF treatment in two stroke patients. The blue and red line correspond evaluations done immediately before and after treatment, respectively. Each column
+corresponds to a stroke patient. (For interpretation of the references to color in this figure legend, the reader is referred to the web version of this article.)
+
+Fig. 12. Changes of active torque of ankle joint during six weeks. The x-axis is the trial number (about 3 times per week) and the y-axis is the increment of active joint
+torque relative to the maximum torque before treatment.
+
+the joint angle and resistance torque (hysteresis loop). As shown
+in the representative cases (Fig. 11), such as the subject 1 (the 1st
+column), joint stiffness is reduced remarkably after rehabilitation
+across the range of muscle contraction (2nd row of Fig. 11). At the
+same time, the treatment also reduces the joint viscosity (3rd row
+of Fig. 11). Other subjects except subject 4 are similar to the subject 1, having significant improvement. For subject 4 (the 2nd column), we do not see increase in maximum dorsiflexion angle and
+just find decrease in resistance torque. Also, stiffness and viscosity also do not decrease evidently. Since he suffered from one time
+cerebrovascular disease in the third week, this maybe result that
+the effect of rehabilitation was not obvious for him.
+
+4.2. Change of active properties of ankle joint
+As shown in Fig. 12, we can see that the maximum active
+torque of every subject was showing a rising trend as time goes
+on. For a representative case, such as subject 5, his joint torque has
+increased 24.24 N m after treatment which was a large promotion.
+Other subjects are also similar. On the whole, increment of joint
+torque is 15.3 N m ± 5.9 N m. As shown in Fig. 13, the Score
+of before/after six weeks rehabilitation and normal subjects were
+5.7 ± 0.9, 8.1 ± 0.6 and 9.5 ± 0.3 respectively. Over multiple
+patients, the increase in training Score is observed, and it is close to
+that of the healthy subjects. Thereinto, the normal value are from
+five normal subjects about 20 trials per subject and we can find that
+
+120
+
+Z. Zhou et al. / Robotics and Autonomous Systems 73 (2015) 111–122
+
+Fig. 13. Comparison of training Score of patients before and after rehabilitation and
+normal subjects. The Scores are 5.7 ± 0.9, 8.1 ± 0.6 and 9.5 ± 0.3 respectively.
+
+the task is relatively easy for all normal subjects. The result present
+that the patients were becoming faster to track the target line after
+the PNF rehabilitation.
+5. Discussion
+We proposed a PNF integrated robotic ankle–foot system for
+rehabilitation of ankle joint with spasticity/contracture in post
+stroke patients. Different from existing treatments, PNF is a kind
+of method based on proprioception with the ultimate goal being to
+optimize motor performance and rehabilitation. The proposed system intelligently stretches the ankle forcefully and safely to its extreme positions where spasticity and contracture are significant. It
+is reliable and convenient for patients and therapists. Furthermore,
+rehabilitation effectiveness is verified in two aspects including
+active and passive joint properties. Our system is considerable improvement over previous study and more importantly, it is promising for treatment of ankle joint with spasticity/contracture in
+clinical rehabilitation.
+The proposed system has following advantages over previous
+robotic devices for post stroke rehabilitation. First, the PNF is very
+effectiveness for post stroke rehabilitation over passive stretching. In PNF treatment, the ankle is stretched to its extreme positions where spasticity and contracture are significant and then
+the patient performs isometric contraction with the soleus muscle according to biological feedback. For spasticity/contracture rehabilitation, the barrier to further progress lies not in developing
+new hardware but rather in finding the most effective way to enhance neuro-recovery [44]. It is clear that PNF can be qualified to
+carry the neurologic recovery. Active joint properties are improved
+significantly with the training score increasing from 5.7 ± 0.9 to
+8.1 ± 0.6, and getting close to that of normal subjects (9.5 ± 0.3)
+after treatment (Fig. 13). The results indicate that neural control is
+improved by the PNF training. In addition, muscle strength has a
+rising trend as time goes on (Fig. 12) and increment of joint torque
+is 15.3 N m ± 5.9 N m. Those are what the passive stretching does
+not have.
+To verify the effectiveness of our system with passive stretching, we can compare some common indicators. In our results, the
+passive hysteresis loop shows that the maximum dorsiflexion angle increases from 32.9° ± 1.5° to 42.0° ± 3.2° (p = 0.014)
+while the resistance torque decreases from 45.6 N m ± 5.8 N m
+to 29.8 N m ± 4.4 N m (p = 0.019) (Table 2). All these changes
+are quite evident. In addition, changes in joint stiffness and viscosity are also significantly improved (Fig. 11). However, in [25], dorsiflexion range increased from 11.9° to 16.5° at the same torque
+(10 N m) after stretching. Changes in joint stiffness and viscosity
+are not significant. In [27], the resistance torque was 11.9 N m and
+10.5 N m and the stiffness was 0.60 N m/° and 0.49 N m/° at 20°
+dorsiflexion, pre- and post-intervention, respectively. In [29], the
+
+dorsiflexion angle increases of 5°. Above all, we can find that the
+proposed PNF method is more effective than the passive stretching.
+Now, there are several commercial products called isokinetic machines (e.g. BIODEX, CYBEX NORM) whose working modes include
+continuous passive motion (CPM) and resistance training. Different from them, the working mode of our system is originated from
+PNF technique as a kind of neurophysiological technique most often used to inhibit spasticity based on two inhibitory concepts—
+Autogenic inhibition and Reciprocal inhibition which is respond to
+direct hold-relax and indirect hold-relax respectively. The preliminary clinical results demonstrate its effectiveness on rehabilitation
+of spasticity and/or contracture.
+Second, the proposed system can raise compliance and initiative of patients which are key points to make them training
+zealously and persistently [45,46]. Stroke rehabilitation is in need
+of a long-term continuous operation as short-term treatment is
+less effective and usually insufficient to make patients fully recuperation [13,16,17]. In our system, the friendly GUI can provide
+biological feedback and the patient needs to perform isometric
+contraction with the soleus muscle according to the biomedical
+feedback, which have formed a reasonable human–machine interaction. From behaviors and experiences of all subject, it is found
+that they show more interested in training than passive stretching.
+Thus, our system can make the patients persevere in a long-term
+treatment with better initiative.
+Moreover, our device stretches the ankle joint forcefully and
+safely. The stretching velocity is controlled similar to Zhang
+et al. [25] and the control method can enhance safety. The system
+can cover the limitation of stretching frequency and force in physical therapist and do not have the shortcoming of labor, so it can
+make long-term and sufficient treatment [20]. Safety of HMI [40]
+is ensured by redundantly design of mechanical limit, emergency
+switch and control strategy. In addition, multi-DOFs of platform
+can be adjusted to avoid misalignment between biological ankle
+axis and robotic device rotation axis [39].
+The robotic ankle–foot rehabilitation system, though being
+promising, has some limitations in this paper and future improvements are needed. Firstly, the small sample of patients takes part in
+the pilot experiments and we will verify more subjects to achieve
+more comprehensive and reliable evaluation of our system and
+the rehabilitation therapy comparing with different training methods. Secondly, only a six-week rehabilitation was done for those
+patients and we will continue the long-term treatment for those
+patients and to further investigate the effectiveness of PNF treatment. Thirdly, we will try more effective methods integrated with
+robotics for stroke rehabilitation in future, such as other neurophysiologic techniques or motor learning techniques [47].
+6. Conclusion
+In this paper, we have proposed a PNF integrated robotic
+ankle–foot system for rehabilitation of ankle joint with spasticity/contracture induced by stroke. The proposed system is intelligent and reliable, and can offer more effective treatment
+than passive stretching in improvement of both passive and active joint properties. We verify its effectiveness through clinical experiments. The system can be a good solution for ankle
+spasticity/contracture. Future endeavors should further improve
+its performance and make it widely used in clinical rehabilitation.
+Acknowledgments
+This work was supported by the National Natural Science
+Foundation of China (61005082, 31000456, 31371020, J1103602,
+61020106005), the Beijing Nova Program (No. Z141101001814001)
+and the PKU-Biomedical Engineering Joint Seed Grant 2014.
+
+Z. Zhou et al. / Robotics and Autonomous Systems 73 (2015) 111–122
+
+References
+[1] N. Tejima, Rehabilitation robotics: a review, Adv. Robot. 14 (2000) 551–564.
+[2] World Health Organization (2008). The World Health Report. [Online].
+Available: http://www.who.int/whr/2008/en.
+[3] T. Ingall, Stroke-incidence, mortality, morbidity and risk, J. Insur. Med. 36
+(2004) 143–152.
+[4] S.G. Chung, E.M.T. van Rey, Z. Bai, E.J. Roth, L.Q. Zhang, Biomechanic chans in
+passive properties of hemiplegic ankles with spastic hypertonia, Arch. Phys.
+Med. Rehabil. 85 (2004) 1638–1646.
+[5] J. Harlaar, J.G. Becher, C.J. Snijders, G.J. Lankhorst, Passive stiffness characteristics of ankle plantar flexors in hemiplegia, Clin. Biomech. 15 (2000) 261–270.
+[6] R.T. Katz, W.Z. Rymer, Spastic hypertonia: mechanisms and measurement,
+Arch. Phys. Med. Rehabil. 70 (1989) 144–155.
+[7] F. Gao, L.Q. Zhang, In vivo biomechanical evaluations of the medial
+gastrocnemius: changes in muscle properties in stroke survivors, in:
+Proceedings of the 28th IEEE EMBS Annual International Conference, 2006, pp.
+2083–2086.
+[8] W. Vattanasilp, L. Ada, J. Crosbie, Contribution of thixotropy, spasticity, and
+contracture to ankle stiffness after stroke, J. Neurol. Neurosurg. Psychiatry 69
+(2000) 34–39.
+[9] J.W. Lance, Symposium synopsis, in: R.G. Feldman, R.R. Young, W.P. Koella
+(Eds.), Spasticity: Disordered Motor Control, Year Book Medical Publishers,
+Chicago, 1980, pp. 485–495.
+[10] B.D. Schmit, Mechanical measures of spasticity in stroke, Top. Stroke Rehabil.
+8 (2001) 13–26.
+[11] M.M. Pfeffer, M.J. Reding, Stroke rehabilitation, in: R.B. Lazar (Ed.), Principles
+of Neurologic Rehabilitatio, McGraw-Hill, New York, 1998, pp. 105–119.
+[12] M.J. Reding, F. McDowell, Stroke rehabilitation, Neurol. Clin. 5 (1987) 601–630.
+[13] J. Dettori, C. Basmania, Early ankle mobilization, part II: a one-year followup of
+acute, lateral ankle sprains (a randomized clinical trial), Mil. Med. 159 (1994)
+15–20.
+[14] J. Carr, R. Shepherd, Neurological Rehabilitation: Optimizing Motor Performance, Butterworth-Heinemann, Oxford, 1998.
+[15] M.L. Dombovy, B.A. Sandok, J.R. Basford, Rehabilitation for stroke: a review,
+Stroke 17 (1986) 363–369.
+[16] P.K. Jamwal, Design analysis and control of wearable ankle rehabilitation
+robot, (PhD thesis), The University of Auckland, Mechanical Engineering
+Department, 2011.
+[17] S. Trevino, P. Davis, P. Hecht, Management of acute and chronic lateral
+ligament injuries of the ankle, Orthop. Clin. North Am. 25 (1994) 1–16.
+[18] G. Kwakkel, R.C. Wagenaar, J.W. Twisk, G.J. Lankhorst, J.C. Koetsier, Intensity of
+leg and arm training after primary middle-cerebralartery stroke: a randomized
+trial, Lancet 354 (1999) 191–196.
+[19] H.I. Krebs, J.J. Palazzolo, L. Dipietro, M. Ferraro, J. Krol, K. Rannekleiv, B.T.
+Volpe, N. Hogan, Rehabilitation robotics: performance-based progressive
+robotassisted therapy, Auton. Robots 15 (2003) 7–20.
+[20] M. Zhang, T.C. Davies, S. Xie, Effectiveness of robot-assisted therapy on ankle
+rehabilitation—a systematic review, J. Neuroeng. Rehabil. 10 (2013).
+[21] H.I. Krebs, N. Hogan, M.L. Aisen, B.T. Volpe, Robot-aided neurorehabilitation,
+IEEE Trans. Rehabil. Eng. 6 (1998) 75–87.
+[22] S. Mohammed, Y. Amirat, H. Rifai, Lower-limb movement assistance through
+wearable robots: state of the art and challenges, Adv. Robot. 26 (2012) 1–22.
+[23] K.A. Shorter, J. Xia, E.T. Hsiao-Wecksler, W.K. Durfee, G.F. Kogler, Technologies
+for powered ankle-foot orthotic systems: possibilities and challenges,
+IEEE/ASME Trans. Mechatronics 18 (1) (2013) 337–347.
+[24] A. Roy, H.I. Krebs, D.J. Williams, C.T. Bever, L.W. Forrester, R.M. Macko,
+N. Hogan, Robot-aided neurorehabilitation: a novel robot for ankle rehabilitation, IEEE Trans. Robot. 25 (3) (2009) 569–582.
+[25] L.Q. Zhang, S.G. Chung, Z. Bai, D. Xu, E.M.T. van Rey, M.W. Rogers, M.E. Johnson,
+E.J. Roth, Intelligent stretching of ankle joints with contracture spasticity, IEEE
+Trans. Neural Syst. Rehabil. Eng. 10 (2002) 149–157.
+[26] F. Gao, L.Q. Zhang, Altered contractile properties of the gastrocnemius muscle
+poststroke, J. Appl. Physiol. 105 (2008) 1802–1808.
+[27] F. Gao, Y.P. Ren, E.J. Roth, R. Harvey, L.Q. Zhang, Effects of repeated ankle
+stretching on calf muscle–tendon and ankle biomechanical properties in
+stroke survivors, Clin. Biomech. 26 (2011) 516–522.
+[28] P. Cordo, H. Lutsep, L. Cordo, W.G. Wright, T. Cacciatore, R. Skoss, Assisted
+movement with enhanced sensation (AMES): coupling motor and sensory
+to remediate motor deficits in chronic stroke patients, Neurorehabil. Neural
+Repair. 23 (2009) 67–77.
+[29] K. Homma, M. Usuba, Development of ankle dorsiflexion/plantarflexion
+exercise device with passive mechanical joint, in: Proceedings of the IEEE 10th
+International Conference on Rehabilitation Robotics, 2007.
+[30] A. Mirelman, P. Bonato, J.E. Deutsch, Effects of training with a robot-virtual
+reality system compared with a robot alone on the gait of individuals after
+stroke, Stroke 40 (2008) 169–174.
+[31] J.E. Deutsch, J.A. Lewis, G. Burdea, Technical and patient performance using a
+virtual reality-integrated telerehabilitation system: preliminary finding, IEEE
+Trans. Neural Syst. Rehabil. Eng. 15 (2007) 30–35.
+[32] E. Bressel, P.J. McNair, The effect of prolonged static and cyclic stretching on
+ankle joint stiffness, torque relaxation, and gait in people with stroke, Phys.
+Ther. 82 (2002) 880–887.
+[33] J.A. Saglia, N.G. Tsagarakis, J.S. Dai, D.G. Caldwell, Control strategies for patientassisted training using the ankle rehabilitation robot (ARBOT), IEEE/ASME
+Trans. Mechatronics 18 (6) (2013) 1799–1808.
+
+121
+
+[34] H. Kabat, M. Knott, Proprioceptive facilitation technics for treatment of
+paralysis, Phys. Ther. Rev. 33 (1953) 53–64.
+[35] D.A. Klein, W.J. Stone, W.T. Phillips, J. Gangi, S. Hartman, PNF training and
+physical function in assisted-living older adults, J. Aging Phys. Act. 10 (2002)
+476–488.
+[36] N. Kofotolis, I.S. Vrabas, E. Vamvakoudis, A. Papanikolaou, K. Mandroukas,
+Proprioceptive neuromuscular facilitation training induced alterations in
+muscle fibre type and cross sectional area, Br. J. Sports Med. 39 (3) (2005) e11.
+[37] S.M. Marek, J.T. Cramer, A.L. Fincher, L.L. Massey, S.M. Dangelmaier,
+S. Purkayastha, K.A. Fitz, J.Y. Culbertson, Acute effects of static and
+proprioceptive neuromuscular facilitation stretching on muscle strength and
+power output, J. Athl. Train. 40 (2005) 94–103.
+[38] D.C. Funk, A.M. Swank, B.M. Mikla, T.A. Fagan, B.K. Farr, Impact of prior exercise
+on hamstring flexibility: a comparison of proprioceptive neuromuscular
+facilitation and static stretching, J. Strength Cond. Res. 17 (2003) 489–492.
+[39] A. Schiele, F.C. van der Helm, Kinematic design to improve ergonomics in
+human machine interaction, IEEE Trans. Neural Syst. Rehabil. Eng. 14 (4)
+(2006) 456–469.
+[40] A.D. Santis, B. Siciliano, A.D. Luca, A. Bicchi, An atlas of physical human–robot
+interaction, Mech. Mach. Theory 43 (2008) 253–270.
+[41] W.E. Prentice, M.I. Voight, Techniques in Musculoskeletal Rehabilitation,
+McGraw Hill, New York, NY, 2001.
+[42] P.R. Surburg, J.W. Schrader, Proprioceptive neuromuscular facilitation techniques in sports medicine: a reassessment, J. Athl. Train. 32 (1) (1997) 34–39.
+[43] Surface ElectroMyoGraphy for the Non-Invasive Assessment of Muscles
+[http://www.seniam.org].
+[44] H.I. Krebs, Rehabilitation robotics: an academic engineer perspectiv, in:
+Proceedings of the 33rd Annual International Conference of the IEEE EMBS,
+2011, pp. 6709–6712.
+[45] J. Nithianantharajah, A.J. Hannan, Enriched environments, experiencedependent plasticity and disorders of the nervous system, Nat. Rev. Neurosci.
+7 (2006) 697–709.
+[46] S.A. Eraker, J.P. Kirscht, M.H. Becker, Understanding and improving patient
+compliance, Ann. Intern. Med. 100 (2) (1984) 258–268.
+[47] J.M. Belda-Lois, S.M. Horno, I. Bermejo-Bosch, J.C. Moreno, J.L. Pons, D. Farina,
+M. Iosa, M. Molinari, F. Tamburella, A. Ramos, A. Caria, T. Solis-Escalante, C.
+Brunner, M. Rea, Rehabilitation of gait after stroke: a review towards a topdown approach, J. Neuroeng. Rehabil. 8 (2011).
+Zhihao Zhou received his Bachelor degree in Mechanical Engineering from China University of Geosciences (Beijing). He is currently working towards the Ph.D. degree
+under the supervision of Prof. Qining Wang in the College of Engineering, Peking University, China. His research
+interests include biomedical engineering and robotics for
+healthcare.
+
+Yuan Zhou received her Bachelor degree from Peking University, China and the Ph.D. degree from the Department of
+Rehabilitation Medicine, First Hospital, Peking University,
+China. Her research interests include stroke rehabilitation
+and robotics.
+
+Ninghua Wang received her Bachelor degree from Beijing Medical University, China and Ph.D. degree from The
+Hong Kong Polytechnic University, Hong Kong. She is currently a full professor and the Dean of the Department
+of Rehabilitation Medicine, First Hospital, Peking University, China. Her research interests include rehabilitation
+medicine, stroke rehabilitation and rehabilitation devices.
+
+Fan Gao received his Bachelor degree in Mechanical
+Engineering from Peking University, China and Ph.D.
+degree in Mechanical Engineering from Pennsylvania State
+University, USA. He is currently an Assistant Professor from
+Department of Health Care Sciences, University of Texas
+Southwestern Medical Center, Dallas, USA. His research
+interests include rehabilitation device, muscle mechanics,
+orthotics and prosthetics.
+
+122
+
+Z. Zhou et al. / Robotics and Autonomous Systems 73 (2015) 111–122
+Kunlin Wei received his two M.A. degrees (in Kinesiology and Electrical Engineering, respectively) and Ph.D.
+degree in Kinesiology from the Pennsylvania State University, USA. Before that, he obtained his B.E. in Biomechanics from Beijing Sports University, China. He is an
+Associate Professor from Department of Psychology,
+Peking University, Beijing, China. Dr. Wei’s research interests include sensorimotor control, robotics, biomechanics,
+human–machine interaction, and motor rehabilitation.
+
+Qining Wang received his Bachelor degree in Computer
+Science and Technology from China University of Geosciences (Beijing) in 2004, and the Ph.D. degree in Dynamics and Control from Peking University in 2009. He was an
+Assistant Professor in the Center for Systems and Control,
+College of Engineering, Peking University, from July 2009
+to July 2012. He is currently an Associate Professor in the
+College of Engineering, Peking University, and the Director
+of the Beijing Engineering Research Center of Intelligent
+Rehabilitation Engineering. He is the Project Leader of the
+Robotic Prosthesis R&D Group, Peking University. His research interests are in the fields of bio-inspired robots and rehabilitation systems.
+
+

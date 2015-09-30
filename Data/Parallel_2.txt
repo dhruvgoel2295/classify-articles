@@ -1,0 +1,1491 @@
+Parallel Computing 25 (1999) 789±812
+
+www.elsevier.com/locate/parco
+
+Ecient schemes for nearest neighbor load
+balancingq
+Ralf Diekmanna,*,1, Andreas Frommerb,2, Burkhard Moniena,1
+a
+
+Department of Mathematics and Computer Science, University of Paderborn, F
+urstenallee 11, 33102
+Paderborn, Germany
+b
+Department of Mathematics and Institute for Applied Computer Science, University of Wuppertal,
+D-42097 Wuppertal, Germany
+
+Abstract
+We design a general mathematical framework to analyze the properties of nearest neighbor
+balancing algorithms of the diusion type. Within this framework we develop a new Optimal
+Polynomial Scheme (OPS) which we show to terminate within a ®nite number m of steps,
+where m only depends on the graph and not on the initial load distribution.
+We show that all existing diusion load balancing algorithms, including OPS, determine a
+¯ow of load on the edges of the graph which is uniquely de®ned, independent of the method
+and minimal in the l2 -norm. This result can also be extended to edge weighted graphs.
+The l2 -minimality is achieved only if a diusion algorithm is used as preprocessing and the
+real movement of load is performed in a second step. Thus, it is advisable to split the balancing
+process into the two steps of ®rst determining a balancing ¯ow and afterwards moving the
+load. We introduce the problem of scheduling a ¯ow and present some ®rst results on its
+complexity and the approximation quality of local greedy heuristics. Ó 1999 Published by
+Elsevier Science B.V. Open access under CC BY-NC-ND license.
+Keywords: Nearest neighbor balancing algorithms; Diusion load balancing algorithms; Optimal
+Polynomial Scheme (OPS); Complexity; Local greedy heuristics
+
+q
+Partly supported by the DFG-Sonderforschungsbereich 376 Massive Parallelit
+at: Algorithmen,
+Entwurfsmethoden, Anwendungen and the EC ESPRIT Long Term Research Project 20244 (ALCOMIT).
+*
+Corresponding author. Current address: Hilti AG, Corp. Research, FL 9494 Schaan, Principality of
+Liechtenstein.
+1
+http//:www.upb.de/cs/ag-monien.html
+2
+http//:www.math.uni-wuppertal.de/SciComp/
+
+0167-8191/99 Ó 1999 Published by Elsevier Science B.V. Open access under CC BY-NC-ND license.
+PII: S 0 1 6 7 - 8 1 9 1 ( 9 9 ) 0 0 0 1 8 - 6
+
+790
+
+R. Diekmann et al. / Parallel Computing 25 (1999) 789±812
+
+1. Introduction
+We consider the following abstract distributed load balancing problem. We are
+given an arbitrary, undirected, connected graph q   Y i in which node vi P 
+contains a number wi of unit-sized tokens. Our goal is to determine a schedule to
+move tokens across edges so that ®nally, the weight on each node is (approximately)
+equal. In each step we are allowed to move any number of tokens from a node to
+each of its neighbors in G. Communication between non-adjacent nodes is not
+allowed. We assume that the situation is ®xed, i.e., no load is generated or consumed
+during the balancing process, and the graph G does not change.
+This problem describes load balancing in synchronous distributed processor
+networks and parallel machines when we associate a node with a processor, an edge
+with a communication link of unbounded capacity between two processors, and the
+tokens with identical, independent tasks [5]. It also models load balancing in parallel
+adaptive ®nite element simulations where a geometric space, discretized using a
+mesh, is partitioned into sub-regions and the computation proceeds on mesh elements in each sub-region independently [7,9]; here we associate a node with a mesh
+region, an edge with the geometric adjacency between two regions, and tokens with
+mesh elements in each region. As the computation proceeds, the mesh re®nes/
+coarsens depending on problem characteristics such as turbulence or shocks (in the
+case of ¯uid dynamics simulations, for example) and the size of the sub-regions (in
+terms of numbers of elements) has to be balanced. Because elements have to reside in
+their geometric adjacency, they can only be moved between adjacent mesh regions,
+i.e., via edges of the graph [7]. The problem of parallel ®nite element simulation has
+been extensively studied ± see the book [9] for an excellent selection of applications,
+case studies and references.
+Scalable algorithms for our load balancing problem operate locally on the nodes
+of the graph. They iteratively balance the load of a node with its neighbors until the
+whole network is globally balanced. The class of local iterative load balancing
+algorithms distinguishes between diusion [3,5] and dimension exchange [5,21] iterations which mainly dier in the model of communication they are based on.
+Diusion algorithms assume that a node of the graph is able to send and receive
+messages to/from all its neighbors simultaneously, whereas dimension exchange uses
+only pairwise communication, iteratively balancing with one neighbor after the
+other. Throughout this work we focus on diusive schemes, i.e., we assume that
+nodes are able to communicate via all their edges simultaneously.
+The quality of a balancing algorithm can be measured in terms of numbers of
+steps it requires to reach a balanced state and in terms of the amount of load
+moved over the edges of the graph. Recently, diusive algorithms gained some new
+attention [6,7,11,15,17,20,21]. The original algorithm described by Cybenko [5]
+and, independently, by Boillat [3] lacks in performance because of its very slow
+convergence to the balanced state. Ghosh et al. use the idea of over-relaxation ± a
+standard technique in numerical linear algebra ± to speed up the iteration process
+by an order of magnitude [11]. We will see in the following that other, more
+advanced techniques from numerical linear algebra can be used to develop local
+
+R. Diekmann et al. / Parallel Computing 25 (1999) 789±812
+
+791
+
+iterative methods showing an improved ± and in a sense even optimal ± convergence behavior.
+Hu and Blake investigate the ¯ow of load via the edges of the graph and propose a
+non-local method to determine a balancing ¯ow which is minimal in the l2 -norm [15].
+From experimental observations they conjecture that the local diusion iteration of
+Cybenko also ends up with an l2 -minimal ¯ow. We will see in the following that this
+is indeed the case, i.e., we give a mathematical proof that all local iterative diusion
+algorithms including our new optimal OPS scheme determine a balancing ¯ow which
+is l2 -minimal, uniquely de®ned and independent of the method and the parameters
+used.
+Some of the more theoretical papers dealing with diusion algorithms suggest to
+move the load directly as the iteration proceeds [5,11]. This one-phase approach
+usually moves load items back and forth over the edges as the iteration proceeds.
+Thus, the resulting ¯ow of load is by far not l2 -optimal. In practice, therefore, the
+diusion iteration is used as preprocessing just to determine the balancing ¯ow.
+The real movement of load is performed in a second phase [7,15,17,20]. In addition, this two-phase approach has the advantage of avoiding any problems with
+adopting the local iterative algorithms to integral values (like it is, for example,
+done in [11]).
+The movement of load has to be scheduled in such a way that each node does not
+send more load than it possesses in a certain step. Using experiments, we will see that
+simple greedy heuristics like they are used in practical applications like e.g. [20] allow
+to ®nish the load movement in much less steps than taken by the fastest diusion
+algorithm. Interestingly, this ¯ow scheduling problem appears to be un-studied up to
+now. So we introduce it here together with some ®rst theoretical results.
+The main contributions of this paper are summarized as follows:
+· Based on matrix polynomials we develop a general mathematical framework to
+analyze the convergence behavior of existing diusion type methods. Within this
+framework, we develop an Optimal Polynomial Scheme (OPS) which determines
+a balancing ¯ow within m steps if m is the number of distinct eigenvalues of the
+graph. The OPS algorithm makes use of the full set of eigenvalues which can be
+computed in a preprocessing step. Information about the initial load distribution
+is not necessary.
+· We consider the quality of the balancing ¯ows determined by local iterative diusion algorithms. We show that all such algorithms end up with the same ¯ow of
+load which is optimal in the l2 -norm, provided the diusion matrix is a scaled
+and shifted version of the Laplacian. We show how to extend this result to ®nd
+minimal ¯ows on edge-weighted graphs.
+· We introduce the ¯ow scheduling problem and discuss some general lower bounds
+for the number of steps needed to schedule l2 -minimal balancing ¯ows. Additionally,
+problem are
+pwe
+ show that certain local greedy heuristics for this scheduling
+p
+H n-optimal, and that all local greedy algorithms are O n-optimal.
+The paper is organized as follows. Section 2 gives some basic de®nitions and notations. Section 3 develops the general framework for analyzing nearest neighbor
+schemes and presents the new optimal method. Section 4 shows that the methods
+
+792
+
+R. Diekmann et al. / Parallel Computing 25 (1999) 789±812
+
+considered here all ®nd l2 -minimal ¯ows of load. Section 5 deals with the ¯ow
+scheduling problem and, ®nally, Section 6 shows results of some simulations.
+2. Load balancing on graphs
+2.1. Basic de®nitions and notations
+Let q   Y i be a connected, undirected graph with j j  n nodes and jij  x
+n
+edges. Let wi P R be the load of node v
+i P  and w P R be the vector of load values.
+n
+k
+" X n 1Y F F F Y 1 with k  i1 wi denotes the corresponding vector of
+The vector w
+average load.
+nÂx
+to be the node-edge incidence matrix of G. A contains a
+De®ne e P fÀ1Y 0Y 1g
+row for each node and a column for each edge. Each column has exactly two nonzero entries ± a `1' and a `À1' ± according to the two nodes incident to the corresponding edge. The signs of these non-zeros (implicitly) de®ne directions for the
+edges of G. These directions will later on be used to express the direction of the ¯ow.
+nÂn
+Let f P f0Y 1g be the adjacency matrix of G. As G is undirected, B is symmetric.
+Column/row i of B contains 1s at the positions of all neighbors of vi . For some of our
+constructions we need the Laplacian v P ZnÂn of G de®ned as v X p À f, where
+p P NnÂn contains the node degrees as diagonal entries and 0 elsewhere. It is not
+dicult to see that v  eeT . This relation will be used extensively in Section 4.
+Let x P Rx be a ¯ow on the edges of G. The direction of the ¯ow is given by the
+directions in A in conjunction with the signs of the entries of x, i.e., xe b 0 denotes a
+¯ow in the direction of edge e, xe ` 0 against. x is called a balancing ¯ow on G i
+"
+ex  w À wX
+
+1
+
+Eq. (1) expresses the fact that the ¯ow balance at each node corresponds to the
+dierence between its initial load and the mean load value, i.e., after shipping exactly
+xe tokens via each edge e P i, the load is globally balanced.
+Among the set of possible ¯ows which ful®ll (1) we are interested in such x
+achieving certain quality criterions.À
+We especially
+look at balancing ¯ows x with
+Á
+x
+2 1a2
+x
+.
+minimal l2 -norm de®ned as kxk2 
+i1 i
+By local iterative balancing algorithms we denote a class of methods performing
+iterations on the nodes of G which require communication with adjacent nodes only.
+The simplest of these methods performs on each node vi P  the iteration
+Ve  fvi Y vj g P i X yekÀ1  ae wikÀ1 À wkÀ1
+j Y
+
+k
+kÀ1
+kÀ1
+ye X
+wi  wi À
+
+xke  xekÀ1  yekÀ1 Y
+
+and
+2
+
+efvi Yvj gPi
+
+Here, yek is the amount of load sent via edge e in step k. This scheme is known as the
+diusion algorithm and has been described by Cybenko [5] and, independently, by
+T
+Boillat [3]. Denoting by   a1 Y F F F Y ax  the vector of edge weights and by
+x Âx
+h  diag P R
+the x Â x diagonal matrix containing the edge weights on its
+
+R. Diekmann et al. / Parallel Computing 25 (1999) 789±812
+
+793
+
+diagonal, (2) can be written in matrix notation as wk  wwkÀ1 with
+w  s À eheT P RnÂn . The non-zero structure of M is equivalent to the
+ adjacency
+matrix B. M contains ae at position iY j of edge e  vi Y vj , 1 À efvi Yvj gPi ae
+at diagonal entry i, and 0 elsewhere. The edge weights ae have to be chosen in such a
+way that M is nonnegative, i.e., all entries must be P 0. Hence, M is nonnegative,
+symmetric and doubly stochastic, i.e., its rows and columns sum up to 1. We call
+such a matrix M a diusion matrix, if it has the additional property that in the case
+that the graph G is bipartite, at least one diagonal entry is positive. Then 1 is a
+simple eigenvalue of M and all other eigenvalues are smaller in modulus [5]. Con" [5]. If ae  a for all edges
+sequently, the iteration (2) converges to the average load w
+e P i, i.e., all edge weights take the same value, then M is of the special form
+w  s À av. We will see in Section 4 that in this case the iteration Eq. (2) converges
+to an (uniquely de®ned) l2 -minimal ¯ow x, independent of the value of a. If M is of
+the more general form w  s À eheT , iteration (2) determines a ¯ow which is
+minimal in some weighted Euclidean norm. See Section 4.3 for details.
+After a balancing ¯ow has been computed, a schedule of load movements has to
+be found obeying the ¯ow demands. This is particularly easy if initially each node
+has suciently many tokens to ful®ll the demands on its outgoing edges. In this case
+the load can be balanced in one step. In the general case, a valid schedule has to be
+found which decomposes the ¯ow in such a way that in each step a node moves not
+more tokens than it possesses at the beginning of the step, i.e., tokens received in step
+i cannot be send before step i  1. The task here is to ®nd a schedule of minimal
+length.
+More formally, let e~ P fÀ1Y 0Y 1gnÂx be the incidence matrix A of G where the
+implicit edge directions express the directions of the ¯ow, i.e., ~xi  jxi j for all i and
+~x  w À w.
+" Let e~  e~  e~À be a decomposition of e~ into its positive and negative
+e~
+nÂx
+nÂx
+(e~ P f0Y 1g ) we denote the n Â x matrix derived
+part. With e~À P fÀ1Y 0g
+~
+from e by setting all the 1-entries (À1-entries) to 0. The ¯ow scheduling problem is
+de®ned as follows:
+De®nition 1 @he flow sheduling prolem). snputX A graph q, node weights w0 X w,
+a ¯ow ~x and a number k P 0. uestionX Is there a decomposition ~x  ~x0 Y F F F Y ~xkÀ1 
+of the ¯ow ~x with
+~x 
+
+kÀ1
+
+
+~x j
+
+and
+
+j0
+
+~xj  w j  e~À~xj  e~~xj
+w j1  w j  e~
+|{z} |{z}
+send
+
+3
+
+receive
+
+such that
+wj  e~À xj P 0
+
+V j  0Y F F F Y k À 1X
+
+4
+
+A schedule ~x satisfying (4) is called valid. A valid schedule with minimal k among
+all possible valid schedules is called timeEoptiml.
+Note that for this type of scheduling problem the weight ~xe of an edge e determines how many tokens have to be send via this edge. However, the destination of a
+
+794
+
+R. Diekmann et al. / Parallel Computing 25 (1999) 789±812
+
+token is not known in advance and has to be determined by the schedule. This
+problem is of interest in a much broader context than load balancing. It appears
+whenever a ¯ow has to be scheduled and certain constraints have to be satis®ed.
+For the rest of the paper we separately deal with the two problems of ®nding a
+balancing ¯ow and ®nding a schedule for the ¯ow, i.e., we consider algorithms
+®nding l2 -optimal ¯ows by local iterations in Sections 2.2 and 3, and the scheduling
+problem in Section 5. Note that because we propose to use the iterative algorithms
+just to determine the ¯ow, it is possible for them to operate on real values.
+2.2. Existing approaches
+The problem considered here is a static version of dynamic load balancing where
+load items are generated and consumed continuously and balancing algorithms
+operate online. A variant of our problem where nodes are allowed to send only one
+token per step is known as the token distribution problem and has been studied extensively (see e.g. [10,16]). However, as we consider the more realistic model of multiport communication on links of unbounded capacity, the token distribution results
+do not apply here.
+A number of algorithms exist to solve the problem of nearest neighbor load
+balancing on graphs in the multi-port communication model. The earliest local
+method is the diusive scheme (2) from [3,5]. It is sometimes also denoted as ®rst
+order scheme (FOS) [11]. Its relatively slow convergence can be sped up by using the
+overrelaxed scheme w k  bww kÀ1  1 À bw kÀ2 which is also called the second order scheme (SOS) [11]. Section 3.2 investigates the convergence properties of these
+methods in more detail. Their main advantage is their local nature, i.e. they exclusively use nearest neighbor communication on the edges of G. One of the main
+contributions of [11] is the adaptation of the FOS and the SOS methods to the realistic setting of integral load values. For the SOS, the authors introduce so called
+IOUs to handle the case that processors have to send more load than they posess
+(which really happens during certain stages of SOS). With the splitting between
+balancing ¯ow calculation and load movement we propose, these ``integrality''
+problems do not appear.
+Practical applications already use the diusion methods for preprocessing only.
+The movement of load items is performed afterwards using greedy strategies
+[7,17,20]. Hu and Blake suggest to determine the balancing ¯ow directly by solving a
+system of linear equations [15]. Their method explicitly ®nds l2 -minimal ¯ows, although the suggested use of a CG algorithm for the solution of the linear systems
+" in
+requires a lot of global communication and they need to know the average load w
+advance.
+There exist some multi-level approaches to the balancing problem [14,18]. They
+recursively bisect the graph and balance in each step the load of the parts via the cut,
+thereby ®xing the ¯ow on the cut edges. Such algorithms terminate within log n
+steps, where each step is quite complex and requires itself a lot of communication
+between processors.
+
+R. Diekmann et al. / Parallel Computing 25 (1999) 789±812
+
+795
+
+3. Local and optimal local algorithms
+In this section we present a general framework for nearest neighbor load balancing schemes which rely on a polynomial based representation of the iteratively
+determined work loads. We show that the FOS and SOS schemes appear as special
+cases within the framework as well as a scheme based on the Chebyshev polynomials.
+Moreover, we present OPS, a new polynomial scheme based on certain optimality
+conditions. This scheme determines the average load after a ®nite number of iterative
+steps. The numerical experiments reported in Section 6 show that OPS can signi®cantly improve over the SOS method.
+3.1. General framework
+Let m be the number of distinct eigenvalues of M. Since M is a diusion matrix
+(see Section 2.1), 1  l1 b l2 b Á Á Á b lm b À1 are its eigenvalues, l1  1 is a simple
+eigenvalue and 1Y 1Y F F F Y 1 is an eigenvector of M to eigenvalue l1 [2]. We denote by
+c  maxfjl2 jY jlm jg ` 1 the second largest eigenvalue of M according to absolute
+values.
+The following simple lemma is crucial to the analysis of any polynomial based
+scheme.
+Lemma 1. vet w0 e ny initil work lod nd w  kn 1Y F F F Y 1 with k 
+orresponding verge lodF woreover, let
+m
+
+zi
+w0 
+
+n
+
+i1
+
+w0i the
+
+i1
+
+e  representtion of w0 in terms of (not neessrily normlized) eigenvetors zi of w
+where wzi  li zi Y i  1Y F F F Y m. hen
+w  z1 X
+" is an eigenvector of w with eigenvalue 1. Since 1 is a simple
+Proof. Of course, w
+"  z1 Y  T 0. Denoting hÁY Ái the Euclidean inner product
+eigenvalue, we know that w
+on Rn we get
+m
+
+1
+hzi Y wi  hz1 Y wi  hwY wiX
+5
+hw0 Y wi 
+
+i1
+"  z1 is orthogonal to
+all other eigenvectors
+Here, we made use of the fact 
+that w
+2
+n
+n
+2
+z2 Y F F F Y zm . But now, hw0 Y wi  i1 kn w0i  kn and hwY wi  i1 kan  k2 an, so
+that Eq. (5) yields 1a  1X Ã
+De®nition 2. A polynomial based load balancing scheme is any scheme for which the
+work load wk in step k can be expressed in the form
+wk  pk ww0 Y
+
+where pk P Pk X
+
+6
+
+796
+
+R. Diekmann et al. / Parallel Computing 25 (1999) 789±812
+
+Here, Pk denotes the set of all polynomials p of degree degp T k satisfying the
+constraint p1  1.
+Note that the condition pk 1  1 implies that all row sums in the matrix pk w
+are
+to 1. This in turn means that the total work load is conserved, i.e.,
+
+n equal
+n
+k
+0
+w
+
+i1 i
+i1 wi . Let us also note that the representation (6) is useful primarily for
+mathematical analysis. Indeed, for (6) de®ning an algorithmically feasible nearest
+neighbor scheme, it must be possible to rewrite it as an update process where wk is
+computed from wkÀ1 (and maybe some more previous iterates) involving one multiplication with w only. This means that the polynomials pk have to satisfy some
+kind of short recurrence relation. Such relations will explicitly be stated in the special
+cases to be discussed in the following subsections.
+The convergence of a polynomial based scheme depends on whether (and how
+iterate wk  pk ww0 and the corresponding
+fast) the 'error' ek  wk À w between the
+k
+average load w  n 1Y F F F Y 1 with k  ni1 w0i tends to zero. These errors ek have
+two fundamental properties which we state in Lemma 2.
+Lemma 2. vet w0 
+m
+
+zi Y
+e0 
+
+m
+
+i1 zi
+
+s in vemm IF hen
+7
+
+i2
+
+ek  pk we0 Y
+
+k  0Y 1Y 2Y F F F
+
+8
+
+Proof. Since w0  e0  w, the ®rst equality is a direct consequence of Lemma 1. To
+show (8) we note that due to pk 1  1 the vector w is an eigenvector of pk w with
+eigenvalue 1. This yields
+ek  wk À w  pk ww0 À w  pk we0 X
+
+Ã
+
+3.2. FOS, SOS, and Chebyshev
+Using both statements from Lemma 2 we see that the error ek of any polynomial
+based scheme satis®es
+2
+3
+m
+m
+m
+
+
+
+k
+zi 
+pk wzi 
+pk li zi X
+9
+e  pk w
+i2
+
+i2
+
+i2
+
+Here we made use of pk wzi  pk li zi , since zi is an eigenvector of M with eigenvalue li . This fundamental relation allows to analyze several nearest neighbor load
+balancing schemes in detail. In particular, taking the Euclidean norm and observing
+that the zi are orthogonal, we arrive at
+2
+kek k2
+
+
+
+m
+
+i2
+
+2
+
+pk li 
+
+2
+kzi k2
+
+m
+
+T max pk li 
+i2
+
+2
+
+!
+m
+i2
+
+2
+
+kzi k2 Y
+
+R. Diekmann et al. / Parallel Computing 25 (1999) 789±812
+2
+
+which, since ke0 k2 
+
+m
+
+i2
+
+797
+
+2
+
+kzi k2 , yields
+
+m
+
+kek k2 T max jpk li j ke0 k2 X
+
+10
+
+i2
+
+We start our analysis of dierent methods with the FOS scheme of Cybenko [5] (cf.
+Section 2.1), where we have pk t  tk . These polynomials satisfy the simple short
+recurrence pk t  tpkÀ1 tY k  1Y 2Y F F F Y so that we get
+wk  wwkÀ1 Y
+
+k  1Y 2Y F F F
+
+In this situation jpk li j  jlki j T ck for i  2Y F F F Y m, where c  maxmi2 jli j. Thus, (10)
+gives
+kek k2 T ck ke0 k2 X
+The second order scheme SOS of [11] takes the polynomials
+p0  1Y p1 t  tY
+pk t  btpkÀ1 t  1 À bpkÀ2 tY
+
+k  2Y 3Y F F F
+
+so that
+w1  ww0 Y
+wk  bwwkÀ1  1 À bwkÀ2 Y
+
+11
+
+k  2Y 3Y F F F
+
+Here, b is a ®xed parameter. This scheme is known as the second order Richardson
+method in numerical analysis. Investigations in [13] show that this iteration converges to w whenever b P 0Y 2 and that the fastest convergence occurs for
+F
+p
+b  bopt  2 1  1 À c2 X
+12
+In this case, one has (see [13,19])
+
+p
+max jpk tj  bopt À 1ka2 1  k 1 À c2 X
+tPÀcYc
+
+Since maxmi2 jpk li j T maxtPÀcYc jpk tj we therefore get from (10)
+kek k2 T bopt À 1
+
+ka2
+
+
+p
+1  k 1 À c2 ke0 k2 X
+
+13
+
+As was pointed pout
+in [11], when comparing the factors ck of FOS and
+
+ka2
+bopt À 1 1  k 1 À c2  of SOS for c close to 1, one can interpret this as the SOS
+method being of `second' order whereas FOS is only `®rst' order.
+The Chebyshev method diers from SOS only by the fact that the parameter b will
+now depend on k according to
+b1  1Y
+
+b2 
+
+2
+Y
+2 À c2
+
+bk 
+
+4
+Y
+4 À c2 bkÀ1
+
+k  3Y 4Y F F F
+
+14
+
+The corresponding polynomials pk are the (scaled) Chebyshev polynomials for the
+interval ÀcY c. This means that they are optimal in the sense that (see [13,19])
+
+798
+
+R. Diekmann et al. / Parallel Computing 25 (1999) 789±812
+
+max jpk tj  min max jptj  2
+
+tPÀcYc
+
+pPPk tPÀcYc
+
+bopt À 1
+
+ka2
+
+1  bopt À 1k
+
+X
+
+Similarly to SOS, this yields the estimate
+kek k2 T 2
+
+bopt À 1
+
+ka2
+
+1  bopt À 1
+
+k
+
+ke0 k2 X
+
+15
+
+The factor in (15) is always smaller than in (13) which shows that the Chebyshev
+method is usually to be preferred over the SOS scheme. Asymptotically, however,
+both methods can be regarded to perform identically since
+4
+lim 2
+
+k3I
+
+51ak
+
+ka2
+
+bopt À 1
+
+1  bopt À 1
+
+2
+
+
+h
+pi1ak
+ lim bopt À 1ka2 1  k 1 À c2
+k3I
+
+ bopt À 11a2 X
+3.3. Optimal polynomial methods
+The basic estimate (10) suggests to construct a method where the quantity
+m
+
+max jpk li j
+i2
+
+is minimized over all polynomials from Pk . Unfortunately, this would not result in
+short recurrences between the polynomials, so that we will not get a computationally
+viable nearest neighbor scheme. However, as we will now explain, minimizing the
+quantity
+m
+
+2
+pk li 
+i2
+
+will give us adequate recurrences. Accordingly, the idea of the method to be developed now is to obtain the smallest possible factor in the estimate
+2
+3
+m
+
+m
+2
+k 2
+ke k2 T
+pk li  max kzi k22 Y
+16
+i2
+
+i2
+
+which follows from (9) in a trivial manner. We need some additional terminology.
+For any two polynomials pY q we de®ne the (inde®nite) inner product hÁY Ái as
+m
+
+xj plj qlj Y
+hpY qi X
+j2
+
+where x2 Y F F F Y xm are a priori given positive weights. Note that hpY pi is always nonnegative and hpY pi  0 if and only if plj   0Y j  2Y F F F Y m. In particular, hpY pi b 0
+for all polynomials p P PmÀ2 , since the m constraints p1  1Y pli   0Y
+i  2Y F F F Y m cannot be simultaneously satis®ed for polynomials of degree T m À 2.
+
+R. Diekmann et al. / Parallel Computing 25 (1999) 789±812
+
+799
+
+We are interested in polynomials pk which minimize hpY pi over Pk . The following
+theorem gives a rather complete answer.
+Theorem 1. por k  0Y F F F Y m À 1 define the polynomils pk P Pk s follows:
+p0 t  1Y
+pk t 
+
+p1 t 
+
+1
+a1 À tp0 tY
+c1
+
+1
+ak À tpkÀ1 t À bk pkÀ2 tY
+ck
+
+k  2Y F F F Y m À 1Y
+
+17
+
+where
+ak  htpkÀ1 Y pkÀ1 iahpkÀ1 Y pkÀ1 iY k  1Y F F F Y m À 1Y
+bk  ckÀ1 hpkÀ1 Y pkÀ1 iahpkÀ2 Y pkÀ2 iY k  2Y F F F Y m À 1Y
+c1  a1 À 1Y
+
+ck  ak À 1 À bk Y
+
+18
+
+k  2Y F F F Y m À 1X
+
+hen we hve
+hpk Y pj i  0
+nd
+m
+
+j2
+
+2
+
+xj
+1 À lj
+
+for kY j  0Y F F F Y m À 1Y k T j
+3
+2
+
+pk lj   min
+
+m
+
+
+pPPk j2
+
+2
+
+xj
+1 À lj
+
+19
+
+3
+2
+
+plj  Y
+
+k  0Y F F F Y m À 1X
+
+20
+
+Proof. Basically, the whole theorem is known from numerical analysis since it states
+the main properties of the (scaled and shifted) so-called kernel polynomials with
+respect to hÁY Ái; see [8, Sec. 2.5], e.g. For convenience, we reproduce the main parts of
+a proof, here.
+The relation (19) means that the polynomials pk are orthogonal with respect to
+hÁY Ái. As is well known from numerical analysis [8], such a sequence of orthogonal
+polynomials exists and it is unique up to scalings with a scalar factor. This scalar
+factors are uniquely de®ned for our situation, since we have the additional restriction
+pk 1  1 for k  0Y F F F Y m À 1. (Note that it is also known that the orthogonal
+polynomials have all their zeros within the interval lm Y l2 , so that none of them
+vanishes at t  1.) Finally, the recurrence (17) is just the standard three term recurrence for orthogonal polynomials (see again [8]), adapted to the normalization
+pk 1  1.
+To show (20) let us ®rst introduce the notation hÁY Ái0 for the inner product
+m
+
+xj
+plj qlj Y
+hpY qi0 
+1
+À
+lj
+j2
+so that hpY qi  hpY 1 À tqi0 X Now, let p P Pk . Since p À pk has a zero at t  1, we see
+that pt can be represented as pt  pk t À 1 À tqt with degq T k À 1. Moreover, any
+polynomial q of degree T k À 1 can be represented as a linear combination
+kÀ1
+qt  j0 gj pj t. Therefore, we have
+
+800
+
+R. Diekmann et al. / Parallel Computing 25 (1999) 789±812
+
+hpY pi0  hpk  1 À tqY pk  1 À tqi0
+ hpk Y pk i0  2hpk Y 1 À tqi0  h1 À tqY 1 À tqi0
+ hpk Y pk i0  h1 À tqY 1 À tqi0 Y
+21
+kÀ1
+since the term hpk Y 1 À tqi0  hpk Y qi  j0 gj hpk Y pj i vanishes due to (19). If q with
+degq T k À 1 is not identically zero, the quantity h1 À tqY 1 À tqi0 is positive. So
+(21) shows that pk is indeed the unique minimizer of hpY pi for p P Pk X Ã
+Taking xj  1 À lj , Theorem
+how to construct a sequence of polynom 1 shows
+2
+mials pk for which the bound i2 pk li  from (16) is the smallest possible. Turning
+this into a computational algorithm, we realize that we ®rst have to precompute all
+eigenvalues of the matrix w and then precompute the scalars ai Y bi Y ci from Theorem 1. Once this is done, and the scalars ai Y bi Y ci are made available to all processors, we get the optimal polynomial nearest neighbor load balancing scheme OPS:
+1
+a1 w0 À ww0 
+c1
+1
+wk  ak wkÀ1 À wwkÀ1 À bk wkÀ2 Y k  2Y F F F Y m À 1X
+ck
+m
+Note that pt  i2 1 À tali  is the only polynomial from PmÀ1 which achieves
+hpY pi  0, i.e. pmÀ1 t  pt. Thus, (16) gives emÀ1  0, which shows that the above
+method is a ®nite method in the sense that it arrives at wk  w in at most k  m À 1
+steps. Let us note that the standard CG method [12] shares this ®nite termination
+property. However, the CG method requires the computation of two inner products
+within each iterative step, so it is not a local method.3
+w1 
+
+4. Solution quality
+The purpose of this section is to show that the load balancing algorithms of
+Section 3.3 can easily be modi®ed in such a manner that, in addition to the iterative
+work loads wk , they also compute an l2 -minimal ¯ow from w0 to wk . These modi®cations represent only minor additional cost. In particular, no further communication (neither global nor local) is required. The essential assumption is that the
+diusion matrix M in the load balancing scheme is of the form
+w  s À avY
+
+22
+
+where L is the Laplacian of the processor graph and a is a ®xed weight for all edges
+e P i. In this case, the ¯ow x transforming w0 into wk which is determined by the
+local iterative methods is uniquely de®ned and l2 -minimal. The more general form of
+w  s À eheT will be discussed in Section 4.3.
+3
+
+As was pointed out by an anonymous referee, the inner products in CG can however be avoided if all
+eigenvalues and the ®rst components of the eigenvectors of w are known.
+
+R. Diekmann et al. / Parallel Computing 25 (1999) 789±812
+
+801
+
+We ®rst collect some basic results on l2 -minimal ¯ows. We then proceed by
+showing how to modify the FOS, SOS, Chebyshev, and OPS schemes of Section 3.3
+so that they compute l2 -minimal ¯ows together with the iterative work loads.
+4.1. Basic results
+For a graph q   Y i let e P fÀ1Y 0Y 1gnÂx be its incidence matrix and
+v  eeT P ZnÂn its Laplacian as de®ned in Section 2.1. Our goal is to characterize l2 minimal ¯ow solutions for given work loads w and v P Rn , i.e., vectors x P Rx which
+have minimal norm kxk2 under all those satisfying ex   where   w À v.
+We start with a lemma recalling an elementary fact about the image of the linear
+map de®ned by L. Throughout the whole section, hÁY Ái will always denote the Euclidean inner product on Rn .
+Lemma 3. he eqution vz   hs  solution @nd then infinitely mnyAD if nd only if
+" c denotes the spe of ll vetors y perE
+" c F rereD the orthogonl omplement w
+Pw
+" iFeFD hyY wi
+"  0F
+pendiulr to wD
+Proof. It is well-known (cf. e.g. [4]) that the Laplacian of a connected graph has 0 as
+" As for any
+a simple eigenvalue, the corresponding eigenspace being spanned by w.
+symmetric matrix, the image of v is precisely the orthogonal complement of its
+kernel. Ã
+We are now able to state the following characterization of l2 -minimal ¯ows.
+Lemma 4. gonsider the l2 minimiztion prolem
+minimizekxk2
+
+over ll x with ex  X
+c
+
+" , the solution to this prolem is given y
+rovided tht  P w
+x  eT zY
+
+where vz  X
+
+23
+
+Proof. This lemma has been proved in [15] using Lagrange multipliers. Here is a very
+elementary proof: First, note that by Lemma 3 we actually know that the second
+equation in (23) does have a solution. Of course, x from (23) satis®es ex  . Any
+other y which satis®es ey   can thus be written as y  x  v, where ev  0. We
+have
+kyk22  kxk22  2hxY vi  kvk22 Y
+where hxY vi  heT zY vi  hzY evi  0, so that kyk2 is indeed minimal if and only if
+v  0. Ã
+Lemma 5 shows that if we have a sequence of work loads converging to the average load, and if we have an l2 -minimal ¯ow for each such load, then these minimal
+¯ows converge to the minimal ¯ow for the average load.
+
+802
+
+R. Diekmann et al. / Parallel Computing 25 (1999) 789±812
+
+Lemma 5. vet wk e  @finite or infiniteA sequene of work lods whih onverges to the
+" woreoverD let
+verge lod wF
+wk  w0  exk
+e suh tht kxk k2 is minimlD iFeFD @y vemm RA
+x k  eT z k Y
+
+where vzk  wk À w0 X
+
+"  w0  e"xD nd k"xk2 is minimlF
+henD limk3I xk  "x existsD w
+n
+" i  kanY i  1Y F F F Y n. Note ®rst that by Lemma 3
+Proof. Let k  i1 w0i so that w
+" 
+the 
+equation vzk  wk À w0 does have a solution since hwk Y wi
+" i.e., wk À w0 P w
+" c . Now, since there are several zk
+kan ni1 wki  k2 an  hw0 Y wi,
+satisfying vzk  wk À w0 , let us take the (Moore±Penrose [12]) pseudoinverse solution
+for all k, i.e.,
+zk  vy wk À w0 X
+" À w0 . ConThis immediately implies that limk3I zk  "z exists, satisfying "z  vy w
+k
+T
+"  w0  e"x.
+sequently, limk3I x  "x exists, too, and it satis®es "x  e "z as well as w
+So, by Lemma 4, "x is the l2 -minimal ¯ow. Ã
+" À w0 directly using for example the conHu and Blake suggest to solve vz  w
+jugate gradient iteration [15]. The ¯ow is then given as x  eT z. We show in the
+following how to iteratively update x within any of the nearest neighbor schemes
+considered so far such that xk converges to the l2 -minimal ¯ow "x. In this manner we
+get a true nearest neighbor scheme for computing the minimal ¯ow as well.
+4.2. Computing work loads and minimal ¯ows
+We start with a general observation which holds for any polynomial based
+method with diusion matrix M, i.e., for methods where we have wk  pk ww0 with
+" k . Since pk 1  1, the polynomial pk 1 À at has value 1 for t  0, so that we
+pk P P
+get the representation
+pk 1 À at  1  tqkÀ1 tY
+
+degqkÀ1  T k À 1X
+
+Because of (22) this shows that wk  pk ww0  w0  vqkÀ1 vw0 , so that zk from
+Lemma 5 is given by qkÀ1 vw0 . Thus, the zk and, consequently, the xk are related in
+quite a straightforward manner to the polynomials de®ning the load balancing
+method. However, for practical algorithmic formulations we have to turn this relation into a cheap update process for the xk . Thus, our goal is to ®nd a vector d kÀ1
+which is easy to update and which can be used to calculate a ¯ow increment y kÀ1 . The
+next theorem describes the update process. Note that similar results are quite familiar
+in numerical analysis in the context of iterative methods for linear systems, see [8], e.g.
+Theorem 2. vet p P Pk e  polynomil stisfying the QEterm reurrene reltion
+pk t  rk t À sk pkÀ1 t  qk pkÀ2 t
+
+24
+
+R. Diekmann et al. / Parallel Computing 25 (1999) 789±812
+
+803
+
+with
+rk À sk  qk  1
+
+for ll k  1Y 2Y F F F
+
+25
+
+vet
+d 0  Àar1 w0 Y
+
+x 1  y 0  eT d 0 Y
+
+w1  w0  ey 0 Y
+
+nd for k  2Y 3Y F F F
+d kÀ1  Àark wkÀ1 À qk d kÀ2 Y y kÀ1  eT d kÀ1 Y
+xk  xkÀ1  y kÀ1 Y wk  wkÀ1  ey kÀ1 Y
+
+26
+
+" exist,
+e the updte proess for xk nd wk . hen, limk3I xk  "x nd limk3I wk  w
+"  w0  e"x nd kxk2 is minimlF
+w
+Proof. With pk 1 À at  1  tqkÀ1 t Eq. (24) becomes
+1  tqkÀ1 t  rk 1 À at À sk 1  tqkÀ2 t  qk 1  tqkÀ3 t
+which, after some algebraic manipulations, yields
+qkÀ1 t  Àark 1  tqkÀ2 t  rk À sk qkÀ2 t  qk qkÀ3 t
+ Àark pkÀ1 1 À at  rk À sk qkÀ2 t  qk qkÀ3 tX
+This shows that zk from Lemma 5 is given by
+zk  Àark wkÀ1  rk À sk zkÀ1  qk zkÀ2 X
+Substituting zk  zkÀ1  d kÀ1 and zkÀ2  zkÀ1 À d kÀ2 and using (25) we ®nally arrive at
+the update formula
+d kÀ1  Àark wkÀ1 À qk d kÀ2 X
+for d kÀ1 . Theorem 2 now follows with Lemma 5.
+
+27
+Ã
+
+Looking at the schemes discussed so far, we have for the FOS rk  1Y sk  qk  0
+so that d kÀ1  ÀawkÀ1 . In the Chebyshev scheme, for each but the ®rst step, we have
+rk  bk Y sk  0Y qk  1 À bk  which yields d kÀ1  Àabk wkÀ1 À 1 À bk d kÀ2 . The
+®rst step is identical to FOS. The SOS scheme diers from Chebyshev only
+by the fact that rk  bopt . Finally, for all but the ®rst step in the OPS scheme
+we have rk  À1ack Y sk  Àak ck and qk  Àbk ack so that (27) results in
+d kÀ1  awkÀ1  bk d kÀ2 ck . The ®rst step can be formulated in a similar way. Fig. 1
+shows a general frame for the dierent types of diusive load balancing. This local
+update scheme of the form
+&
+
+rk ae wikÀ1 À wjkÀ1 
+if k  1
+wki  wikÀ1 À
+yekÀ1 with yekÀ1 
+kÀ1
+kÀ1
+kÀ2
+if k P 2
+rk ae wi À wj  À qk ye
+efv Yv gPi
+i
+
+j
+
+is equivalent to (24) which can be shown by induction using (25) (cf. the proof to
+Lemma 3 in [11]).
+
+804
+
+R. Diekmann et al. / Parallel Computing 25 (1999) 789±812
+
+Fig. 1. Generic frame for nearest neighbor load balancing (node view). The parameters rk and qk for the
+schemes FOS, SOS, Chebyshev, and OPS are given in the text. ii denotes the set of all edges node vi is
+incident with.
+
+" in advance as opNote that all schemes discussed here do not need to know w
+posed to, for example, Hu and Blake's method [15]. All the more advanced schemes
+like SOS, Chebyshev or OPS need is (at least some partial) information on the eigenvalues of the graph q.
+4.3. Weighted l2 -norms
+In situations where the costs of moving load via edges of G are not homogeneous,
+we are interested in a minimal ¯ow with respect to a weighted Euclidean norm, i.e.
+solutions xk of the problem
+2
+31a2
+x
+
+À k Á2
+k
+"
+minimize kx k 
+i xi
+over all xk with exk  wk À wX
+28
+i1
+
+Here,   1 Y F F F Y x  is a cost vector for the edges with all positive entries. An example for such a situation arises with graphs representing a quotient graph of a ®nite
+element triangulation where for geometric reasons ¯ows on certain edges are preferred to others. This can be modeled by attributing dierent cost factors i to the
+edges [7].
+We would now like to sketch that this weighted least squares problem can be
+treated in a manner completely analogous to what we have presented in the previous
+paragraphs. To this purpose, let C denote the x Â x diagonal matrix with
+p
+gii  i Y i  1Y F F F Y x . De®ne ~xk  gxk and e~  eg À1 . Then the weighted least
+squares problem (28) is equivalent to the unweighted problem
+minimize k~xk k2
+
+~xk  wk À wX
+"
+over all ~xk with e~
+
+29
+
+Let us de®ne the weighted Laplacian v~ as v~  e~e~T  eg À2 eT . A careful inspection of
+Lemmas 3±5 now shows that they remain valid with these new matrices. In particular, the solution of (29) can be computed as
+
+R. Diekmann et al. / Parallel Computing 25 (1999) 789±812
+
+~xk  e~T~zk
+
+805
+
+~zk  wk À w0 X
+where v~
+
+In a manner completely similar to our previous investigations, we can thus show that
+polynomial schemes for load balancing can be modi®ed such that they compute ~zk
+~ is now of the
+along with the work loads wk , provided that the diusion matrix w
+form
+~  s À av~  s À aeg À2 eT X
+w
+For purposes of practical computation, the only modi®cations to be done to the
+~ to rename xk as ~xk and to include the back
+explicit algorithms is to replace M by w,
+transformation xk  g À1~xk .
+As another interpretation of this result we see that a diusive scheme using the
+more general form of w  s À eheT with a non-negative diagonal matrix
+h  diaga1 Y F F F Y ax  (cf. Section 2.1) yields a weighted l2 -minimal ¯ow with associated cost vector   1aa1 Y F F F Y 1aax .
+
+5. Flow scheduling
+Section 4.3 developed methods to determine a balancing ¯ow for a given graph
+q   Y i and initial load situation w0 . We now consider the question of actually
+moving the load and here especially the problem of scheduling the ¯ow such that no
+node sends more than it possesses and the number of steps is minimized.
+The ¯ow scheduling problem has been de®ned formally in Section 2.1. We will
+®rst give some examples showing that the two-step approach of ®rst determining the
+¯ow and afterwards moving the load is superior to a one-step approach moving the
+load directly. Then, in Section 5.2 we show a general lower bound on the time a
+schedule of a l2 -minimal balancing ¯ow can take. Finally, Section 5.3 discusses
+the quality of local greedy scheduling heuristics. In the following, we assume that
+the matrix A is directed according to the ¯ow, i.e., we omit the tilde of e~ and ~x of
+Section 2.1.
+5.1. Two-step versus direct load movement
+If diusive algorithms are used for direct load movement, they typically shift
+much more tokens than necessary. We demonstrate this by considering the simple
+example of a chain of three nodes uY vY w as shown in Fig. 2. The left node u and the
+right node w hold 3r tokens, is initially empty. For the ¯ow, assume that the edges
+are (implicitly) directed towards v. Consider the FOS algorithm with parameter
+a  1a2. The accumulated ¯ow on both edges is given by
+
+i
+
+I 
+
+1
+2
+À
+ 3r 1 À
+ rY
+xe  À3r
+2
+3
+i1
+
+806
+
+R. Diekmann et al. / Parallel Computing 25 (1999) 789±812
+
+Fig. 2. Sample graph with w
+"  2r and balancing ¯ow x  rY rT .
+
+whereas, summing up the amounts gives
+I
+
+1
+ 3r2 À 1  3rX
+xe  3r
+i
+2
+i1
+So we see that even in this small example the one-step approach would move a factor
+three more load than necessary.
+Let us now consider the time needed for scheduling the ¯ow in the two-phase approach. Experimental observations show that usually the load can be moved in a small
+number of steps after the balancing ¯ow has been found. Fig. 5 (Section 6) shows
+impressive examples for this fact: all nearest neighbor schemes take a rather large
+number of iterative steps (even the optimal one), whereas the load movement using a
+simple greedy strategy (as de®ned in Section 5.3) is ®nished after at most three steps.
+We conjecture that any nearest neighbor load balancing algorithm has to require at
+least as many steps as an optimal schedule based on a ¯ow determined by the same
+local algorithm. However, it remains an open problem how to prove this observation.
+Finally, let us observe that rounding up the ¯ows at edges to integral values does
+not introduce arbitrarily large errors. Let ~x be the balancing ¯ow rounded to integral
+~ the load distribution after moving ~x. The largest dierence to the setting
+values and w
+in R occurs if at a node for each incomming edge e we have ~xe  xe  1a2 and for
+each outgoing edge ~xe  xe À 1a2 (or vice versa). Thus, for all nodes vi P  it holds
+" i j T 12 degvi .
+~i À w
+jw
+5.2. Lower bounds on k
+It is interesting to notice that the diameter of the graph is not an upper bound on
+the number of steps a schedule can take. More speci®cally, we can show that there
+exist graphs with n2  1 nodes and diameter O1 where any scheduling of an l2 optimal balancing ¯ow has to take at least 34 n À 1 steps.
+Consider the graph G shown in Fig. 3. It consists of n levels, each containing n
+nodes. The levels are connected by complete bipartite graphs, the bottom-node of
+each level is connected to the special node v which is a kind of `short-cut'. The
+
+R. Diekmann et al. / Parallel Computing 25 (1999) 789±812
+
+807
+
+Fig. 3. The diameter is not an upper bound for the scheduling time.
+
+diameter of this graph is 4. Assume that the leftmost level holds all the load, n  1r
+for the bottommost node u and nr tokens for the other nodes from the ®rst level.
+"  r is the average load.
+Then, w
+Let x be a ¯ow sending r tokens from u to v and moving the rest from left to right
+via the bipartite graphs using the edges between two consecutive levels evenly. Then,
+
+2
+2
+nÀ1
+
+kxk2
+1
+1
+2 nÀi
+1
+n
+ 1  nn À 12n À 1 ` n3 for n P 3X
+r2
+n
+6
+3
+i1
+Now assume there is a ¯ow x which is schedulable in k steps. If k ` n, then
+n À 1 À k levels of G have to receive their load via node v. Thus, the amount of
+n À 1 À knr tokens have to be transferred towards v via at most k À 2 edges and
+have to leave v via at most n À 1 À k edges. Distributing the load over the available
+edges to and from v yields
+
+2
+
+2
+2
+j
+x j2
+n À 1 À kn
+n À 1 À kn
+P k À 2
+ n À 1 À k
+r2
+kÀ2
+nÀ1Àk
+
+
+n2 n À 1 À kn À 3
+Y
+kÀ2
+
+30
+
+where we have counted only the ¯ow on edges to and from v. (30) is not larger than
+only if k P 34 n À 1. Thus, any l2 -minimal ¯ow must take at least k P 34 n À 1 steps.
+
+1 3
+n
+3
+
+5.3. Local greedy scheduling
+A local greedy ¯ow scheduling algorithm determines for each node and each step
+how many of the available tokens to send to which of the outgoing edges. Local
+greedy heuristics can be characterized by the following points:
+(i) Their scheduling decision depends only on local information about the ¯ow demands x and the available load w.
+(ii) If in a certain step a node contains enough tokens to ful®ll all is out¯ow-demands, it immediately saturates all its outgoing edges.
+
+808
+
+R. Diekmann et al. / Parallel Computing 25 (1999) 789±812
+
+(iii) If a node does not contain enough load, it distributes all available tokens to its
+outgoing edges according to some tie-breaking.
+In the experiments reported in Section 6 such a local scheduling heuristic balances
+the load in only a small number of steps. We show that this is not always the case.
+Let us ®rst consider the class of memory-less greedy algorithms where a decision
+depends only on the current situation and not on the history. By Round±Robin
+Greedy (RRG), we denote the local greedy scheduling algorithm which ®lls up one
+edge after the other. Per step, RRG still moves as much load as possible, i.e., it sends
+all its available tokens, but chooses a subset of edges which are ®lled up to saturation
+(where the last edge in the subset might not be saturated completely). In contrast,
+Proportional Parallel Greedy (PPG) denotes the local greedy schedule which shifts
+load via all edges of a node in parallel and the amount is chosen proportional to the
+current demandpof the edges. The following lemma shows that the RRG scheduling
+algorithm is H n-optimal.
+Lemma 6. p
+por
+ every lning flow the ound±oin lol greedy sheduling lgoE
+rithm is H n-optimlF
+Proof. Let q   Y i be a graph with j j  n nodes, balancing ¯ow x and edge
+directions according to x. Assume that the RRG algorithm determines a schedule
+schedule o x for x requires
+g x of length jg xj  g and that anpoptimal
+
+We
+show
+that
+gao
+
+H
+n
+.
+jo xj  opsteps.
+
+g P 1 o n: Consider the construction of Fig. 4. Let p be the length of the upper
+line of nodes (the ``backbone''). The graph contains n  12 pp À 1 nodes. Using the
+optimal schedule o x, the nodes on the backbone send their load to their right
+neighbor ®rst. Thus, o  jo xj  3. For the RRG algorithm we may assume that it
+sends the available load downwards ®rst. In this case, the leftmost node of the
+backbonep
+has
+x requires p steps.
+ to ful®ll all the p ¯ow demands of the backbone which
+g T 2 o n: Let r be the average load per node and kxk1  i1 xi be the total
+amount of ¯ow. Together with the greedy property (iii) of local heuristics we can
+make the following observations:
+1. Tokens remain in a node only if the node has ful®lled all its out¯ow demands.
+2. Tokens which end up in a node after d rounds of scheduling have been moved
+over d edges and, because q is a DAG, have visited d  1 dierent nodes (including ®rst and last node on their path).
+
+p
+Fig. 4. The RRG local greedy heuristic is X n-optimal.
+
+R. Diekmann et al. / Parallel Computing 25 (1999) 789±812
+
+809
+
+3. Assume a ¯ow x on q is realized within d steps. Because each token can pass at
+most d edges, at least dkxk1 ade disjoint tokens have to be moved.
+Consider now a schedule g x determined by RRG. As g x requires g steps,
+there has to be at least one token traveling a path of length g. Let v0 Y v1 Y F F F Y vgÀ1 Y vg 
+be this path. As vgÀ1 sends the token to node vg not before step g, it can receive its
+own r tokens not before step g À 1. Each of this tokens has traveled a distance of
+g À 1. In the same way we see that each node vi on the path receives its own r tokens
+not before step i. As all nodes on v0 Y v1 Y F F F Y vgÀ1 Y vg  are disjoint, so are all tokens
+remaining in the nodes on this path. Summing up the paths of these tokens we get
+kxk1 P r
+
+gÀ1
+
+i1
+
+r
+i  g2 À gX
+2
+
+As the optimal schedule o x ®nishes the token movement within o steps, the observation 3 from above requires the existence of at least kxk1 ao tokens. Each node
+receives r tokens, so there have to be
+nP
+
+kxk1
+g2 À g
+P
+ro
+2o
+
+31
+
+nodes. If o P 2, (31) results in
+p
+g T 1  o nX
+Ã
+Note that the upper bound did not make any assumptions about the scheduling
+strategy of the greedy heuristic and, thus, applies to all local greedy algorithms including RRG and PPG. The lower bound reduces to Xlog n if PPG is used. Thus,
+for this algorithms a gap between the upper and lower bound shows up.
+6. Experimental results
+Here, we shortly report some numerical results which demonstrate the advantages
+of the optimal polynomial approach and compare it with the FOS and SOS schemes.
+The Chebyshev scheme behaves almost identical to SOS, so we do not reproduce
+data for that scheme. We also include experimental results for the greedy schedules
+RRG/PPG which, on these test instances, do not dier from each other.
+We consider four dierent processor graphs, each with a total of 64 processors:
+The one-dimensional torus, the two-dimensional torus, the 6-dimensional hypercube, and a quotient graph arising from a partition of the ®nite element mesh
+``airfoil1'' into 64 sub-domains [6]. For all examples, the initial work load is identically generated as a uniformly random distribution. All computations are performed with real numbers according to the algorithms given in Section 5.3. After the
+¯ow is determined, we round it up to integral values and schedule it using the local
+greedy heuristic from Section 5.3 The tie-breaking rule ®lls up outgoing edges proportional to their remaining demand.
+
+810
+
+R. Diekmann et al. / Parallel Computing 25 (1999) 789±812
+
+For the ¯ow calculation, the diusion matrix M is initially taken to be of the form
+w  s À av with L the Laplacian and a the inverse of the maximum node degree
+(a  1a2Y 1a4Y 1a6 and 1a10 for the 1D Torus, the 2D Torus, the Hypercube and the
+FE-quotient graph, respectively). For the FOS and SOS scheme we apply an additional spectral shift of the form w 2 1 À ds  dw as described in [5] in order to
+minimize c and therefore maximize the speed of convergence (note that this shift also
+ensures c ` 1).
+Fig. 5 shows that on average the OPS scheme requires only half as many iterations
+as SOS, with FOS being by far the slowest scheme (see also [11]). It is also apparent
+that in early iterations the SOS and the OPS schemes can behave quite similarly.
+Fig. 5 very clearly illustrates the fact that the OPS achieves the solution after m À 1
+steps (m: number of dierent eigenvalues of M). Very interestingly, this convergence
+takes place quite 'brutally' with the immediately preceeding iterates still being relatively far from the solution. Note that m  33Y 13 and 7 for the 1D Torus, the 2D
+Torus and the Hypercube, respectively. Also, note that for any one-dimensional
+torus and for any hypercube m À 1 just equals the diameter of the graph.
+Fig. 5 also shows that the time needed to actually balance the load if a valid
+balancing ¯ow is known is much less than the number of iterations performed by any
+of the nearest neighbor schemes. On the four examples shown here, the simple greedy
+schedule requires 3, 2, 1, and 2 steps, and this appears to be a typical behavior for
+many other examples we tested.
+
+Fig. 5. Performance of dierent balancing schemes (kwk À wk
+" vs. iteration step k).
+
+R. Diekmann et al. / Parallel Computing 25 (1999) 789±812
+
+811
+
+7. Conclusions
+We have presented a general framework for analyzing diusive nearest neighbor
+load balancing algorithms on graphs and developed an optimal polynomial balancing scheme (OPS). After a certain amount of preprocessing, OPS is guaranteed to
+determine a balancing ¯ow within m steps if m is the number of distinct eigenvalues
+of the graph. For arbitrary diusive nearest neighbor schemes we have shown how
+they can be modi®ed to determine l2 -optimal balancing ¯ows and we also extended
+the l2 -optimality criterions to edge weighted graphs.
+We have shown that it is advisable to split the task of load balancing into two
+phases, ®rst determine a balancing ¯ow and second move the load. This maintains
+the l2 -optimality of the ¯ow which is destroyed if load is moved directly. For the ®nal
+movement of the load, we have introduced the ¯ow scheduling problem. We showed
+that
+local greedy heuristics for the problem of scheduling
+psimple
+
+p a balancing ¯ow are
+H n-optimal and that arbitrary local heuristics are O n-optimal. Open
+p up to
+now is the question of how to close the gap between the upper bound of n and the
+lower bound of log n for certain local scheduling strategies.
+
+Acknowledgements
+The authors thank Rainer Feldmann, Marco Riedel, Walter Unger, Rolf Wanka
+(Paderborn) and Peter Brucker (Osnabr
+uck) for helpful discussions and suggestions.
+The proof of the upper bound in Theorem 6 was found by Marco Riedel (Paderborn). Helpful comments of an anonymous referee are also gratefully acknowledged.
+
+References
+[1] R.K. Ahuja, T.L. Magnanti, J.B. Orlin, Network Flows, Prentice-Hall, Englewood Clis, NJ, 1993.
+[2] A. Berman, R.J. Plemmons, Nonnegative Matrices in the Mathematical Sciences, Academic Press,
+New York, 1979.
+[3] J.E. Boillat, Load balancing and Poisson equation in a graph, Concurrency ± Prac & Exp. 2 (4) (1990)
+289±313.
+[4] D.M. Cvetkovic, M. Doob, H. Sachs, Spectra of graphs., Barth, Heidelberg,1995.
+[5] G. Cybenko, Load balancing for distributed memory multiprocessors, J. Par. Distr. Comp. 7 (1989)
+279±301.
+[6] R. Diekmann, S. Muthukrishnan, M.V. Nayakkankuppam, Engineering diusive load balancing
+algorithms using experiments, IRREGULAR, Springer LNCS 1253, 1997, pp. 111±122.
+[7] R. Diekmann, F. Schlimbach, C. Walshaw, Quality balancing for parallel adaptive FEM. Proceedings
+IRREGULAR'98, Springer LNCS, 1998 (to appear).
+[8] B. Fischer, Polynomial Based Iteration Methods for Symmetric Linear Systems, Wiley, New York,
+1996.
+[9] G. Fox, R. Williams, P. Messina, Parallel Computing Works, Morgan Kaufmann, Los Altos, 1994.
+[10] B. Ghosh, F.T. Leighton, B.M. Maggs, S. Muthukrishnan, C.G. Plaxton, R. Rajaraman, A. Richa,
+R.E. Tarjan, D. Zuckerman, Tight analyses of two local load balancing algorithms, in: Proceedings of
+the 27th ACM Symposium on Theory of Computing, STOC '95, 1995, pp. 548±558.
+
+812
+
+R. Diekmann et al. / Parallel Computing 25 (1999) 789±812
+
+[11] B. Ghosh, S. Muthukrishnan, M.H. Schultz, First and second order diusive methods for rapid,
+coarse, distributed load balancing, in: Proceedings of the ACM-SPAA '96, 1996, pp. 72±81.
+[12] G. Golub, Ch. VanLoan, Matrix Computations, Johns Hopkins University Press, Baltimore, 1989.
+[13] G. Golub, R. Varga, Chebyshev semi-iterative methods successive overrelaxation iterative methods
+and second order richardson iterative methods, Numer. Math. 3 (1961) 147±156.
+[14] G. Horton, A multi-level diusion method for dynamic load balancing, Parallel Computing 19 (1993)
+209±218.
+[15] Y.F. Hu, R.J. Blake, An optimal dynamic load balancing algorithm, Techn. Rep. DL-P-95-011,
+Daresbury Lab., UK, 1995 (to appear in: Concurrency ± Practice and Experience).
+[16] F. Meyer auf der Heide, B. Oesterdiekho, R. Wanka, Strongly adaptive token distribution,
+Algorithmica 15 (1996) 413±427.
+[17] K. Schloegel, G. Karypis, V. Kumar, Parallel multilevel diusion schemes for repartitioning of
+adaptive meshes, in: Proceedings of the EuroPar '97, Springer LNCS, 1997.
+[18] N. Touheed, P.K. Jimack, Parallel dynamic load-balancing for adaptive distributed Memory PDE
+Solvers, in: Proceedings of the 8th SIAM Conference on Par. Processing for Scienti®c Computing,
+1997.
+[19] R. Varga, Matrix Iterative Analysis, Prentice-Hall, Englewood Clis, NJ, 1962.
+[20] C. Walshaw, M. Cross, M. Everett, Dynamic load-balancing for parallel adaptive unstructured
+meshes, in: Proceedings of the 8th SIAM Conference on Parallel Processing for Scienti®c Computing,
+1997.
+[21] C.Z. Xu, F.C.M. Lau, Load balancing in parallel computers: Theory & Practice, Kluwer Academic
+Publishers, Dordrecht, 1997.
+
+

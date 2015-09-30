@@ -1,0 +1,1724 @@
+Robotics and Autonomous Systems 73 (2015) 78–90
+
+Contents lists available at ScienceDirect
+
+Robotics and Autonomous Systems
+journal homepage: www.elsevier.com/locate/robot
+
+Tele-impedance based assistive control for a compliant
+knee exoskeleton
+Nikos Karavas a,∗ , Arash Ajoudani a,b , Nikos Tsagarakis a , Jody Saglia a , Antonio Bicchi a,b ,
+Darwin Caldwell a
+a
+
+Istituto Italiano di Tecnologia, Italy
+
+b
+
+Interdepartmental Research Centre ‘‘E. Piaggio’’, University of Pisa, Italy
+
+highlights
+•
+•
+•
+•
+
+We propose a tele-impedance based assistive control for a knee exoskeleton.
+An EMG-driven biomechanical model estimates the net torque and joint stiffness trend index.
+The outputs of the model are used to derive the trajectory and stiffness of the exoskeleton’s impedance controller.
+The exoskeleton can generate assistive actions that are volitionally controlled by the user’s muscle activity.
+
+article
+
+info
+
+Article history:
+Available online 16 October 2014
+Keywords:
+Lower limb exoskeleton
+Assistive robotics
+Impedance control
+Stiffness augmentation
+
+abstract
+This paper presents a tele-impedance based assistive control scheme for a knee exoskeleton device. The
+proposed controller captures the user’s intent to generate task-related assistive torques by means of
+the exoskeleton in different phases of the subject’s normal activity. To do so, a detailed musculoskeletal
+model of the human knee is developed and experimentally calibrated to best match the user’s kinematic
+and dynamic behavior. Three dominant antagonistic muscle pairs are used in our model, in which
+electromyography (EMG) signals are acquired, processed and used for the estimation of the knee joint
+torque, trajectory and the stiffness trend, in real time. The estimated stiffness trend is then scaled and
+mapped to a task-related stiffness interval to agree with the desired degree of assistance. The desired
+stiffness and equilibrium trajectories are then tracked by the exoskeleton’s impedance controller. As
+a consequence, while minimum muscular activity corresponds to low stiffness, i.e. highly transparent
+motion, higher co-contractions result in a stiffer joint and a greater level of assistance. To evaluate the
+robustness of the proposed technique, a study of the dynamics of the human–exoskeleton system is
+conducted, while the stability in the steady state and transient condition is investigated. In addition,
+experimental results of standing-up and sitting-down tasks are demonstrated to further investigate the
+capabilities of the controller. The results indicate that the compliant knee exoskeleton, incorporating the
+proposed tele-impedance controller, can effectively generate assistive actions that are volitionally and
+intuitively controlled by the user’s muscle activity.
+© 2014 Elsevier B.V. All rights reserved.
+
+1. Introduction
+Powered exoskeletons have undergone continuous technological development over the past few years and have found various
+applications from military use to patient rehabilitation. Military
+exoskeletons’ purpose is to augment the soldier’s muscular force
+
+∗ Correspondence to: Harvard University, 60 Oxford Street, Suite 403, 02138
+Cambridge, MA, United States.
+E-mail address: nkaravas@seas.harvard.edu (N. Karavas).
+http://dx.doi.org/10.1016/j.robot.2014.09.027
+0921-8890/© 2014 Elsevier B.V. All rights reserved.
+
+and endurance in carrying heavy loads [1]. On the other hand, rehabilitation exoskeletons aim at recovering the neuromusculoskeletal function of stroke or post-surgical patients [2–4], while assistive
+exoskeletons can assist elderly or individuals with mobility disorders during demanding, in terms of power, motion tasks [5–7].
+Independently from the use, exoskeletons are robotic devices
+that are worn by the humans. Therefore, the application of forces
+in an appropriate manner as regards the timing, magnitude,
+direction and location on the human body, is a prerequisite [8]. In
+other words, the exoskeleton should effectively assist the natural
+human motion ensuring the safety and comfort of the user, and
+
+N. Karavas et al. / Robotics and Autonomous Systems 73 (2015) 78–90
+
+that his/her agility is not deteriorated. To address this immense
+challenge researchers have incorporate the detection of the user’s
+intent into the control of exoskeletons. Common approach is to
+use joint angles to infer about the subject’s posture [9], or ground
+reaction forces measurements to estimate the desired torques
+with an inverse dynamic model [1]. In [10] authors proposed
+an observer to correct the desired joint torques computed from
+the ground reaction forces. However, due to the increased need
+in exoskeletons for achieving desired response to disturbance,
+the integration of biological signals into the exoskeleton control
+has gained a lot of attention by many researchers over the last
+decade [6,11,12].
+Furthermore, as exoskeletons not simply cooperate with the
+humans but assist or supplement the human motion (e.g replace
+muscle’s work), it has been deemed imperative to develop exoskeletons that exhibit biological behavior and performance [13].
+This is mainly related to the physical properties of the musculotendinous unit acting on the human joints and their resultant
+impedance. In particular, several biomechanical studies of human
+movement report that the impedance profiles of the human joints
+vary substantially during motion [14,15]. Therefore, exoskeletons
+should accordingly respond and adapt to these impedance profiles [16]. In this manner, their use becomes more effective and intuitive, while the agility and comfort of the user wearing the device
+are significantly increased.
+To this end, researchers have put a lot of effort into employing
+variable impedance systems into exoskeletons, orthoses or prostheses that will be able to produce naturally human-like mechanics [17,18]. However, the planning of the impedance profiles of
+these devices has been deemed a highly challenging task and yet
+relies on indirect approaches such as modeling, gait phase detection, or off-line learning and optimization techniques. For instance,
+in [19] the active impedance of an ankle orthosis is modulated during the gait cycle using a finite-state machine that is triggered by
+ground reaction forces and joint angles. Additionally, the authors
+in [20] select to adjust the knee joint impedance of an assistive
+exoskeleton during motion with the target stiffness, damping and
+inertia parameters being identified based on the Recursive Least
+Square (RLS) method. Furthermore, variable-impedance assistance
+has been implemented in robot-aided gait rehabilitation to achieve
+patient-cooperative training and more interactive robotic therapies, that lead to an enhanced rehabilitation outcome [21,22]. In
+the latter an adaptive impedance controller utilizes an inversedynamics based estimation of the user’s torque in order to adapt
+robotic assistance.
+Alternatively to these approaches, which are constrained either
+by highly nonlinear models [20,22] or by optimization criteria
+problems [23], in this series of preliminary case studies we propose
+to select and control the impedance of the exoskeleton joint
+based on real-time stiffness measurements of the corresponding
+human joint. The current manuscript is an extended and enriched
+version of the initial work in [24] to provide an exhaustive
+analysis and discussion especially on the proposed control scheme
+and its experimental evaluation. Particular attention is paid to
+the dynamics of the physical human–exoskeleton system, the
+performance of the controller in the frequency domain, and the
+stability of the closed-loop system both in steady state and timevarying condition.
+The presented control method requires modeling of musculoskeletal bio-feedbacks such as muscular forces-moments. This
+can be addressed with two general approaches. Inverse dynamic
+methods, investigate this problem by means of measurements of
+the joint positions and applied external forces. However, several
+drawbacks are attributed to such techniques [25]. For instance, the
+muscles acting on each joint are grouped and divided to agonist
+and antagonist blocks and consequently, the external flexion and
+
+79
+
+extension moments are balanced. Therefore, these methods are not
+reliable enough for individual estimation of muscular forces since a
+priori assumptions are made on the role of individual muscles during the optimization of a predefined cost function [26]. The problem grows when modeling complex tasks which combine highly
+nonlinear muscle activation and contraction dynamics and geometry variations. As a result, a second group of general solutions
+which are associated with forward dynamic approaches have been
+proposed. In these methods, neural commands are extracted and
+fed to the detailed neuro-musculoskeletal model of the limbs [27].
+Therefore, an EMG-driven musculoskeletal model of the knee
+joint has been developed that blends results of different biomechanical studies. The outputs of the model are then exploited in
+real-time by the impedance controller implemented in the exoskeleton joint. Regarding the hardware, a knee exoskeleton was
+used for this study that is a passively compliant device demonstrating inherently soft interaction based on the series elastic actuation
+(SEA) principle [2,8]. We envisage this assistive device combined
+with the proposed control to assist either individuals with limited
+physical capabilities (e.g. elderly) during their activities of daily living, or healthy people during repetitive tasks at work for reducing
+their average muscle forces. However, the presented control algorithm could be eventually used under conditions (i.e. sound muscle
+excitations) in a rehabilitation setting for improved patient-driven
+therapies.
+The rest of the paper is structured as follows. Section 2 presents
+the musculoskeletal model of the knee joint while Section 3
+discusses the knee model identification and calibration. Section 4
+describes the exoskeleton hardware and Section 5 introduces the
+tele-impedance based assistive control scheme. Section 6 discusses
+the dynamics of the physical system and the stability of the
+proposed control, while Section 7 demonstrates the experimental
+trials. Moreover, Section 8 provides a general discussion on this
+work and Section 9 addresses the conclusions.
+2. EMG-driven musculoskeletal model
+This section describes mathematically the electromyographydriven musculoskeletal model of the human knee joint, which
+is used to account for the net torque and joint stiffness trend
+index. Three antagonistic muscle groups (six muscles) which are
+denoted as being the dominant surface muscles acting on the knee
+joint were chosen in order to form the presented musculoskeletal
+model. Fig. 1 illustrates the anatomy of the thigh muscles and the
+placement of the electrodes. In particular, six electrodes (Bagnoli16, Delsys Inc.) were attached to the extensor [rectus femoris
+(RF), vastus medialis (VM) and vastus lateralis (VL)] and flexor
+[biceps femoris (BF), semimembranosus (SM) and semitendinosus
+(ST)] muscles. Furthermore, for the reader’s convenience in Fig. 2
+is depicted an overview of the adopted model structure which
+consists of the muscle activation dynamics, muscle contraction
+dynamics and musculoskeletal geometry sections. As shown, from
+the processed electromyography of each muscle ui are derived the
+muscle activations ai and then the muscle–tendon forces Fimt which
+result in the net torque τnet and the knee joint stiffness trend STI.
+2.1. Activation dynamics
+Electromyography (EMG) signals inherit patterns of activations
+of involved muscles. In order to extract muscular activations, the
+raw EMG signals must be processed. First, these signals are highpass filtered to remove offsets and movement artifacts. This stage
+is followed by full rectification techniques [28]. Consequently, the
+resulting signals are low-pass filtered and normalized in order
+to provide traces of the neural activation of the muscles. In
+
+80
+
+N. Karavas et al. / Robotics and Autonomous Systems 73 (2015) 78–90
+
+Fig. 1. Front and rear view of the human thigh illustrating the selected six muscles (three antagonistic groups) whose electromyography was used for the musculoskeletal
+modeling.
+
+Fig. 2. Block diagram of the information flow within the musculoskeletal model for deriving the net torque and the stiffness trend index.
+
+this manuscript, the processed electromyographic signal of each
+muscle is denoted as ui (t ).
+Concerning the motor unit level, it has been observed that muscle force variations with respect to neural commands demonstrate
+an exponential trend [29]. As a result, activation of the muscles ai
+is defined by:
+ai (t ) =
+
+eAui (t ) − 1
+
+(1)
+
+eA − 1
+
+where −3 < A < 0 is a nonlinear shape factor.
+2.2. Contraction dynamics
+Large scale modeling of the muscular force arising from activation dynamics is widely performed based on Hill’s muscle
+model [30] and its extension proposed by Zajac [27]. These models are well-established in the biomechanics literature [29], and
+have been extensively exploited in assistive technologies where
+there exists human–robot interaction [12,31,32]. In such cases, the
+muscle–tendon unit is modeled as a muscle fiber in series with a
+viscoelastic tendon (see Fig. 3). Muscle fiber itself is modeled by
+a contractile element in parallel with an elastic component. The
+general equation associating the force generated by the contractile
+element with the muscle–tendon force Fimt (t ) reads as follows:
+Fimt (t ) = Fimax [fi (l)fi (v)ai (t ) + fpi (l)] cos(ψi (t ))
+
+(2)
+
+where
+(t ) = (t ), with
+(l), fi (v) corresponding to the tendon force, normalized force-length and normalized force–velocity
+curves of the contractile element of muscle number i, and fpi refers
+to the passive elastic normalized force-length relation (see details
+in [27] and [29]). The pennation angle, which is defined as the angle between the tendon and the muscle fibers, is denoted by ψi (t )
+and can be given by the following equation:
+Fimt
+
+ψi (t ) = sin−1
+
+Fit
+
+
+
+Fit , fi
+
+lm
+oi sin(ψoi )
+lm
+i
+
+(t )
+
+
+(3)
+
+where (t ) is the muscle fiber length and ψoi the pennation angle
+at the optimal muscle fiber length lm
+oi .
+lm
+i
+
+Fig. 3. Representation of the muscle–tendon unit based on Hill’s model.
+
+Huijing in [33] has observed that the optimal muscle fiber
+length increases as the muscle activation decreases. To take into
+account this dependency of optimal muscle fiber length on activation fluctuations we adopt the relationship introduced in [29]:
+′m
+lm
+oi (t ) = loi (γ (1 − ai (t )) + 1)
+
+(4)
+
+where l′omi represents the optimal fiber length at maximum activation and γ is the percentage change in optimal fiber length, chosen
+to be 15% [29].
+A dense body of literature reports on the linear relationship
+between the tendon slack length lts , tendon force and the tendon
+length lt . Such mapping is shown to be valid for lt > lts [25,29].
+Here, similar assumptions have been made in modeling the tendon
+length. In addition, we can write:
+m
+lti (t ) = lmt
+i (t ) − li (t ) cos(ψi (t ))
+mt
+
+with l
+
+(5)
+
+denoting the muscle–tendon length.
+
+2.3. Musculoskeletal geometry
+The lengths of the muscle–tendon complexes acting on the knee
+joint are shown to be functions of the knee joint angle [34]. In
+these works, the muscle length values were fitted to a second order
+
+N. Karavas et al. / Robotics and Autonomous Systems 73 (2015) 78–90
+
+polynomial by means of least squares optimization technique.
+Consequently, ¯lmt
+i (t ) which accounts for the percentage of segment
+length (the origin-to-insertion length relative to its length in full
+extension of the knee) is defined and identified as follows:
+2
+¯lmt
+i (t ) = C0i + C1i θknee (t ) + C2i θknee (t )
+
+(6)
+
+where θknee represents the knee joint angle in degrees and C0i ,
+C1i and C2i are constants (see [34] for details). By adopting (4),
+(5) and (6) the muscle fiber length can be identified and used
+for the estimation of the contraction dynamics. Note that, as far
+as concerns the accuracy of the model parameters of the muscle
+fiber of each muscle we rely on the previous biomechanics studies
+[25,29,34] and the re-identification experiment that is described in
+Section 3.
+The muscle moment arms ri (t ) of the muscle–tendon unit can
+be described based on the displacements method proposed in [35]
+which is defined by:
+ri (t ) =
+
+∂ lmt
+i (t )
+.
+∂θknee
+
+(7)
+
+Consequently, the moment arms are determined as follows:
+r¯i (t ) = [C1i + 2C2i θknee (t )]
+
+180
+
+(8)
+
+π
+where moment arms r¯i (t ) are expressed as a percentage of
+
+segment length.
+Once we have estimated the forces (2) and the moment arms
+(8) of all chosen muscles acting on the joint, we are able to convert
+the muscle forces to joint torques τ by means of the following
+equation:
+
+
+
+n
+
+
+
+
+τi (t )
+τ (t ) = 
+
+ i =1
+
+agonist
+
+
+
+k
+
+
+
+
+τj (t )
+−
+
+ j =1
+
+(9)
+
+antagonist
+
+where τi (t ) = Fi (t )ri (t ), τj (t ) = Fj (t )rj (t ) with n and k being
+the number of agonist and antagonist muscles acting on the joint,
+respectively.
+It has been shown that a simultaneous increase in antagonistic
+muscle torques acting on the joint, does not affect the joint torque
+(as seen in (9)) although it does increase joint stiffness [36].
+Therefore, we can define the stiffness trend index (STI) as:
+
+
+ 
+
+
+
+  
+
+ 
+
+τj (t )
+STI (t ) = 
+τi (t ) + 
+
+ antagonist
+agonist
+
+(10)
+
+and the stiffness of the knee joint as:
+K (t ) = α × STI (t ) + β
+where α (rad
+
+−1
+
+(11)
+
+) and β (Nm/rad) are to be identified constants.
+
+3. Model identification–calibration
+Several caveats apply to the forward dynamic methods,
+described in Section 2. To begin with, concerning the EMG signals,
+one must take into account reliable post-processing techniques
+in order to maximize robustness of the estimation of muscular
+activations. For instance, day-to-day and subject to subject
+variations, temperature and humidity fluctuations, electrode
+misplacement, crosstalk between signals and movement artifacts
+will give rise to inaccuracy and drift of the estimated signals.
+Furthermore, the model parameters ((2)–(6)) vary among subjects.
+To minimize the modeling uncertainty, the parameters of the
+model must be re-identified based on each user’s experimental
+data. For this reason, we have set up identification–calibration
+experiments to re-identify the parameters as described below.
+
+81
+
+3.1. Calibration experiments
+One healthy subject (male, 27 years old) participated in identification–calibration experiments. The raw EMG signals were processed (at 1 kHz) and the muscular activities were estimated
+during the identification experiments as well as during the teleimpedance control experiments that are to be described in Section 7.
+The initial values of the model parameters as presented in Section 2 were extracted from the literature [25,26,30–35]. In order
+to choose the number of parameters to be re-identified, one must
+consider the reasonable tradeoff between modeling uncertainty
+and identification complexity. Hence, seven constant parameters
+of each muscle referring to the activation and contraction dynamics and muscle–tendon geometry were chosen to be adjusted relying on identification experiments. The chosen parameters were:
+the maximum isometric muscle fiber force F max , the pennation angle at optimal fiber length ψo , the optimal fiber length lm
+o , the nonlinear shape factor A, and the constants C0 , C1 and C2 .
+For the identification experiments the subject was wearing the
+knee exoskeleton while having the EMG electrodes attached as it
+was described in Section 2 and illustrated in Fig. 1. In order to
+take into account the muscle activation of both the knee flexor
+and the extensor in the model identification, we performed two
+tasks that involved each of the antagonistic group of muscles
+separately. The exoskeleton was commanded to provide torques
+that were proportional to the angular displacement from the
+equilibrium position (active stiffness control). During the first task
+the subject assumed a stand posture while the equilibrium position
+of the exoskeleton was set to 0◦ . The subject was instructed
+to flex his right knee at a certain angle with the minimum
+possible contraction (flexor contribution). For every two trials the
+exoskeleton stiffness was varying with a varied step as shown in
+Table 1 resulting in 20 trials. During the second task the subject
+was seated and the equilibrium position of the exoskeleton was
+set to 90◦ , while he was asked to repeatedly extend his knee with
+minimum contraction as well (extensor contribution). For each
+two trials the exoskeleton stiffness was increased from 0 to 200
+Nm/rad with a varied step similarly with the first task, see Table 1.
+Thus, this task resulted in additional 20 trials.
+During this experiment the torque applied by the human τˆh can
+be estimated by the following equation:
+
+τˆh = J θ¨knee + Dθ˙knee + τg + τe
+
+(12)
+
+where J represents the total inertia of the shank and the exoskeleton’s lower segment, D denotes the damping of the human knee
+and the exoskeleton joint, while τg is the gravitational torque applied on the coupled system. In addition, τe is the torque applied by
+the exoskeleton and equals to the measured elastic torque τs . Note
+that movements were carried out at very low knee angular velocity and acceleration (quasi static). For this reason, the inertial and
+damping moment effects were negligible in our setup and were not
+taken into consideration. Thus, (12) can be simplified as:
+
+τˆh = τe + τg = τs + (msh + mlseg )glCoM sin(θknee )
+
+(13)
+
+where msh denotes the mass of shank, mlseg is the mass of the lower
+segment of the exoskeleton and lCoM refers to the center of mass of
+the combined lower link and shank.
+Even trials were chosen for the identification while the odd ones
+were kept for evaluative analysis of the identification procedure.
+The six-channel processed EMGs data together with the torques
+τˆh and τe were used to identify the musculoskeletal model
+parameters, described in 2. Due to the nonlinear dependency
+between the knee joint torque and the corresponding muscular
+activities, a nonlinear least square algorithm is utilized for the
+identification of the model parameters while being constrained to
+±10% above/below of their nominal values.
+
+82
+
+N. Karavas et al. / Robotics and Autonomous Systems 73 (2015) 78–90
+
+a
+
+b
+
+40
+
+100
+
+20
+
+80
+
+0
+
+60
+
+25
+
+55
+40
+
+15
+
+20
+
+5
+
+0
+
+35
+
+BF
+ST
+SM
+
+VL
+VM
+RF
+0
+
+1
+
+2
+
+3
+
+4
+
+5
+
+6
+
+7
+
+0
+
+1
+
+2
+
+3
+
+4
+
+Fig. 4. Comparison of the estimated torque of the knee joint and the one derived from the musculoskeletal model in extension (a) and flexion (b) identification trials. Knee
+angular positions are also given, while in the lower plots are depicted the full rectified EMGs of the contributing muscles.
+Table 1
+Experimental Protocol used for the Model Calibration.
+Number of trial
+
+Exoskeleton
+EQ. (deg)
+
+Exoskeleton stiffness
+(Nm/rad)
+
+Number of trial
+
+Exoskeleton
+EQ.(deg)
+
+Exoskeleton stiffness
+(Nm/rad)
+
+1&2 (flexion)
+3&4 (flexion)
+5&6 (flexion)
+7&8 (flexion)
+9&10 (flexion)
+11&12 (flexion)
+13&14 (flexion)
+15&16 (flexion)
+17&18 (flexion)
+19&20 (flexion)
+
+0◦
+0◦
+0◦
+0◦
+0◦
+0◦
+0◦
+0◦
+0◦
+0◦
+
+0
+10
+20
+30
+40
+50
+60
+100
+150
+200
+
+21&22 (extension)
+23&24 (extension)
+25&26 (extension)
+27&28 (extension)
+29&30 (extension)
+31&32 (extension)
+33&34 (extension)
+35&36 (extension)
+37&38 (extension)
+39&40 (extension)
+
+90◦
+90◦
+90◦
+90◦
+90◦
+90◦
+90◦
+90◦
+90◦
+90◦
+
+0
+10
+20
+30
+40
+50
+60
+100
+150
+200
+
+Table 2
+Specifications of CompAct-RS.
+
+3.2. Model validation
+Typical results of the validation of the identified model using
+extension and flexion test trials are demonstrated in Figs. 4(a) and
+4(b), respectively. These experiments were performed with the
+exoskeleton stiffness being set at 30 Nm/rad. The upper plots show
+the model net torque τmodel and the measured toque τe , including
+the gravitational part τg . The position of the knee joint θknee as it
+was measured by the exoskeleton is also depicted in the upper
+plots. Lower plots of the figures demonstrate the corresponding
+full rectified EMG signals of the dominant muscles. To evaluate
+the accuracy of the model, the normalized root mean square error
+(NRMSE) was calculated for each test trial as follows:
+
+
+
+n
+
+
+(τmodel (i)−τmeasured (i))2
+
+i=1
+
+NRMSE =
+
+n
+
+τmeasuredmax − τmeasuredmin
+
+(14)
+
+with n denoting the number of points in each trial, and τmeasured =
+τg + τe . The resulting values then were averaged for all the test
+trials (extension and flexion) resulting in an average value of
+12.4%. This error, even acceptable, comes partly from the modeling
+uncertainty in our musculoskeletal model and partly from the
+neglected effects of inertia and damping in τmeasured . Future work
+will investigate model identification methods that will include also
+dynamic movements.
+4. Knee exoskeleton description
+Physical human–robot interaction requires devices that present
+fast adaptation to human volitional actions and safe behavior
+during unexpected impacts [37]. To achieve these, it is essential
+that the exoskeleton actuation system demonstrates low output
+mechanical impedance and high force fidelity. In this context,
+series elastic actuators (SEA) have been introduced to drive robots
+and subsequently implemented into exoskeletons [2,8]. In these
+actuation systems, an elastic element is placed between the motor
+and the load and acts as an energy buffer. This lowers the loop
+
+Description
+
+Symbol
+
+Value
+
+Unit
+
+Max Cont. Output Power
+Elastic Torque (Max)
+Motor Torque (Max)
+Elastic deflection (Max)
+Elastic energy (Max)
+Allowable stiffness range
+
+PRated
+
+209
+80
+1.53
+11
+5.5
+200 ∼ 800
+
+Watts
+Nm
+Nm
+deg
+J
+Nm/rad
+
+τs
+τM
+θs
+Us
+KS
+
+gain of the closed-loop system allowing for increased control
+gains while still remaining within the stability margins [38]. High
+control gains improve significantly robustness to changing loads
+and tolerance to impacts, while lower the output impedance.
+Therefore, SEA allow for precise and robust force control which
+plays a key role to impedance-controlled systems.
+The assistive device that was used for this pilot study is a
+lightweight knee exoskeleton that is powered by CompAct-RS [39,
+40]. CompAct-RS is a rotational series elastic actuator which is
+able to reconfigure offline its apparent stiffness KS to achieve
+subject-specific and task-specific compliance levels. Table 2 shows
+the specifications of CompAct-RS. For this work, this was set to
+KS = 200 Nm/rad, that was suitable for the execution of the
+experiments which are described in Sections 3 and 7. As mentioned
+above, a significant benefit of the inserted elasticity is that it
+can be used for robust torque sensing by measuring the springs
+deflection with a high resolution optical encoder (AEDA 3300,
+Avago Technologies). This allows to achieve precise torque control
+and avoid the addition of a conventional load sell that is expensive
+and delicate. Nevertheless, the series elastic element affects the
+dynamics of the overall system and, as it will be described in
+Section 6, it needs to be included in the pertinent analysis.
+Fig. 5 shows a subject wearing the exoskeleton on his right leg
+with the axis of rotation of the exoskeleton joint aligned with the
+axis of the user’s knee joint. The exoskeleton interfaces with the
+wearer by means of four rigid braces and is fastened with four
+Velcro straps at thigh and shank. The location of the bracing points
+can be adjusted along the structure to accommodate different leg
+sizes. Particular attention was paid to fast and easy donning and
+
+N. Karavas et al. / Robotics and Autonomous Systems 73 (2015) 78–90
+
+83
+
+Fig. 6. Diagram that illustrates the derivation of the reference signals of the
+impedance controller from the musculoskeletal model.
+
+by the following equation:
+
+τref = Kc (θref − θe ) + Bc (θ˙ref − θ˙e )
+
+Fig. 5. The inherently compliant knee exoskeleton actuated by the series elastic
+actuator CompAct-RS.
+
+doffing (estimated less than one minute). Moreover, the range of
+motion of the knee exoskeleton in the sagittal plane is between
+0◦ and 120◦ where 0◦ corresponds to full extension of the knee.
+Mechanical limits ensure that the actuator operates within this
+motion range and ensures the exoskeleton safe to use.
+5. Tele-impedance based assistive control
+An ideal assistive device should generate supporting forces
+upon the user’s request and simultaneously present high levels of
+transparency during no assistance condition [8]. This implies that
+it should match the performance of humans in terms of displacement and impedance regulation over a wide range of loads and
+motions [41,42]. In some extent we address this challenge by exploiting tele-impedance, an approach that aims at replicating stiffness regulation skills of humans to robots [43]. In particular, the
+exoskeleton is able to provide stiffness augmentation to the user
+on the basis of his/her stiffness trace with the purpose of achieving effective assistance when is needed and to present high levels
+of compliance when the muscle activation of the user is low. Regarding tele-impedance, it was previously proposed during teleoperated tasks which require significant dynamics variation as an
+alternative method to unilateral position based control or bilateral force reflecting control. The algorithm provides the robot with
+task-related stiffness profile in addition to position–orientation
+trajectories [44].
+The tele-impedance based proposed method utilizes electromyography as the primary basis. In contrast with other proposed EMG-based techniques implemented in exoskeletons [6,32],
+that perform proportional torque control using the estimated
+user’s torque, here we select to control in real-time the active
+impedance of the exoskeleton according to stiffness estimates of
+the user’s joint. Hence, we exploit the improved robustness of the
+impedance control over the pure torque control due to its ability
+to keep the desired joint configuration, even if the torque sensing/control is imperfect [45]. Moreover, we avoid other limitations
+reported in studies with torque amplification-based exoskeletons,
+where small variations in the estimated user’s torque cause undesirable high accelerations during high amplification ratios [32].
+To produce tele-impedance control we utilize the EMG-driven
+biomechanical model that was described in Section 2 and a
+common impedance controller implemented in the exoskeleton’s
+actuator unit. Hence, the exoskeleton tracks a torque reference
+signal τref that is governed by the virtual impedance Gc and is given
+
+(15)
+
+where Kc , Bc represent the stiffness and the damping parameters
+of the virtual impedance of reference, respectively. In addition
+θe and θref denote the exoskeleton’s motor position and its
+reference position, respectively. Fig. 6 depicts the derivation of
+the references signals of the impedance controller (i.e. Kref , θref )
+from the musculoskeletal model. In particular, the model uses as
+inputs the processed EMGs and the knee angle q and outputs the
+estimated user torque τˆh and the stiffness trend index STI.
+Stiffness mapping
+The stiffness reference input for the knee exoskeleton is
+obtained from (11). The stiffness trend index (STI) is mapped to
+a desired stiffness range that is defined according to the task and
+subject requirements. For instance, when the subject is during high
+load condition the exoskeleton provides motion assistance, while
+when he/she acts during low load condition (i.e. no assistance
+is required) the exoskeleton is transparent and does not impede
+the user’s motion. In this manner, the exoskeleton can mimic the
+biological stiffness function and respond to the user’s voluntary
+motions. Furthermore, in case of disabled individuals different
+levels of stiffness augmentation can be applied depending on the
+particular motion task and subject. Thus, the identification of α and
+β in Eq. (11) is task-related and subject-specific. In this manuscript,
+the desired stiffness range is determined experimentally based on
+a desired assistance performance (see Section 7).
+A critical aspect when designing assistive control strategies is
+also the detection of the user’s intended motion. In this work, we
+infer about the user’s movement using the estimated user torque
+τˆh . In particular, to generate assistive torques in the direction of
+motion we select to update the equilibrium position of the knee
+exoskeleton joint in accordance with the user’s intended motion,
+the equilibrium of which is obtained from the estimated user
+torque τˆh using the following formula:
+
+θref =
+
+ 
+
+
+k
+(τˆh − a) dt
+
+ f
+0 
+
+
+
+kf (τˆh + a) dt
+
+τˆh > a
+−a < τˆh < a
+
+(16)
+
+τˆh < −a
+
+where kf and a are the sensitivity constant and the noise dead band
+constant, respectively.
+As is illustrated in Fig. 7, the controller is composed of an
+inner torque loop and an outermost position loop. The position
+and stiffness references described above feed the equilibrium
+position and the active stiffness of the tele-impedance controller,
+respectively. The active damping is set to vary proportionally to the
+active stiffness as Bc = bKc = 0.01Kc . By deriving the equilibrium
+position of the controller from (16), assistive forces augment the
+user’s desired actions/motions via the virtual impedance Gc . Note
+that, the controller operates at 1 kHz which is also the sampling
+frequency of the EMGs.
+
+84
+
+N. Karavas et al. / Robotics and Autonomous Systems 73 (2015) 78–90
+
+Fig. 7. The implemented tele-impedance controller that utilizes the EMG-driven musculoskeletal model.
+
+6. The human–exoskeleton system dynamics for the standingup motion
+To evaluate the effectiveness of the assistance provided to the
+subject and the operation of the proposed control technique, we
+select to study the standing up motion, which is one of the most
+demanding task in terms of torque and power for the knee joint.
+Hence, the model of the closed-loop human–exoskeleton system
+during standing-up is presented below. The system’s response in
+the time and frequency domain are investigated, while its stability
+is analyzed within the usable range of the active stiffness Kc .
+As the active stiffness varies in real-time the stability should be
+investigated also under this dynamic condition and the allowable
+maximum rate of the impedance regulation that ensures stability
+has to be identified. To authors knowledge there is no such a study
+to address this matter (i.e. stability of active impedance control
+systems) mainly due to the high complexity of the pertinent
+systems.
+Fig. 8. Representation of the simplified physical system of the human-kneeexoskeleton and the concept of the tele-impedance control.
+
+6.1. System modeling
+A simplified human body model with 1-DOF in the sagittal plane
+coupled with the knee exoskeleton is considered. In Fig. 8 is illustrated the human body model and the signals flow of the teleimpedance controller. As shown, for the sake of simplicity the
+masses of the thigh, pelvis and torso have been combined into a
+single body of mass mh . This obviously affects the estimation of the
+gravitational loads during motion. However, assuming a concentrated inertia (i.e. no torso motion) can be deemed as a worst-case
+scenario in terms of knee torque, since it has been observed that
+humans incline forward their trunks during standing-up in order
+to decrease the gravitational load and hence, facilitate the task [6].
+Moreover, the ankle and foot dynamics have been neglected (i.e
+shank is considered to be fixed to the ground) as during standingup slight ankle motion has been reported [46]. The external torques
+acting on the system are the exoskeleton’s actuator torque τe , the
+human net torque τh and the gravitational torque τg . During the
+sitting to standing transition the system motion can be described
+by the following equation:
+Mx¨ + Bx˙ + Kx + G = τ
+
+(17)
+
+where M = diag (Ih , Ie ) ∈ R
+with Ie being the reflected motor
+inertia after the reduction drive. Moreover, B ∈ R2×2 is the damping matrix, K ∈ R2×2 is a symmetric stiffness matrix, and G ∈ R2×1
+is the gravity vector. x ∈ R2×1 and τ ∈ R2×1 refer to the position
+2×2
+
+and torque vector, respectively. Eq. (17) can be rewritten in matrix
+form as follow:
+
+
+
+  
+ 
+q¨
+q˙
+Bh 0
++
+0 Be
+θ¨e
+θ˙e
+
+  
+
+KS
+−K S
+q
+τh − mh gl sin q
++
+=
+−K S
+KS
+θe
+τe
+
+Ih
+0
+
+0
+Ie
+
+(18)
+
+where θe = θNm , θ˙e = θNm are the position and velocity of the
+exoskeleton motor, respectively reflected at the link side after the
+gear reduction (N = 100: 1). As already mentioned, KS denotes
+the series elasticity of the actuator. The inertia of the human body
+is calculated as Ih = mh l2 , where l refers to the distance from
+the knee joint center to the center of the combined human body
+mass. In addition, Ie = N 2 Jm denotes the reflected motor inertia
+after the reduction drive, while Be = N 2 Bm is the damping of the
+exoskeleton motor reflected also after the reduction drive. q and q˙
+refer to the position and velocity of the knee joint. Fig. 9 depicts a
+schematic representation of (18) for the convenience of the reader.
+˙
+
+6.2. System response analysis
+To study the operational concept of the tele-impedance based
+assistive control and the system’s response both in time and
+
+N. Karavas et al. / Robotics and Autonomous Systems 73 (2015) 78–90
+
+Fig. 9. Conceptual schematic that illustrates the interaction mechanics between
+exoskeleton and human including the tele-impedance controller.
+
+a
+
+b
+
+85
+
+X
+
+Fig. 11. Zoomed Bode plots of the transfer function Xh for different values of the
+e
+active stiffness Kc (side colorbars depict values of Kc in Nm/rad).
+
+where Gc = Kc + Bc s is the virtual impedance of the controller and
+Xeq = L [θref (t )]. As mentioned in Section 5, the reference position
+is derived from the estimated user torque as:
+Xeq = Gf τh
+
+(22)
+
+where Gf = kf /s.
+Inserting (22) into (21), substituting τm in (20) and then substituting τh in (19), while rearranging with respect to Xh gives:
+Fig. 10. Simulation results corresponding to the standing-up motion.
+
+Xh =
+frequency domain, simulations were conducted on the 1-DOF
+system that was modeled in Section 6.1.
+As inputs of the model (Eq. (18)) were used the estimated torque
+τˆh and the reference stiffness Kref , that were recorded during the
+experiment described in Section 7, since they cannot be simulated.
+Additionally, the combined mass of the human body was set as
+Mh = 60 kg. The viscous damping of the knee joint varies significantly with muscle contraction and knee flexion angle and is
+reported to be within the range 1–5 Nms/rad [47]. Based on these
+findings the damping of the human knee joint was selected to be
+in the middle of this range, thus Bh = 2.5 Nms/rad. The motor
+inertia and damping both reflected after the reduction drive were
+Ie = 0.36 kgm2 and Be = 0.607 Nms/rad, while the active damping was set to Bc = 0.01Kc . The sensitivity constant was selected at
+kf = 0.034, a value that was tuned during the experimental trials
+in Section 7.
+Fig. 10(a) shows the motion of the knee q towards the reference
+position θref and the deflection θs = θe − q of the elastic element
+which allows the transmission of the assistive torque from the
+actuator’s motor to the knee joint. The exoskeleton torque tracking
+of τref is shown in Fig. 10(b).
+The frequency response of the closed-loop system is also
+discussed. The coupled pair (human leg + exoskeleton device)
+described in Section 6.1 can be described in the frequency domain
+by the following equations:
+
+(Gh + Gs )Xh = τh + τg + Gs Xe
+
+(19)
+
+(Ge + Gs )Xe = N τm + Gs Xh
+
+(20)
+
+where Xh = L [q(t )] and Xe = L [θe (t )] with L symbolizing the
+Laplace operator. The combined human body is modeled as a second order linear impedance: Gh = Ih s2 + Bh s. Additionally, Gs = KS
+represents the series elasticity between the motor and the output
+link and Ge = Ie s2 + Be s models the mass and damping properties
+of the motor.
+If we assume that the motor can track the reference torque
+perfectly, it can be written:
+
+τm = Gc (Xeq − Xe )
+
+(21)
+
+NGf Gc + NGc + Ges
+Gf Ges Ghs + NGf Gc Ghs − Gf G2s
+
++
+
+NGc + Ges
+Ges Ghs + NGc Ghs − G2s
+
+τg
+
+Xe
+(23)
+
+where Ghs = Gh + Gs and Ges = Ge + Gs are used only for simplifying
+the equation.
+X
+Having the transfer function Xh the frequency response of the
+e
+closed-loop system can be investigated. This is done within a range
+of the active stiffness Kc close to the one which was applied during
+the experiments described in Section 7. Fig. 11 demonstrates the
+X
+Bode plots of the Xh dynamics for different values of Kc . For demone
+stration purposes the magnitude and phase plots are shown only
+for the frequency range in which sort of variation is present. The
+inherent elasticity was set at KS = 200 Nm/rad. As shown, considerable changes of the resonant peak occur within the small range
+of 0 < Kc < 30 Nm/rad. Moreover, the peak of the magnitude of
+the transfer function varies from 10 to 20 dB for the entire range
+of 1 < Kc < 200 Nm/rad, while for Kc > 35 Nm/rad it does not
+demonstrate any significant variation being close to 20 dB.
+By neglecting the furthest away pole pair with respect to the
+imaginary axis, we can approximate the system using a secondorder equation. Omitting the nonlinear effect of the gravity is safe
+though, as this analysis is focused on the performance evaluation
+of the tele-impedance controller in terms of system response while
+the active stiffness Kc and series elasticity KS are varying. Thus,
+the natural frequency ωn and the damping ratio ζ of the secondorder closed loop system were calculated for different values of the
+active stiffness Kc and the series elasticity KS and are depicted in
+Fig. 12. As shown, both the natural frequency ωn and the damping
+ratio ζ do not vary significantly when the stiffness of the virtual
+impedance, Kc is changing. This is due to the fact that the value of
+the active stiffness Kc does not have much affect on the dominant
+X
+pole pair of the transfer function Xh . On the other hand, as expected
+e
+we can notice a significant change of the natural frequency ωn
+and the damping ratio ζ as the stiffness of the series elasticity KS
+decreases. Hence, it is evident that the dynamics of the system
+are mainly affected by the series elasticity and not by the active
+stiffness. This means that the system’s response depends on the
+mechanical compliance of the exoskeleton’s actuator rather than
+the regulation of the tele-impedance controller.
+
+86
+
+N. Karavas et al. / Robotics and Autonomous Systems 73 (2015) 78–90
+
+into (17), that describes the physical system, and by considering
+the approximation sin q ≈ q, it can be written:
+Mx¨ + Bx˙ + Kx = Gx + Kc x + Bc x˙
+
+(29)
+
+where G is the linear gravity matrix:
+
+
+G=
+Fig. 12. Natural frequency (a) and damping ratio (b) for different values of Kc and
+KS .
+
+6.3. Stability analysis for time-variant virtual spring–damper
+
+x˙ (t ) = (ξ1 A1 + ξ2 A2 + · · · + ξk Ak )x(t )
+(24)
+
+where x ∈ Rn is the state vector, Am ∈ Rnxn , m = 1, 2, . . . , k are
+constant matrices and ξ = [ξ1 . . . ξk ] ∈ Rk is a vector of uncertain,
+k
+possibly time varying parameters with i=1 ξi = 1 and 0 ≤ ξi ≤ 1.
+k is the number of the polytope vertices. The uncertain system (24) is
+quadratically stable if and only if there exists a positive definite matrix
+Pσ such as:
+(25)
+
+In our case the only time-varying variable of the system is Kc , as
+the damping parameter is proportional to the stiffness Kc . Hence,
+the vertices Aσ can be written as follows:
+
+
+
+A1 = A0 + Avar [Kcmax ]
+A2 = A0 + Avar [Kcmin ]
+
+(26)
+
+where A0 is a constant matrix and Avar (Kc ) is the time-varying matrix. Thus, according to the above theorem the system is quadratically stable if and only if there exists a positive definite P that
+satisfies the following LMIs (Linear Matrix Inequality) condition:
+
+
+
+AT1 P + A1 P < 0
+AT2 P + A2 P < 0.
+
+(27)
+
+By calculating A1 and A2 the quadratic stability of the system (24)
+can be investigated easily using the quadstab function of MATLAB,
+which seeks a positive definite P that establishes quadratic stability. In addition, quadratic stability also allows infinitely fast rate of
+change in the parameters because the solution P to the LMIs (27)
+is a constant matrix [49].
+For this study the equilibrium position is set to be zero,
+therefore the control law is described as follow:
+
+τe = −Kc θe − Bc θ˙e = −Kc θe − bKc θ˙e .
+
+(28)
+
+In addition, the human net torque is an external signal and does
+not affect the stability analysis, thus τh = 0. By substituting (28)
+
+
+
+0
+0
+
+(30)
+
+while Kc and Bc refer to the active stiffness and damping matrices,
+respectively and are given by the following equations:
+
+
+
+Theorem 1. Consider the following linear continuous-time parameter-varying polytopic system:
+
+Aσ Pσ + ATσ Pσ < 0.
+
+0
+
+Kc =
+
+As the main feature of the proposed tele-impedance control
+scheme is the real-time variation of the active impedance based
+on the stiffness estimates of the user’s knee joint, the behavior
+of the system in terms of stability has to be examined not only
+in the steady state condition but also during the transient state.
+Another important matter is the maximum allowable rate, with
+which the active stiffness Kc can vary ensuring the stability of the
+closed-loop system. In this subsection both of these concerns will
+be investigated using the quadratic stability theory for continuoustime systems with polytopic uncertainties [48].
+
+= Aσ (t ) x(t )
+
+−mgl
+
+
+
+0
+0
+
+0
+,
+−K c
+
+
+Bc =
+
+0
+0
+
+
+
+0
+.
+−bKc
+
+(31)
+
+Eq. (29) can be rewritten in the form:
+x¨ = −M−1 Bx˙ − (M−1 K − M−1 G)x
+
++ M−1 Kc x + M−1 Bc x˙ .
+
+(32)
+
+By setting:
+
+ 
+z =
+
+x
+x˙
+
+(33)
+
+(32) becomes as follow:
+z˙ = A0 z + Avar z
+
+(34)
+
+where the constant matrix A0 and the variable-dependent matrix
+Avar are given by:
+
+
+
+O2×2
+A0 =
+−M−1 K + M−1 G
+
+
+Avar =
+
+O2×2
+M−1 Kc
+
+O2×2
+−M − 1 B c
+
+
+
+I2×2
+−M − 1 B
+
+(35)
+
+
+(36)
+
+with I and O being the unit and zero matrix, respectively. By using
+(35) and (36) the vertices A1 and A2 described in (26) can be
+calculated. The selected extreme values of the active stiffness were
+Kcmin = 1 Nm/rad and Kcmax = 1000 Nm/rad. The resultant A1
+and A2 are used as input to the quadstab MATLAB function ending
+up in a positive definite P that satisfies (27). Therefore, the system
+(24) is quadratically stable implying that theoretically the active
+stiffness Kc can vary within the above range at an infinitely fast
+rate of change.
+7. Experimental results
+To evaluate this case study experiments were conducted during
+sit-to-stand and stand-to-sit movement with the same subject who
+participated in the calibration procedure described in Section 3.
+The subject was firstly instructed to stand up from a sitting
+posture while wearing the exoskeleton on his right leg and having
+attached the EMG electrodes to his thigh (see Fig. 13). The second
+task involved sitting-down from a standing posture. During the
+execution of the experiments the subject was asked to support
+most of his body weight with the right leg and use his left leg
+mostly for maintaining the body balancing if needed. In this
+manner the task became more demanding but also its duration was
+increased. Five trials were recorded with the exoskeleton being in
+zero torque mode (i.e. no motion assistance) and ten trials for each
+task were performed, while the exoskeleton was operating under
+the proposed control scheme.
+The minimum and maximum values of the STI were obtained
+from the minimum and maximum co-contraction of the thigh
+muscles of the subject before the experiment’s beginning. These
+were then mapped to the desired stiffness range that was set from
+0 to 200 Nm/rad. The suitability of this range was validated through
+
+N. Karavas et al. / Robotics and Autonomous Systems 73 (2015) 78–90
+
+stiffness of the impedance controller and the activation of each
+muscle. In Fig. 15(b) the assistive torque applied by the exoskeleton and the estimated user’s torque together with the trend of the
+knee angle q towards the equilibrium position θref are depicted. In
+all figures the phase of the standing-up motion is marked with a
+yellow background for convenience of the reader. As expected, the
+user’s torque in Fig. 15 is smaller than the one in Fig. 14, fact that
+highlights the received by the exoskeleton assistance. Similar reduction is observed also at the amplitude of the stiffness estimates.
+Moreover, the user’s torque in Fig. 15(b) exhibits a lesser degree of
+smoothness that justifies the human–exoskeleton interaction during the assistance. Similar findings have been reported also in [32].
+In the lower plot in Fig. 15 the equilibrium position θref pulls via
+the virtual impedance the knee angle q towards the final position
+(standing). However, these quantities are not equal at the end
+of the task. This is due to the imperfect tuning of the sensitivity
+constant kf , which does not perfectly fit to the time execution of the
+task. Future study will examine the effects of the constant kf to the
+assistive functionality of the proposed system as well as possible
+improved methods for its tuning.
+Looking at Fig. 15(a), the variation of the active stiffness
+follows the trace of the subject’s muscle stiffness. As expected,
+at free seated posture the stiffness is approximately zero. As the
+subject gets prepared to perform the motion his muscle activation
+increases and therefore the stiffness increases as well even prior to
+the initiation of standing (see time interval 1.2 s < t < 2.45 s). As
+it can be seen the standing motion begins at a knee joint stiffness
+of about 30 Nm/rad at t = 2.45 s. When the task initiates, the
+reference stiffness keeps on increasing because the subject needs
+to accelerate and compensate the gravitational torque. Hence, the
+assistive torque provided by the exoskeleton can be naturally
+increased. The peak of the reference stiffness occurs at t = 4.3 s
+when the sum of all the antagonistic muscle torques is maximum
+(see (10)), while the applied torque reaches its peak at t = 4.1 s
+according to (15). In the final phase of the task (when the subject
+is close to the standing posture) the muscle activation decreases
+(gravitational load decreases) and consequently the reference
+stiffness and the provided assistive torque reduce. At the standing
+posture the stiffness presents a constant value due to the straight
+knee singular position where the antagonistic muscle activation is
+not zero. However, this can be observed also in the case of the user’s
+torque indicating a limitation of the model’s prediction.
+Similarly, one of the stand-to-sit trials with the exoskeleton
+assistance is depicted in Fig. 16. The motion task lasts for t =
+1.65 − 4.27 s and is marked with a yellow background. At the
+standing posture the active stiffness has a low value due to the knee
+singular position and starts increasing when the motion begins
+at t = 1.65 s, see Fig. 16(a). Hence, it allows the exoskeleton to
+provide an assistive torque with a peak of 25 Nm to the subject
+
+Fig. 13. Snapshots from the standing-up motion trials for experimental evaluation.
+
+200
+
+100
+80
+60
+40
+20
+0
+
+150
+100
+50
+0
+
+Fig. 14. A sit-to-stand trial without provided assistance; top: the estimated user’s
+torque, and the joint stiffness estimates. Bottom: the knee angle as recorded from
+the device.
+
+a sequence of sit-to-stand and stand-to-sit trials. For all the trials,
+the noise dead band constant in (16) was set to a = 1 Nm, while the
+torque integration constant kf was experimentally tuned ensuring
+that the reference position update from (16) was sufficiently fast
+for the task execution. In particular for the standing-up was set to
+kf = 0.034, whereas for the sitting-down to kf = 0.045.
+Results of one sit-to-stand trial with zero assistance are
+depicted in Fig. 14. The estimated user’s torque and the joint
+stiffness estimates, as derived from the musculoskeletal model, in
+addition with the knee joint position are shown. The amplitude of
+the user’s torque τh is around 80 Nm, a value that can be confirmed
+also from biomechanics data in literature [46]. A quantitative
+evaluation of the joint stiffness estimates though is meaningless,
+as their values depend on the selected stiffness range.
+Fig. 15 illustrates results obtained from one of the ‘‘with assistance’’ standing-up trials. In particular, Fig. 15(a) shows the active
+
+a 100
+80
+
+87
+
+b
+
+60
+40
+20
+0
+
+Fig. 15. (a) Active stiffness of the tele-impedance controller during standing up based on the trace of the user’s joint stiffness and the muscle activations of the six muscles.
+(b) Top: the applied torque by the exoskeleton and the estimated user’s torque. Bottom: the reference position (equilibrium) and the actual position of the knee exoskeleton
+device.
+
+88
+
+N. Karavas et al. / Robotics and Autonomous Systems 73 (2015) 78–90
+
+a 100
+80
+60
+40
+20
+0
+
+b
+
+Fig. 16. (a) Active stiffness of the tele-impedance controller during stand-to-sit assistance and the muscle activations of the six muscles. (b) Top: the applied torque by the
+exoskeleton and the estimated user’s torque. Bottom: the reference position (equilibrium) and the actual position of the knee exoskeleton device.
+
+who is decelerating against gravity, see Fig. 16(b). At the end of the
+motion (t = 4.27 s) the active stiffness is zero resulting in zero
+assistance. In addition, as shown in Fig. 16(b)), the knee angle q
+moves towards the equilibrium position θref and reaches a constant
+value. Note that, the values of the active stiffness, estimated user’s
+torque and applied torque are very comparable with the ones of
+the trial of the standing-up assistance shown in Fig. 15. However,
+as for the subject is difficult to obtain the exact sharing of weight
+between his two legs during the stand-to-sit and sit-to-stand trials,
+slight differences there can be noticed.
+Furthermore, the results presented in Figs. 15 and 16 demonstrate also the advantage of the proposed control technique over
+simple torque amplification methods, where the assistive torque
+is proportional to the user’s estimated torque [6,32]. The applied torques by the exoskeleton are significantly smoother, which
+means that the human–exoskeleton interaction and the comfort
+have been substantially improved [32]. In addition, this technique
+is more robust to unavoidable inaccuracies of the user’s torque,
+and can provide low levels of support for small muscle activations
+and higher assistance for greater forces from the user, instead of
+performing this just proportionally with a constant ratio regardless the level of the muscle activation [32]. On the other hand, our
+method requires that we provide with position trajectories.
+8. Discussion
+The main evident result of the experiments is that the exoskeleton combined with the proposed control scheme can provide a
+large part of the required torque for standing-up. To our knowledge
+there is no study with regard to classification of assistance levels
+provided by an exoskeleton. Hence, we have assumed that the percentage of about 30% of the user’s torque (i.e. the applied assistive
+torque in the presented experiment) is sufficient to justify the effectiveness of the exoskeleton assistance. If this is required though,
+the exoskeleton is able to apply greater levels of assistance by increasing the desired stiffness range (to which the stiffness trend index (STI) is mapped) and/or by adjusting the sensitivity constant kf .
+However, a matter that cannot be illustrated in figures is
+related to the wearer’s degree of comfort, and the sense of his
+controllability over the device. In particular, the subject reported a
+seamless integration between the user intent and the operation of
+the exoskeleton, in addition to the experiencing of an exceedingly
+high degree of comfort and agility during motion. The user could
+receive flexible support by the exoskeleton, which he was able to
+regulate according to his muscle activations.
+Another important issue that needs discussion regards the
+adopted stiffness estimation approach. As it is described in
+Section 5, we select to linearly map the stiffness trend index to a
+desired task-related and subject-specific stiffness range (see (10)
+and (11)). This assumption was sufficient in our setup, as the goal
+in this work is to replicate the stiffness trends of the human to the
+exoskeleton, rather than quantify joint stiffness.
+
+Regarding defects of the proposed control technique that
+require improvement, the adjustment of the sensitivity constant kf
+needs enhancement as it has to be carefully tuned according to the
+time execution of the task. Future work will examine automated
+methods to facilitate the derivation of the equilibrium position.
+The complexity of the musculoskeletal model imposes the need
+for the calibration of 7 × n parameters, with n being the number
+of muscles. This renders the use of the device time consuming
+and inconvenient. A potential improvement can be accommodated
+through introduction of the muscle synergies [50], which gives evidence to the fact that specific motor patterns can be extracted
+from dominant muscles involved in the task. This requires further investigation on the contribution of the coordinated muscular activations to the task values. Moreover, the model has been
+calibrated in quasi-static movements where the inertia moments
+effect has been neglected. Future work will focus on model identification methods that will take into account inertia loads during
+dynamic conditions.
+Furthermore, it is worth to mention that the quadratic stability
+of the proposed control technique has been investigated and
+proved that theoretically the active stiffness Kc , that is derived
+directly from the muscle activity of the operator, can vary at an
+infinitely fast rate of change.
+9. Conclusion
+This work discussed a tele-impedance based assistive control
+strategy for a compliant knee exoskeleton to achieve volitional
+stiffness augmentation and effective motion assistance, that are
+based on the flexibility of the user’s joint. An EMG-driven musculoskeletal model, that combines results of other biomechanical
+works, was developed to determine the user’s intended motion
+and the joint stiffness estimates. This model provides the reference signals to the proposed controller that allows the exoskeleton to generate assistive torques under the user’s command and
+simultaneously exhibit high levels of transparency when no assistance is required. In addition, simulation studies of the closed-loop
+human–exoskeleton system were conducted and its stability was
+proved in both steady state and transient condition. Experimental
+evaluation of the proposed control strategy was carried out during the standing-up and sitting-down demonstrating that the user
+was able to volitionally and intuitively control the knee exoskeleton while receiving an effective motion assistance.
+Future work will seek to enhance the model and its calibration
+method to achieve faster, more convenient use with the exoskeleton. In addition, experimentation will be extended with disabled
+individuals with limited leg torques in order to verify the suitability of this control method in such conditions.
+Appendix A. Supplementary data
+Supplementary material related to this article can be found
+online at http://dx.doi.org/10.1016/j.robot.2014.09.027.
+
+N. Karavas et al. / Robotics and Autonomous Systems 73 (2015) 78–90
+
+References
+[1] H. Kazerooni, A. Chu, R. Steger, That which does not stabilize, will only make
+US stronger, Int. J. Robot. Res. 26 (1) (2007) 75–89.
+[2] J.F. Veneman, R. Kruidhof, E.E.G. Hekman, R. Ekkelenkamp, E.H.F. Van
+Asseldonk, H. van der Kooij, Design and evaluation of the LOPES exoskeleton
+robot for interactive gait rehabilitation, IEEE Trans. Neural Syst. Rehabil. 15 (3)
+(2007) 379–386.
+[3] N. Vitiello, T. Lenzi, S. Roccella, S.M.M. De Rossi, E. Cattin, F. Giovacchini, F.
+Vecchi, M.C. Carrozza, NEUROExos: A powered elbow exoskeleton for physical
+rehabilitation, IEEE Trans. Robot. 29 (1) (2013) 220–235.
+[4] P. Beyl, M. Van Damme, R. Van Ham, R. Versluys, B. Vanderborght, D. Lefeber,
+An exoskeleton for gait rehabilitation: prototype design and control principle,
+in: Robotics and Automation, 2008. ICRA 2008. IEEE International Conference
+on, IEEE, 2008, pp. 2037–2042.
+[5] K. Kong, D. Jeon, Design and control of an exoskeleton for the elderly and
+patients, IEEE/ASME Trans. Mechatronics 11 (4) (2006) 428–432.
+[6] A. Tsukahara, R. Kawanishi, Y. Hasegawa, Y. Sankai, Sit-to-stand and stand-tosit transfer support for complete paraplegic patients with robot suit HAL, Adv.
+Robot. 24 (11) (2010) 1615–1638.
+[7] REX Bionics. www.rexbionics.com.
+[8] J.E. Pratt, B.T. Krupp, C.J. Morse, S.H. Collins, The RoboKnee: an exoskeleton
+for enhancing strength and endurance during walking, in: Robotics and
+Automation, 2004. Proceedings. ICRA ’04. 2004 IEEE International Conference
+on, vol. 3, 2004, pp. 2430–2435.
+[9] R.J. Farris, H.A. Quintero, M. Goldfarb, Preliminary evaluation of a powered
+lower limb orthosis to aid walking in paraplegic individuals, IEEE Trans. Neural
+Syst. Rehabil. Eng. 19 (6) (2011) 652–659.
+[10] M. Grün, U. Konigorski, Observer based method for joint torque estimation in
+active orthoses, in: Mathematical Modelling, vol. 7, 2012, pp. 199–204.
+[11] T. Lenzi, S.M.M. De Rossi, N. Vitiello, M.C. Carrozza, Intention-based EMG
+control for powered exoskeletons, IEEE Trans. Biomed. Engrg. 59 (8) (2012)
+2180–2190.
+[12] W. Hassani, S. Mohammed, H. Rifa, EMG based approach for wearer-centered
+control of a knee joint actuated orthosis, in: Intelligent Robots and Systems
+(IROS), 2013 IEEE/RSJ International Conference on, 2013, pp. 990–995.
+[13] E. Guizzo, H. Goldstein, The rise of the body bots, Spectrum, IEEE 42 (10) (2005)
+50–56.
+[14] H. Lee, N. Hogan, Investigation of human ankle mechanical impedance
+during locomotion using a wearable ankle robot, in: 2013 IEEE International
+Conference on Robotics and Automation, IEEE, 2013, pp. 2651–2656.
+[15] P.H. Chang, S.H. Kang, Stochastic estimation of human arm impedance under
+nonlinear friction in robot joints: a model study, J. Neurosci. Methods 189
+(2010) 97–112.
+[16] N.L. Tagliamonte, F. Sergi, G. Carpino, D. Accoto, E. Guglielmelli, Design of a
+variable impedance differential actuator for wearable robotics applications,
+in: 2010 IEEE/RSJ International Conference on Intelligent Robots and Systems,
+2010, pp. 2639–2644.
+[17] E.C. Martinez-Villalpando, H. Herr, Agonist-antagonist active knee prosthesis:
+a preliminary study in level-ground walking, J. Rehabil. Res. Dev. 46 (3) (2009)
+361–373.
+[18] T.C. Bulea, R. Kobetic, C.S. To, M.L. Audu, J.R. Schnellenberger, R.J. Triolo, A
+variable impedance knee mechanism for controlled stance flexion during
+pathological gait, IEEE/ASME Trans. Mechatronics 17 (5) (2012) 822–832.
+[19] J.A. Blaya, H. Herr, Adaptive control of a variable-impedance ankle-foot
+orthosis to assist drop-foot gait, IEEE Trans. Neural Syst. Rehabil. 12 (1) (2004)
+24–31.
+[20] S. Lee, Y. Sankai, Power assist control for walking aid with HAL-3 based on
+EMG and impedance adjustment around knee joint, in: Intelligent Robots
+and Systems, 2002. IEEE/RSJ International Conference on, vol. 2, 2002, pp.
+1499–1504.
+[21] R. Riener, L. Lunenburger, S. Jezernik, M. Anderschitz, G. Colombo, V.
+Dietz, Patient-cooperative strategies for robot-aided treadmill training: first
+experimental results, IEEE Trans. Neural Syst. Rehabil. 13 (3) (2005) 380–394.
+[22] S. Hussain, S.Q. Xie, P.K. Jamwal, Adaptive impedance control of a robotic
+orthosis for gait rehabilitation, in: IEEE Transactions on Systems, Man, and
+Cybernetics, Part B (Cybernetics), 2012, pp. 1–10.
+[23] M. Garabini, A. Passaglia, F. Belo, P. Salaris, A. Bicchi, Optimality principles
+in stiffness control: The VSA kick, in: 2012 IEEE International Conference on
+Robotics and Automation, IEEE, 2012, pp. 3341–3346.
+[24] N. Karavas, A. Ajoudani, S.J., N. Tsagarakis, A. Bicchi, C. D G, Tele-impedance
+based stiffness and motion augmentation for a knee exoskeleton device, in:
+Robotics and Automation, 2013. IEEE International Conference on, 2013.
+[25] T.S. Buchanan, D.G. Lloyd, K. Manal, T.F. Besier, Neuromusculoskeletal
+modeling: estimation of muscle forces and joint moments and movements
+from measurements of neural command, J. Appl. Biomech. 20 (4) (2004) 367.
+[26] T.S. Buchanan, D.A. Shreeve, An evaluation of optimization techniques for the
+prediction of muscle activation patterns during isometric tasks, J. Biomech.
+Eng. 118 (1996) 565.
+[27] F.E. Zajac, Muscle and tendon: properties, models, scaling, and application to
+biomechanics and motor control, Crit. Rev. Biomed. Eng. 17 (4) (1989) 359.
+[28] C. De Luca, The use of surface electromyography in biomechanics, J. Appl.
+Biomech. 13 (1997) 135–163.
+[29] D.G. Lloyd, T.F. Besier, An EMG-driven musculoskeletal model to estimate
+muscle forces and knee joint moments in vivo, J. Biomech. 36 (6) (2003)
+765–776.
+
+89
+
+[30] A.V. Hill, The heat of shortening and the dynamic constants of muscle, Proc.
+Roy. Soc. Lond. Ser. B, Biological Sciences 126 (843) (1938) 136–195.
+[31] M. Sartori, M. Reggiani, E. Pagello, D.G. Lloyd, Modeling the human knee for
+assistive technologies, 2012.
+[32] C. Fleischer, G. Hommel, A Human–exoskeleton interface utilizing electromyography, IEEE Trans. Robot. 24 (4) (2008) 872–882.
+[33] P.A. Huijing, Important experimental factors for skeletal muscle modelling:
+non-linear changes of muscle length force characteristics as a function of
+degree of activity, Eur. J. Morphol. 34 (1) (1996) 47–54.
+[34] J.J. Visser, J.E. Hoogkamer, M.F. Bobbert, P.A. Huijing, Length and moment arm
+of human leg muscles as a function of knee and hip-joint angles, Eur. J. Appl.
+Physiol. 61 (5) (1990) 453–460.
+[35] K.N. An, K. Takahashi, T.P. Harrigan, E.Y. Chao, Determination of muscle
+orientations and moment arms, J. Biomech. Eng. 106 (1984) 280.
+[36] R. Osu, D.W. Franklin, H. Kato, H. Gomi, K. Domen, T. Yoshioka, M. Kawato,
+Short-and long-term changes in joint co-contraction associated with motor
+learning as revealed from surface EMG, J. Neurophysiol. 88 (2) (2002)
+991–1004.
+[37] J.F. Veneman, R. Ekkelenkamp, R. Kruidhof, F.C.T. van der Helm, H. van der
+Kooij, A series elastic- and bowden-cable-based actuation system for use as
+torque actuator in exoskeleton-type robots, Int. J. Robot. Res. 25 (3) (2006)
+261–281.
+[38] G. Pratt, M. Williamson, Series elastic actuators, in: Proceedings 1995 IEEE/RSJ
+International Conference on Intelligent Robots and Systems, in: Human Robot
+Interaction and Cooperative Robots, vol. 1, IEEE Comput. Soc. Press, 1995,
+pp. 399–406.
+[39] N.C. Karavas, N.G. Tsagarakis, J. Saglia, D.G. Caldwell, A novel actuator
+with reconfigurable stiffness for a knee exoskeleton: Design and modeling,
+in: J.S. Dai, M. Zoppi, X. Kong (Eds.), Advances in Reconfigurable Mechanisms
+and Robots I, Springer, London, 2012, pp. 411–421.
+[40] N.C. Karavas, N.G. Tsagarakis, D.G. Caldwell, Design, modeling and control
+of a series elastic actuator for an assistive knee exoskeleton, in: Biomedical
+Robotics and Biomechatronics (BioRob), 2012 4th IEEE RAS EMBS International
+Conference on, 2012, pp. 1813–1819.
+[41] T. Lenzi, N. Vitiello, S.M.M. De Rossi, S. Roccella, F. Vecchi, M.C. Carrozza,
+NEUROExos: A variable impedance powered elbow exoskeleton, in: 2011 IEEE
+International Conference on Robotics and Automation, 2011, pp. 1419–1426.
+[42] R. Schiavi, G. Grioli, S. Sen, A. Bicchi, VSA-II: a novel prototype of variable
+stiffness actuator for safe and performing robots interacting with humans, in:
+2008 IEEE International Conference on Robotics and Automation, 2008.
+[43] A. Ajoudani, N. Tsagarakis, A. Bicchi, Tele-impedance: Teleoperation with
+impedance regulation using a body-machine interface, Int. J. Robot. Res. 31
+(13) (2012) 1642–1656.
+[44] A. Ajoudani, N.G. Tsagarakis, A. Bicchi, Tele-impedance: Towards transferring
+human impedance regulation skills to robots, in: International Conference of
+Robotics and Automation - ICRA 2012, Saint Paul, MN, USA, 2012.
+[45] N. Hogan, Impedance control: An approach to manipulation: Part IIIApplications, J. Dyn. Syst. Meas. Control 107 (1985) 17–24.
+[46] A. Kralj, R.J. Jaeger, M. Munih, Analysis of standing up and sitting down in
+humans: definitions and normative data presentation, J. Biomech. 23 (11)
+(1990) 1123–1138.
+[47] L.-Q. Zhang, G. Nuber, J. Butler, M. Bowen, W.Z. Rymer, In vivo human knee
+joint dynamic properties as functions of muscle contraction and joint position,
+J. Biomech. 31 (1) (1997) 71–76.
+[48] L. Grman, D. Rosinova, A. Kozakova, V. Vesely, Robust stability conditions for
+polytopic systems, Int. J. Syst. Sci. (2005) 1–20.
+[49] A. Trofino, C.E.D. Souza, Biquadratic stability of uncertain linear systems, IEEE
+Trans. Autom. Control 46 (8) (2001) 1303–1307.
+[50] A. D’Avella, P. Saltiel, E. Bizzi, Combinations of muscle synergies in the
+construction of a natural motor behavior, Nature Neurosci. 6 (3) (2003)
+300–308.
+
+Nikos Karavas received the Dipl.-Eng. degree in Electrical and Computer engineering from the University of Patras, 2009. In 2014 he obtained the Ph.D. degree in the
+field of Human-centered mechatronics at the Advanced
+Robotics Department of the Italian Institute of Technology.
+Currently, he is a Postdoctoral Researcher at the Harvard
+Biodesign Lab of the Harvard University. He received the
+Best Student Paper award at ROBIO 2013. His research interests include among others: assistive wearable robotics,
+variable impedance systems, biomechanics and control of
+compliant robots.
+Arash Ajoudani received Ph.D. degree from Centro ‘‘E Piaggio’’, University of Pisa, and Humanoids and Human Centred Mechatronics Lab, Advanced Robotics Department
+(ADVR), Italian Institute of Technology (IIT), in 2014. He
+is currently a postdoctoral researcher at the ADVR, IIT. He
+was a winner of the best student paper award at ROBIO
+2013, and a finalist for the Best Manipulation paper award
+at ICRA 2012. He is currently serving as a Co-Chair for the
+Student Activities Committee (SAC) of the IEEE Robotics
+and Automation Society (RAS). His main research interests
+are in physical human–robot interaction, impedance control, rehabilitation robotics, robust and adaptive control, and tele-robotics.
+
+90
+
+N. Karavas et al. / Robotics and Autonomous Systems 73 (2015) 78–90
+
+Nikos Tsagarakis received the Dip.-Eng. degree in electrical and computer science engineering from the Aristotle University in Greece, in 1995, the M.Sc. degree in
+control engineering in 1997, and the Ph.D. degree in
+robotics from the University of Salford, Salford, UK, in
+2000. Before becoming a Senior Researcher at Italian Institution of Technology, Genova, Italy, with over-all responsibility for Humanoid and Human Centred Mechatronics
+Design, he was a Research Fellow and then a Senior Research Fellow in the Centre for Robotics and Automation
+at the University of Salford, where he worked on haptic
+systems, wearable exoskeletons, rehabilitation robots, and humanoids robots. He is
+the author or coauthor of more than 140 papers in research journals.
+
+Antonio Bicchi is Professor of Robotics at the University of
+Pisa, and Senior Scientist at the Italian Institute of Technology in Genoa. He graduated from the University of Bologna
+in 1988 and was a postdoc scholar at M.I.T. Artificial Intelligence lab in 1988–1990. His main research interests are
+in Robotics, Haptics, and Control Systems in general. He
+has published more than 300 papers on international journals, books, and refereed conferences. He currently serves
+as the President of the Italian Association or Researchers in
+Automatic Control. He has served as Editor in Chief of the
+Conference Editorial Board for the IEEE Robotics and Automation Society (RAS), as Vice President and as Distinguished Lecturer of IEEE RAS.
+He is Editor-in-Chief for the book series ‘‘Springer Briefs on Control, Automation and
+Robotics’’, and is in the editorial board of several scientific journals, including the
+top-ranked Int.l J. Robotics Research, the IEEE Trans. on Robotics and Automation,
+IEEE Trans. Automation Science and Engineering, and IEEE RAS Magazine.
+
+Jody Saglia received the B.Eng. degree in automation engineering and the M.Sc. degree in mechatronics engineering from the Polytechnic of Turin, Turin, Italy, in 2004 and
+2007, respectively, and the Ph.D. degree from King’s College London, London, UK, in 2010. He was a researcher at
+King’s College London in 2006. Since 2007, he has been
+a Research Fellow at the Istituto Italiano di Tecnologia,
+Genoa, Italy, where he is currently a Researcher at the Rehab Technologies Facility. His research interests include
+mechanisms design, rehabilitation robotics, mechatronic
+design, actuation systems, and human–robot interaction.
+Dr. Saglia received the Professional Engineering Publishing Award from the Journal
+of Systems and Control Engineering in 2009.
+
+Darwin Caldwell received the B.S. and Ph.D. degrees in
+robotics from the University of Hull, Hull, UK, in 1986
+and 1990, respectively and the M.Sc. degree in management in 1996 from the University of Salford, Salford, UK.
+He is currently the Director of Advanced Robotics at the
+Italian Institute of Technology, Genova, Italy, and a Visiting/Honorary Professor at the Universities of Sheffield,
+Manchester, Kings College, Bangor, and Tianjin (China). He
+is the author or coauthor of more than 300 academic papers, and has 15 patents. His research interests include
+innovative actuators, force augmentation exoskeletons,
+dexterous manipulators, humanoid (iCub and COMAN) and quadrupled robots
+(HyQ), and rehabilitation robotics.
+
+

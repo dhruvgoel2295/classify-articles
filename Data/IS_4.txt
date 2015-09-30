@@ -1,0 +1,1935 @@
+journal of information security and applications 23 (2015) 28–43
+
+Available online at www.sciencedirect.com
+
+ScienceDirect
+j o u r n a l h o m e p a g e : w w w. e l s e v i e r. c o m / l o c a t e / j i s a
+
+A secure password-based authentication and
+key agreement scheme using smart cards
+Dheerendra Mishra a, Ashok Kumar Das b,*, Ankita Chaturvedi c,
+Sourav Mukhopadhyay c
+a
+
+Department of Mathematics, LNM Institute of Information Technology, Jaipur 302 031, India
+Center for Security, Theory and Algorithmic Research, International Institute of Information Technology,
+Hyderabad 500 032, India
+c
+Department of Mathematics, Indian Institute of Technology, Kharagpur 721 302, India
+b
+
+A R T I C L E
+
+I N F O
+
+A B S T R A C T
+
+Article history:
+
+Authentication schemes present a user-friendly and scalable mechanism to establish the
+
+Available online 23 July 2015
+
+secure and authorized communication between the remote entities over the insecure public
+network. Later, several authentication schemes have proposed in the literature. However,
+
+Keywords:
+
+most of the existing schemes do not satisfy the desirable attributes, such as resistance against
+
+Remote user authentication
+
+known attacks and user anonymity. In 2012, Chen et al. designed a robust authentication
+
+Password
+
+scheme to erase the weaknesses of Sood et al.’s scheme. In 2013, Jiang et al. showed that
+
+User anonymity
+
+Chen et al.’s scheme is vulnerable to password guessing attack. Furthermore, Jiang et al.
+
+Security
+
+presented an efficient solution to overcome the shortcoming of Chen et al.’s scheme. We
+demonstrate that Jiang et al.’s scheme does not withstand insider attack, on-line and offline password guessing attacks, and user impersonation attack. Their scheme also fails to
+provide user’s anonymity. To overcome these drawbacks, we aim to propose an enhanced
+scheme, which reduces the computation overhead and satisfies all desirable security attributes, while retaining the original merits of Jiang et al.’s scheme. The proposed scheme is
+also comparable in terms of the communication and computational overheads with Jiang
+et al.’s scheme and other existing schemes. Furthermore, we simulate the enhanced scheme
+for the formal security analysis utilizing the widely-accepted AVISPA tool and show that
+the proposed scheme is resistant against active and passive attacks.
+© 2015 Elsevier Ltd. All rights reserved.
+
+1.
+
+Introduction
+
+The advancements in technology have made the Internet an efficient and scalable tool to utilize for various remote services.
+However, an adversary is considered to be powerful enough that
+he can control the communication over the public channel.
+Therefore, to ensure the authorized and secure communication,
+a user and the server should verify the correctness of each
+
+other and draw a session key, which can be used to securely
+transmit the data (Lee et al., 2002). The smart card-based authentication protocols are designed and developed to ensure the
+secure and authorized communication (Tsai et al., 2006; Xu et al.,
+2009).
+In 2009, Xu et al. (2009) designed an improved passwordbased authentication scheme to erase the drawbacks of Lee
+et al.’s scheme (Lee and Chiu, 2005). Later on, Sood et al. (2010)
+demonstrated forgery and off-line password guessing attacks
+
+* Corresponding author. Center for Security, Theory and Algorithmic Research, International Institute of Information Technology, Hyderabad
+500 032, India. Tel.: +91 40 6653 1506; fax: +91 40 6653 1413.
+E-mail addresses: iitkgp.akdas@gmail.com, ashok.das@iiit.ac.in (A.K. Das).
+http://dx.doi.org/10.1016/j.jisa.2015.06.003
+2214-2126/© 2015 Elsevier Ltd. All rights reserved.
+
+journal of information security and applications 23 (2015) 28–43
+
+on Xu et al.’s scheme. Additionally, they come up with an improvement of Xu et al.’s scheme. At the same time, Song (2010)
+demonstrated that an adversary can retrieve the stored information from the smart card and can perform user impersonation attack on Xu et al.’s scheme. Furthermore, an enhanced
+authentication scheme was proposed by them to overcome the
+pitfalls of Xu et al.’s scheme (Song, 2010). However, Chen et al.
+(2012) pointed out that the improvements proposed by both
+Song and Sood et al. are still vulnerable to several known
+attacks. Chen et al. showed that Sood et al.’s scheme does not
+achieve mutual authentication as it supports only one-way
+authentication, where only the server verifies the user’s authenticity. In addition, they identified the inefficiency of Sood
+et al.’s scheme in the detection of incorrect input. Furthermore, Chen et al. demonstrated the off-line password guessing attack on Song’s scheme. In addition, they proposed an
+efficient authentication scheme to overcome the security weaknesses of Song’s scheme. Recently, Jiang et al. (2015) analyzed
+the security of Chen et al.’s scheme and identified that Chen
+et al.’s scheme does not resist off-line password guessing attack.
+They also designed a solution to erase the security drawback
+of Chen et al.’s scheme. We analyze the security of Jiang et al.’s
+scheme and identify that Jiang et al.’s scheme does not erase
+the drawback of password guessing attack efficiently, and it is
+still vulnerable to both off-line and on-line password guessing attacks. Additionally, it fails to withstand insider and user
+impersonation attacks.
+An adversary can eavesdrop the user and the server interaction as they communicate via a public insecure channel.
+Therefore, the secrecy of a user’s identity should be supported during message exchange. Otherwise, it may give an
+opportunity to the adversary to collect the user’s specific information that enables him/her to track the user’s login
+frequency. Unfortunately, the aforementioned password based
+authentication schemes (Chen et al., 2012; Jiang et al., 2015;
+Lee and Chiu, 2005; Lee et al., 2005; Song, 2010; Sood et al., 2010;
+Xu et al., 2009; Liao et al, 2006) also fail to provide the user anonymity. Additionally, these schemes do not support the smart
+card revocation phase, where an authorized user can recover
+lost smart card without invoking new registration process.
+
+1.1.
+
+Threat model
+
+We follow Dolev–Yao threat model (Dolev and Yao, 1983) where
+two communicating parties communicate via insecure public
+channel. Any adversary (attacker or intruder) can eavesdrop
+the transmitted messages over the public insecure channel and
+he/she has the ability to modify, delete or change the contents of the transmitted messages. An adversary is thus able
+to eavesdrop all the transmitted messages via a public channel.
+Moreover, the adversary can modify, delete and resend all the
+messages, and can also reroute any message to any other principal (Clark and Jacob, 1997). Usually the user’s smart card is
+equipped with the tamper-resistant hardware. However, if a
+user’s smart card is stolen or lost, an adversary can extract the
+stored sensitive information from the memory of smart card
+by monitoring the power consumption of the smart card
+(Eisenbarth et al., 2008; Kocher et al., 1999). Finally, an adversary can be a legitimate user or an outsider (Boyd and Mathuria,
+2003).
+
+1.2.
+
+29
+
+Our contributions
+
+We have listed our contributions as follows:
+• We review Jiang et al.’s scheme and then demonstrate the
+vulnerability of their scheme to the off-line and on-line password guessing, insider, and user impersonation attacks.
+• We propose an enhanced password based authenticated key
+agreement scheme to overcome the security pitfalls of Jiang
+et al.’s scheme.
+• Through rigorous formal and informal security analyses, we
+demonstrate that the proposed scheme can efficiently
+protest various attacks including attacks found in Jiang
+et al.’s scheme.
+• We simulate the proposed scheme using AVISPA tool for the
+formal security analysis and demonstrate that the proposed scheme is secure against active and passive attacks.
+• Our scheme is efficient in terms of communication and computational overheads compared to Jiang et al.’s scheme and
+other related existing schemes.
+
+1.3.
+
+Road-map of the paper
+
+The remaining part of the paper is designed as follows. The
+next section presents the brief review of Jiang et al.’s scheme.
+Section 3 discusses the security weakness of Jiang et al.’s
+scheme. In Section 4, we present our scheme. We analyze the
+security of the proposed scheme using both informal and formal
+security analyses in Section 5. In Section 6, we also simulate
+the proposed scheme for the formal security analysis using the
+widely-accepted AVISPA tool. In Section 7, we compare the proposed scheme with Jiang et al.’s scheme and other related
+existing schemes for performance and functionality analysis. Finally, the concluding remarks are drawn in Section 8.
+
+2.
+
+Review of Jiang et al.’s scheme
+
+In 2013, Jiang et al. (2015) proposed an improvement of Chen
+et al.’s remote user authentication scheme (Chen et al., 2012).
+In their scheme, the registration and password change phases
+are similar to those for Chen et al.’s scheme. However, the login
+and authentication phases are different. Jiang et al.’s scheme
+is composed of the following four phases: (i) registration; (ii)
+login; (iii) authentication; (iv) password change. We use the notations listed in Table 1 throughout the paper.
+In the system initialization phase, S selects two large
+primes p and q such that p = 2q + 1. S also selects the master key x ∈ Zq and a one way hash function h : {0, 1}* → Z*p ,
+where Zp = {0, 1, 2, … , p − 1} and Z*p = {a | 0 < a < p, gcd(a, p) = 1}
+= {1, 2, 3, … , p − 1} .
+
+2.1.
+
+Registration phase
+
+To achieve a valid smart card, a user Ui proceeds as follows:
+Step 1. Ui selects two values IDi and PWi as identity and password, respectively. Then, Ui submits IDi and PWi to S via a
+secure channel.
+
+30
+
+journal of information security and applications 23 (2015) 28–43
+
+Table 1 – Notations used in this paper.
+
+Table 3 – Login phase of Jiang et al.’s scheme.
+
+Symbol
+
+User (Ui)/Smart Card (SC)
+
+Description
+th
+
+i user
+Server
+Smart Card
+Identity of user Ui
+Pseudonym identity of user Ui
+Secret identity of smart card of user Ui
+User’s password
+Master key of S
+Large distinct primes such that p = 2q + 1
+One-way hash function (National Institute of Standards
+and Technology (NIST), 1995)
+Current timestamp of an entity X
+Maximum transmission delay
+Bitwise XORed of data A with data B
+Concatenation of A with B
+
+Ui
+S
+SC
+IDi
+NIDi
+IDSC
+PWi
+x
+p,q
+h(⋅)
+Tx
+ΔT
+A⊕B
+A || B
+
+Table 2 – Registration phase of Jiang et al.’s scheme.
+User (Ui)
+
+Server (S)
+
+Selects a random number a.
+Chooses IDi and PWi.
+〈IDi, PWi 〉
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+→
+( via a secure channel )
+
+Computes Bi = h(IDi )( x + PWi ) (mod p).
+
+〈Smart Card (Bi, h(⋅), p, q)〉
+←⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+⎯⎯
+⎯
+( via a secure channel )
+Inserts IDi in its ID table.
+
+Server (S)
+
+Inserts the smart card SC into card reader.
+Inputs IDi and PWi.
+Selects a random number α ∈ Zq* .
+Computes Ci = Bi h(IDi )PWi (mod p) .
+Computes Di = h(IDi )α (mod p) .
+Computes Wi = (Ci )α (mod p).
+Computes Mi = h(IDi Ci Di Wi Ti ).
+〈IDi, Di, Mi, Ti 〉
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+→
+( via a public channel)
+
+2.3.
+
+Authentication phase
+
+User and server can correctly verify the correctness of each
+other as follows:
+Step 1. Upon getting 〈 IDi, Di, Mi, Ti 〉 at time Ti′ , S verifies the
+existence of IDi in its ID-table. If IDi exists in the database,
+S verifies the condition Ti′− Ti ≤ ΔT , where ΔT is the valid
+time delay in message transmission. If this condition does
+not hold, it terminates the session. Otherwise, it computes the following values:
+
+Ci′ = h(IDi )x (mod p),
+Wi′ = ( Di′)x (mod p),
+
+Step 2. S calculate Bi = h(IDi )( x + PWi ) (mod p) .
+Step 3. S embeds the parameters {BE, h(⋅), p, q} into SC. S
+issues SC to Ui via a secure channel. Further, S stores IDi in
+its ID table.
+This phase is summarized in Table 2.
+
+2.2.
+
+Login phase
+
+A valid user can compute the login message as follows:
+Step 1. Ui inserts SC into the card reader, and then inputs
+IDi and PWi.
+Step 2. SC chooses α ∈Zq* and calculates Ci, Di, Wi and Mi
+
+Mi′ = h(IDi Ci′ Di Wi′ Ti ).
+?
+
+Step 2. S then verifies whether Mi′ = Mi. If the verification fails,
+S rejects the request. Otherwise, Ui is authenticated.
+Step 3. S takes the current timestamp TS and computes
+MS = h(IDi Wi′ TS ). S sends the message 〈 IDi, MS, TS 〉 to Ui.
+Step 4. Upon getting 〈 IDi, MS, TS 〉 at time TS′ , Ui validates
+T S in the received message by checking the condition
+TS′ − TS ≤ ΔT . If this verification succeeds, Ui further verifies
+?
+
+the condition MS = h(IDi Wi TS ). If it is valid, S is authenticated by Ui.
+Step 5. Finally, Ui computes SK = h(Wi). S also computes
+SK = h(Wi′) .
+This phase is summarized in Table 4.
+
+at time Ti:
+
+2.4.
+Ci = Bi h(IDi )
+
+PWi
+
+Password change phase
+
+(mod p),
+A legal user can change the password as follows:
+
+α
+
+Di = h(IDi ) (mod p),
+Wi = (Ci )α (mod p),
+Mi = h(IDi Ci Di Wi Ti ).
+
+Step 1. Ui inserts SC into card reader. Ui inputs IDi, PWi and
+a new password PWinew .
+Step 2. SC interacts with S to reassert the correctness of
+old password PW i by executing login and authentication phases. If the verification holds, SC computes
+PWinew
+
+Binew = Bih(IDi )
+Step 3. SC sends the message 〈 IDi, Di, Mi, Ti 〉 to S.
+This phase is summarized in Table 3.
+
+h(IDi )PWi (mod p) .
+
+Step 3. SC replaces Bi with Binew .
+This phase is summarized in Table 5.
+
+journal of information security and applications 23 (2015) 28–43
+
+Table 4 – Authentication phase of Jiang et al.’s scheme.
+User (Ui)/Smart Card (SC)
+
+Server (S)
+Checks Ti′ − Ti ≤ ΔT .
+Computes Ci′ = h(IDi )x (mod p).
+Computes Wi′ = ( Di′)x (mod p).
+Computes Mi′ = h(IDi Ci′ Di Wi′ Ti ).
+Verifies Mi′ =? Mi .
+If so, Ui is authenticated by S.
+Takes the current timestamp TS.
+Computes MS = h(IDi Wi′ TS ) .
+〈IDi, MS, TS 〉
+←⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+⎯
+( via a public channel)
+
+Checks TS′ − TS ≤ ΔT
+Verifies MS =? h(IDi Wi TS ) .
+If so, S is authenticated by
+the user Ui.
+Computes SK = h(Wi).
+
+31
+
+requests. It provides an opportunity to an adversary to perform
+the on-line password guessing attack as the server does not
+block incorrect repeated login requests. An adversary E can successfully perform:
+Step 1. E could achieve the stored secret information
+{Bi , h(⋅), p, q} from the lost/stolen smart card of a legal
+user U i . Suppose he/she intercepts the login message
+〈 IDi, Di, Mi, Ti 〉. Thus, E knows the user identity IDi.
+Step 2. E guesses PWi* and selects e ∈ Zq* , and then computes the following values:
+*
+
+Ci* = Bi h(IDi )PWi (mod p),
+
+Computes SK = h(Wi′) .
+
+DE = h(IDi )e (mod p),
+WE = (Ci* )e (mod p),
+
+Table 5 – Password change phase of Jiang et al.’s
+scheme.
+User (Ui)
+Inserts SC into card
+reader.
+Inputs IDi, PWi and
+PWinew .
+
+PWinew
+
+Computes Binew = Bih(IDi )
+Replaces Bi with Binew .
+
+3.
+
+h(IDi )PWi (mod p) .
+
+Cryptanalysis of Jiang et al.’s scheme
+
+We discuss the security pitfalls of Jiang et al.’s scheme. We show
+that Jiang et al.’s scheme cannot hold out insider, password
+guessing and user impersonation attacks. These attacks are
+based on our threat model given in Section 1.1.
+
+3.1.
+
+User anonymity
+
+The straightforward way to preserve anonymity is to conceal
+a user’s real identity during communication. However, Jiang
+et al.’s scheme includes the user’s identity in the login message,
+which enables an adversary to collect user’s specific information. The leakage of the user’s specific information enables the
+adversary to track user’s login frequency.
+
+3.2.
+
+Insider attack
+
+Sometimes a user may utilize the same password for different applications because it will be difficult for that user to
+remember several distinct passwords for his/her different accounts. When a user submits password in its original form to
+the server, a malicious insider can know the user’s password.
+This information can be used to access user’s other accounts, which may be protected by the same password.
+Unfortunately, Jiang et al.’s scheme has this drawback.
+
+3.3.
+
+ME = h(IDi Ci* DE Wi* TE ),
+
+Smart Card (SC)
+
+On-line password guessing attack
+
+In Jiang et al.’s scheme, the server does not track the login requests, that is, the server does not count the unsuccessful login
+
+where TE is the timestamp generated by the adversary E. E then
+sends the fabricated login message 〈 IDi, DE, ME, TE 〉 to S.
+Step 3. The verifications of IDi and TE hold at the server side
+as IDi is the user Ui’s identity and TE is fresh timestamp used
+by adversary. Thus, the server S proceeds to compute the
+following values:
+
+Ci = h(IDi )x (mod p),
+Wi* = ( DE )x (mod p).
+?
+
+S then verifies the condition ME = h(IDi Ci′ DE WE′ Ti ). If verification fails, S rejects the login attempt. Otherwise, S responds
+with a valid message during the authentication phase.
+Step 4. If the above verification fails at the server’s side, E
+can repeat from Step 2. Otherwise, the password guessing
+attack will be succeeded by the adversary E.
+It is clear from the above discussion that a legal user’s password can be guessed in Jiang et al.’s scheme.
+
+3.4.
+
+Off-line password guessing attack
+
+An adversary E can guess a legitimate user password using offline password guessing attack as follows:
+Step 1. E intercepts the user Ui’s login message 〈 IDi, Di, Mi, Ti 〉
+and retrieves IDi.
+Step 2. Note that S does not verify the registration of any
+identity, that is, whether the submitted identity for registration is registered or not. It provides the opportunity to
+the adversary to achieve the user’s secret key using his/
+her identity as follows:
+• E selects a random password PWE and then submits IDi
+and PWE to S.
+• S computes BE = h(IDi )( x + PWE ) (mod p).
+
+32
+
+journal of information security and applications 23 (2015) 28–43
+
+• S embeds the parameters {BE, h(⋅), p, q} into SC and provides it to E.
+• E extracts BE from the smart card and computes user Ui’s
+secret key as h(IDi )x = BE h(IDi )PWE (mod p).
+Step 3. E guesses a password PWi* and computes Xi*
+*
+
+(c) login; (d) authentication; (e) password change; (f) smart card
+revocation. We adopt the current timestamp of the system in
+order to prevent replay attack. Thus, we assume that all communicating parties (users and server) are synchronized with
+their clocks.
+
+?
+
+= Bi ⊕ h(IDi )PWi and then checks condition Xi* = h(IDi )x.
+Step 4. If the above verification succeeds, E considers the
+guessed password PWi* as the user Ui’s correct password.
+Otherwise, E repeats from Step 3 until the guess is successful.
+
+4.1.
+
+Initialization phase
+
+S first chooses two distinct large primes p and q with condition p = 2q + 1. S selects a random master secret key x ∈ Zq and
+chooses a secure collision-resistant hash function h : {0, 1} → Zq*.
+
+3.5.
+
+User impersonation attack
+4.2.
+
+Registration phase
+
+The attack is executed as follows:
+Step 1. E first intercepts Ui’s login message 〈 IDi, Di, Mi, Ti 〉 and
+then retrieves the identity IDi from this intercepted message.
+Step 2. E computes the user Ui’s secret key h(IDi )x using IDi
+as discussed in off-line password guessing attack in Section
+3.4.
+Step 3. E chooses e ∈ Zq* and computes the following:
+
+DE = h(IDi )e (mod p),
+WE = (h(IDi )x )e (mod p),
+ME = h(IDi h(IDi )x DE WE TE ),
+where TE is the fresh timestamp of the adversary. E sends the
+modified message 〈 IDi, DE, ME, TE 〉 to the server S.
+Step 4. When S receives the message at time TE′ in Step 3,
+it verifies IDi and checks the validity of TE by the condition
+TE′ − TE ≤ ΔT . Both conditions hold as the adversary E uses
+the registered user Ui’s identity IDi and also E’s current
+x
+timestamp T E . TS further computes Ci = h (IDi ) (mod p),
+
+WE′ = ( DE )x (mod p) , and verifies the condition ME =
+h (IDi Ci DE WE′ TE ) . Note that this verification holds,
+since WE′ = ( DE )x (mod p) = h(IDi )ex (mod p).
+Step 5. S thus authorizes the message and proceeds to
+compute MS = h(IDi WE′ TS ) , where TS is the current timestamp of S’s system. S sends 〈 IDi, MS, TS 〉 to U i . S also
+computes the session key SK = h(WE′ ) .
+Step 6. E intercepts the message 〈 IDi, MS, TS 〉 in Step 5, and
+calculates the same session key SK = h(WE).
+?
+
+It is thus clear that the adversary can login to the server in
+Jiang et al.’s scheme. Moreover, the adversary can compute the
+session key. Thus, Jiang et al.’s scheme is vulnerable to the user
+impersonation attack.
+
+A non-registered user Ui first submits his/her credentials to the
+server for registration. In our scheme, the user does not submit
+password in its original form to the server, while he/she submits
+hashed output of password in order to prevent insider attack.
+Upon receiving Ui’s request, the server S verifies the identity
+registration that means whether the identity IDi is already registered or not. If the identity IDi is already registered with some
+other user, S asks for the new identity. Otherwise, S completes Ui’s registration and then provides a smart card with
+personalized parameters. The description of this registration
+procedure is as follows:
+Step 1. Ui randomly selects a number a and then chooses
+an identity IDi and a password PWi of his/her own choice.
+Ui computes Wi = h( PWi a) and submits 〈IDi,Wi〉 with the
+new user registration request to the server S via a secure
+channel.
+Step 2. S verifies the U’s personal information and IDi.
+If the server S finds IDi in its ID database, it means that IDi
+is registered with some other user and the server S
+asks for the new identity to Ui. Otherwise, S computes
+Xi = h(IDi N IDSC x ) and Bi = Xi ⊕ Wi, where IDSC is the
+issued secret identity of smart card. S further generates a
+pseudonym identity NIDi for the user Ui. N is a number maintained by the server S as follows N = 0, for a new user,
+otherwise, N = N + 1.
+Step 3. S embeds {NIDi, Bi, h(⋅), p, q} into SC. S provides the
+smart card SC = {NIDi, Bi, h(⋅), p, q} to Ui via a secure channel.
+Additionally, S maintains a database of all registered users
+in a user record table. The entry ( N, IDSC, IDi ) is inserted corresponding to NIDi of Ui into the record table. S also stores
+N corresponding to IDi in the registered user’s database.
+Step 4. Upon receiving the smart card SC, Ui computes
+Li = a ⊕ h(IDi || PWi ) . Ui then stores Li in SC.
+The registration phase is summarized in Table 6.
+
+4.3.
+
+4.
+
+The proposed scheme
+
+We describe the various phases of our scheme. The recently
+proposed Jiang et al.’s scheme fails to satisfy the desirable security attributes which are already discussed in Section 3. To
+present a secure solution, we propose an enhanced scheme
+which is composed of six phases: (a) initialization; (b) registration;
+
+Login phase
+
+In order to establish an authorized session, the user computes a login message as follows:
+Step 1. Ui first inserts SC into the card reader. Ui inputs IDi
+and PWi.
+Step 2. SC calculates a = Li ⊕ h(IDi PWi ) and Xi
+= Bi ⊕ h( PWi || a) .
+
+33
+
+journal of information security and applications 23 (2015) 28–43
+
+Table 6 – Registration phase.
+User (Ui)/Smart Card (SC)
+Selects a random number a.
+Chooses IDi and PWi.
+Computes Wi = h( PWi a).
+〈IDi, Wi 〉
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+→
+( via a secure channel )
+
+Computes Li = a ⊕ h(IDi PWi ).
+Stores Li into SC.
+
+Table 8 – Authentication phase of our scheme.
+Server (S)
+
+User (Ui)/Smart Card (SC)
+
+Validates Ti.
+Checks NIDi. Extracts N, IDSC ,
+IDi from ID table corresponding
+to NIDi.
+Computes
+Xi = h(IDi || N || IDSC || x).
+Verifies
+
+Computes Xi = h(IDi N IDSC x )
+and Bi = Xi ⊕ Wi.
+Generates a pseudonym identity
+NIDi for Ui.
+〈Smart Card( NIDi, Bi h(⋅), p, q)〉
+←⎯⎯⎯⎯⎯⎯ ⎯ ⎯⎯⎯⎯⎯⎯⎯
+⎯
+( via a secure channel )
+
+M1 =? h( NIDi IDi Di Xi Ti ).
+If so, Ui is authenticated by S.
+
+Inserts the entry ( N, IDSC, IDi ) in its
+ID table.
+
+Chooses β ∈ Zq* ,
+Computes DS = h(IDi )β (mod p),
+KS = ( Di )β (mod p), and the
+session key SK = h(IDi KS Xi ).
+Computes
+M2 = h(IDi SK Di DS Ti TS ).
+〈 DS, M2, TS 〉
+←⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+⎯
+( via a public channel)
+
+Table 7 – Login phase.
+User (Ui)/Smart Card (SC)
+
+Server (S)
+
+Inserts SC into card reader.
+Inputs IDi and PWi.
+Computes a = Li ⊕ h(IDi PWi ), Wi = h( PWi a) and
+Xi = Bi ⊕ Wi.
+Selects α ∈ Zq*.
+Computes Di = h(IDi )α (mod p).
+Computes M1 = h(NIDi || IDi || Di || Xi || Ti).
+〈 NIDi, Di, M1, Ti 〉
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+→
+( via a public channel)
+
+Step 3. SC selects α ∈Zq* and gets Di = h(IDi )α (mod p).
+Step 4. SC generates a current system timestamp Ti and computes M1 = h(NIDi || IDi || Di || Xi || Ti).
+Step 5. SC sends the message 〈 NIDi, Di, M1, Ti 〉 to S.
+The login phase is summarized in Table 7.
+
+Server (S)
+
+Validates Ti and TS.
+Computes Ki = ( DS )α (mod p),
+and session key
+SK = h(IDi Ki Xi ).
+Checks
+?
+
+M2 = h(IDi SK Di DS Ti TS ).
+If so, S is authenticated by
+the user Ui.
+Stores the session key SK.
+
+Stores the session key SK.
+
+Step 3. Upon getting 〈 DS, M2, TS 〉 at time TS′ , Ui first validates Ti and TS. Ui checks whether the received Ti matches
+with the previously generated timestamp Ti in the formation of the login message or not. If it is valid, Ui further
+checks the condition TS′ − TS < ΔT . If it is valid, U i computes Ki = ( DS )α (mod p) = h(IDi )βα (mod p) and the session key
+SK = h(IDi || Ki || Xi ) . After that U i verifies the condition
+?
+
+M2 = h(IDi SK Di DS Ti TS ) . If this verification fails, the
+
+4.4.
+
+Authentication phase
+
+Upon receiving a legal user’s login request, the server checks
+the correctness of login request. If the verification succeeds,
+server responds with a valid message. Moreover, the user also
+verifies the message. On the success of authentication at both
+ends, user and server compute the session key. The detailed
+description is given below:
+Step 1. Upon receiving 〈 NIDi, Di, M1, Ti 〉 at time Ti′ , S first verifies freshness of Ti in the received login message by checking
+the condition Ti′ − Ti < ΔT . If this condition is valid, S further checks NIDi in the users’ record table. If NIDi does not
+exist, S denies the login request. Otherwise, S extracts the
+values N, IDSC and IDi corresponding to NIDi from its database. S then calculates Xi = h(IDi || N || IDSC || x ) and verifies M1 =? h ( NIDi IDi Di Xi Ti ). If this verification goes
+wrong, S terminates the session. Otherwise, S chooses
+
+β ∈Zq* and computes DS = h(IDi )β (mod p), KS = ( Di )β (mod p)
+= h(IDi )αβ (mod p) and SK = h(IDi KS Xi ) .
+Step 2. S generates a fresh timestamp TS and then computes M2 = h(IDi || SK || Di || DS || Ti || TS ). Finally, S responds with
+the message 〈 DS, M2, TS 〉 to Ui.
+
+session is terminated immediately. Otherwise, S is
+authenticated.
+The authentication phase is summarized in Table 8.
+
+4.5.
+
+Password change phase
+
+In this phase, the smart card first establishes an authorized
+session in order to verify the correctness of input parameters
+(identity and password). If the verification succeeds, the password change executes. The description of this phase is given
+below:
+Step 1. Ui inserts SC into the card reader. Ui inputs IDi, PWi
+and a new password PWinew .
+Step 2. SC verify the correctness of IDi and PWi by executing login and authentication phases. If the verification of
+the server response message holds as discussed in Step 3
+of Section 4.4, SC executes the password change.
+Winew = h( PWinew a), Binew =
+Step 3. SC computes
+new
+new
+L
+=
+a
+⊕
+h
+(
+ID
+PWinew ), and then replaces
+Bi ⊕ Wi ⊕ Wi , i
+i
+Bi with Binew and Li with Lnew
+in
+its
+memory. Note that SC comi
+putes a = Li ⊕ h(IDi PWi ) during the login phase in Step 2.
+
+34
+
+journal of information security and applications 23 (2015) 28–43
+
+Table 9 – Smart card revocation phase.
+User (Ui)
+Selects PWi′ and a′.
+Computes Wi′ = h( PWi′ a′ ) .
+〈IDi, Wi′〉
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+→
+( via a secure channel )
+
+Computes Li′ = a′ ⊕ h(IDi || PWi′).
+Stores Li′ into the smart card’s
+memory.
+
+4.6.
+
+Server (S)
+
+Achieves N corresponding to IDi
+from ID table.
+Validates IDi. Sets N = N + 1.
+Selects a random secret identity
+IDSC
+′ .
+Selects a random pseudonym
+identity NIDi′.
+Computes Xi′ = h(IDi || N || IDSC
+′ || x )
+and Bi′ = Xi′ ⊕ Wi′ .
+〈Smart Card( NIDi′, Bi′, h(⋅), p, q)〉
+←⎯⎯⎯ ⎯ ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+⎯
+( via a secure channel )
+Inserts entry ( N, IDSC
+′ , IDi ) in ID
+table.
+
+AdvAHASH (t ) = Pr[( p, q) ∈R A :
+p ≠ q, and h( p) = h(q)].
+Pr(U) is the probability of a random event U, and ( p, q) ∈R A is
+a randomly selected pair by A . A is assumed to be probabilistic
+and the probability in the advantage is made over the random choices
+by A with the execution time t. h(⋅) is collision-resistant, if
+AdvAHASH (t ) ≤ ε , for any sufficiently small ε > 0.
+Definition 2. (Discrete logarithm problem (DLP) (Bellare
+and Rogaway; Das, 2013)).Let g be a generator of a cyclic group
+G having order q and A 1 an algorithm that outputs an integer in Zq. If we consider EXP1GDLP
+,g ( A1 ) in Algorithm 1, we call
+DLP
+AdvGDLP
+,g ( A1 )Pr[Exp1G,g ( A1 ) = 1] as the DLP-advantage of A1. DLP is
+called a computationally hard or infeasible problem, if AdvGDLP
+,g ( A1 ) ≤ ε ,
+for any sufficiently small ε > 0.
+
+Smart card revocation phase
+
+A registered user can recover the lost or stolen smart card as
+follows:
+Step 1. Ui selects a password PWi′ and random number a′.
+Ui computes Wi′ = h( PWi′ a′ ). Ui submits his/her new smart
+card request with IDi and Wi′ to S via a secure channel.
+Step 2. S verifies the registration of Ui. If Ui’s identity IDi does
+not exist in the server’s registered user list, S terminates
+the session. Otherwise, S achieves N corresponding to IDi.
+Step 3. S sets N = N + 1 and selects a random secret iden′ for the new smart card SC′ and a random
+tity IDSC
+pseudonym identity NIDi′ for the user Ui. After that S com′ x ) and Bi′ = Wi′ ⊕ Xi′ .
+putes Xi′ = h(IDi N IDSC
+Step 4. By embedding the security parameters
+{NIDi′, Bi′, h(⋅), p, q} into the smart card, S provides to Ui via a
+secure channel. S also updates N with N + 1 and the entry
+( N, IDSC, IDi ) with ( N, IDSC
+′ , IDi ) corresponding to NIDi′ into
+the user record table.
+Step 5. Upon receiving the smart card SC′, Ui computes
+Li′ = a′ ⊕ h(IDi PWi′ ) and stores Li′ into the smart card.
+
+Definition 3. (Computational Diffie–Hellman problem (CDHP)
+(Bellare and Rogaway; Das, 2013)).Let G be a cyclic group of order
+q and g a generator of G. If A2 is an algorithm that outputs an element
+of G, the CDHP-advantage of A2 of the experiment, EXP2CDHP
+G,g ( A2 ) ,
+( A2 ) = Pr[Exp2CDHP
+in Algorithm 2 is AdvGCDHP
+,g
+G,g ( A2 ) = 1]. CDHP is called
+a computationally hard or infeasible problem, if AdvGCDHP
+,g ( A2 ) ≤ τ , for
+any sufficiently small τ > 0.
+
+The smart card revocation phase is summarized in Table 9.
+
+5.
+
+Security analysis of the proposed scheme
+
+Through the rigorous security analysis, we demonstrate that
+the proposed scheme attains desirable security goals. We can
+formally define the following three computational problems
+as follows:
+Definition 1. (Collision-resistant one-way hash function).The
+function h : A → B is a deterministic algorithm (Das and Goswami,
+2013; Sarkar, 2010; Stinson, 2006), where A = {0, 1}* and B = {0, 1}n .
+An input is an arbitrary length binary string x ∈ A to this hash function and y ∈ B, a binary string of fixed-length, n is produced as an
+output. If we denote AdvAHASH (t ) as an adversary A’s advantage in
+finding a collision, then
+
+5.1.
+
+Informal security analysis
+
+5.1.1.
+
+User anonymity
+
+The login message and smart card include the dynamic identity NIDi, which is a random value. So, no information can be
+
+journal of information security and applications 23 (2015) 28–43
+
+collected about IDi using NIDi. Moreover, an adversary may
+try to guess ID i using the message verifier condition
+M1 = h(NIDi || IDi || Di || Xi || Ti). However, to verify the guessed identity IDi* with M1 = h(NIDi || IDi || Di || Xi || Ti), the user’s secret key
+Xi is needed. To extract Xi from Bi = Xi ⊕ Wi, it requires the user’s
+password PWi as Wi = h( PWi a) . Thus, an adversary cannot even
+guess the identity IDi in our proposed scheme.
+
+35
+
+{NIDi, Bi, Li } from the stolen smart card SC of a legal user Ui,
+and the previously intercepted transmitted login message
+〈 NIDi, Di, M1, Ti 〉 . However, our scheme resists this attack,
+which is justified from the following discussion:
+• Let the adversary guess a password PWi*.
+• To verify the guessed password PW*, an adversary need to
+generate a valid login message 〈 NIDi, Di*, M1*, Ti* 〉 , where
+
+Di* = h(IDi )e (mod p) and M1* = h(IDi Di* Xi* Ti* ) for a ran-
+
+5.1.2.
+
+Privileged-insider attack
+
+In our scheme, a legal user Ui submits Wi to the server S instead
+of the direct password PWi, where Wi = h( PWi a) . Therefore,
+an insider cannot achieve the user’s password PWi. Moreover,
+an insider cannot guess the password using Wi = h( PWi a) as
+the user Ui does not also submit the secret random number a
+to the server S.
+
+5.1.3.
+
+Stolen smart card attack
+
+Let the lost or stolen smart card SC of a legal user Ui be achieved
+by an adversary. Then, the adversary can retrieve the parameters {NIDi, Bi, Li } from the smart card according to our threat
+model provided in Section 1.1, and may try to use these information to login to the server S. However, this attempt
+cannot be succeeded in our scheme which is justified as
+follows:
+• To generate a valid login message 〈 NIDi, Di, M1, Ti 〉 , an adversary has to compute M1 = h( NIDi IDi Di Xi Ti ).
+• To compute M1, the user Ui’s secret key Xi and identity IDi
+are needed.
+• Neither the smart card SC nor the transmitted messages
+include IDi. Moreover, to compute Xi from Bi, the password
+PWi of the user Ui is also needed. Therefore, an adversary
+cannot achieve IDi and Xi.
+
+dom value e chosen by that adversary, and Ti* is the current
+timestamp of the adversary’s system. It is equivalent to
+achieve Xi from Bi = Xi ⊕ Wi using the guessed password,
+where Wi = h( PWi a) and a = Li ⊕ h(IDi || PWi ) .
+• To compute a, the identity IDi of the user Ui is needed along
+with the password PWi as a = Li ⊕ h(IDi PWi ) .
+• To compute M1* = h(IDi Di* Xi Ti* ), the user Ui’s identity IDi
+is also needed.
+• Neither the smart card SC nor the transmitted messages
+include IDi. Therefore, an adversary has to guess the identity IDi along with password PWi simultaneously.
+• Thus, an adversary has to guess both identity and password. As we have already discussed it in Section 5.1.4, it is
+a computationally infeasible task for that adversary.
+
+5.1.6.
+
+Replay attack
+
+An adversary E can try to use the old transmitted messages
+〈 NIDi, Di, M1, Ti 〉 and 〈 DS, M2, TS 〉 to login. However, our scheme
+withstands the replay attack as:
+• E replays the login message 〈 NIDi, Di, M1, Ti 〉 .
+• Upon receiving the login message 〈 NIDi, Di, M1, Ti 〉 , S can
+verify the replay attack using the timestamp Ti.
+• E may respond with the modified message 〈 NIDi, Di, M1, TE 〉 ,
+where TE is the current timestamp.
+• However, S can easily identify this attempt using the con?
+
+5.1.4.
+
+Off-line password guessing attack
+
+In our design, the smart card does not keep any password verification condition. Thus, an adversary cannot
+verify the password PW i using the stole smart card SC.
+Moreover, an adversary may try to use the intercepted
+login message 〈 NIDi, Di, M1, Ti 〉 to verify the guessed password, where Di = h(IDi )α (mod p), and the computation of
+M1 = h( NIDi IDi Di Xi Ti ) requires the user’s identity IDi.
+However, neither the smart card nor any transmitted message
+includes IDi. Thus, to guess the password PWi, an adversary also
+has to guess user’s identity IDi. If IDi is composed of n characters, the probability to guess a correct n character of IDi is
+approximately 1 26n . If the password is of m characters, the
+probability to guess of IDi and PWi at the same time is approximately 1 26n + 6 m , which is negligible (Chang et al., 2013;
+Das and Goswami, 2013).
+
+5.1.5.
+
+On-line password guessing attack
+
+An active adversary may try to verify a guessed password by
+generating a valid login message. To generate a valid login
+message, an adversary may use the retrieved information
+
+dition M1 = h( NIDi IDi Di Xi Ti ) as E cannot modify M1.
+
+5.1.7.
+
+Man-in-the-middle attack
+
+The scheme resists this attack as follows:
+• Let an adversary E replay the login message 〈 NIDi, Di, M1, TE 〉 ,
+where TE is the current timestamp of the adversary E.
+• S checks NIDi of 〈 NIDi, Di, M1, TE 〉 and identifies as adversary E repeats user Ui’s valid message. It extracts the values
+N, IDSC, IDi corresponding to NIDi from its database. It computes Xi = h(IDi N IDSC x ) and verifies the condition
+?
+M1 = h(IDi Di Xi TE ). The verification does not hold as
+
+h( NIDi IDi Di Xi Ti ).
+• E may try to modify M1. However, to compute M1, both the
+user Ui’s secret key Xi and identity IDi are needed.
+• IDi is neither stored in smart card SC of the user Ui nor associated with the transmitted messages, and Xi is protected
+with the password PWi. Therefore, E can not achieve anyone
+of these values.
+• Since E cannot respond with the valid login message, the
+server S terminates the session.
+
+36
+
+journal of information security and applications 23 (2015) 28–43
+
+5.1.8.
+
+User impersonation attack
+
+An adversary E can masquerade as a legitimate user by successfully logging to the server. However, our scheme can resist
+this attack as follows:
+• E may try to login to the server E using the replay attack.
+However, our scheme resists the replay attack.
+• E may try to generate a valid login message 〈 NIDi, Di′, M1′ , TE 〉
+with a random value e, where Di′ = h(IDi )e (mod p) and
+M1 = h( NIDi IDi Di′ Xi TE ) . However, E cannot compute Di
+and M1 correctly as he/she cannot achieve IDi and Xi. This
+is also justified as follows:
+– Neither the smart card nor the transmitted messages
+include IDi. So, E cannot achieve IDi.
+– To compute Xi from Bi, the password PWi of Ui is needed.
+Since the password PWi is only known to the user Ui, E
+cannot achieve Xi. Moreover, to guess correct password PWi,
+E also needs to guess IDi, which is secret to Ui and S.
+
+5.1.9.
+
+?
+
+M2 = h(IDi SK Di DS TS ) , where SK = h(IDi KS Xi ). No unauthorized party can compute SK = h(IDi KS Xi ) as it requires
+both IDi and Xi. So, the user Ui can correctly verify the server
+authenticity.
+
+5.1.11. Session key agreement
+Both the user and the server compute the key SK =
+h(IDi Ki Xi ) = h(IDi KS Xi ) . The computed key is the same
+at both ends as:
+
+KS = ( Di )β (mod p)
+= h(IDi )αβ (mod p)
+= [h(IDi )β ]α (mod p)
+= ( DS )α (mod p)
+= Ki.
+As a result, our scheme establishes a secret session key SK
+between Ui and S.
+
+Server impersonation attack
+
+Our scheme can resist this attack as follows:
+• When Ui sends the message 〈 NIDi, Di, M1, Ti 〉 to the server
+S, E intercepts this message, where Di = h(IDi )α (mod p) and
+M1 = h( NIDi IDi Di Xi Ti ).
+• E may try to respond using the old transmitted message of
+the server 〈 DS, M2, TE 〉 , where M2 = h(IDi SK Di DS TS ),
+Di = h(IDi )α (mod p) , DS = h(IDi )β (mod p), KS = h(IDi )αβ (mod p)
+and SK = h(IDi KS Xi ) . However, the user Ui can identify the
+replay as:
+– Upon receiving the message 〈 DS, M2, TE 〉 , the user Ui computes Ki′ = ( DS )α (mod p) = h(IDi )βα (mod p) and the session
+key SK ′ = h(IDi Ki′ Xi )
+– The user Ui verifies M2 =? h(IDi SK ′ Di DS TE ). The verification does not hold as M2 = h(IDi SK Di DS Ti TS )
+and TS ≠ TE.
+• E may try to generate a valid message 〈 DE, M2*, TE 〉 using
+a random value e, where DE = h(IDi )e (mod p), M2* =
+h(IDi SK E Di DE Ti TE ) , K E = ( Di )e (mod p) and SK E =
+h(IDi K E Xi ) . However, E cannot compute ( DS )α (mod p) correctly due to the following facts:
+– To compute M2* = h(IDi SK ′ Di DS TE ), E has to compute
+
+SK E = h(IDi K E Xi ).
+– To compute SKE, Xi and IDi are needed.
+– Neither the smart card nor the transmitted messages
+include IDi. So, E cannot achieve IDi.
+– To compute Xi from Bi, the password PWi is needed. Since
+the password is only known to the user Ui, E cannot
+achieve Xi.
+It thus shows that our scheme resists the attack.
+
+5.1.10. Mutual authentication
+In our scheme, the server S checks the authenticity of the
+
+5.1.12. Key freshness
+In our scheme, each session key SK = h(IDi KS Xi ) , where
+KS = h(IDi )αβ (mod p), involves random numbers α and β. The
+random values α and β are fresh for each session. Uniqueness of these values for each session guaranties the unique
+key for each session. The unique key construction for each
+session ensures the key freshness property.
+
+5.1.13. Known key secrecy
+If the previously established key SK is compromised, the compromised session key SK does not reveal any information about
+other established keys due to the following reasons:
+• Each session key is hashed output. Therefore, no information can be retrieved from the session key.
+• Each session key involves the random numbers, which guarantee different keys for each session.
+Since no information about other established session keys from
+the compromised session key is extracted, our proposed scheme
+achieves the known key secrecy property.
+
+5.1.14. Forward secrecy
+In our proposed scheme, if a legal user Ui’s secret key Xi is compromised, an adversary cannot compute the established
+common key as:
+• Neither the smart card nor the transmitted messages include
+IDi. Therefore, an adversary cannot know or derive IDi.
+• To compute h(IDi )αβ (mod p) from Di = h(IDi )α (mod p) and
+DS = h(IDi )β (mod p) is equivalent to solving the computational Diffie–Hellman problem (CDHP). Since CDHP problem
+is NP-hard or computationally infeasible, no unauthorized user can compute KS or Ki using Di and DS.
+
+user Ui with the condition M1 =? h( NIDi IDi Di Xi Ti ) . Since
+to compute M1, IDi and Xi are needed, the server S can correctly verify the user’s authenticity too. The user Ui verifies the authenticity of the server S with the condition
+
+5.1.15. Perfect forward secrecy
+Using the private key Xi = h(IDi N IDSC x ) of Ui, an adversary cannot compute the establish key SK as follows:
+
+journal of information security and applications 23 (2015) 28–43
+
+• To compute SK = h(IDi || KS || Xi ) , an adversary has to compute
+KS = h(IDi )αβ (mod p) .
+• Computation of h(IDi )αβ (mod p) using Di = h(IDi )α (mod p) and
+DS = h(IDi )β (mod p) is equivalent to solving CDHP. As CDHP
+problem is a computationally infeasible problem, an
+adversary cannot compute h(IDi )αβ (mod p) using Di and
+DS.
+
+37
+
+advantage function for this experiment is then given by
+HASH
+Adv1HASH
+A , AKAS (t 1, qR1 ) = max A {Succ1A , AKAS } , where the maximum is
+taken over all A with the execution time t1, and qR1 is the
+number of the queries made to Reveal1 oracle. Our scheme is
+called secure against A for deriving ID i , IDSC and x, if
+HASH
+Adv1A
+, AKAS (t 1, qR1 )≤ ε , for any small ε > 0.
+
+Since the compromise of master key x of the server S does
+not mean the compromise of the session key SK, it shows that
+our proposed scheme ensures the perfect forward secrecy
+property.
+
+5.1.16. Known session-specific temporary information
+attack
+Using the compromised session values α and β, an adversary
+may try to construct SK = h(IDi KS Xi ) using β and α. To
+compute SK, Ui’s identity IDi and secret information Xi are
+needed along with β or α. Note that neither the smart card
+stores IDi nor the transmitted messages associate it. Additionally, the user Ui’s secret key Xi is protected with password
+PWi of the user Ui. Thus, an adversary cannot derive IDi and
+X i . This shows that our proposed scheme resists the
+attack.
+
+5.2.
+
+Formal security analysis
+
+The formal security analysis of our scheme is similar to that
+presented in Chatterjee and Das (2015), Das and Goswami (2013),
+Das et al. (2012), and Odelu et al. (2014, 2015a, 2015b). Note that
+the method of contradiction proof (Chuang and Tseng, 2010)
+is used for our analysis. For this purpose, we have performed
+this analysis under the generic group model of cryptography.
+One can also prove the formal security in the standard
+model.
+To apply the method of contradiction, we assume that there
+exist the following two random oracles available for an adversary A :
+• Reveal1: This is a random oracle, which will unconditionally output the input string x from the hash value
+y = h(x).
+• Reveal2: This random oracle unconditionally outputs the discrete logarithm x from a given value y = gx (mod p) , where
+g and p are known.
+Theorem 1.. If a one-way hash function h(⋅) closely behaves like a
+random oracle, our scheme is secure against an adversary for deriving the identity IDi of a legal user Ui, the secret identity IDSC
+of Ui’s smart card, and also the secret master key x of the server
+S.
+Proof. We first construct an adversary A , who will have the
+ability to derive the identity IDi of Ui, the secret identity IDSC
+of Ui’s smart card, and also the secret master key x of S. A can
+HASH
+run the experiment, EXP3A
+, AKAS , provided in Algorithm 3 using
+the Reveal1 oracle. We define the success probability
+HASH
+HASH
+for this experiment as Succ1A
+, AKAS = Pr[EXP3A , AKAS = 1] − 1 . The
+
+Consider the experiment provided in Algorithm 3. According to this experiment, A can derive IDi, IDSC and x successfully,
+if he/she has the existence of Reveal1 oracle and in that case,
+he/she can win the game. By Definition 1, AdvAHASH (t ) ≤ ε , for any
+HASH
+sufficiently small ε > 0. We have Adv1A
+, AKAS (t 1, qR1 ) ≤ ε , since
+HASH
+Adv1A ,AKAS (t 1, qR1 ) is dependent on AdvAHASH (t ). Hence, the
+theorem is proved. □
+Theorem 2.. If the discrete logarithm problem (DLP) is intractable
+and one-way hash function h(⋅) closely behaves like a random oracle,
+our scheme is secure against an adversary for deriving the session
+key SK between a legal user Ui and the server S.
+Proof. We again construct an adversary A who can derive
+the session key SK between a legal user Ui and the server S.
+HASH ,DLP , proFor this purpose, A can run the experiment, EXP4 A
+, AKAS
+vided in Algorithm 4. This algorithm further uses both Reveal1
+and Reveal2 oracles. The success probability for this exHASH ,DLP
+HASH ,DLP
+.
+periment is defined by Succ2A
+, AKAS = Pr[EXP 4 A , AKAS = 1] − 1
+The advantage function for this experiment becomes
+HASH ,DLP , where
+,DLP
+qR1 and
+Adv2AHASH
+, AKAS (t 2, qR1 , qR2 ) = max A {Succ2 A , AKAS }
+qR2 are the number of the queries made to the Reveal1 and
+Reveal2 oracles, respectively. Our scheme is said to be secure
+HASH ,DLP
+against A for deriving SK, if Adv2A
+, for any
+, AKAS (t 2, qR1 , qR2 ) ≤ ε
+small ε > 0.
+
+38
+
+journal of information security and applications 23 (2015) 28–43
+
+If we look at the experiment provided in Algorithm 4, A
+can derive the session key SK successfully, if he/she has the
+existence of Reveal1 and Reveal2 oracles and in that case, he/
+she can win the game. However, it is a computationally
+infeasible problem to invert h(·), that is, AdvAHASH (t ) ≤ ε (provided in Definition 1) and also due to difficulty of solving DLP,
+that is, AdvGDLP
+,g ( A1 ) ≤ ε (provided in Definition 2). As a result, we
+HASH ,DLP
+HASH ,DLP
+have Adv2A
+, AKAS (t 2, qR1 , qR2 ) ≤ ε , since Adv2 A , AKAS (t 2, qR1 , qR2 ) is
+HASH
+dependent on both the advantages AdvA (t ) and AdvGDLP
+,g ( A1 ) .
+Hence, our scheme is also secure against an adversary for deriving SK. □
+
+6.
+Simulation for formal security verification
+using AVISPA tool
+In this section, we perform the simulation for the formal security verification using the widely-accepted AVISPA (Automated
+Validation of Internet Security Protocols and Applications) tool.
+AVISPA is a push-button tool for the automated validation
+of Internet security-sensitive protocols and applications, which
+is considered as a widely-accepted powerful tool. It has integration of different back-ends that implement a variety of stateof-the-art automatic analysis techniques (Armando et al., 2005;
+AVISPA, 2015). The architecture of the AVISPA tool v.1.1 shown
+in Fig. 1 is taken from the source (AVISPA, 2015; Mishra et al.,
+2014). In AVISPA, we have four back-ends, namely OFMC, CLAtSe, SATMC and TA4SP. For details of these backends, the
+readers can refer to (Armando et al., 2005; AVISPA, 2015; Basin
+et al., 2005). Protocols are written in HLPSL (High Level Protocols Specification Language), where HLPSL code transforms into
+the Intermediate Format (IF) using a translator, known as
+HLPSL2IF. IF is finally given in one of the four backends for the
+purpose of producing the output format (OF), which has the
+following sections:
+
+High−Level Protocol Specification Language (HLPSL)
+
+Translator
+HLPSL2IF
+
+avispa script file
+
+Intermediate Format (IF)
+
+On−the−fly
+Model−Checker
+OFMC
+
+CL−based
+Attack Searcher
+AtSe
+
+SAT−based
+Model−Checker
+SATMC
+
+Tree Automata−
+based Protocol
+Analyser
+TA4SP
+
+Output Format (OF)
+Fig. 1 – Architecture of the AVISPA tool (Source: AVISPA; Mishra et al., 2014).
+
+journal of information security and applications 23 (2015) 28–43
+
+• SUMMARY tells if the designed scheme is safe, unsafe, or
+whether the analysis is also inconclusive.
+• DETAILS either signifies under what condition the scheme
+is safe, or what conditions are used to find an attack, or why
+the result was inconclusive.
+• PROTOCOL, GOAL and BACKEND are other sections for the
+protocol name, goal of the analysis and which back-end is
+used, respectively.
+• Finally, the trace of an attack (if any) is also provided in the
+standard Alice–Bob format.
+HLPSL supports various basic types, and some are given
+below for better understanding for the specifications of different roles provided in the next subsection:
+• agent: It is a principal name. The intruder has always the
+special identifier i.
+• public_key: It presents agents’ public keys in a public-key
+cryptosystem.
+• symmetric_key: It is a symmetric-key in symmetric-key
+cryptosystem.
+• text: This is often used as nonces.
+• nat: It represents the natural numbers in non-message
+contexts.
+• const: It declares constants.
+• hash_func: It denotes a cryptographic collision-resistant oneway hash function.
+The space of legal messages denotes the closure of the basic
+types. If m is the plaintext message and k the encryption key,
+{m}_k is the symmetric/public-key encryption. “·” operator is
+used for concatenation purpose.
+“played_by X” is a declaration in which the agent named in
+variable X plays a specific role. A knowledge declaration (generally in the top-level Environment role) is also used for the
+intruder’s initial knowledge. A = | > B is an immediate reaction transition. If a variable P needs to keep permanently secret,
+secrecy_of X is used in HLPSL. Hence, if X is ever obtained or
+derived by the intruder i, a security violation will always result.
+
+6.1.
+
+Specifying our scheme in HLPSL
+
+We have implemented our scheme in HLPSL. In our implementation, we have two basic roles: one for the user Ui and
+other for the server S. Apart from these basic roles, we have
+other roles, which are the session, environment and goal. Fig. 2
+shows HLPSL implementation for the role of Ui. In this role,
+Ui first receives the start signal and then changes its state from
+0 to 1, and after that it sends the registration request message
+〈IDi,Wi〉 securely to S. For sending the message, it uses the Snd()
+operation. S then securely sends the smart card issued for the
+user Ui. During the login phase, Ui sends the login message
+〈 NIDi, Di, M1, Ti 〉 to S via a public channel, and then waits to
+receive the authentication message 〈DS, M2, TS〉 from S with the
+help of the Rcv() operation. witness(Ui, S, alice_bob_ti, Ti’) declares that Ui has freshly generated the timestamp Ti for S.
+request(S, Ui, bob_alice_ts, Ts’) indicates that Ui’s acceptance
+of the timestamp TS generated for Ui by S in which Ui authenticates S.
+
+39
+
+role user (Ui, S : agent,
+SKus : symmetric_key,
+%H is the ome−way hash function
+H : hash_func,
+Snd, Rcv: channel(dy))
+% Player by the user Ui
+played_by Ui
+def=
+local State : nat,
+IDi, PWi, N, Bi, X, A, SK : text,
+NIDi, Alpha, Beta, Di, Xi, P, Q : text,
+Ti, Ts, M1, M2, Wi, Ds, IDsc : text
+const alice_bob_ti, bob_alice_ts,
+alice_bob_alpha, bob_alice_beta,
+subs1, subs2, subs3, subs4, subs5 : protocol_id
+init State := 0
+transition
+% Registration phase
+1. State = 0 /\ Rcv(start) =|>
+State’ := 1 /\ A’ := new()
+% Send the registration request message to S securely
+/\ Wi’ := H(PWi.A’)
+/\ secret({A’,PWi}, subs1, Ui)
+/\ secret({IDi}, subs2, {Ui,S})
+/\ Snd({IDi.Wi’}_SKus)
+% Receive the registration acknowledgment message from S securely
+2. State = 1 /\ Rcv({NIDi.xor(H(IDi.N.IDsc.X),H(PWi.A’))
+.P.Q}_SKus) =|>
+% Login phase
+State’ := 2 /\ secret({X,N,IDsc}, subs3, S)
+/\ Ti’ := new()
+/\ Alpha’ := new()
+/\ secret({Alpha’}, subs4, Ui)
+% Send the login request message < NIDi,Di,M1,Ti > to Sj
+/\ Snd(NIDi.exp(H(IDi),Alpha’).
+H(NIDi.IDi.exp(H(IDi),Alpha’).
+H(IDi.N.IDsc.X).Ti’).Ti’)
+% Ui has freshly generated the value Ti for S
+/\ witness(Ui, S, alice_bob_ti, Ti’)
+% Ui has freshly generated the value alpha for S
+/\ witness(Ui, S, alice_bob_alpha, Alpha’)
+%Authentication and key agreement phase
+% Receive the authentication request message
+% <Ds, M2, Ts > from the server S
+3. State = 2 /\ Rcv(exp(H(IDi),Beta’).
+H(IDi.H(IDi.exp(exp(H(IDi),Alpha’),Beta’).
+H(IDi.N.IDsc.X)). exp(H(IDi),Alpha’).
+exp(H(IDi),Beta’).Ti’.Ts’).Ts’) =|>
+% Ui’s acceptance of the value Ts generated for Ui by S
+State’ := 3 /\ request(S, Ui, bob_alice_ts, Ts’)
+% Ui’s acceptance of the value beta generated for Ui by S
+/\ request(S, Ui, bob_alice_beta, Beta’)
+end role
+
+Fig. 2 – Role specification for the user Ui.
+
+Fig. 3 shows the HLPSL implementation of our scheme for
+the server S. During the registration phase, after receiving the
+message 〈IDi,Wi〉 securely from Ui, S sends the smart card securely to Ui. S then receives the message 〈 NIDi, Di, M1, Ti 〉 from
+Ui during the login phase. After that S sends the authentication message 〈DS, M2,TS〉 via a public channel to Ui in response
+to the received login message. In these specifications, secret
+( { A′, PWi}, subs1, Ui) declaration tells that a and PWi are kept
+to Ui only, which is characterized by the protocol id subs1. Similarly, we have also specified the secrecy goals for subs2, subs3,
+subs4 and subs5 protocol ids.
+Fig. 4 shows the role of the session. Fig. 5 shows the role
+specification for the goal and environment. In the session
+segment, all basic roles including the roles for Ui and S are considered as the instances with concrete arguments. The toplevel role (environment) needs to be defined in the specification
+of HLPSL. It contains the global constants and a composition
+of one or more sessions. It is assumed that the intruder i may
+also play some roles as the legitimate users. The intruder thus
+
+40
+
+journal of information security and applications 23 (2015) 28–43
+
+role server (Ui, S : agent,
+SKus : symmetric_key,
+%H is the ome−way hash function
+H : hash_func,
+Snd, Rcv: channel(dy))
+% Player by the server S
+played_by S
+def=
+local State : nat,
+IDi, PWi, N, Bi, X, A, SK : text,
+NIDi, Alpha, Beta, Di, Xi, P, Q : text,
+Ti, Ts, M1, M2, Wi, Ds, IDsc : text
+const alice_bob_ti, bob_alice_ts,
+alice_bob_alpha, bob_alice_beta,
+subs1, subs2, subs3, subs4, subs5 : protocol_id
+init State := 0
+transition
+% User registration phase
+% Receive the registration request message from Ui securely
+1. State = 0 /\ Rcv({IDi.H(PWi.A’)}_SKus) =|>
+State’ := 1 /\ secret({A’,PWi}, subs1, Ui)
+/\ secret({IDi}, subs2, {Ui,S})
+% Send the registration acknowledgment message to Ui securely
+/\ Snd({NIDi.xor(H(IDi.N.IDsc.X),H(PWi.A’))
+.P.Q}_SKus)
+% Login phase
+% Receive the login request message
+% < NIDi,Di,M1,Ti > from the user Ui
+2. State = 1 /\ Rcv(NIDi.exp(H(IDi),Alpha’).
+H(NIDi.IDi.exp(H(IDi),Alpha’).
+H(IDi.N.IDsc.X).Ti’).Ti’) =|>
+% Authentication phase
+State’ := 2 /\ Beta’ := new()
+/\ Ts’ := new()
+/\ secret({X,N,IDsc}, subs3, S)
+/\ secret({Beta’}, subs5, S)
+% Send the authentication request message
+% <Ds, M2, Ts > to the user Ui
+/\ Snd (exp(H(IDi),Beta’).
+H(IDi.H(IDi.exp(exp(H(IDi),Alpha’),Beta’).
+H(IDi.N.IDsc.X)). exp(H(IDi),Alpha’).
+exp(H(IDi),Beta’).Ti’.Ts’).Ts’)
+% S has freshly generated the value Ts for Ui
+/\ witness(S, Ui, bob_alice_ts, Ts’)
+% S has freshly generated the value beta for Ui
+/\ witness(S, Ui, bob_alice_beta, Beta’)
+% S’s acceptance of the value Ti generated for S by Ui
+/\ request(Ui, S, alice_bob_ti, Ti’)
+% S’s acceptance of the value alpha generated for S by Ui
+/\ request(Ui, S, alice_bob_alpha, Alpha’)
+end role
+
+role environment()
+def=
+const ui, s: agent,
+skus : symmetric_key,
+h : hash_func,
+nidi, ti, ts : text,
+alice_bob_ti, bob_alice_ts, alice_bob_alpha,
+bob_alice_beta, subs1, subs2, subs3,
+subs4, subs5 : protocol_id
+intruder_knowledge = {ui, s, h, nidi, ti, ts}
+composition
+session(ui, s, skuisj, h)
+/\ session(ui, s, skuisj, h)
+end role
+goal
+secrecy_of subs1
+secrecy_of subs2
+secrecy_of subs3
+secrecy_of subs4
+secrecy_of subs5
+authentication_on alice_bob_ti
+authentication_on alice_bob_alpha
+authentication_on bob_alice_ts
+authentication_on bob_alice_beta
+end goal
+environment()
+
+Fig. 5 – Role specification for the goal and environment.
+
+verification, these back-ends check whether the legitimate
+agents (parties) can execute the specified protocol by performing a search of a passive intruder. The back-ends then provide
+the intruder the knowledge of some normal sessions among
+the legitimate agents. For the Dolev–Yao model checking, these
+back-ends also verify whether there is any possible man-inthe-middle attack by the intruder (attacker).
+Finally, we have performed the simulation on our scheme
+under OFMC and CL-AtSe backends using AVISPA web tool
+(AVISPA, 2015). The simulation results shown in Fig. 6 for the
+formal security verification clearly demonstrate that our scheme
+is secure against the replay and man-in-the-middle attacks.
+
+Fig. 3 – Role specification for the server S.
+
+role session(Ui, S: agent,
+SKus : symmetric_key,
+H : hash_func)
+def=
+local SI, SJ, RI, RJ: channel (dy)
+composition
+user (Ui, S, SKus, H, SI, RI)
+/\ server (Ui, S, SKus, H, SJ, RJ)
+end role
+
+Fig. 4 – Role specification for the session.
+
+participates in the execution of a protocol as a concrete session.
+In our HLPSL implementation, five secrecy goals and four authentications are verified, which are supplied in Fig. 5.
+
+6.2.
+
+Simulation results
+
+The two widely-accepted back-ends: OFMC and CL-AtSe are
+chosen for the execution tests and a bounded number of sessions model checking (Basin et al., 2005). For the replay attack
+
+7.
+Performance comparison with other
+schemes
+We compare the functionality features of the proposed scheme
+with those for other existing schemes, such as Xu et al.’s
+scheme (Xu et al., 2009), Song’s scheme (Song, 2010), Sood et al.’s
+scheme (Sood et al., 2010), Chen et al.’s scheme (Chen et al.,
+2012) and Jiang et al.’s scheme (Jiang et al., 2015).
+In Table 10, we compare the functionality features provided by our scheme with other schemes. If a scheme prevents
+an attack or satisfies an attribute, the symbol (√) is used. Otherwise, the symbol (×) is used. It is very clear from this table
+that our scheme provides better security and other features
+as compared to those for other existing schemes.
+In Table 11, we have compared the computational cost during
+registration, login, authentication and password change phases.
+We have used the following notations: TE, TH, TM, TS to denote
+the time complexity of performing exponential, hash,
+multiplication/division and symmetric encryption/decryption
+operations, respectively. We have ignored TX in computation
+as the bitwise XOR operation is negligible. Further, TE TH TX
+
+41
+
+journal of information security and applications 23 (2015) 28–43
+
+% OFMC
+% Version of 2006/02/13
+SUMMARY
+SAFE
+DETAILS
+BOUNDED_NUMBER_OF_SESSIONS
+PROTOCOL
+/home/avispa/web−interface−computation/
+./tempdir/workfilevOpMGm.if
+GOAL
+as_specified
+BACKEND
+OFMC
+COMMENTS
+STATISTICS
+parseTime: 0.00s
+searchTime: 0.13s
+visitedNodes: 16 nodes
+depth: 4 plies
+
+SUMMARY
+SAFE
+DETAILS
+BOUNDED_NUMBER_OF_SESSIONS
+TYPED_MODEL
+PROTOCOL
+/home/avispa/web−interface−computation/
+./tempdir/workfilevOpMGm.if
+GOAL
+As Specified
+BACKEND
+CL−AtSe
+STATISTICS
+Analysed : 8 states
+Reachable : 8 states
+Translation: 0.02 seconds
+Computation: 0.01 seconds
+
+Fig. 6 – Simulation results of the analysis using OFMC and CL-AtSe backends.
+
+Table 10 – Comparison between our scheme and other existing schemes for different desirable security attributes.
+Security attributes
+
+Xu et al. (2009)
+
+Song (2010)
+
+Sood et al. (2010)
+
+Chen et al. (2012)
+
+Jiang et al. (2015)
+
+Ours
+
+User anonymity
+Insider attack
+On-line password guessing attack
+Off-line password guessing attack
+Forward secrecy
+Known session keys attack
+User impersonation attack
+Server impersonation attack
+Replay attack
+Mutual authentication
+Session key agreement
+Smart card revocation
+
+×
+×
+×
+×
+√
+√
+×
+√
+√
+√
+√
+×
+
+×
+×
+×
+×
+×
+√
+×
+×
+√
+√
+√
+×
+
+×
+×
+×
+×
+√
+√
+×
+√
+√
+×
+√
+×
+
+×
+×
+×
+×
+√
+√
+×
+×
+√
+√
+√
+×
+
+×
+×
+×
+×
+√
+√
+×
+√
+√
+√
+√
+×
+
+√
+√
+√
+√
+√
+√
+√
+√
+√
+√
+√
+√
+
+Table 11 – Computational cost comparison of our scheme with related existing schemes.
+Scheme
+Xu et al. (Xu et al., 2009)
+Song (Song, 2010)
+Sood et al. (Sood et al., 2010)
+Chen et al. (Chen et al., 2012)
+Jiang et al. (Jiang et al., 2015)
+Ours
+
+Registration
+
+Login
+
+TE + 2TH
+TE + 2TH
+2TE + TH
+TH + TE
+TH + TE
+3TH
+
+3TH + 2TE
+2TH + 1TS
+2TH + 2TM + 3TE
+2TH + 2TM + 2TE
+2TH + TM + 3TE
+3TH + TE
+
+(Potlapally et al., 2006; Wong et al., 2001). In our scheme, the
+computational cost of registration, login, authentication and
+password change phases are 3T H , 3T H + T E , 6T H + 3T E and
+11TH + 4TE, respectively. Note that the registration phase is executed only once beginning at the registration time by a user
+U i , and the password change phase is not executed frequently. From this table, it is observed that the computational
+cost required by our scheme is comparable with that for other
+existing schemes.
+Finally, in Table 12, we see that the total number of messages exchange in Xu et al.’s scheme (Xu et al., 2009), Song’s
+scheme (Song, 2010), Sood et al.’s scheme (Sood et al., 2010),
+Chen et al.’s scheme (Chen et al., 2012) and Jiang et al.’s scheme
+(Jiang et al., 2015) are 2, 2, 1, 2, and 2, respectively. Our scheme
+also requires two message exchange. Though Sood et al.’s
+
+Authentication
+
+Password change
+
+6TH + 2TE
+6TH + 1TS + 1TE
+4TH + 1TM + 2TE
+6TH + 1TM + 1TE
+6TH + 2TE
+6TH + 3TE
+
+7TH + 4TE
+8TH + 2TS + 1TE
+4TH + 5TM + 7TE
+6TH + 5TM + 5TE
+6TH + 3TM + 7TE
+11TH + 4TE
+
+Table 12 – Communication cost comparison of our
+scheme with related existing schemes during the login
+and authentication phases.
+Scheme
+Xu et al. (Xu et al., 2009)
+Song (Song, 2010)
+Sood et al. (Sood et al., 2010)
+Chen et al. (Chen et al., 2012)
+Jiang et al. (Jiang et al., 2015)
+Ours
+
+Total number of messages
+required
+2
+2
+1
+2
+2
+2
+
+42
+
+journal of information security and applications 23 (2015) 28–43
+
+scheme requires less number of message transmission as compared to that for our scheme, Sood et al.’s scheme suffers from
+various security drawbacks which are outlined in Section 1. Considering high security, supported additional functional features
+and comparable computation overheads, our scheme is better
+than other existing schemes.
+
+8.
+
+Conclusion
+
+We have first demonstrated the security pitfalls of Jiang et al.’s
+scheme, which includes the vulnerability to on-line and offline password guessing, insider, and user impersonation attacks.
+To overcome the flaws of Jiang et al.’s scheme, we have designed
+a secure smart card-based anonymous user authentication scheme. Our scheme provides the user anonymity property. Furthermore, our proposed scheme supports the smart
+card revocation phase, where a legal user can obtain his/her
+lost smart card with the help of server without registering again
+to the server. Our proposed scheme satisfies all desirable security attributes, which are demonstrated in the security
+analysis through both the informal and formal security analyses. In addition, the simulation results for the formal security
+analysis using the widely-accepted AVISPA tool clearly indicate that our scheme is also secure. Considering the security
+and efficiency provided by our scheme, we conclude that our
+scheme is more appropriate for practical applications in network
+security as compared to other existing related schemes.
+REFERENCES
+
+Armando A, et al. The AVISPA tool for the automated validation
+of internet security protocols and applications. In: 17th
+international conference on computer aided verification
+(CAV’05), Lecture Notes in Computer Science, vol. 3576.
+Springer-Verlag; 2005. p. 281–5.
+AVISPA. Automated Validation of Internet Security Protocols and
+Applications. <http://www.avispa-project.org/>; 2015
+[accessed 20.01.13].
+AVISPA. AVISPA web tool. <http://www.avispa-project.org/web
+-interface/expert.php/>; 2015 [accessed 09.07.14].
+Basin D, Modersheim S, Vigano L. OFMC: a symbolic model
+checker for security protocols. Int J Inf Secur 2005;4(3):181–
+208.
+Bellare M, Rogaway P. Introduction to modern cryptography,
+chapter 10: number-theoretic primitives.
+<http://www.cs.ucsd.edu/~mihir/cse207/classnotes.html>;
+2014 [accessed 29.02.12].
+Boyd C, Mathuria A. Protocols for authentication and key
+establishment. Springer; 2003.
+Chang Y-F, Yu S-H, Shiao D-R. An uniqueness-and-anonymitypreserving remote user authentication scheme for connected
+health care. J Med Syst 2013;37:9902.
+Chatterjee S, Das AK. An effective ECC-based user access control
+scheme with attribute-based encryption for wireless sensor
+networks. Secur Commun Netw 2015;8(9):1752–71.
+Chen BL, Kuo WC, Wuu LC. Robust smart-card-based remote user
+password authentication scheme. Int J Commun Syst
+2012;27:377–89. doi:10.1002/dac.2368.
+Chuang YH, Tseng YM. An efficient dynamic group key
+agreement protocol for imbalanced wireless networks. Int J
+Netw Manage 2010;20(4):167–80.
+
+Clark JA, Jacob JL. A survey of authentication protocol literature:
+version 1.0. 1997.
+Das AK. A secure and effective user authentication and privacy
+preserving protocol with smart cards for wireless
+communications. Netw Sci 2013;2(1–2):12–27.
+Das AK, Goswami A. A secure and efficient uniqueness-andanonymity-preserving remote user authentication
+scheme for connected health care. J Med Syst 2013;37(3):1–
+16.
+Das AK, Paul NR, Tripathy L. Cryptanalysis and improvement of
+an access control in user hierarchy based on elliptic curve
+cryptosystem. Inf Sci (Ny) 2012;209(C):80–92.
+Dolev D, Yao A. On the security of public key protocols. IEEE Trans
+Inf Theory 1983;29(2):198–208.
+Eisenbarth T, Kasper T, Moradi A, Paar C, Salmasizadeh M,
+Shalmani MTM. On the power of power analysis in the real
+world: a complete break of the keeloq code hopping scheme.
+In: Advances in cryptology — CRYPTO 2008. Springer; 2008. p.
+203–20.
+Jiang Q, Ma J, Li G, Li X. Improvement of robust smart-card-based
+password authentication scheme. Int J Commun Syst
+2015;28:383–93. doi:10.1002/dac.2644.
+Kocher P, Jaffe J, Jun B. Differential power analysis. In: Advances
+in cryptology – CRYPTO’99. Springer; 1999. p. 388–97.
+Lee CC, Li LH, Hwang MS. A remote user authentication scheme
+using hash functions. ACM SIGOPS Oper Syst Rev
+2002;36(4):23–9.
+Lee NY, Chiu YC. Improved remote authentication scheme
+with smart card. Comput Stand Interfaces 2005;27(2):177–
+80.
+Lee SW, Kim HS, Yoo KY. Improvement of Chien et al.’s remote
+user authentication scheme using smart cards. Comput Stand
+Interfaces 2005;27(2):181–3.
+Liao IE, Lee CC, Hwang MS. A password authentication scheme
+over insecure networks. J Comput Syst Sci 2006;72(4):727–
+40.
+Mishra D, Das AK, Mukhopadhyay S. A secure user anonymitypreserving biometric-based multi-server authenticated key
+agreement scheme using smart cards. Expert Syst Appl
+2014;41(18):8129–43.
+National Institute of Standards and Technology (NIST). FIPS PUB
+180-1: Secure Hash Standard. U.S. Department of Commerce,
+April 1995 [accessed 19.11.10].
+Odelu V, Das AK, Goswami A. A secure effective key
+management scheme for dynamic access control in a large
+leaf class hierarchy. Inf Sci (Ny) 2014;269(C):270–85.
+Odelu V, Das AK, Goswami A. A secure and efficient ecc-based
+user anonymity preserving single sign-on scheme for
+distributed computer networks. Secur Commun Netw
+2015a;8(9):1732–51.
+Odelu V, Das AK, Goswami A. An efficient ECC-based privacypreserving client authentication protocol with key
+agreement using smart card. J Inf Secur Appl 2015b;21:1–
+19.
+Potlapally NR, Ravi S, Raghunathan A, Jha NK. A study of the
+energy consumption characteristics of cryptographic
+algorithms and security protocols. IEEE Trans Mob Comput
+2006;5(2):128–43.
+Sarkar P. A simple and generic construction of authenticated
+encryption with associated data. ACM Trans Inf Syst Secur
+2010;13(4):33.
+Song R. Advanced smart card based password authentication
+protocol. Comput Stand Interfaces 2010;32(5):321–5.
+Sood SK, Sarje AK, Singh K. An improvement of Xu et al.’s
+authentication scheme using smart cards. In: Proceedings of
+the Third Annual ACM Bangalore Conference. ACM 15. 2010.
+Stinson DR. Some observations on the theory of cryptographic
+hash functions. Des Codes Cryptogr 2006;38(2):259–77.
+
+journal of information security and applications 23 (2015) 28–43
+
+Tsai CS, Lee CC, Hwang MS. Password authentication schemes:
+current status and key issues. Int J Netw Secur 2006;3(2):101–
+15.
+Wong DS, Fuentes HH, Chan AH. The performance measurement
+of cryptographic primitives on palm devices. In: Proceedings
+
+43
+
+of 17th annual computer security applications conference
+(ACSAC 2001). IEEE; 2001. p. 92–101.
+Xu J, Zhu WT, Feng DG. An improved smart card based password
+authentication scheme with provable security. Comput Stand
+Interfaces 2009;31(4):723–8.
+
+

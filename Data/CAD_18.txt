@@ -1,0 +1,1562 @@
+Computer-Aided Design 70 (2016) 56–66
+
+Contents lists available at ScienceDirect
+
+Computer-Aided Design
+journal homepage: www.elsevier.com/locate/cad
+
+Secondary Laplace operator and generalized Giaquinta–Hildebrandt
+operator with applications on surface segmentation and smoothing✩
+Tao Liao a , Xinge Li b , Guoliang Xu b , Yongjie Jessica Zhang a,∗
+a
+
+Department of Mechanical Engineering, Carnegie Mellon University, USA
+
+b
+
+Institute of Computational Mathematics, Academy of Mathematics and Systems Science, Chinese Academy of Sciences, China
+
+highlights
+•
+•
+•
+•
+
+Two new geometric operators are introduced based on the second fundamental form.
+The new operators, SLO and GGHO, are sensitive to the curvature-related features.
+A segmentation method is introduced based on the SLO eigenfunctions.
+A geometric flow method is developed based on the GGHO for surface smoothing.
+
+article
+
+info
+
+Keywords:
+Secondary Laplace operator
+Generalized Giaquinta–Hildebrandt
+operator
+Eigenfunction
+Concave and convex feature
+Surface segmentation
+Geometric flow
+
+abstract
+Various geometric operators have been playing an important role in surface processing. For example,
+many shape analysis algorithms have been developed based on eigenfunctions of the Laplace–Beltrami
+operator (LBO), which is defined based on the first fundamental form of the surface. In this paper, we
+introduce two new geometric operators based on the second fundamental form of the surface, namely
+the secondary Laplace operator (SLO) and generalized Giaquinta–Hildebrandt operator (GGHO). Surface
+features such as concave creases/regions and convex ridges can be captured by eigenfunctions of the SLO,
+which can be used in surface segmentation with concave and convex features detected. Moreover, a new
+geometric flow method is developed based on the GGHO, providing an effective tool for sharp featurepreserving surface smoothing.
+© 2015 Elsevier Ltd. All rights reserved.
+
+1. Introduction
+Geometric operators are the basis for many algorithms in surface processing. Based on the first fundamental form of the surface,
+the Laplace–Beltrami operator (LBO) is defined and its eigenfunctions are well-known for their property of capturing shape behavior and structural feature of an object [1–4]. They vary along the
+object surface and are invariant to different poses, which makes
+them ideal for applications in pose-invariant Reeb graph construction [4], shape matching [1] or registration [5], the Shape-DNA [3],
+and surface quadrangulation or parameterization [6–10]. Another
+important application of the LBO eigenfunctions is surface segmentation. The distribution of eigenfunctions is used together with isocontours [2,11,12] and point clustering [13–15] to segment surface
+
+✩ This paper has been recommended for acceptance by Scott Schaefer and Charlie
+C.L. Wang.
+∗ Corresponding author.
+E-mail address: jessicaz@andrew.cmu.edu (Y.J. Zhang).
+
+http://dx.doi.org/10.1016/j.cad.2015.07.009
+0010-4485/© 2015 Elsevier Ltd. All rights reserved.
+
+into several components. In practice, different methods were employed to improve the performance of LBO eigenfunctions [16,17].
+To detect concavities, eigenfunctions from a concavity-aware
+Laplacian [11] were used to generate a single segmentation field.
+Besides computing eigenfunctions, geometric operators are also
+used in various geometric flows for surface fairing and smoothing [18–23]. The mean curvature and Gaussian curvatures are
+usually used to design geometric operators [22,24]. Generally, geometric flows smooth surfaces and remove noise by moving nodes
+in the normal direction, while the tangential movement regularizes
+the elements. The tangential movement can also help strengthen
+surface features, which was seldom considered in the existing
+methods.
+In this paper, we introduce two new operators, namely the
+secondary Laplace operator (SLO) and generalized Giaquinta–
+Hildebrandt operator (GGHO), based on the second fundamental
+form of the surface. Different from the LBO eigenfunctions, the SLO
+eigenfunctions can capture concave and convex surface features
+which can be used to segment concave and convex regions. The
+main contribution of this paper includes
+
+T. Liao et al. / Computer-Aided Design 70 (2016) 56–66
+
+1. Two new geometric operators (SLO and GGHO) are introduced
+based on the second fundamental form of the surface;
+2. Surface segmentation methods are developed based on the SLO
+eigenfunctions with concave creases/regions and convex ridges
+detected; and
+3. A new geometric flow method is developed based on the GGHO
+for surface smoothing, which preserves and strengthens sharp
+features on the surface.
+The remainder of this paper is organized as follows. Section 2
+reviews the definition of several existing geometric operators and
+eigenfunction computation. Section 3 introduces the SLO and its
+application on surface segmentation. Section 4 talks about the
+GGHO and a new geometric flow method. Section 5 shows the results. Finally, Section 6 draws conclusions and points out the future
+work.
+
+57
+
+Laplace–Beltrami operator (LBO). Let f
+acting on f is given by
+
+∈ C 2 (S ), the LBO
+
+f = divS (∇ f )
+
+
+
+1
+
+= √
+
+g
+
+
+
+∂ ∂ √  αβ 
+[fu , fv ]T .
+,
+g g
+∂ u ∂v
+
+(5)
+
+Giaquinta–Hildebrandt operator (GHO). Let f ∈ C 2 (S ), the
+GHO acting on f is given by
+f = divS (♦f )
+
+
+
+1
+
+= √
+
+g
+
+
+
+∂ ∂ √  αβ 
+[fu , fv ]T .
+gK b
+,
+∂ u ∂v
+
+(6)
+
+2.2. Eigenfunction computation
+Let f ∈ C 2 (S ), the eigenfunctions of LBO and GHO should satisfy
+
+2. Review of existing geometric operators
+Before introducing our new operators, we first briefly review
+definitions of several existing geometric operators. More detailed
+descriptions can be found in [25]. Eigenfunctions of different operators can be computed using isogeometric analysis (IGA) based on
+Catmull–Clark basis functions [26].
+
+f = −λl f
+
+f = −λg f
+
+and
+
+(7)
+
+respectively, where λl and λg are the eigenvalues. According to the
+Green formula, for ∀f ∈ C 2 (S ) and ∀h ∈ C 1 (S ) we have
+
+
+
+(h f + ⟨∇ f , ∇ h⟩) dA = 0
+
+(8)
+
+S
+
+and
+
+2.1. Definitions of existing geometric operators
+Let S = {x(u, v), (u, v) ∈ Ω ⊂ R } be a smooth parametric
+surface in R3 . (u, v) can also be written as (u1 , u2 ) for convenience.
+The coefficients
+of the
+
+ first fundamental form of S are defined
+as gαβ = xuα , xuβ (α, β = 1, 2), where xuα = ∂∂uxα and
+
+
+
+(h f + ⟨∇ f , ♦h⟩) dA = 0.
+
+2
+
+xuβ = ∂∂uxβ . The coefficients of the second fundamental form of
+
+
+2
+S are defined as bαβ = n, xαβ , where xuα uβ = ∂ u∂α ∂xuβ and
+n = (xu × xv )/ ∥xu × xv ∥. Let g = det[gαβ ], [g αβ ] = [gαβ ]−1 ,
+and [bαβ ] = [bαβ ]−1 . We have the following geometric operators.
+Curvatures. The mean curvature H and the Gaussian curvature
+K are defined as
+H =
+
+b11 g22 − 2b12 g12 + b22 g11
+2g
+
+and
+
+K =
+
+b11 g22 − b212
+g
+
+.
+
+(1)
+
+Tangential gradient operator. Let f ∈ C 1 (S ), the tangential
+operator ∇ acting on f is given by
+
+∇ f = [xu , xv ] g
+
+
+= gu fu +
+1
+g
+
+[fu , fv ]T
+
+R3 , gu∇
+
+∈
+
+Therefore, we plug Eq. (7) into Eqs. (8)–(9) and obtain
+
+
+
+⟨∇ f , ∇ h⟩ dA = λl
+
+
+
+S
+
+hf dA
+
+(10)
+
+hf dA.
+
+(11)
+
+S
+
+and
+
+
+
+⟨∇ f , ♦h⟩ dA = λg
+S
+
+
+S
+
+Let {ϕi }Ni=1 be a set of basis functions defined on the surface and
+
+ϕi ∈ C 2 (S ), f can be approximately represented as f = Ni=1 wi ϕi .
+Let h = ϕj (j = 1, 2, . . . , N ), then we have
+N
+
+
+wi
+
+
+
+
+
+∇ϕi , ∇ϕj dA = λl
+
+
+S
+
+i =1
+
+N
+
+
+wi
+
+
+
+ϕi · ϕj dA
+S
+
+i =1
+
+and
+
+gv∇ fv ,
+
+∇
+
+where ∇ f
+
+
+αβ
+
+(9)
+
+S
+
+=
+
+1
+g
+
+(g11 xv − g12 xu ).
+
+(g22 xu − g12 xv ) and gv∇
+
+(2)
+
+N
+
+
+=
+
+i =1
+
+wi
+
+
+
+
+
+∇ϕi , ♦ϕj dA = λg
+
+
+S
+
+N
+
+
+wi
+
+
+
+ϕi · ϕj dA
+
+S
+
+i =1
+
+for the LBO and GHO, respectively. Let mLij =
+
+ 
+S
+
+
+∇ϕi , ∇ϕj dA,
+
+Second tangential operator (STO). Let f ∈ C 1 (S ), the STO ♦
+acting on f is defined as
+
+mGij = S ∇ϕi , ♦ϕj dA, and cij = S ϕi · ϕj dA. The eigenfunctions
+of LBO and GHO can be obtained by solving the eigenproblems
+
+♦f = [xu , xv ] K bαβ [fu , fv ]T
+
+M L W = λl CW
+
+
+
+=
+
+gu♦ fu
+
++ gv fv ,
+♦
+
+(3)
+
+∈ R ,
+(b22 xv − b12 xu ).
+3
+
+where ♦f
+1
+g
+
+
+
+gu♦
+
+=
+
+1
+g
+
+(b22 xu − b12 xv ) and gv
+
+♦
+
+=
+
+1
+
+Tangential divergence operator. Let v be a C smooth vector
+field on a surface S, the tangential divergence operator divS acting
+on v is defined by
+1
+divS (v) = √
+g
+
+
+
+
+
+∂ ∂ √  αβ 
+[xu , xv ]T v .
+,
+g g
+∂ u ∂v
+
+(4)
+
+ 
+
+L
+
+where M =
+
+
+
+
+
+and M G W = λg CW ,
+
+
+
+mLij
+
+
+
+,M =
+G
+
+
+
+mGij
+
+
+
+(12)
+
+, C = cij , and W = w1 , w2 , . . . ,
+ 
+
+
+
+T
+
+wN . Embedding the eigenvector W on the surface, we obtain an
+eigenfunction of the specific geometric operator.
+In this paper, we focus on the two new operators based on the
+second fundamental form of the surface, and a cubic or higher order surface representation is required. While many other methods
+can also be used, we choose the cubic Catmull–Clark subdivision
+surface due to its wide adoption [26]. As shown in Fig. 1, for the
+input triangular surfaces we use cross field-based surface parameterization [27,7] to generate semi-structured quadrilateral meshes
+
+58
+
+T. Liao et al. / Computer-Aided Design 70 (2016) 56–66
+
+a
+
+b
+
+where
+gu◆ =
+
+Ψ
+
+(b22 xu − b12 xv )
+
+b
+
+and gv◆ =
+
+Ψ
+b
+
+(b11 xv − b12 xu ) .
+
+Here we choose Ψ = 1, eK or e−H for different purposes in surface
+segmentation, see Section 3.2 for details. From Eq. (13), ∀f , h ∈
+C 1 (S), we can derive that
+
+   
+⟨◆f , ◆h⟩ = [fu , fv ] Ψ 2 bαβ gαβ bαβ [hu , hv ]T
+= [fu , fv ] A [hu , hv ]T ,
+
+(14)
+
+where
+Fig. 1. Elk model. (a) The input triangle mesh; and (b) the quadrilateral mesh.
+
+with only a few extraordinary nodes. Triangle subdivision schemes
+such as the Loop subdivision can also be used to study SLO and
+GGHO, but attentions should be paid to the number and placement
+of extraordinary nodes. Fig. 2(a)–(b) shows the first four eigenfunctions of the LBO and GHO for the Elk model, respectively. The LBO
+eigenfunctions vary smoothly on the surface following the main
+structure of the model, but it is hard to detect curvature-related
+features (e.g., the concave creases connecting the four wheels, the
+horn and the main Elk body) because the LBO is defined based on
+the first fundamental form of the surface, see Fig. 2(c) for the segmentation result using the LBO eigenfunctions. On the contrary,
+the GHO eigenfunctions hardly reveal any geometric feature of the
+object. This is because ♦f is almost zero in the planar regions, which
+makes the matrix M G close to singular. To better detect curvaturerelated features, we define two new geometric operators (SLO and
+GGHO) in the following two sections.
+3. SLO and surface segmentation
+Based on the second fundamental form of the surface, we generalize the definition of the STO, and introduce a new geometric operator named the SLO. Different from the LBO eigenfunctions, the SLO
+eigenfunctions are sensitive to concave creases/regions and convex
+ridges, providing a powerful basis for surface segmentation.
+3.1. Generalized STO and SLO
+We generalize Eq. (3) by replacing K with Ψ , and define a
+generalized STO (GSTO),
+◆f = [xu , xv ] Ψ b
+
+
+
+=
+
+gu◆ fu
+
+a
+
+
+αβ
+
++ g v fv ,
+◆
+
+[fu , fv ]T
+
+A = Ψ 2 bαβ
+
+
+
+gαβ
+
+bαβ = aαβ ,
+
+
+
+
+
+
+
+
+
+with
+a11 =
+
+Ψ2 
+b2
+
+a12 = −
+a22 =
+
+b222 g11 − 2b22 b12 g12 + b212 g22 ,
+
+
+
+Ψ2 
+
+b22 b12 g11 − b11 b22 + b212 g12 + b11 b12 g22 ,
+
+b2
+
+
+
+Ψ2 
+b2
+
+
+
+
+
+b211 g22 − 2b11 b12 g12 + b212 g11 .
+
+
+
+To detect curvature-related features, we define a new geometric
+operator based on the second fundamental form of the surface,
+namely the secondary Laplace operator (SLO). Given f ∈ C 2 (S ),
+the SLO is defined implicitly which satisfies
+
+
+
+(h f + ⟨◆f , ◆h⟩) dA = 0,
+
+(15)
+
+S
+
+∀h ∈ C 1 S. The inner product of f and f is
+
+
+(f f ) dA = − ⟨◆f , ◆f ⟩ dA
+S
+
+S
+
+
+=−
+
+∥◆f ∥ dA ≤ 0,
+
+(16)
+
+S
+
+therefore the SLO is a semi-negative definite geometric operator.
+The SLO eigenfunctions should satisfy
+f = −λs f ,
+
+(17)
+
+where λs are the eigenvalues. By plugging Eq. (17) into Eq. (15), we
+have
+
+
+(13)
+
+
+
+⟨◆f , ◆h⟩ dA = λs
+S
+
+
+
+hf dA.
+
+(18)
+
+S
+
+c
+
+b
+
+Fig. 2. Elk model. (a, b) The first four non-constant eigenfunctions of the LBO and GHO for the Elk model, respectively; and (c) the segmentation result from Modes 1–4 of
+the LBO.
+
+T. Liao et al. / Computer-Aided Design 70 (2016) 56–66
+
+a
+
+b
+
+c
+
+d
+
+f
+
+59
+
+e
+
+g
+
+h
+
+i
+
+Fig. 3. Disk model. (a) Modes 1–3 of the LBO eigenfunctions; (b–d) Modes 1–3 of the SLO eigenfunctions when Ψ = 1, Ψ = eK and Ψ = e−H , respectively; (e) the spectra
+of LBO and SLO; and (f–i) the corresponding surface segmentation results of (a–d).
+
+Similar to Eq. (12), the eigenfunctions of SLO can be obtained by
+solving an eigenproblem
+M S W = λs CW ,
+
+(19)
+
+where M =
+= S ◆ϕi , ◆ϕj dA. Note that the explicit
+definition of the SLO is not required during the eigenfunction
+computation.
+As defined using the second fundamental form of the surface,
+the SLO eigenfunctions are sensitive to curvature changes on the
+surface. By choosing different values for Ψ , different surface features such as concave creases/regions and convex ridges can be detected using the SLO eigenfunctions. In the following, we introduce
+three different choices of Ψ for surface segmentation.
+S
+
+
+
+mSij
+
+
+
+and mSij
+
+ 
+
+
+
+3.2. Surface segmentation
+Due to the second fundamental form in the definition of SLO,
+its eigenfunctions reflect the curvature-related surface features,
+which provide a convenient basis for surface segmentation. Basically, surface segmentation consists of two main steps: computing
+eigenfunctions and mapping vertices onto a k-dimensional space
+using the first k modes; and clustering vertices into a series of
+groups or surface patches. In this paper, point clustering is fulfilled
+using Prediction Analysis for Microarrays (PAM) [28]. The clustering result can be evaluated using the Davies–Bouldin value [29],
+which determines the optimal group number.
+With different choices of Ψ , the SLO eigenfunctions tend to
+emphasize different types of surface features such as concave
+creases/regions and convex ridges. In this section, we use the mean
+curvature H and Gaussian curvature K to define Ψ . To avoid generating singular matrices, we restrict
+
+Ψ =
+
+
+
+ψl
+ψu
+
+if Ψ < ψl
+if Ψ > ψu ,
+
+where ψl and ψu are the lower and upper bounds, respectively.
+Here we choose ψl = 0.5 and ψu = 10 in the computation. Three
+different values are adopted in this paper:
+1. Ψ = 1 for segmenting smooth faces with both concave creases
+and convex ridges. For example in Fig. 3, the three cylindrical
+components contain concave creases at the root and convex
+ridges at the top. When Ψ is a constant, the eigenfunction
+value varies intensively across both concave creases and convex
+
+ridges and stays similar in smooth regions surrounded by them,
+so each smooth region can be segmented as a patch. Since the
+choice of the constant value does not change the distribution of
+eigenfunctions, we simply choose Ψ = 1 in this paper;
+2. Ψ = eK for segmenting components with concave creases
+only. In many objects, components with physical meanings are
+usually connected with concave creases rather than convex
+ridges. For example in Fig. 4, the connection regions between
+the horn, four wheels and the body of the Elk model are all
+concave creases. These concave creases have negative K while
+convex ridges have positive K . In addition, the SLO eigenfunctions tend to be more sensitive to regions with a smaller Ψ ,
+where the eigenfunction value varies intensively. For the regions with a larger Ψ , the eigenfunction value stays similar.
+Therefore, we choose Ψ = eK , so the intensive variation of
+eigenfunctions only happens across concave creases and the regions surrounded by them are segmented as patches; and
+3. Ψ = e−H for segmenting concave regions from smooth surfaces. Some concave regions we want to segment may not be
+surrounded by obvious concave creases or convex ridges, such
+as the three shallow concave regions in the Disk model in Fig. 3.
+These concave regions have negative H, so we choose Ψ = e−H
+to set a large Ψ in them and a small Ψ for the remaining surface. As a result, the eigenfunction value stays similar inside the
+concave regions, and we segment each of them as a patch.
+Note that each input mesh is scaled to make the maximal length
+unit in x, y and z directions. For a different scaling, the choice of Ψ
+needs to be adjusted accordingly. Fig. 3(b)–(d) shows the first three
+SLO eigenfunctions for the Disk model with three different choices
+of Ψ , and (i)–(l) are the corresponding segmentation results. When
+Ψ = 1 in (b), (g), each smooth face is segmented as a patch, and
+each cylindrical component is separated into two patches (top face
+and circumferential face). On the contrary when Ψ = eK in (c), (h),
+these cylindrical components are segmented as single patches because Ψ = eK cannot detect convex ridges. When Ψ = e−H in
+(d), (i), three concave regions are detected and segmented by the
+SLO eigenfunctions. Since these regions are smoothly embedded
+in a planar region without any obvious concave creases or convex ridges, they are ignored by the eigenfunctions in (b) and (c).
+As shown in Fig. 3(e), the spectra of SLO are convex while the spectra of LBO tend to be flat. (a), (f) show the LBO eigenfunctions and
+the corresponding segmentation result. It is obvious that the SLO
+
+60
+
+T. Liao et al. / Computer-Aided Design 70 (2016) 56–66
+
+a
+
+c
+
+d
+
+b
+
+Fig. 4. Elk model. (a, b) Modes 1–4 of the SLO eigenfunctions when Ψ = 1 and Ψ = eK , respectively; and (c, d) the corresponding segmentation results of (a) and (b),
+respectively. The red windows in (c, d) show the back face of the horn. (For interpretation of the references to color in this figure legend, the reader is referred to the web
+version of this article.)
+
+eigenfunctions yield good segmentation results with concave and
+convex features detected, while the LBO eigenfunctions cannot.
+Compared with the LBO eigenfunctions in Fig. 2(a), the SLO
+eigenfunctions in Fig. 4(a), (b) are more sensitive to the variation of
+surface curvatures, which perform better in determining the patch
+boundaries in the segmentation results in (c), (d). For a certain
+object, the choice of Ψ depends on specific purposes. For example
+when Ψ = 1, the horn of Elk is separated into two planar regions
+in (c), which may be desired for design or manufacturing. But for
+structure recognition, the result in (d) may be preferred because
+the horn is a single solid component.
+
+might be blurred in this way. In this paper, we define an anisotropy
+in the 1-ring neighborhood based on the principal curvature
+directions, and vT is an weighted average of the neighbors. Let Node
+j be a neighbor of Node i, and κj1 and κj2 be the principal curvature
+directions. The feature direction κj is defined as the larger one
+between κj1 and κj2 . The weight of Node j is defined as
+
+
+ 
+
+wij =  κi , κj · ni , nj  + εA ,
+
+where εA is a predefined parameter and here we choose εA = 0.05
+in our computation. We obtain similar weights for the neighbors
+with a weak anisotropy, such as the flat regions. We have
+
+4. GGHO and geometric flow
+
+
+
+Analogy to the definition of GHO in Eq. (6), we introduce a
+generalized Giaquinta–Hildebrandt operator (GGHO), which is
+defined as
+f = divS (◆f ).
+
+(20)
+
+Then we have
+1
+f = √
+g
+
+
+
+
+ 
+
+∂ ∂ √
+,
+g Ψ bαβ [fu , fv ]T .
+∂ u ∂v
+
+(21)
+
+Let v = (v1 , v2 , v3 )T ∈ R3 be a vector field, we define v =
+( v1 , v2 , v3 )T ∈ R3 . Acting the GGHO on the coordinates of the
+surface point, we have
+
+ 
+∂ ∂ √
+,
+g Ψ bαβ [xu , xv ]
+∂ u ∂v
+
+
+
+ T
+1
+∂ ∂ Ψ √  αβ 
+[xu , xv ]T
+= √
+,
+gK b
+g
+∂ u ∂v K
+
+
+
+ T
+Ψ 1
+∂ ∂ √  αβ 
+[xu , xv ]T
+=
+,
+gK b
+√
+K g
+∂ u ∂v
+  
+ 
+
+  αβ 
+ T
+∂ Ψ
+∂ Ψ
+T
+[xu , xv ]
++
+,
+K b
+∂u K
+∂v K
+ 
+ 
+Ψ
+Ψ
+Ψ
+x+♦
+= 2Ψ n + ♦
+,
+=
+
+1
+x = √
+g
+
+
+
+K
+
+K
+
+K
+
+j∈N (i)
+
+wij xj
+
+
+j∈N (i)
+
+wij
+
+− xi ,
+
+(25)
+
+where N (i) is the 1-ring neighborhood of Node i. With Eq. (24),
+large weights are assigned to the neighbors located along the same
+concave or convex edge with Node i. Nodes across concave or convex edges have little influence to each other. If Node i is not on the
+sharp edge, vT will be the geometric center of its 1-ring neighbors.
+x consists of two components in the normal and tangential directions, respectively.
+To strengthen concave creases and convex ridges on the surface,
+we choose Ψ = √HK
+
+2
+
+K 2 +δ 2
+
+in this paper. In this way, these creases
+
+2HK 2
+K
+x= √
+·n+♦ H√
+2
+2
+2
+K +δ
+K + δ2
+
+
+
+(22)
+
+
+
+,
+
+(26)
+
+where δ is a small constant (e.g. δ = 0.1). Since GGHO is defined
+based on the second fundamental form of the surface, it is more
+sensitive to the curvature-related features compared with LBO,
+which is defined based on the first fundamental form. Fig. 5 shows
+the smoothing results for the Moai model based on the LBO and
+GGHO. Compared with LBO, some sharp edges such as the lower
+jaw and the eyebrow are preserved and sharpened using GGHO.
+5. Results and discussion
+
+where n is the normal. A geometric flow can be defined as
+
+∂x
+= x + λvT ,
+∂t
+
+vT =
+
+and ridges can be characterized by the sign of ψ , negative for
+concave creases and positive for convex ridges. Then we have
+
+
+ T
+T
+
+
+
+(24)
+
+(23)
+
+where vT is a vector in the tangential direction regularizing
+the quadrilateral elements, and λ controls the strength of
+regularization (e.g. λ = 0.05). vT is usually defined based on the
+geometric center of the 1-ring neighborhood of a node, but features
+
+In this section, various models are tested using our surface segmentation and geometric flow methods. All the results are generated using a computer with an Intel Xeon E5-1620 CPU, a Nvidia
+GeForce GTX680 graphic card, and 16 GB of memory. Table 1 shows
+a summary of the computation of eigenfunctions and segmentation
+results for LBO and SLO.
+
+T. Liao et al. / Computer-Aided Design 70 (2016) 56–66
+
+a
+
+b
+
+c
+
+61
+
+eigenfunction computation by splitting each quadrilateral element
+into two triangles. Since the vertex number is not changed, the
+computational time for the CL is similar with LBO and SLO. The
+segmentation results can be evaluated quantitatively using the
+Princeton benchmark and software [30], by comparing them with
+the ground truth from human. There are four metrics [30] to
+measure the quality of segmentation results:
+1. the cut discrepancy eD , which is the sum of distance between
+points along the cuts in the computed segmentation to the
+closest cuts in the ground truth segmentation, and vice-versa;
+2. the Hamming distance eH , which measures the overall difference between the patches in different segmentation results;
+3. the Rand index eR , which measures the likelihood that a random
+pair of elements are in the same patch or not in different
+segmentation results; and
+4. the consistency error eC , which measures the hierarchical
+similarities and differences of different segmentation results.
+
+Fig. 5. Smoothing results of geometric flow for the Moai model using different
+geometric operators. (a) The original model; (b) the result from LBO; and (c) the
+result from the GGHO (Iteration: 50; Step size: 0.02).
+Table 1
+A summary of the computation of eigenfunctions and segmentation results for LBO
+and SLO. (Time unit: Second).
+Model
+(NV , NQ )
+
+TE (LBO/SLO)
+
+TC (LBO/SLO)
+
+Modes
+
+Elk
+(8,613, 8,613)
+
+192.3/190.4
+
+172.3/171.2
+
+1–4
+
+Disk
+(11,602, 11,600)
+
+205.4/216.8
+
+300.2/284.5
+
+1–3
+
+Moai
+(10,789, 10,787)
+
+193.6/201.8
+
+259.4/251.6
+
+1–5
+
+Rockerarm
+(13,290, 13,290)
+
+280.6/276.5
+
+380.1/392.6
+
+1–4
+
+Octopus
+(9,605, 9,603)
+
+185.6/191.7
+
+221.3/211.6
+
+1–6
+
+Bust
+(11,598, 11,596)
+
+216.3/221.4
+
+290.6/287.6
+
+1–3
+
+Human-A
+(12,818, 12,816)
+
+253.3/255.7
+
+277.7/270.3
+
+1–5
+
+Human-B
+(10,986, 10,984)
+
+202.2/2.5.0
+
+265.6/269.4
+
+1–5
+
+1BYH
+(5,219, 5,217)
+
+47.1/44.6
+
+57.2/60.5
+
+1–4
+
+1C2B
+(8,193, 8,193)
+
+188.2/182.3
+
+128.8/132.1
+
+1–4
+
+Note: NV —vertex number; NQ —quadrilateral element number; TE —time for
+eigenfunction computation; and TC —time for point clustering.
+
+Surface segmentation using Ψ = 1 and Ψ = eK . To segment
+objects with both concave creases and convex ridges, we choose
+the SLO eigenfunctions with Ψ = 1. Fig. 6 shows the first five
+eigenfunctions and the corresponding segmentation results of the
+Moai model. As shown in (e), the segmentation from the first
+two modes of SLO only roughly captures several major regions of
+the Moai model. As higher modes are used, detailed features are
+captured. When all the first five eigenfunctions are used, we can tell
+two different components of the nose, see (h). In contrast, the LBO
+eigenfunctions cannot detect these concave crease or convex ridge
+features as shown in (d). Fig. 7 shows a CAD model, the Rockerarm.
+Again, we can observe that the SLO eigenfunctions segment the
+smooth regions surrounded by concave creases and convex ridges.
+For objects with only concave creases, we choose Ψ = eK . To
+reveal the differences between the SLO and other operators, we
+adopt the PAM clustering method to compute the segmentation
+results from the eigenfunctions of LBO, concavity-aware Laplacian
+(CL) [11] and SLO. Triangle meshes are generated for the CL
+
+Basically, the smaller these metrics are, the better the segmentation is. Figs. 8–11 show eigenfunctions and segmentation results
+from the LBO, CL and our SLO. The metrics shown in the figures
+indicate that the SLO always yields the best segmentation results,
+except for the Human-B model. Concave creases are completely
+ignored by the LBO eigenfunctions, so the resulting segmentation
+results miss the connection regions of different components, see
+Figs. 8(e), 9(e), and 10(e). The CL eigenfunctions perform better,
+but they still miss some concave creases, see the yellow and red
+tentacles in Fig. 8(f). It is obvious that the SLO eigenfunctions yield
+the best segmentation result with all the concave creases detected,
+as shown in Fig. 8(g). On the base of the Bust model in Fig. 9, all
+the patches shown in the ground truth in (d) can be obtained using the SLO eigenfunctions as shown in (g), while some of them
+are missed in (f) and none is captured in (e). For the Human-A
+model in Fig. 10, the SLO and CL eigenfunctions yield similar segments with the ground truth, but the latter mistakenly divided the
+shanks. Compared with [11], we obtain different segmentation results for the Octopus and the Bust using the CL eigenfunctions. This
+is because here we use the PAM clustering for segmentation, while
+in [11] an advanced segmentation method named the single segmentation field was adopted. Using the SLO eigenfunctions, we
+obtain a similar Rand index eR for the Octopus model compared
+with the category result in [29] (0.028 vs 0.026) and a lower eR for
+the Bust model (0.116 vs 0.286) and the Human-A model (0.121
+vs 0.128). When the main components of an object is smoothly
+connected with each other, the SLO eigenfunctions may not perform well. For the Human-B model in Fig. 11, the arms and legs
+are smoothly connected with the body, so none of the results from
+eigenfunction-based methods in (e), (f) and (h) are similar to the
+ground truth in (d).
+Various surface segmentation methods have been developed besides eigenfunction-based schemes. In Figs. 8–11, our
+method is also compared with the shape diameter function (SDF)
+method [31], which segments the surface according to the distribution of shape diameter. Due to the sensitivity of SLO eigenfunctions
+to the surface creases, our method yields higher quality results
+than the SDF method for most of the models such as the Octopus,
+Bust and Human-A models, except for the Human-B model where
+the main components in the ground truth are connected smoothly.
+Protein pocket detection using Ψ = e−H . Protein pockets are
+concave regions on the biomolecular surface, which determine the
+interactions between the protein and other molecules. Detecting
+and segmenting these pockets are essentially important to predict
+the behavior of biomolecules during the biological process. Since
+the pockets are concave regions on the smooth protein surface, we
+adopt Ψ = e−H to detect and segment them.
+Fig. 12 shows the results of 1BYH, a protein widely used for
+enzyme behavior study. (a), (b) show the eigenfunctions of LBO
+
+62
+
+T. Liao et al. / Computer-Aided Design 70 (2016) 56–66
+
+a
+
+b
+
+c
+
+d
+
+e
+
+f
+
+g
+
+h
+
+Fig. 6. The eigenfunctions and segmentation results for the Moai model from the LBO and SLO with Ψ = 1. (a, b) Modes 1–5 eigenfunctions of the LBO and SLO, respectively;
+(c) the quadrilateral mesh; (d) the segmentation result from Modes 1–5 of the LBO; and (e–h) segmentation results from Modes 1–2, 1–3, 1–4 and 1–5 of the SLO, respectively.
+
+a
+
+b
+
+c
+
+d
+
+Fig. 7. The eigenfunctions and segmentation results for the Rockerarm model from the LBO and SLO with Ψ = 1. (a, b) The first four eigenfunctions of the LBO and SLO,
+respectively; and (c, d) the segmentation results from (a) and (b).
+
+and SLO, respectively. Their segmentation results are shown in (c),
+(d). It is obvious that the SLO eigenfunctions segment the concave
+and convex regions well, while the LBO eigenfunctions cannot. In
+(d), we choose the patch with negative average mean curvature as
+the pocket (Patch D), which is further subdivided into two smaller
+patches in (e) when two more eigenfunctions are considered.
+The protein pockets are candidates for active sites where the
+protein binds with other molecules. We can use the bound
+structure to determine the real active sites, and also use them
+to validate our segmentation results. Fig. 12(f) shows a known
+binding between 1BYH and a small molecule BETA-D-GLUCOSE. Let
+xj be a node on the protein surface, the Gaussian density at xj can be
+
+computed using a summation of Gaussian kernel functions [32,33],
+G(xj ) =
+
+M
+
+
+e
+
+κ
+
+
+
+∥xi −xj ∥2 −ri2
+
+
+
+,
+
+(27)
+
+i=1
+
+where M is the atom number of the small molecule, κ is the decay rate, and (xi , ri ) are the center and radius of Atom i. The av¯ = 1
+erage Gaussian density in a pocket can be computed as G
+N
+
+NP
+
+P
+
+j=1 G(xj ), where NP is the vertex number in the pocket. The
+pocket with the largest average Gaussian density is identified as
+the active site, see the orange patch in Fig. 12(g). Fig. 13 shows
+the segmentation results for another polymorphic enzyme named
+
+T. Liao et al. / Computer-Aided Design 70 (2016) 56–66
+
+a
+
+b
+
+d
+
+63
+
+c
+
+e
+
+f
+
+g
+
+h
+
+Fig. 8. The eigenfunctions and segmentation results of the Octopus model. (a–c) Modes 1–6 of the LBO, CL and SLO, respectively; (d) the ground truth for segmentation [30];
+(e, f) segmentation results from LBO and CL eigenfunctions; (g) the result from the SDF method; and (h) the result from SLO eigenfunctions. (For interpretation of the
+references to color in this figure legend, the reader is referred to the web version of this article.)
+
+a
+
+d
+
+b
+
+e
+
+c
+
+f
+
+g
+
+h
+
+Fig. 9. The eigenfunctions and segmentation results of the Bust model. (a–c) Modes 1–3 of the LBO, CL and SLO, respectively; (d) the ground truth for segmentation [30]; (e,
+f) segmentation results from LBO and CL eigenfunctions; (g) the result from the SDF method; and (h) the result from SLO eigenfunctions. (For interpretation of the references
+to color in this figure legend, the reader is referred to the web version of this article.)
+
+1C2B. According to the combined structure, the red patch in (e)–(f)
+is detected as an active site.
+Feature-preserving smoothing. Fig. 14 shows the comparison
+of smoothing results based on different geometric operators (LBO
+and GGHO). The anisotropy in the regularization defined in Eq.
+
+(24) has been considered for all the results in (b)–(d). On the
+original model in (a), there is a mark in the red circle. (b) shows the
+smoothing result from the LBO-based geometric flow. The mark is
+smoothed out but the entire surface is also blurred. (c) is the result
+when only the normal component of x is used in the GGHO-based
+
+64
+
+T. Liao et al. / Computer-Aided Design 70 (2016) 56–66
+
+a
+
+d
+
+e
+
+f
+
+g
+
+h
+
+b
+
+c
+
+Fig. 10. The eigenfunctions and segmentation results of the Human-A model. (a–c) Modes 1–5 of the LBO, CL and SLO, respectively; (d) the ground truth for
+segmentation [30]; (e, f) segmentation results from LBO and CL eigenfunctions; (g) the result from the SDF method; and (h) the result from SLO eigenfunctions. (For
+interpretation of the references to color in this figure legend, the reader is referred to the web version of this article.)
+
+a
+
+d
+
+e
+
+f
+
+g
+
+h
+
+b
+
+c
+
+Fig. 11. The eigenfunctions and segmentation results of the Human-B model. (a–c) Modes 1–5 of the LBO, CL and SLO, respectively; (d) the ground truth for segmentation [30];
+(e, f) segmentation results from LBO and CL eigenfunctions; (g) the result from the SDF method; and (h) the result from SLO eigenfunctions.
+
+a
+
+c
+
+b
+
+d
+
+e
+
+f
+
+g
+
+Fig. 12. The first four eigenfunctions and segmentation results for the 1BYH model from the LBO and SLO with Ψ = e−H . (a, b) Modes 1–4 eigenfunctions of the LBO
+and SLO; (c) the segmentation result from Modes 1–4 of the LBO; (d, e) segmentation results from Modes 1–2 and 1–4 of the SLO; (f) a known binding between 1BYH and
+BETA-D-GLUCOSE (red circle); and (g) the active site (orange) corresponding to Patch D in (e). (For interpretation of the references to color in this figure legend, the reader
+is referred to the web version of this article.)
+
+T. Liao et al. / Computer-Aided Design 70 (2016) 56–66
+
+a
+
+65
+
+b
+
+c
+
+d
+
+e
+
+f
+
+Fig. 13. The eigenfunctions and segmentation results for the MAChE (1C2B) model from the LBO and SLO with Ψ = e−H . (a, b) Modes 1–4 eigenfunctions of the LBO and
+SLO; (c) the segmentation result from Modes 1–4 of the LBO; (e) the segmentation result from Modes 1–4 of the SLO; and (d, f) the cross sections of (c) and (e), respectively.
+(For interpretation of the references to color in this figure legend, the reader is referred to the web version of this article.)
+
+a
+
+b
+
+c
+
+d
+
+Fig. 14. Results of geometric flow for the Rockerarm model from different geometric operators (LBO and GGHO). (a) The original model; (b) the result from LBO; (c) the result
+from the normal component of x; and (d) the result from GGHO with both the normal and tangential component of x. (Iteration: 60; Step length: 0.02.) (For interpretation
+of the references to color in this figure legend, the reader is referred to the web version of this article.)
+
+geometric flow, which preserves sharp edges better than (b) but
+still blurs the edges. On the contrary, the result in (d) preserves
+and enhances sharp edges when both the normal and tangential
+component of x are considered.
+Limitations. Since the SLO and GGHO are defined based on
+the second fundamental form, a high-order representation of the
+surface is required to compute the eigenfunctions of SLO and
+perform the GGHO-based smoothing, which are more complicated
+in computation compared with other LBO-based methods. In this
+paper, we use the Catmull–Clark basis functions and quadrilateral
+control meshes to represent the surface, so a remeshing process
+is required for other forms of input meshes. The cross field-based
+surface parameterization may fail in generating quadrilateral
+meshes when the input triangle meshes contain many complicated
+features, which limits the applications of our method.
+6. Conclusion and future work
+In this paper, two new geometric operators, namely the
+secondary Laplace operator (SLO) and generalized Giaquinta–
+Hildebrandt operator (GGHO), have been introduced based on
+the second fundamental form of the surface. The eigenfunctions
+of SLO are sensitive to curvature-related surface features, which
+segment the surface with concave creases/regions and convex
+ridges detected. Based on the GGHO, a new geometric flow method
+has been developed for surface smoothing, which preserves and
+strengthens sharp features on the surface.
+
+In this paper, surface segmentation is introduced mainly to
+show the special properties of the SLO eigenfunctions. In the future,
+we plan to develop more robust segmentation algorithms and
+explore other applications of the SLO eigenfunctions. On the other
+hand, since most of the surfaces are still represented by triangle
+meshes, we also plan to investigate the implementation of these
+new operators on triangle meshes.
+Acknowledgments
+We would like to thank Mr. Xiaodong Wei for allowing us to
+use his Catmull–Clark subdivision solver over surfaces. T. Liao and
+Y. Zhang were supported in part by PECASE Award N00014-14-10234 and NSF CAREER Award OCI-1149591. X. Li and G. Xu were
+supported in part by NSFC under the grants (11101401, 81173663),
+and NSFC Fund for Creative Research Groups of China (grant No.
+11321061).
+References
+[1] Lévy B. Laplace–Beltrami eigenfunctions: towards an algorithm that understands geometry. In: IEEE international conference on shape modeling and applications. 2006. p. 13–21.
+[2] Reuter M, Biasotti S, Giorgi D. Discrete Laplace–Beltrami operators for shape
+analysis and segmentation. Comput Graph 2009;33(3):381–90.
+[3] Reuter M, Wolter F, Peinecke N. Laplace–Beltrami spectra as ’’Shape-DNA’’ of
+surfaces and solids. Comput-Aided Des 2006;38(4):342–66.
+
+66
+
+T. Liao et al. / Computer-Aided Design 70 (2016) 56–66
+
+[4] Shi Y, Lai R, Krishna S, Sicotte N, Dinov I, Toga AW. Anisotropic
+Laplace–Beltrami eigenmaps: bridging Reeb graphs and skeletons. In:
+Computer vision and pattern recognition workshops. 2008. pp. 1–7.
+[5] Mateus D, Horaud R, Knossow D, Cuzzolin F, Boyer E. Articulated shape
+matching using Laplacian eigenfunctions and unsupervised point registration.
+In: IEEE conference on computer vision and pattern recognition. 2008. p. 1–8.
+[6] Zhou K, Bao H, Shi J. 3D surface filtering using spherical harmonics. ComputAided Des 2004;36(4):363–75.
+[7] Liao T, Xu G, Zhang Y. Structure-aligned guidance estimation in surface
+parameterization using eigenfunction-based cross field. Graph Models 2014;
+76:691–705.
+[8] Dong S, Bremer P, Garland M, Pascucci V, Hart JC. Spectral surface
+quadrangulation. ACM Trans Graph 2006;25(3):1057–66.
+[9] Huang J, Zhang M, Ma J, Liu X, Kobbelt L, Bao H. Spectral quadrangulation
+with orientation and alignment control. ACM Trans Graph 2008;27(5):
+147:1–147:9.
+[10] Ling R, Huang J, Sun F, Juttler B, Bao H, Wang W. Spectral quadrangulation with
+boundary conformation. Tech. rep., TR-2011-13. The University of Hong Kong;
+2011.
+[11] Wang H, Lu T, Au O, Tai C. Spectral 3D mesh segmentation with a novel single
+segmentation field. Graph Models 2014;76(5):440–56.
+[12] Liu R, Zhang H. Mesh segmentation via spectral embedding and contour
+analysis. Comput Graph Forum 2007;26(3):385–94.
+[13] Liu R, Zhang H. Segmentation of 3D meshes through spectral clustering. In:
+Pacific conference on computer graphics and applications. 2004. p. 298–305.
+[14] Zhang J, Zheng J, Wu C, Cai J. Variational mesh decomposition. ACM Trans
+Graph 2012;31(3):21–31.
+[15] Sharma A, Horaud R, Knossow D, Von Lavante E. Mesh segmentation using
+Laplacian eigenvectors and Gaussian mixtures. In: AAAI fall symposium on
+manifold learning and its applications. 2009. p. 50–6.
+[16] Hildebrandt K, Schulz C, von Tycowicz C, Polthier K. Modal shape analysis
+beyond Laplacian. Comput Aided Geom Design 2012;29(5):204–18.
+[17] Wardetzky M, Bergou M, Harmon D, Zorin D, Grinspun E. Discrete quadratic
+curvature energies. Comput Aided Geom Design 2007;24(8):499–518.
+[18] Crane K, Pinkall U, Schröder P. Robust fairing via conformal curvature flow.
+ACM Trans Graph 2013;32(4):61–72.
+
+[19] Leng J, Xu G, Zhang Y, Qian J. Quality improvement of segmented hexahedral
+meshes using geometric flows. In: Image-based geometric modeling and mesh
+generation. Springer; 2013.
+[20] Leng J, Zhang Y, Xu G. A novel geometric flow-driven approach for quality
+improvement of segmented tetrahedral meshes. Comput-Aided Des 2013;45:
+1182–97.
+[21] Zhang Y, Bajaj C, Xu G. Surface smoothing and quality improvement
+of quadrilateral/hexahedral meshes with geometric flow. Comm Numer
+Methods Engrg 2009;25(1):1–18.
+[22] Xu G, Pan Q, Bajaj C. Discrete surface modelling using partial differential
+equations. Comput Aided Geom Design 2006;23(2):125–45.
+[23] Zhao H, Xu G. Triangular surface mesh fairing via Gaussian curvature flow.
+J Comput Appl Math 2006;195(1):300–11.
+[24] Kim L, Lee K, Rhee E. α -Gauss curvature flows with flat sides. J Differential
+Equations 2013;254(3):1172–92.
+[25] Xu G. Consistent approximations of several geometric differential operators
+and their convergence. Appl Numer Math 2013;69:1–12.
+[26] Wei X, Zhang Y, Hughes T, Scott M. Truncated hierarchical Catmull–Clark
+subdivision with local refinement. Comput Methods Appl Mech Engrg 2015;
+291:1–20.
+[27] Bommes D, Zimmer H, Kobbelt L. Mixed-integer quadrangulation. ACM Trans
+Graph 2009;28(3):1–10.
+[28] Tibshirani R, Hastie T, Narasimhan B, Chu G. Class prediction by nearest
+shrunken centroids, with applications to DNA microarrays. Statist Sci 2003;
+18(1):104–17.
+[29] Smolkin M, Ghosh D. Cluster stability scores for microarray data in cancer
+studies. BMC Bioinformatics 2003;4(1):36–42.
+[30] Chen X, Golovinskiy A, Funkhouser T. A benchmark for 3D mesh segmentation.
+ACM Trans Graph 2009;28(3):73–84.
+[31] Shapira L, Shamir A, Cohen-Or D. Consistent mesh partitioning and skeletonisation using the shape diameter function. Vis Comput 2008;24(4):249–59.
+[32] Zhang Y, Bajaj C. Adaptive and quality quadrilateral/hexahedral meshing from
+volumetric data. Comput Methods Appl Mech Engrg 2006;195(9):942–60.
+[33] Liao T, Zhang Y, Kekenes-Huskey P, Cheng Y, Michailova A, McCulloch A,
+et al. Multi-core CPU or GPU-accelerated multiscale modeling for biomolecular
+complexes. Mol Based Math Biol 2013;1:164–79.
+
+

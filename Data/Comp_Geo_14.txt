@@ -1,0 +1,1118 @@
+Computational Geometry 48 (2015) 575–588
+
+Contents lists available at ScienceDirect
+
+Computational Geometry: Theory and
+Applications
+www.elsevier.com/locate/comgeo
+
+Graph induced complex on point data
+Tamal K. Dey ∗ , Fengtao Fan, Yusu Wang
+Department of Computer Science and Engineering, The Ohio State University, Columbus, OH 43210, USA
+
+a r t i c l e
+
+i n f o
+
+Article history:
+Available online 14 April 2015
+Keywords:
+Point cloud data
+Homology
+Simplicial complex
+Sparsiﬁcation
+Topological persistence
+
+a b s t r a c t
+The eﬃciency of extracting topological information from point data depends largely on
+the complex that is built on top of the data points. From a computational viewpoint,
+the favored complexes for this purpose have so far been Vietoris–Rips and witness
+complexes. While the Vietoris–Rips complex is simple to compute and is a good vehicle for
+extracting topology of sampled spaces, its size becomes prohibitively large for reasonable
+computations. The witness complex on the other hand enjoys a smaller size because of
+a subsampling, but fails to capture the topology in high dimensions unless imposed with
+extra structure. We investigate a complex called the graph induced complex that, to some
+extent, enjoys the advantages of both. It works on a subsample but still retains the power
+of capturing the topology as the Vietoris–Rips complex. It only needs a graph connecting
+the original sample points from which it builds a complex on the subsample thus taming
+the size considerably. We show that, using the graph induced complex one can (i) infer the
+one dimensional homology of a manifold from a lean subsample, (ii) reconstruct a surface
+in three dimensions from a sparse subsample without computing Delaunay triangulations,
+(iii) infer the persistent homology groups of compact sets from a suﬃciently dense sample.
+We provide experimental evidences in support of our theory.
+Published by Elsevier B.V.
+
+1. Introduction
+Acquiring knowledge about a sampled space from a set of points has become a key problem in many areas of science
+and engineering. The sampled space could be a hidden manifold sitting in some high dimensions, or could be a compact
+subset of some Euclidean space. Topological information such as the rank of the homology groups, or their persistent behavior can divulge important features of the hidden space. Therefore, a considerable effort has ensued to extract topological
+information from point data in recent years [7,9,16,19]. With the advent of advanced technologies, the data is often generated in abundance. Mixed with the burden of high dimensionality, large data sets pose a challenge to the resource required
+to process them. As a result, some recent investigations have focused on how to use a lighter data structure or sparsify the
+input, which aids a faster computation, but still guarantees that the output inference is correct.
+Point data by themselves do not have interesting topology. So, a foremost step in inferring topology from data is to
+ˇ
+impose a structure such as a simplicial complex onto it. The Delaunay, Cech,
+Vietoris–Rips, and witness complexes are
+some of the most commonly proposed complexes for this purpose. Among these, Vietoris–Rips (Rips in short) and witness
+complexes [9] have been favored because they can be constructed with simple computations. Rips complexes are easy to
+construct as they can be built from a graph by recognizing the cliques in it. However, the presence of simplices correspond-
+
+*
+
+Corresponding author.
+E-mail addresses: tamaldey@cse.ohio-state.edu (T.K. Dey), fanf@cse.ohio-state.edu (F. Fan), yusu@cse.ohio-state.edu (Y. Wang).
+
+http://dx.doi.org/10.1016/j.comgeo.2015.04.003
+0925-7721/Published by Elsevier B.V.
+
+576
+
+T.K. Dey et al. / Computational Geometry 48 (2015) 575–588
+
+Fig. 1. A graph induced complex shown with bold vertices, edges, and a shaded triangle on the left. Input graph within the shaded triangle is shown on
+the right.
+
+ing to all cliques makes its size quite large. Even in three dimensions with a few thousand points, the size of the Rips
+complex can be an obstacle, if not a stopper, for further processing. Witness complexes, on the other hand, have too few
+simplices to capture the topology of the sampled space in dimensions three or more [4]. To tackle this issue, Boissonnat et
+al. [4] suggested modiﬁcations to the original deﬁnition of witness complex [12]. This enlarges the witness complexes but
+makes it more complicated and costly to compute.
+We investigate a new complex, a version of which was originally introduced in [18] for the application of sensor network
+routing. We set up a more general deﬁnition and call it the graph induced complex. We provide new theoretical understanding of the graph induced complex in terms of topology inference. In particular, we show that, when equipped with an
+appropriate metric, this complex can help deciphering the topology from data. It retains the simplicity of the Rips complex
+as well as the sparsity of the witness complex. Its construction resembles the sparsiﬁed Rips complex proposed in [24] and
+also the combinatorial Delaunay triangulation proposed in [6], but it does not build a Rips complex on the subsample and
+thus is sparser than the Rips complex with the same set of vertices. This fact makes a real difference in practice as our preliminary experiments show. The idea of graph induced complex also bears similarity to the geodesic Delaunay triangulation
+which was proposed to recover the topology of a bounded planar region (with holes) from point samples [23]. Our work
+investigates its theoretical properties and generalizes it to settings beyond the planar case.
+Given a graph G on a set of points P equipped with a metric, one can build a graph induced complex on a subsample
+Q ⊆ P as follows. A simplex is in the complex if and only if its vertex set V ⊆ Q has the property that a set of points in
+P , each being closest to exactly one vertex in V , forms a clique in G. Fig. 1 shows a graph induced complex for a set of
+data points in the plane. Subsampled points are the darker vertices. Input points are grouped according to the proximity to
+the subsampled vertices (indicated with a Voronoi partition). The shaded triangle enlarged on the right-hand side is in the
+graph induced complex since there is a 3-clique in the input graph whose 3 vertices have 3 different closest point in the
+subsample. Observe that, in this example, the graph induced complex has the same homology as the sampled space.
+Fig. 2 shows experimental results on two data sets, 40,000 sample points from a Klein bottle in R4 and 15,000 sample
+points from the primary circle of natural image data considered in R25 [1]. The graphs connecting any two points within
+α = 0.05 unit distance for Klein bottle and α = 0.6 unit distance for the primary circle were taken as input for the graph
+induced complexes. The 2-skeleton of the Rips complexes for these α parameters have 608,200 and 1,329,672,867 simplices
+respectively. These sizes are too large to carry out fast computations.
+For comparison, we constructed the graph induced complex, sparsiﬁed Rips complex, and the witness complex on the
+same subsample determined by a parameter δ . The parameter δ is also used in the graph induced complex (see deﬁnitions
+later) and the witness complex. The edges in the Rips complex built on the same subsample were of lengths at most α + 2δ
+(justiﬁed by Proposition 2.8). We varied δ and observed the rank of the one dimensional homology group (β1 ). The plots
+show that the graph induced complex captured β1 correctly for a signiﬁcantly wider range of δ (left plots) while its size
+remained comparable to that of the witness complex (right plots). In some cases, the graph induced complex could capture
+the correct β1 with remarkably small number of simplices. For example, it had β1 = 2 for Klein bottle when there were
+278 simplices for δ = 0.7 and 154 simplices for δ = 1.0. In both cases β1 for Rips and witness complexes did not match
+with that of the sampled spaces while the Rips complex had a much larger size (loge scale plot) and the witness complex
+had comparable size. This illustrates why the graph induced complex can be a better choice than the Rips and witness
+complexes.
+We establish three different results. First, we show that the one-dimensional homology group of surfaces in three
+dimensions can be determined by graph induced complexes. Even the surface itself can be reconstructed with some
+post-processing from a sparse subsample of a sample that could be excessively dense. Second, we show that, for higherdimensional manifolds, one-dimensional homology can still be determined from graph induced complexes with a simple
+modiﬁcation of the metric. Finally, we extend our results to other homology groups where we show that the persistent homology groups of a pair of graph induced complexes can determine the homology groups of compact spaces. Experimental
+results support our theory.
+
+T.K. Dey et al. / Computational Geometry 48 (2015) 575–588
+
+577
+
+Fig. 2. Comparison results for Klein bottle in R4 (top row) and primary circle in R25 (bottom row). The estimated β1 for three complexes are shown on the
+left, and their sizes are shown on log scale on the right.
+
+2. Graph induced complex and preliminaries
+First we deﬁne the graph induced complex in a more abstract setting which does not require a metric.
+Deﬁnition 2.1. Let G ( V ) be a graph with the vertex set V and let ν : V → V be a vertex map where ν ( V ) = V ⊆ V . The
+graph induced complex G (G ( V ), V , ν ) is deﬁned as the simplicial complex where a k-simplex σ = { v 1 , v 2 , . . . , v k+1 } is in
+G ( V , V , ν ) if and only if there exists a (k + 1)-clique { v 1 , v 2 , . . . , v k+1 } ⊆ V so that ν ( v i ) = v i for each i ∈ {1, 2, . . . , k + 1}.
+To see that it is indeed a simplicial complex, observe that a subset of a clique is also a clique.
+Now we specialize the graph induced complex to the case where the vertices of the input graph come from a metric
+space.
+Deﬁnition 2.2. A metric space ( X , d) is a pair where X is a set and d : X × X → R+ is a distance function satisfying
+d(x, y ) ≥ 0, d(x, y ) = 0 iff x = y, d(x, y ) = d( y , x), and d(x, y ) ≤ d(x, z) + d( z, y ).
+Deﬁnition 2.3. Let ( P , d) be a metric space where P is a ﬁnite point set and let Q ⊂ P be a subset. Let νd : P → Q denote
+the nearest point map where νd ( p ) is a point in argminq∈ Q d( p , q). Given a graph G ( P ) with vertex set P , we deﬁne its
+graph induced complex as G (G ( P ), Q , d) := G (G ( P ), Q , νd ).
+Among the many possible choices for d, we will focus on two cases where d = d E , the Euclidean distance, and d = d G , the
+graph distance induced by the graph G ( P ) assuming its edges have non-negative weights. For any two vertices p 1 , p 2 ∈ P ,
+the distance d G ( p 1 , p 2 ) is the length of the shortest path between p 1 and p 2 in G ( P ). We will describe the choices of the
+distance functions when necessary.
+In our case, the point set P will be a discrete subset of a compact smooth manifold M ⊂ Rn without boundary, or of a
+compact set X ⊂ Rn . The graph G ( P ) will be the graph G α ( P ) = ( P , E α ) where ( p 1 , p 2 ) ∈ E α if and only if p 1 − p 2 ≤ α .
+The graph induced complex induced by G α ( P ) on a subset Q ⊆ P under a distance function d will be the focus of our
+study. To emphasize the dependence on the parameter α , we write it as G α ( P , Q , d) := G (G α ( P ), Q , d). Notice that G α ( P )
+
+578
+
+T.K. Dey et al. / Computational Geometry 48 (2015) 575–588
+
+is induced by Euclidean metric whereas d is used to deﬁne the nearest point map in constructing G α ( P , Q , d). As mentioned
+earlier, the graph induced complex bears a similarity to the complex considered in [18,23]. One may also draw a parallel
+between the graph induced complexes and the well-known witness complexes [12] where P acts as a witness set W and
+Q acts as a landmark set L ⊆ W . However, the analogy does not extend any further since the construction of the witness
+complex and its variants [4] differs from that of the graph induced complex. For example, the original witness complex
+deﬁned in [12] includes a k-simplex with vertex set in L only if its vertices belong to the k-nearest neighbors of a point in
+W . In contrast the graph induced complex includes a k-simplex only if its vertices have nearest neighbors in W that form a
+k-clique in a graph built on the vertices belonging to W . Similar to the witness complex, the graph induced complex builds
+upon a subsampling, but, unlike the witness complex, it enjoys some topological properties without any extra modiﬁcations
+such as weighting [4].
+2.1. Sampling, homology, and sandwiching
+As indicated before, the input point set P is a sample of a smooth manifold M or a compact set X embedded in
+Euclidean space. We will also subsample P according to a distance function d. Therefore, we deﬁne sampling in a more
+general context.
+Deﬁnition 2.4. A ﬁnite set P ⊆ X is an ε -sample of a metric space ( X , d), if for each point x ∈ X there is a point p ∈ P so
+that d(x, p ) ≤ ε . Additionally, P is called δ -sparse if d( p 1 , p 2 ) ≥ δ for any pair of points in P .
+The point set P does not have interesting topology by itself. We build simplicial complexes using P as the vertex set to
+infer the topology of the sampled space X . Speciﬁcally, our goal is to infer the homology groups of a manifold or a compact
+set from which P is sampled by computing the homology groups of a simplicial complex built with P as vertices. Let Hr (·)
+denote the r-dimensional homology group. It refers to the singular homology when the domain is a manifold or a compact
+set, and to the simplicial homology when it is a simplicial complex. Also, all homology groups are assumed to be deﬁned
+over the ﬁnite ﬁeld Z2 .
+Our main tool for topological inference rests on the relationship between the graph induced complexes and the Rips
+complexes that are known to capture information about the homology groups of spaces [3,21].
+Deﬁnition 2.5. Given a point set P ⊆ Rn and a parameter α , the Rips complex Rα ( P ) = Rα ( P , d E ) is a simplicial complex
+where a simplex σ belongs to Rα ( P ) if and only if all vertices of σ , drawn from P , are within α Euclidean distance of each
+other.
+Notice that we deﬁne Rips complexes with Euclidean distances instead of general metrics which will be assumed throughout
+this paper. It is known that such Rips complexes capture the topology of a manifold M if the parameters are chosen right [3,
+21]. We utilize this fact to infer H1 ( M ) by exploiting a sandwiching property of graph induced complexes by Rips complexes.
+To prove this fact, we recall the concept of contiguous maps from algebraic topology. Our main interest in this concept is
+the fact that two contiguous maps between two simplicial complexes induce the same homomorphism at the homology
+level.
+Deﬁnition 2.6. (See [22].) Let K1 and K2 be two simplicial complexes connected by two simplicial maps a : K1 → K2 and
+b : K1 → K2 . We say a and b are contiguous, if and only if for any simplex σ ∈ K1 , the simplices a(σ ) and b(σ ) are faces
+of a common simplex in K2 .
+Fact 2.7. (See [22].) If a : K1 → K2 and b : K1 → K2 are contiguous, then the induced homomorphisms a∗ : Hr (K1 ) → Hr (K2 ) and
+b∗ : Hr (K1 ) → Hr (K2 ) are equal.
+In our case two simplicial complexes will be K1 = Rα ( P ) and K2 = Rβ ( P ) for some β > α . The map a is an inclusion
+Rα ( P ) → Rβ ( P ). For the map b, we consider a simplicial map h : Rα ( P ) → G α ( P , Q , d) which composed with an inclusion
+G α ( P , Q , d) → Rβ ( P ) provides b. We elaborate on this construction.
+The vertex sets of Rα ( P ) and G α ( P , Q , d) are P and Q respectively with a vertex map νd : P → Q where p ∈ P maps to
+one of its closest point(s) νd ( p ) ∈ Q . Observe that G α ( P ) is the 1-skeleton of Rα ( P ). Therefore, the edges of a (k + 1)-clique
+in G α ( P ) constitute the 1-skeleton of a k-simplex in Rα ( P ) and vice versa. The vertex map νd extends to a simplicial map
+h : Rα ( P ) → G α ( P , Q , d) where a k-simplex { p 1 , p 2 , · · · , pk+1 } in Rα ( P ) is mapped to a simplex (of dimension at most k)
+with the vertex set {νd ( p i )}. To see that h is well deﬁned, observe that any subset of the (k + 1)-clique { p 1 , p 2 , · · · , pk+1 } is
+also a clique in G α ( P ) and hence {νd ( p i )} is a simplex in G α ( P , Q , d). The following result is used later.
+Proposition 2.8. Let ( P , d) be a metric space where P ⊂ Rn is a ﬁnite set and for every pair p 1 , p 2 ∈ P , d( p 1 , p 2 ) is at least the
+Euclidean distance p 1 − p 2 . Let Q be a δ -sample of ( P , d). We have the sequence
+
+T.K. Dey et al. / Computational Geometry 48 (2015) 575–588
+
+h
+
+579
+
+j
+
+Rα ( P ) −→ G α ( P , Q , d) → Rα +2δ ( P )
+where j is an inclusion and j ◦ h is contiguous to the inclusion i : Rα ( P ) → Rα +2δ ( P ). Hence, j ∗ ◦ h∗ = i ∗ .
+Proof. The map h is well-deﬁned as we detailed before. We observe that G α ( P , Q , d) ⊆ Rα +2δ ( P ) because, by triangle
+inequality, any edge (q1 , q2 ) of a simplex σ ∈ G α ( P , Q , d) satisﬁes d(q1 , q2 ) ≤ α + 2δ . Since d(q1 , q2 ) ≥ q1 − q2 by assumption, the edge (q1 , q2 ) and hence the simplex σ are in Rα +2δ ( P ). It follows that the inclusion map j is well-deﬁned.
+To prove the contiguity, consider a simplex σ in Rα ( P ). We need to show that the vertices of σ and h(σ ) span a simplex
+in Rα +2δ ( P ). Clearly, all vertices of σ are within α distance of each other. By deﬁnition of h, all vertices of h(σ ) are within
+distance α + 2δ . Let u be a vertex of σ and h( v ) be a vertex of h(σ ) where v is a vertex of σ . Then the Euclidean distance
+u − h( v ) is at most u − v + v − h( v ) ≤ α + δ . Therefore, all vertices of σ and h(σ ) are within α + 2δ distance. Hence,
+the simplex σ and h(σ ) are faces of a common simplex in Rα +2δ ( Q ) proving the claim of contiguity. ✷
+Computing graph induced complexes One may wonder how to eﬃciently construct the graph induced complexes in practice.
+Our experiments show that the following procedure runs quite eﬃciently in practice. It takes advantage of computing
+nearest neighbors within a range and, more importantly, computing cliques only in a sparsiﬁed graph.
+Let the ball B (q, δ) in metric d be called the δ -cover for the point q. A graph induced complex G α ( P , Q , d) where Q
+is a δ -sparse δ -sample can be built easily by identifying δ -covers with a rather standard iterative algorithm similar to the
+greedy (farthest point) iterative algorithm of [20]. Let Q i = {q1 , . . . , qi } be the point set sampled so far from P . We maintain
+the invariants (i) Q i is δ -sparse and (ii) every point p ∈ P that are in the union of δ -covers q∈ Q i B (q, δ) have their closest
+point ν ( p ) = argminq∈ Q i d( p , q) in Q i identiﬁed. To augment Q i to Q i +1 = Q i ∪ {qi +1 }, we choose a point q i +1 ∈ P that
+is outside the δ -covers q∈ Q i B (q, δ). Certainly, q i +1 is at least δ units away from all points in Q i thus satisfying the ﬁrst
+invariant. For the second invariant, we check every point p in the δ -cover of q i +1 and update ν ( p ) to be q i +1 if its distance
+to qi +1 is smaller than the distance d( p , ν ( p )). At the end, we obtain a sample Q ⊆ P whose δ -covers cover the entire point
+set P and thus is a δ -sample of ( P , d) which is also δ -sparse.
+Next, we construct the simplices of G α ( P , Q , d). This requires identifying cliques in G α ( P ) that have vertices with
+different closest points in Q . We delete every edge pp from G α ( P ) where ν ( p ) = ν ( p ). Then, we determine every clique
+{ p 1 , . . . pk } in the remaining sparsiﬁed graph and include the simplex {ν ( p 1 ), . . . , ν ( pk )} in G α ( P , Q , d). The main saving
+here is that many cliques of the original graph are removed before it is processed for clique computation. We use the
+recently proposed simplex tree which computes cliques eﬃciently both time and space-wise [5].
+3. Surface point data
+In this section, we infer the geometry and topology of a surface through the graph induced complex. Let M be a smooth,
+compact, connected surface embedded in R3 that has no boundary. We assume that M has positive reach ρ = ρ ( M ) which
+is the minimum distance of M to its medial axis. Let P be an ε -sample of the metric space ( M , d E ) where d E is the
+Euclidean distance. Consider the graph induced complex G α ( P , Q , d E ). In this section, the subset Q ⊂ P is assumed to be a
+δ -sparse δ -sample of ( P , d E ).
+Our result in this section is that under certain conditions on α , ε and δ , G α ( P , Q , d E ) captures the homology of M
+and contains the restricted Delaunay triangulation Del| M Q as deﬁned below. The sparsity of Q turns out to be a crucial
+condition in the argument.
+Deﬁnition 3.1. Let Del Q denote the Delaunay triangulation of a point set Q ⊂ R3 . The restricted Delaunay triangulation of
+Q with respect to a manifold M ⊂ R3 , denoted Del| M Q , is deﬁned to be the subcomplex of Del Q formed by all Delaunay
+simplices whose Voronoi duals intersect M.
+3.1. Topological inference from G α ( P , Q , d E )
+h
+
+j
+
+Consider the sequence Rα ( P ) −→ G α ( P , Q , d) → Rα +2δ ( P ) in Proposition 2.8. When P , an ε -sample of ( M , d E ), is
+suﬃciently dense, it is known that i ∗ : H1 (Rα ( P )) → H1 (Rβ ( P )) is an isomorphism for appropriate α and β . The homomorphism h∗ is injective if i ∗ is an isomorphism since i ∗ = j ∗ ◦ h∗ . If we can show that h∗ is also surjective, then h∗ is
+an isomorphism. We now show that h∗ is indeed surjective for H1 -homology and hence information about H1 ( M ) can be
+obtained by computing H1 (G α ( P , Q , d E )). First, we observe the following. Let P q ⊆ P be the points who have q ∈ Q as the
+closest point. Notice that by the deﬁnition of h, h( P q ) = {q}. To prove that h∗ is surjective, it is suﬃcient to prove that the
+preimage of each 1-cycle in G α ( P , Q , d E ) contains a 1-cycle of Rα ( P ). This, in turn, is true if the 1-skeleton of Rα ( P q ) is
+connected.
+Proposition 3.2. If the 1-skeleton of Rα ( P q ) is connected for all q ∈ Q , then h∗ is surjective.
+
+580
+
+T.K. Dey et al. / Computational Geometry 48 (2015) 575–588
+
+Fig. 3. In a long thin Voronoi cell, Bq may be disconnected and may not contain M q .
+
+Proof. We show that the chain map h# induced by the simplicial map h is surjective. It follows that the homomorphism h∗
+induced at the homology level is also surjective. Let c = q0 q1 + q1 q2 + · · · + qk q0 be any 1-cycle in G α ( P , Q , d E ). The edges
+qi −1 qi and qi qi +1 have edges, say p i −1 p i and p i p i +1 respectively, in their preimage under h in Rα ( P ). Consider a path γi
+between p i and p i in Rα ( P qi ) where h( p i ) = h( p i ) = qi . Such a path exists because Rα ( P q ) is connected for all q ∈ Q . We
+have a 1-cycle
+
+c = p 0 p 1 + γ1 + p 1 p 2 + γ2 + p 2 p 3 + · · · + γk + pk p 0 + γ0
+in Rα ( P ) so that h# (c ) = c. This shows that h∗ is surjective in the ﬁrst homology group.
+The 1-skeleton of Rα ( P q ) is connected if the union of balls Bq =
+
+Pq
+
+✷
+
+B ( p , α2 ) is connected because an edge p 1 p 2 is
+
+in Rα ( P q ) if the respective balls B ( p 1 , α2 ) and B ( p 2 , α2 ) intersect. Let V q be the Voronoi cell of q in the Voronoi diagram
+
+Vor Q . Let M q = V q ∩ M be the restricted Voronoi region. It turns out (we will prove it later in Proposition 3.4) that if M q
+is contained in Bq and M q is connected, then Bq is connected. It may seem a priori that Bq would contain M q if P is a
+dense sample. Unfortunately, that is not true as Fig. 3 illustrates. To avoid such a case, we require that the Voronoi cells
+do not subtend very small angles between their facets which is ensured by the δ -sparsity of Q . Proposition 3.3 below uses
+δ -sparsity in a subtle way to prepare for the proof that Bq contains M q . This result will also be used later to show that the
+graph induced complex G α ( P , Q , d E ) in fact contains the restricted Delaunay triangulation Del| M Q .
+For a simplex σ ∈ Del| M Q , we call a ball B (c , r ) a surface Delaunay ball of σ if c ∈ M and its boundary contains the
+vertices of σ .
+Proposition 3.3. Let P be an ε -sample of ( M , d E ), and Q a δ -sparse δ -sample of ( P , d E ). Let σ ∈ Del| M Q be a restricted Delaunay
+2
+triangle or edge with a vertex q ∈ Q . Let c be the center of a surface Delaunay ball of σ . If 8ε ≤ δ ≤ 27
+ρ ( M ), then there is a point
+p ∈ P so that p ∈ B (c , 4ε ) and q is the closest point to p among all points in Q .
+Proof. See Appendix A for the proof.
+
+✷
+
+Now, we are ready to prove that M q is contained in the union of balls
+Proposition 3.4. If α ≥ 12ε and 8ε ≤ δ ≤
+
+2
+27
+
+ρ ( M ), then M q ⊂
+
+Pq
+
+B ( p , α2 ).
+
+α
+
+{ p ∈ P q } B ( p , 2 ) which implies that
+
+Rα ( P q ) is path connected if M q
+
+is path connected.
+
+ε -sample of M, ∀x ∈ M, there exists a point p ∈ B (x, ε) where p ∈ P . Let P q = P ∩ ( x∈Mq B (x, ε)).
+p ∈ P q B ( p , ε ) for if x ∈ M q , there exists p ∈ P q with p ∈ B (x, ε ) requiring x ∈ B ( p , ε ). On the other
+hand, recall that P q = M q ∩ P . Hence if p ∈ P q \ P q , then B ( p , ε ) contains some boundary point x ∈ ∂ M q . The point x belongs
+Proof. Since P is an
+
+Then, we have M q ⊂
+
+to a Voronoi facet in the Voronoi diagram of Q and hence B (x, q − x ) is a surface Delaunay ball. By Proposition 3.3, we can
+ﬁnd a point u ∈ P q such that u − x ≤ 4ε . Thus, B ( p , ε ) ⊂ B (u , (4 + 2)ε ). Taking α ≥ 12ε , we get that M q ⊂ p ∈ P q B ( p , ε ) ⊂
+p∈ P q
+
+B ( p , α2 ).
+
+Since every ball in { B ( p , ε )| p ∈ P q } intersects M q , we have that Bq =
+
+connected. On the other hand Rα ( P q ) is path connected if
+
+α
+
+{ p ∈ P q } B ( p , 2 ) is path connected if M q is path
+
+Bq is path connected proving the claim. ✷
+
+We can now present the main result of this subsection.
+Theorem 3.5. Let P be an ε -sample of a smooth compact surface M embedded in R3 , and Q ⊆ P a δ -sparse δ -sample of ( P , d E ).
+2
+2
+For 12ε ≤ α ≤ 27
+ρ and 8ε ≤ δ ≤ 27
+ρ , the map h∗ : H1 (Rα ( P )) → H1 (G α ( P , Q , d E )) is an isomorphism where h : Rα ( P ) →
+α
+G ( P , Q , d E ) is the simplicial map induced by the nearest point map νd E : P → Q .
+
+T.K. Dey et al. / Computational Geometry 48 (2015) 575–588
+
+581
+
+Proof. Since δ ≤ 0.18ρ , we can assume each restricted Voronoi cell M q to be path connected [13]. This together with the
+lower bound on α imply that Rα ( P q ) is connected for each q ∈ Q thanks to Proposition 3.4. Consequently, Proposition 3.2
+establishes that h∗ is surjective.
+From Proposition 4.1 of [16] and its proof, we obtain the following: for any 4ε ≤ r ≤ 2r ≤ r ≤
+
+H1 (Rr ( P )) ∼
+= H1 (Rr ( P )) ∼
+= H1 ( M )
+
+3
+5
+
+ρ,
+(1)
+
+where the ﬁrst isomorphism is induced by the canonical inclusion i : R ( P ) → R ( P ). Our assumption on the ranges
+r
+
+of
+
+α and δ implies the required conditions that 4ε ≤ α ≤
+
+1
+3
+
+3
+5
+
+ρ and 4ε ≤ δ ≤
+
+r
+
+1
+3
+
+H1 (Rα +2δ ( P )) induced by the inclusion i : Rα ( P ) → Rα +2δ ( P ) is an isomorphism.
+
+First, note that this claim follows easily from (1) if
+Consider the following sequence:
+i1
+
+i
+
+3
+5
+
+ρ . We claim that i ∗ : H1 (Rα ( P )) →
+
+α ≤ δ by setting r = α and r = α + 2δ . Now assume that δ ≤ α .
+
+i2
+
+Rδ ( P ) → Rα ( P ) → Rα +2δ ( P ) → R3α ( P ).
+By Eq. (1), we have that the composition of inclusions i ◦ i 1 : Rδ ( P ) → Rα +2δ ( P ) induces an isomorphism at the homology
+level. Hence i ∗ is necessarily surjective. On the other hand, the composition of inclusions i 2 ◦ i : Rα ( P ) → R3α ( P ) induces an
+isomorphism at the homology level. Hence i ∗ is necessarily injective. Putting these two together, we have that i ∗ is indeed
+an isomorphism. Therefore h∗ is injective by Proposition 2.8. It then follows that h∗ is an isomorphism as claimed. ✷
+Notice that the lower bound on δ in Theorem 3.5 is not restricted by α . This means that one can have a dense input
+graph for a large α whose connectivity does not restrict the size of the subsample.
+In the next subsection, we show two examples of surface data where the graph induced complex has the correct
+H1 -homology with a considerably fewer simplices than the ν -witness complex, a modiﬁed witness complex suggested in [4]
+for capturing the topology correctly.
+3.2. Reconstruction of M using G α ( P , Q , d E )
+In this subsection, we observe that the graph induced complexes can also be used for surface reconstruction. It is known
+that if P is dense and T is a simplicial complex with vertex set P which satisﬁes the following conditions, a simplicial
+manifold can be extracted from T that is homeomorphic to M [2,13]. The conditions are: (i) T is embedded in R3 , (ii) all
+triangles in T have small circumradii compared to reach and (iii) T contains the restricted Delaunay triangulation. We show
+that G α ( P , Q , d E ) contains the restricted Delaunay triangulation. We then prune G α ( P , Q , d E ) so that conditions (i) and (ii)
+are satisﬁed, but none of the restricted Delaunay triangles are deleted in the process which then ensures condition (iii).
+2
+Theorem 3.6. For 8ε ≤ δ ≤ 27
+ρ and α ≥ 8ε , we have that Del|M Q ⊆ G α ( P , Q , d E ) where P is an ε -sample of ( M , d E ) and Q ⊆ P
+is a δ -sparse δ -sample of ( P , d E ).
+2
+Proof. We will show that if 8ε ≤ δ ≤ 27
+ρ and α ≥ 8ε , then any triangle σ ∈ Del|M Q is in G α ( P , Q , d E ). The theorem
+follows from this.
+Let σ = {q1 , q2 , q3 }, and c the center of a surface Delaunay ball of σ . By Proposition 3.3, there exists a point p i ∈ P in
+B (c , 4ε ) so that q i is the closest point in Q to p i for i = 1, 2, 3. It turns out that the interior of bounded cones used in the
+proof of Proposition 3.3 for q1 , q2 and q3 are disjoint. Hence each point p i found in B (c , 4ε ) corresponding to q i is distinct
+from the other two. Therefore, if α ≥ 8ε , the vertices p 1 , p 2 and p 3 form a clique in G α ( P ) and hence the triangle σ is in
+G α ( P , Q , d E ). ✷
+
+The complex G α ( P , Q , d E ) may have intersecting triangles. We prune G α ( P , Q , d E ) to eliminate all such pairwise intersections while leaving the restricted Delaunay triangles in the complex. This ensures that the resulting complex embeds in
+R3 and still contains the restricted Delaunay triangulation. Our simple observation is that if two intersecting triangles t 1 and
+t 2 do not intersect in a common face, one can decide locally which of the two can possibly be in a Delaunay triangulation.
+Observation 3.7. If V is the vertex set of two intersecting triangles t 1 and t 2 whose intersection is not a common face of both, then at
+least one of t 1 and t 2 is not in Del V . The triangle which is not in Del V cannot be in Del P where V ⊆ P .
+One can check locally the Delaunay condition for t 1 and t 2 and decide to throw away at least one triangle which is not in
+Del V . This takes only constant time since V contains at most 6 vertices. Notice that no restricted Delaunay triangle can
+be thrown away by this process. After repeatedly pruning away one of the pairwise intersecting triangles, we arrive at a
+complex that embeds in R3 and contains the restricted Delaunay triangulation Del| M Q . Next, we prune all triangles that
+have circumradius more than 2δ . Again, since the surface Delaunay ball of each restricted Delaunay triangle has circumradius
+at most δ + ε ≤ 2δ , one is ensured that no restricted Delaunay triangle is eliminated. Assuming δ to be suﬃciently small,
+
+582
+
+T.K. Dey et al. / Computational Geometry 48 (2015) 575–588
+
+Fig. 4. Reconstructed surfaces for Fertility and Botijo models.
+
+a sharp edge pruning and a walk on the outside of the resulting complex as described in [2,13] provides the reconstructed
+surface. The output surface has one nice property that the triangles have bounded aspect ratios since their circumradii are
+at most 2δ and their edge lengths are at least δ ( Q is δ -sparse).
+2
+Theorem 3.8. Let M ⊂ R3 be a smooth, compact, and connected surface. If 8ε ≤ δ ≤ 27
+ρ , α ≥ 8ε , P is an ε -sample of ( M , d E ), and
+Q ⊆ P is a δ -sparse δ -sample of ( P , d E ), then a triangulation T ⊆ G α ( P , Q , d E ) of M can be computed where each triangle in T has
+a bounded aspect ratio.
+
+We observe in experiments that surfaces can be reconstructed from a very sparse subsample with this strategy. Fig. 4
+presents two examples for surface reconstruction. The original sample P has 1,575,055 points for the Fertility model and
+1,049,892 points for Botijo model. The input graphs for the graph induced complex are constructed by connecting two
+points within distance of α = 0.45 for Fertility and α = 1.0 for Botijo. The 2-skeleton of the Rips complex built on the
+input graph has 45,788,607 simplices for Fertility and 91,264,091 simplices for Botijo. The subsample Q consists of 3007
+points for Fertility with δ = 3.68, and 4659 points for Botijo with δ = 4.0. The graph induced complex G α ( P , Q , d E ) built
+on the subsample has: 3007 vertices, 9178 edges, 6304 triangles, 139 tetrahedra and no other higher dimensional simplices
+for Fertility; 4659 vertices, 14,709 edges, 10,755 triangles, 718 tetrahedra, 5 4-dimensional simplices, and no other higher
+dimensional simplices for Botijo. The reconstructed surfaces from G α ( P , Q , d E ) are shown in Fig. 4. For Fertility, it has
+3007 vertices, 9039 edges and 6026 triangles; for Botijo, it has 4659 vertices, 14,001 edges and 9334 triangles. Evidently,
+the graph induced complex has only a few more simplices compared to the reconstructed surface.
+For a comparison, we also constructed the ν -witness complex suggested in [4] which also contains the restricted Delaunay triangulation Del| M Q with ν = (1, 6, 6, 4). The ν -witness complex for Fertility has 3007 vertices, 35,687 edges,
+119,237 triangles and 19,874 tetrahedra; the ν -witness complex for Botijo has 4659 vertices, 54,648 edges, 180,936 triangles and 29,654 tetrahedra. The graph induced complex has much smaller size, but still captures β1 (β1 = 8 for the Fertility,
+and β1 = 10 for the Botijo).
+4. Point data for more general domains
+In this section, we consider domains beyond surfaces in R3 .
+4.1. Manifolds
+Let M be a k-manifold embedded in Rn and let P be a discrete sample of ( M , d E ). We observe that the overall setup in
+Section 3.1 for inferring H1 -homology from the graph induced complex generalizes easily to higher dimensions. The inclusion map Rα ( P ) → Rα +2δ ( P ) still induces an isomorphism at the homology level if α and δ are chosen appropriately. In
+that case, the map h∗ : H1 (Rα ( P )) → H1 (G α ( P , Q , d)) remains injective by the same argument as before. The main trouble
+arises when we try to prove that it is also surjective. Observe that, to prove the surjectivity of h∗ , we used the fact that the
+restricted Voronoi cell M q = V q ∩ M in Vor Q is connected (Proposition 3.4). Unfortunately, this is not necessarily true in
+high dimensions given the counterexamples in [4,10]. To overcome this impediment we change the distance function replacing the Euclidean distance with the graph distance while building G α ( P , Q , d). Speciﬁcally, we still consider G α ( P ) to be
+the graph connecting points in P with Euclidean distance α or less, but take Q to be a δ -sparse δ -sample of ( P , d G ) where
+the graph distance d G = d G α ( P ) is deﬁned with the Euclidean lengths as the edge weights. Then, we consider G α ( P , Q , d G ).
+
+T.K. Dey et al. / Computational Geometry 48 (2015) 575–588
+
+Fig. 5. (a) γu v makes a cycle with
+γˆu v , (d) a diamond of γˆu v .
+
+583
+
+π (u , a), π ( v , b) and ab, (b) γu v as a sum of unicolored chains and bicolored edges, (c) converting γu v (shown dotted) to
+
+As before, let P q ⊆ P be the set of points nearest to a point q ∈ Q with respect to d G . Observe that any point in P that
+is on the shortest path between q and a point p ∈ P q also belongs to P q . This immediately allows us to claim that the
+1-skeleton of Rα ( P q ) is connected, which was needed to claim that h∗ is surjective.
+Proposition 4.1. Rα ( P q ) is connected, and thus h∗ is surjective.
+Theorem 4.2. Let P be an ε -sample of an embedded smooth and compact manifold M with reach
+For 4ε ≤ α , δ ≤
+
+1
+3
+
+3
+5
+
+ρ , and Q a δ -sample of ( P , d G ).
+
+ρ , the map h∗ : H1 (Rα ( P )) → H1 (G α ( P , Q , dG )) is an isomorphism where h : Rα ( P ) → G α ( P , Q , dG ) is the
+
+simplicial map induced by the nearest point map νdG : P → Q .
+4.2. A leaner subsampling for H1
+In this subsection we show that the subsample Q can be made leaner. The main insight is that we can deﬁne a feature
+size larger than the reach which permits us to subsample more sparsely with respect to this larger feature size. Gao et
+al. [23] considered a similar feature size for the same reason of requiring sparser sampling for a two dimensional shape. Here
+we show that such a sparser sample is also adequate for determining H1 of manifolds in high dimensions. Our experimental
+results in Fig. 2 suggest that one can obtain information about H1 from a very sparse sample in practice.
+Let K be a simplicial complex with non-negative weights on its edges. We deﬁne homological loop feature size as
+
+hlfs(K) =
+
+1
+inf{|c | : c is non-null-homologous 1-cycle in K}
+2
+∞ if no such c exists.
+
+This feature size is very similar to the systolic feature size sfs( X , d) of a compact metric space ( X , d) [23] which is the length
+of the shortest non-contractible loop in X . Our deﬁnition of hlfs when applied to a metric space ( X , d) becomes larger than
+or equal to sfs( X , d). Notice that every loop of K with length less than 2hlfs(K) is null-homologous in K.
+Let Q ⊆ P be a δ -sample of ( P , d G ) as before but with δ ≤ 12 hlfs(Rα ( P )) − 12 α . Let h : Rα ( P ) → G α ( P , Q , d G ) be the
+simplicial map as deﬁned earlier. We aim to show that the induced homomorphism h∗ on the ﬁrst homology is injective.
+Since we use graph distances, Proposition 4.1 remains valid and hence h∗ remains to be surjective. However, we cannot
+claim i ∗ : H1 (Rα ( P )) → H1 (Rα +2δ ( P )) is an isomorphism because δ could be larger than required. Thus, we cannot use i ∗
+to infer that h∗ is injective as before. Nevertheless, we can prove the following result using a different approach.
+Theorem 4.3. If Q is a δ -sample of ( P , d G ) for δ < 12 hlfs(Rα ( P )) −
+phism.
+
+1
+2
+
+α , then h∗ : H1 (Rα ( P )) → H1 (G α ( P , Q , dG )) is an isomor-
+
+Proof. We only need to show that h∗ is injective, as its surjectivity follows from Proposition 4.1. To show the injectivity, it
+suﬃces to show that h∗ has a trivial kernel. Let σ be any triangle in G α ( P , Q , d G ). If under the chain map h# , every cycle
+in the preimage of the boundary cycle ∂ σ is null homologous, then every null homologous cycle in G α ( P , Q , d G ) has only
+null homologous cycles in its preimage. This is true due to the fact that a bounded cycle is a sum of boundaries of triangles
+and the chain map h# is surjective (see the proof of Proposition 3.2). Below, we show that under the chain map h# , every
+cycle in the preimage of the boundary cycle of any triangle indeed is null homologous. It would then follow that the kernel
+of h∗ is trivial.
+−1
+Let γ be any cycle in the preimage of ∂ σ . We have γ ∈ uv ∈∂ σ h#
+(uv ) where uv be any edge of σ . Let γuv be any
+maximal subpath of γ so that h# (γuv ) = uv (Fig. 5(a)). For each such γuv , we construct a cycle uv so that uv is null
+
+584
+
+T.K. Dey et al. / Computational Geometry 48 (2015) 575–588
+
+homologous and γ is homologous to
+uv . Therefore, showing γ is null homologous reduces to showing that every uv is
+null-homologous.
+We construct uv as follows. By the construction of G α ( P , Q , d G ), there is a triangle abc ∈ Rα ( P ) such that h(abc ) = σ
+with h(a) = u, h(b) = v. Consider the shortest paths π (u , a) and π ( v , b) in G α ( P ) from u to a and from v to b respectively.
+Observe that all vertices in π (u , a) and π ( v , b) are mapped to u and v respectively by h since we are using the graphinduced distance d G to construct G α ( P , Q , d G ). Take uv to be the chain π (u , a) + ab + π ( v , b) + γuv ; refer to Fig. 5(a). With
+this choice, we have γ =
+uv + ∂(abc ) and hence γ is homologous to
+uv as promised. To prove uv null-homologous,
+we construct a homologous path γˆuv to γuv which gives a homologous cycle ˆuv to uv . We then prove that ˆuv is nullhomologous.
+Call an edge e = (x, y ) in Rα ( P ) bicolored if its two end-points are mapped to two distinct vertices by h; otherwise, e is
+unicolored. A 1-chain from Rα ( P ) is unicolored if it has only unicolored edges. For simplicity, we assume that vertices from
+γuv are all contained in h−1 (u ) ∪ h−1 ( v ) because γuv is always homologous to a path containing vertices mapped only to
+u or v. In this case, γuv can be decomposed into a set of bicolored edges { y 0 x1 , y 1 x2 , . . . , yk−1 xk } together with a set of
+unicolored chains {γ0 , γ1 , . . . , γk } such that ∂ γi = xi + y i . In particular, γuv can be written as
+
+γuv = γ0 + y 0 x1 + γ1 + y 1 x2 + · · · + yk−1 xk + γk .
+
+(2)
+
+See Fig. 5(b) for an illustration.
+Claim 4.4. Let γi be a unicolored chain with two boundary points xi , y i so that for any simplex τ ∈ γi , h(τ ) = u. Then, γi is homologous
+to the chain γˆi = π (xi , u ) + π (u , y i ).
+Given the chain
+
+γuv with subchains γi as in Eq. (2), we convert it to a homologous chain
+
+γˆuv = γˆ0 + y 0 x1 + γˆ1 + · · · + yk−1 xk + γˆk .
+Replace γuv with γˆuv in uv to obtain a homologous cycle ˆuv ; refer to Fig. 5. Observe that ˆuv is the sum of cycles
+(diamonds) that have two unicolored chains and two bicolored edges as shown in Fig. 5(d). Such a cycle c has length at
+most 4δ + 2α . This is because each unicolored chain in c has at most two shortest paths of the form π (u , xi ) and π (u , y i )
+(or π ( v , xi ) and π ( v , y i )) that have lengths 2δ or less ( Q is a δ -sample of ( P , d G )), and the two bicolored edges have
+lengths at most 2α in G α ( P ). The cycle c is null homologous because its length is
+
+|c | ≤ 4δ + 2α < 2hlfs(Rα ( P )),
+
+given that δ <
+
+1
+2
+
+hlfs(Rα ( P )) −
+
+1
+2
+
+α.
+
+It follows that ˆuv is null homologous.
+We only need to show Claim 4.4 to ﬁnish the proof. Let xi = p 0 , p 1 , · · · , pm = y i be the sequence of vertices on the
+unicolored chain (path) γi . Consider the shortest paths π ( p i , u ) for each p i on this path. The length of the cycle zi =
+π (u , p i ) + p i p i+1 + π (u , p i+1 ) is at most 2δ + α for each i ∈ [0, m − 1]. Therefore, it is null homologous by our assumption.
+m−1
+We have γi + γˆi = i −0 zi = 0. Therefore, γi and γˆi are homologous. ✷
+Notice that, we can use Theorem 4.3 to compute H1 ( M ) for a manifold M from a much leaner subsample than predicted
+by Theorem 3.5. It is known that, for an ε -sample P of M, the shortest non-trivial 1-cycle in Rα ( P ) has a length which is
+at least a constant times the length of the shortest non-trivial 1-cycle of H1 ( M ); see Theorem 3.11 in [15] for details. This
+means that a δ -sample of P where δ is at most some constant fraction of the shortest non-trivial 1-cycle of M is suﬃcient
+to build the graph induced complex from Rα ( P ) to infer H1 ( M ).
+4.3. Point data for compact sets
+So far we have focused on H1 -homology. In this section we extend the domain to compact subspaces of Euclidean spaces
+and consider homology groups of all dimensions. This generality comes at the expense of additional computations. Unlike
+previous approaches that allow us to infer the H1 -homology of the sampled manifold by computing directly the same for
+the graph induced complexes, now we need to compute the persistent homology [17] induced by simplicial maps. The
+well-known algorithms for computing persistent homology [17] work for maps induced by inclusions. In a contemporary
+paper [14], we present an algorithm that can compute the persistent homology induced by simplicial maps.
+Let X ⊂ Rn be a compact set and X λ be its offset with λ > 0. Since it is diﬃcult to compute Hk ( X ) from a sample [9],
+we aim for computing the homology groups Hk ( X λ ) for the offset X λ . Let wfs( X ) denote the weak feature size which is
+deﬁned as the smallest positive critical value of the distance function to X [8]. We prove that the persistent homology
+of the graph induced complex deﬁned with either Euclidean or graph distance d provides the correct homology of X λ
+where 0 < λ < wfs( X ). Speciﬁcally, the image of h∗ : Hk (G α ( P , Q , d)) → Hk (G α ( P , Q , d)) induced by a simplicial map
+h : G α ( P , Q , d) → G α ( P , Q , d) becomes isomorphic to Hk ( X λ ) for appropriate α and α . It is worth noting that the lower
+bound on α for which we prove this result depends only on the density ε of the input P and not on the density of the
+
+T.K. Dey et al. / Computational Geometry 48 (2015) 575–588
+
+585
+
+subsampled set Q . This is in contrast with a similar result for witness complexes presented in [9]. We recall the following
+result from [9].
+Proposition 4.5. If the sequence of homomorphisms A → B → C → D → E → F between ﬁnite dimensional vector spaces satisﬁes
+that rank( A → F ) = rank(C → D ), then rank( B → E ) = rank(C → D ).
+Let Q and Q be subsamples of P where Q is a δ -sparse δ -sample and Q is a δ -sparse δ -sample for δ > δ . Consider
+the interleaving sequence between the graph induced and Rips complexes,
+
+Rα ( P )
+
+i1
+
+Rα + 2 δ ( P )
+h1
+
+i2
+
+R4(α +2δ) ( P )
+
+G α ( P , Q , d)
+
+h
+
+R4(α +2δ)+2δ ( P )
+
+(3)
+
+j2
+
+h2
+
+j1
+
+i3
+
+G 4(α +2δ) ( P , Q , d)
+
+where i 1 , i 2 , i 3 , j 1 and j 2 are inclusions and h = h2 ◦ i 2 ◦ j 1 . By Proposition 2.8, h1 and h2 are simplicial maps. Therefore, h
+is also a simplicial map as composition of simplicial maps. In particular, h is the simplicial map induced by the vertex map
+that maps each point q ∈ Q to its closest point q ∈ Q in Q . We prove that im h∗ ∼
+= Hk ( X λ ) where h∗ : Hk (G α ( P , Q , d)) →
+Hk (G 4(α +2δ) ( P , Q , d)) and ε , α and δ fall in appropriate ranges.
+Theorem 4.6. Let X ⊂ Rn be a compact space. Let 0 < ε < 19 wfs( X ) and P be an ε -sample of ( X , d E ). Let Q be a δ -sparse δ -sample
+of ( P , d) and Q be a δ -sparse δ -sample of ( P , d), where d is either Euclidean or graph distance and δ > δ .
+If 2ε ≤ α ≤ 14 (wfs( X ) − ε ) and (α + 2δ) + 12 δ ≤ 14 (wfs( X ) − ε ), then im h∗ ∼
+= Hk ( X λ ) (0 < λ < wfs( X )) where h∗ :
+Hk (G α ( P , Q , d)) → Hk (G 4(α +2δ) ( P , Q , d)) is induced by h in diagram (3).
+
+Proof. The diagram (3) is not commutative in general. However, it is commutative at the homology level. Proposition 2.8
+makes the two triangles at the left and right commutative. The middle square commutes by deﬁnition of h. Now consider
+the sequence,
+h1 ∗
+
+Hk (Rα ( P ))
+
+i2 ∗
+
+Hk (G α ( P , Q , d))
+
+Hk (R4(α +2δ) ( P ))
+
+j1 ∗
+
+h2 ∗
+
+Hk (Rα +2δ ( P ))
+
+Hk (G 4(α +2δ) ( P , Q , d))
+
+(4)
+
+j2 ∗
+
+Consider the sequence of inclusions at the upper level of the diagram (3). Since
+we have that
+
+Hk (R4(α +2δ)+2δ ( P ))
+
+α ≥ 2ε and (α + 2δ) + 12 δ ≤ 14 (wfs( X ) − ε),
+
+im (i 3 ◦ i 2 ◦ i 1 )∗ ∼
+= Hk ( X λ ) and im (i 2 )∗ ∼
+= Hk ( X λ )
+by Theorem 3.6 of [9]. Considering the diagram (3) and the sequence in (4) we have
+
+Hk ( X λ ) ∼
+= im (i 3 ∗ ◦ i 2 ∗ ◦ i 1 ∗ ) ∼
+= im(( j 2 ∗ ◦ h2 ∗ ) ◦ i 2 ∗ ◦ ( j 1 ∗ ◦ h1 ∗ )) ∼
+= im i 2 ∗
+
+(5)
+
+j 1 , the rightmost isomorphism in (5) allows us to claim that im h∗ ∼
+= Hk ( X λ ) by applying Proposition 4.5
+
+Letting h = h2 ◦ i 2 ◦
+to the sequence (4).
+
+✷
+
+5. Conclusions
+In this work, we investigated the graph induced complex that can be built upon a given point cloud data and a suitable
+graph connecting them. This complex, to some extent, has the advantages of both Rips and witness complexes. We have
+identiﬁed several of its topological properties that can evidently be useful in extracting information from point data even in
+high dimensions.
+In Section 4.3, we showed how to infer the homology groups of a compact set using the persistent homology of a pair of
+graph induced complexes constructed with two values of δ . One can consider a ﬁltration of G α ( P , Q , d) with Q sparsiﬁed
+for increasing values of α and δ . Then, one can obtain a persistence diagram [11] out of this “full ﬁltration” using our
+recently proposed algorithm for computing the topological persistence for ﬁltrations connected with simplicial maps [14].
+The algorithm will collapse vertices progressing through the ﬁltration and hence will keep the size of the complex in
+question contained. Relating this persistence diagram to that of a ﬁltration obtained by a Rips ﬁltration is an interesting
+question. We have addressed this question in a subsequent work [14].
+Finding other applications where the graph induced complex becomes useful also remains open for further investigations.
+
+586
+
+T.K. Dey et al. / Computational Geometry 48 (2015) 575–588
+
+Acknowledgements
+We acknowledge the support of the NSF grants CCF 1318595, CCF 1319406, CCF 1116258 and thank all the referees for
+their valuable comments.
+Appendix A. Proof of Proposition 3.3
+First, we present an elementary geometric result that we need to use in the proof. Let C(o, v , α ) ∈ R3 denote the cone
+with apex o, axis in the direction of v and aperture 2α .
+Claim A.1. Given a ball B with radius r and center c, let q be an arbitrary point on the boundary of B. Consider the two nested cones
+−
+→
+−
+→
+C1 = C(c , cq, α ) and C2 = C(c , cq, 2α ) with the same axis. Let p be any point from the intersection of the ball and the inner cone; that
+is, p ∈ B ∩ C1 . Let x be an arbitrary point from the boundary of B outside the outer cone; that is, x ∈
+/ C2 , and x ∈ ∂ B. Then we have that
+p −q < p −x .
+Proof. Denote αq := pcq and αx := pcx. Because x is outside of the outer-cone with aperture 4α , and p is inside of the
+inner cone of aperture 2α , we have that we have αq < α < αx . Now consider the triangle pcq. By the Cosine Law, we have
+that
+
+p −q
+
+2
+
+= p−c
+
+Similarly, consider the
+
+p−x
+
+2
+
+2
+
++ c −q
+
+2
+
+− 2 p − c · c − q cos(αd ) = p − c
+
+2
+
++ r 2 − 2r p − c cos(αq ).
+
+2
+
++ r 2 − 2r p − c cos(αx ).
+
+pox, and we have
+
+= p−c
+
+2
+
++ c−x
+
+Since 0 ≤ αq < αx ≤ π , we have
+
+2
+
+− 2 p − c · c − x cos(α p ) = p − c
+
+p −q < p −x .
+
+✷
+
+Now consider the surface Delaunay ball B c = B (c , r ) that passing through the vertices of the simplex σ and containing
+no other points from Q . Recall that q is an arbitrary vertex of σ . Since all other vertices of σ are at least δ -Euclidean
+−
+→
+δ
+distance away from q, we then have that the intersection of B c with the cone C(c , cq, 2 arcsin 2r
+) contains no point from Q
+other than q. By applying Claim A.1 with
+
+α = arcsin 2rδ , we then obtain that
+
+−
+→
+δ
+Corollary A.2. If there exists a point p ∈ P such that p ∈ B c ∩ C(c , cq, arcsin 2r
+) ∩ M, then q must be the closest point to p among all
+points in Q .
+
+In what follows, we will show that a point p ∈ P satisfying the conditions in Corollary A.2 as well as that p ∈ B (c , 4ε )
+2
+indeed exists when 8ε ≤ δ ≤ 27
+ρ ( M ). This will then prove the proposition. Speciﬁcally, we will ﬁrst identify a sample point
+p ∈ P , and then we will show that p satisﬁes the requirements of the proposition.
+Identifying a point p ∈ P . Let B o = B (m, ρ ) and B o = B (m , ρ ) be two balls tangent to M at c; assume without loss of
+generality that B o is inside of M and B o is outside. Locally around c, the surface M is sandwiched between B o and B o . Now
+consider the plane P = span{o, o , q}; note that c also lies in P . Denote B c ,P = B c ∩ P , B o,P = B o ∩ P and B o ,P = B o ∩ P .
+Let x be the intersection point of B c ,P and B o,P that is on the same side of the line passing through oo as the point q.
+Similarly, let y be the intersection point of B c ,P with B o ,P on the same side of the line oo as q. Obviously, q lines on the
+arc xy that avoids B o,P and B o ,P . See the right ﬁgure for an illustration where the shaded region is B c ,P . Set θ :=
+easy to see that θ =
+
+xoc =
+
+yo c. Hence we have that sin θ2 =
+
+c −x
+2ρ
+
+= 2rρ .
+
+xc y;
+
+T.K. Dey et al. / Computational Geometry 48 (2015) 575–588
+
+587
+
+Now consider the segment cq and the point w ∈ cq such that the length of c w is a value which we will set later. As w
+is contained in the cone with apex c and aperture θ in the plane P , the ball B ( w , sin θ) will intersect both segment cx and
+c y, thus intersecting both B o and B o . Since B o is inside the surface M and B o outside, it follows that B ( w , sin θ) ∩ M = ∅.
+Pick any point p ∈ B ( w , sin θ) ∩ M. By the ε -sampling condition of P , there must exist a sample point p ∈ P such that
+p − p ≤ ε . In other words, there is a sample point p ∈ P such that p ∈ B ( w , sin θ + ε ).
+The requirements on p We now need to show that the parameter can be chosen such that the point p satisﬁes all the
+requirements from the proposition. In particular, we need the following:
+C-1 p ∈ B (c , 4ε ); and
+C-2 q is the closest point to p among all points in Q .
+Now set τ = arcsin sin θ+ε . Obviously, the ball B ( w , sin θ + ε ) (and thus the point p) is contained inside the cone
+−
+→
+C(c , cq, τ ). Observe that by Corollary A.2, condition (C-2) is satisﬁed if (C-2.a) B ( w , sin θ + ε ) ∈ B (c , r ) (implying that
+−
+→
+δ
+δ
+p ∈ M), and (C-2.b) τ ≤ arcsin 2r
+(implying that p is contained in the inner cone C(c , cq, arcsin 2r
+)).
+The existence of a valid
+What remains is to ﬁnd a value for
+so that (C-1), (C-2.a), and (C-2.b) are all satisﬁed simultaneously. Note that since w − c = , we have that p − c ≤ + sin θ + ε . Hence condition (C-1) is satisﬁed if
++ sin θ + ε ≤ 4ε . Since sin θ ≤ 2 sin θ2 = ρr , (C-1) holds as long as the following inequality holds.
+
+≤
+
+3ε
+1 + ρr
+
+(A.1)
+
+.
+
+Since δ ≥ 8ε , if (C-1) holds, then we have that
+sin θ+ε
+
+(C-2.b), which holds if
+
+r
+
+δ+ε
+
+≤
+
+ρ
+
+ρ
+
+≤
+
+δ + δ/8
+
+ρ
+
+≤
+
+<
+
+1
+4
+
+δ
+2r
+
+p − c ≤ 4ε ≤ 2δ ≤ r, which implies (C-2.a). Now consider condition
+
+. Since δ/2 ≤ r ≤ δ + ε and 8ε ≤ δ < 2ρ /27, we have that
+
+≤
+
+δ
+4δ
+
+≤
+
+δ
+2r
+
+.
+
+δ
+That is, 2r
+− sin θ ≥ 2rδ − ρr > 0 (recall that sin θ ≤ 2 sin θ = r /ρ ). Hence condition (C-2.b) holds if
+
+ε
+
+≥
+
+r
+
+δ
+2r
+
+−ρ
+
+≥
+
+ε
+δ
+2r
+
+− sin θ
+
+(A.2)
+
+.
+
+Putting (A.1) and (A.2) together, we have that as long as the value
+
+ε
+r
+
+δ
+2r
+
+−ρ
+
+≤ ≤
+
+3ε
+1 + ρr
+
+satisﬁes the following inequality
+
+(A.3)
+
+,
+
+conditions (C-1) and (C-2) are satisﬁed, and there exists a point p ∈ P as stated in the proposition. Given that 8ε ≤ δ <
+ε , inequality in Eq. (A.3) holds as
+2ρ /27, we can show that valid exists. For example, for = 36
+13
+
+ε
+r
+
+δ
+2r
+
+−ρ
+
+≤
+
+ε
+δ
+2(δ+ε )
+
+δ+ε
+
+− ρ
+
+≤
+
+ε
+4δ
+9δ
+
+9
+δ
+8
+
+− ρ
+
+ε
+
+<
+4
+9
+
+9 2ρ
+·
+8 27
+
+− ρ
+
+=
+
+36ε
+13
+
+=
+
+and
+
+3ε
+1 + ρr
+
+≥
+
+3ε
+3ε
+3ε
+36ε
+>
+=
+= .
+9
+9 2ρ
+ε ≥
+δ
+· 27
+12
+1 + δ+
+8
+8
+ρ
+1+ ρ
+1+ ρ
+
+References
+[1] H. Adams, G. Carlsson, On the nonlinear statistics of range image patches, SIAM J. Imaging Sci. 2 (2009) 110–117.
+[2] N. Amenta, S. Choi, T.K. Dey, N. Leekha, A simple algorithm for homeomorphic surface reconstruction, Int. J. Comput. Geom. Appl. (2002) 125–141.
+[3] D. Attali, A. Lieutier, D. Salinas, Vietoris–Rips complexes also provide topologically correct reconstructions of sampled shapes, in: Proceedings of the
+27th Annual ACM Symposium on Computational geometry, SoCG ’11, ACM, New York, NY, USA, 2011, pp. 491–500.
+[4] J.D. Boissonnat, L.J. Guibas, S.Y. Oudot, Manifold reconstruction in arbitrary dimensions using witness complexes, Discrete Comput. Geom. (2009) 37–70.
+[5] J.-D. Boissonnat, C. Maria, The simplex tree: an eﬃcient data structure for general simplicial complexes, in: ESA, 2012, pp. 731–742.
+[6] G. Carlsson, V. de Silva, Topological approximation by small simplicial complexes, Preprint, 2003.
+[7] F. Chazal, L.J. Guibas, S.Y. Oudot, P. Skraba, Scalar ﬁeld analysis over point cloud data, Discrete Comput. Geom. 46 (4) (2011) 743–775.
+[8] F. Chazal, A. Lieutier, The “lambda-medial axis”, Graph. Models 67 (4) (2005) 304–331.
+[9] F. Chazal, S. Oudot, Towards persistence-based reconstruction in Euclidean spaces, in: Proc. 24th ACM Sympos. on Comput. Geom., 2008, pp. 232–241.
+[10] S.-W. Cheng, T.K. Dey, E.A. Ramos, Manifold reconstruction from point samples, in: SODA ’05: Proc. 16th Ann. ACM–SIAM Sympos. Discrete Algorithms,
+2005, pp. 1018–1027.
+
+588
+
+T.K. Dey et al. / Computational Geometry 48 (2015) 575–588
+
+[11] D. Cohen-Steiner, H. Edelsbrunner, J. Harer, Stability of persistence diagrams, Discrete Comput. Geom. 37 (1) (2007) 103–120.
+[12] V. de Silva, G. Carlsson, Topological estimation using witness complexes, in: Proc. Sympos. Point-Based Graphics, 2004, pp. 157–166.
+[13] T.K. Dey, Curve and Surface Reconstruction: Algorithms with Mathematical Analysis, Cambridge Monographs on Applied and Computational Mathematics, Cambridge University Press, New York, NY, USA, 2006.
+[14] T.K. Dey, F. Fan, Y. Wang, Computing topological persistence for simplicial maps, in: Proc. 30th Annu. ACM Sympos. Comput. Geom., 2014.
+[15] T.K. Dey, J. Sun, Y. Wang, Approximating cycles in a shortest basis of the ﬁrst homology group from point data, Inverse Probl. 27 (12) (2011) 124004.
+[16] T.K. Dey, Y. Wang, Reeb graphs: approximation and persistence, Discrete Comput. Geom. 49 (1) (2013) 46–73.
+[17] H. Edelsbrunner, J. Harer, Computational Topology: An Introduction, Amer. Math. Soc., Providence, Rhode Island, 2009.
+[18] Q. Fang, J. Gao, L.J. Guibas, V. de Silva, L. Zhang, Glider: gradient landmark-based distributed routing for sensor networks, in: INFOCOM, 2005,
+pp. 339–350.
+[19] R. Ghrist, Barcodes: the persistent topology of data, Bull. Am. Math. Soc. 45 (2008) 61–75.
+[20] T. Gonzalez, Clustering to minimize the maximum inter-cluster distance, Theor. Comput. Sci. 38 (1985) 293–306.
+[21] J.-C. Hausmann, On the Vietoris–Rips complexes and a cohomology theory for metric spaces, in: Proc. Conf. Prospects in Topology, 1994, pp. 175–188.
+[22] J.R. Munkres, Elements of Algebraic Topology, Addison–Wesley Publishing Company, Menlo Park, 1984.
+[23] S. Oudot, L.J. Guibas, J. Gao, Y. Wang, Geodesic Delaunay triangulations in bounded planar domains, ACM Trans. Algorithms 6 (4) (2010).
+[24] D. Sheehy, Linear-size approximations to the Vietoris–Rips ﬁltration, Discrete Comput. Geom. 49 (4) (2013) 778–796.
+
+

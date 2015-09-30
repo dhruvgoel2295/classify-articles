@@ -1,0 +1,717 @@
+A Laurin Publication
+I MAGING S OFTWARE
+Photonic Solutions for Biotechnology and Medicine
+Image Processing
+with ImageJ
+by Dr. Michael D. Abràmoff, University of Iowa Hospitals and Clinics; Dr. Paulo J. Magalhães,
+University of Padua; and Dr. Sunanda J. Ram, Louisiana State University Health Sciences Center
+As the popularity of the ImageJ open-source,
+Java-based imaging program grows, its capabilities increase,
+too. It is now being used for imaging applications
+ranging from skin analysis to neuroscience.
+T
+he advances of the medical and bi-
+ological sciences over recent years,
+and the growing importance of de-
+termining the relationships between struc-
+ture and function, have made imaging an
+increasingly important discipline. The
+ubiquitousness of digital technology —
+from banal digital cameras to highly spe-
+cific micro-CT scanners — has made im-
+ages an essential part of a number of re-
+search areas, from nanotechnology to as-
+tronomy.
+It is common practice for manufactur-
+ers of image acquisition devices to include
+dedicated image processing software, but
+these programs are usually not very flex-
+ible and/or do not allow more complex
+image manipulations. Image processing
+programs also are available by themselves.
+ImageJ holds a unique position because
+it not only is in the public domain (mean-
+ing that its source code is openly avail-
+able and its use is license-free), but also
+runs on any operating system. It is at-
+tractive because it is easy to use, can per-
+form a full set of imaging manipulations
+and has a huge and knowledgeable user
+community.
+The program is the brainchild of Wayne
+Rasband of the Research Services Branch,
+National Institute of Mental Health, in
+Bethesda, Md. It is called ImageJ because
+it is written in the Java language. Its first
+release, version 0.50, was Sept. 23, 1997,
+and it is now in version 1.31, released in
+February.
+According to the institute, it has been
+downloaded from its Web site tens of
+Figure 1. A scintillation rendering of
+the 3-D motion field of a fat-muscle
+phantom was combined with a
+surface rendering to show motion
+and anatomy of the phantom. The
+motion data were obtained as
+1.5-T MRI gradient echo T1
+weighted image sequences, while
+the phantom was rotated in place at
+5° per frame. The motion field is too
+dense for motion and surface to be
+rendered in the same place. The
+axis of rotation was oriented
+perpendicular to the surface of the
+phantom. The hue of the color codes
+for direction, and the saturation of
+the color codes for motion
+magnitude. Obtained with ImageJ
+running VolumeJ for volume
+rendering and FlowJ for 3-D optical
+flow estimation. Provided by
+Michael Abràmoff.
+Reprinted from the July 2004 issue of Biophotonics International © Laurin Publishing Co. Inc.I MAGING S OFTWARE
+thousands of times, with
+the current rate being about
+24,000 downloads per
+month. Rasband said that,
+after working for 10 years
+on NIH Image, ImageJ’s
+precursor, he didn’t see
+a bright future for it, even
+though Scion Corp. of
+Frederick, Md., had ported
+it from a Macintosh-only
+version to the PC/Windows
+platform. However, the
+Scion version wasn’t open
+source, and he is a strong
+proponent of open source
+and platform indepen-
+dence. So he began writing
+ImageJ in early 1997 after
+he had become intrigued
+by the new Java program-
+ming language.
+Obviously, with a free
+program, there is no tele-
+phone hot line for support.
+However, a large user base
+communicates through a
+mailing list. This way, any
+user is free to ask ques-
+tions, put forward sugges-
+tions or ideas for new
+imaging functions and
+publish solutions. At the
+time of this writing, this
+community consisted of
+more than 1000 users/
+scientists (the majority)
+and users/developers (in
+smaller numbers, but of
+fundamental importance).
+Indeed, the know-how
+of the community is re-
+markably high because
+many members possess a
+detailed knowledge of the
+software and the imaging
+Imaging capabilities
+problems that the program
+ImageJ can read most
+Figure 2. This screen shot shows thresholding, edge detection,
+can address efficiently. A
+of the common and im-
+particle analysis with particles indicated, and histogram analysis on
+request on the mailing list
+portant formats used in
+the gray-scale diatoms image (upper left).
+is usually all it takes for
+the field of biomedical
+someone, somewhere in
+imaging (see table). If a
+the world, to provide the required help.
+file format is not currently supported,
+and division. In addition, visualization
+For example, Dr. Rex Couture of the
+someone from the international user/
+operations, including color space con-
+department of radiology at Washington
+developer community usually develops
+versions — for example, converting from
+University School of Medicine in St. Louis
+support within days. In addition,
+RGB to Hue Saturation Intensity color
+ran into a problem with reading large
+ImageJ can be used to acquire images
+space, two- and three-dimensional plot-
+micro-CT images. These files were about
+directly from scanners, cameras and
+ting — and surface and volume render-
+5 GB, but ImageJ couldn’t read beyond
+other video sources, including cameras
+ing, are supported. It also offers core sup-
+the 4-GB limit at that time. “I posted a
+that are compatible with TWAIN and
+port for analyzing electrophoretic gels.
+query about this,” Couture said. “Within
+FireWire, and frame grabber boards
+an hour or two, someone working
+from Cooke, National Instruments and
+Cross-platform
+through the night in Europe had found
+PixelSmart.
+One of the strong points of ImageJ is
+the problem. By 9:30 the next morning,
+The program supports all common
+its ability to run on different platforms.
+I had a solution to try from Wayne. Since
+image manipulations, including reading
+Statistics covering the last three months,
+he didn’t have an image file that large, he
+and writing of image files, and operations
+with more than 80,000 downloads, in-
+couldn’t test it, and it didn’t quite work.
+on individual pixels, image regions, whole
+dicate that it is being used mostly with
+Twenty-four hours later he had created a
+images and volumes. Volumes, called
+Microsoft operating systems (80 percent),
+test image, and I had a fully debugged
+stacks in ImageJ, are ordered sequences
+followed by Macintosh platforms (16 per-
+new version that solved the problem.”
+of images that can be operated upon as a
+cent) and Linux (4 percent). Although
+Shortly thereafter, someone in the dis-
+whole. It can perform basic operations
+these numbers are estimates and can be
+cussion group also posted a way to open
+such as convolution, edge detection,
+misleading because someone could down-
+large tiff files.
+Fourier transform, histogram and parti-
+load it to one platform and use it on an-
+There has always been a somewhat terse
+cle analyses (including sophisticated sta-
+other, it is interesting to note the rela-
+usage instruction on the ImageJ Web site,
+tistical processing of groups of particles),
+tively high number of Macintosh users
+but getting advice on a specific function
+editing and color manipulation; and more
+(the worldwide market share was less than
+required taking the quite intimidating
+sophisticated operations such as dilation,
+2 percent in 2003, according to market
+step of asking the mailing list. Now one
+erosion and closing of structures, and
+research company IDC), supporting the
+has the option of using a manual recently
+mathematical operations on sets of im-
+long-held view that this type of computer
+produced by Tony Collins at the Wright
+ages, such as multiplication, exclusive or,
+attracts large sections of academia.I MAGING S OFTWARE
+Figure 3. This simple ImageJ macro
+acquires an image every 10 seconds
+and stores it in sequence.
+Cell Imaging Facility at Toronto Western
+Research Institute. This free, very thor-
+ough manual has many examples and il-
+lustrations. It emphasizes microscopy and
+accompanies a collection of microscopy-
+related plug-ins. Although many open-
+source programs lack an extensive user
+manual, even novices can find most of
+the information for their imaging needs
+in this manual.
+Extensions: Macros and plug-ins
+The program is virtually limitless be-
+cause of the availability of user-written
+macros and plug-ins.
+for (i = 0; i < 5; i++)
+//5 frames
+
+next = getTime ()+ 10 * 1000;
+//10s between frames
+//Run plug-in that grabs from a Quicktime framegrabber
+run (“QT Capture”, “grab”);
+while (getTime) () < next) wait (1);
+//until 10s are over.
+
+Macros are meant to make it easier to
+automate oft-repeated tasks, which would
+be tedious to implement manually.
+ImageJ has an easy-to-use macro-language
+that means that knowledge of Java isn’t
+required for writing simple scripts. For
+example, a macro can be written that ac-
+quires an image every 10 seconds and
+stores it in a sequence (Figure 3).
+Plug-ins are external programs, mostly
+written in the Java language, that offer
+image processing capabilities that do not
+TABLE
+Image formats supported by ImageJ as of June 2004
+Format Read and write
+Analyze (Mayo Clinic’s format)
+AVI uncompressed movies
+Bio-Rad Z-series
+BMP
+DICOM (uncompressed) read
+DICOM (uncompressed) write
+DM3 (Gatan Corp. transmission electron microscopy format)
+FDF, VFF (Varian MRI imaging system/EVS 900 micro-CT system
+formats)
+FITS (NASA format)
+GIF (including animated)
+ICO, CUR (MS Windows)
+IPLab (Scanalytics Corp. microscopy format)
+Jpeg
+Jpeg EXIF digital camera header
+Leica SP multichannel
+LSM (Zeiss LSM 510 confocal microscopes)
+PCX (Zsoft Corp.)
+PDS (Planetary Data System)
+PGM (P2 and P5)
+PICT (Apple Mac)
+PNG
+PSD (Adobe Photoshop)
+QuickTime movies
+Raw (any uncompressed file format not directly supported,
+8-,16-, 24-bit RGB, 32-bit, small- and big-endian)
+SIF (Andor Technology spectroscopy format)
+SPE format (Roper Scientific cameras)
+Sunraster
+Targa
+Text images (tab or comma separated)
+Tiff uncompressed and zip compressed, both as
+1-, 8-, 12-, 16-bit unsigned, 32-bit (real)
+or RGB color, single and multiple images (stacks)
+XBM, XPM (X-Windows formats)
+XLS (Microsoft Excel) (plug-in)
+
+(plug-in)
+
+
+(plug-in)
+(plug-in)
+(plug-in)
+read
+
+(plug-in)
+(plug-in)
+
+(plug-in)
+(plug-in)
+(plug-in)
+(plug-in)
+(plug-in)
+read
+(plug-in)
+
+(plug-in)
+
+
+(plug-in)
+(plug-in)
+(plug-in)
+(plug-in)
+
+
+(plug-in)
+(plug-in)
+exist in core capabilities of ImageJ. Once
+implemented, they cannot be distin-
+guished from the program itself. A small
+cottage industry has sprouted from users/
+developers who are designing plug-ins
+for their own use and sharing them with
+all users. Plug-ins have brought ImageJ
+from an image processing program to a
+framework that scientists can use to de-
+velop their own imaging solutions.
+Plug-ins range from very small and
+straightforward, such as the Grid plug-in
+— which simply draws a grid on an image
+— to complex, practically stand-alone
+image programs, such as the dendrite-
+tracing tool NeuronJ 1 or the surface and
+volume-rendering plug-in VolumeJ. 2 In
+fact, the standard imaging capabilities
+that ImageJ comes with are implemented
+as plug-ins as well. Developing new plug-
+ins requires knowing Java language and is
+thus not for everyone.
+However, after using ImageJ for a while,
+users often need a specific solution for
+their problem that goes beyond its core ca-
+pabilities. The Medientechnik und design
+group in Austria has written a tutorial
+specifically as an introduction to writing
+plug-ins for ImageJ.
+Most plug-ins that are judged by their
+developers to be of general use can be
+published on the ImageJ Web site, which
+now holds more than 150 plug-ins, writ-
+ten by 98 developers. Some developers
+may instead make their plug-ins and
+macros available through personal Web
+sites; some of these are listed on the
+ImageJ site.
+Imaging library
+A third way of extending ImageJ, which
+is used by only a small number of more
+technically advanced developers, is to use
+its imaging capabilities and plug-ins from
+their own programs, so that, in technical
+terms, they are using it as a library of imag-
+ing methods. This is called ImageJ’s ap-
+plication programmer’s interface (API),
+which has been extensively documented
+so that it is clear how to use and carry
+out these methods. This way, several
+online image database servers have beenI MAGING S OFTWARE
+Figure 4. The main window in the
+back shows a fluorescence
+microscopy image (compiled from
+several scans) of a neuronal cell and
+its outgrowth, together with the
+primary (red), secondary (blue) and
+tertiary (magenta) tracings.
+Superimposed are the ImageJ
+window (top left) with the NeuronJ
+toolbar (replacing the ImageJ toolbar
+during operation) and two NeuronJ
+result windows (bottom right), giving
+the length of individual tracings and
+statistics on selections of tracings.
+Courtesy of Erik Meijering, Erasmus
+MC-University Medical Center
+Rotterdam.
+developed, including one for ophthal-
+mologic telediagnosis.
+The applications to which ImageJ has
+been applied are astounding. Space lim-
+itations dictate that only a few salient ex-
+amples can be given here: Paulo Magal-
+hães and co-workers in the department
+of biomedical sciences at CNR Institute
+of Neuroscience, University of Padua,
+Italy, are using it to study the dynamics of
+intracellular calcium, 3,4 while researchers
+at the Laboratory for Cellular Neu-
+robiology of the Swiss Federal Institute
+of Technology in Lausanne and the
+Biomedical Imaging Group at Erasmus
+MC-University Medical Center Rotterdam
+in the Netherlands, are using the NeuronJ
+plug-in, for the automated quantitative
+analysis of neurons and dendrites (Figure
+4). 1 The NeuronJ plug-in is based on re-
+cently developed and validated algorithms
+for detecting and linking elongated image
+structures specifically for this purpose.
+Andrea Mothe and co-workers at the
+department of zoology at the University
+of Toronto at Scarborough, in collabora-
+tion with Collins from Toronto Western
+Research Institute, use ImageJ and the
+VolumeJ plug-in for the 3-D reconstruc-
+tion of the differential localization of
+nerve cell gene expression (Figure 5).
+Procter & Gamble in Cincinnati is using
+ImageJ as a framework for Visia, a system
+that carries out complexion analysis by
+comparing skin texture analysis of a sub-
+ject’s facial skin against the texture analy-
+ses of other subjects stored in a database.
+The program uses the ImageJ application
+programmers interface (API) as a library
+(Figure 6).
+The Biomedical Imaging Group of the
+Swiss Federal Institute of Technology is
+Figure 5. This 3-D reconstruction of DAPI-stained (blue) nuclei in a rat spinal
+cord section after intraventricular DiI injection results in red-staining of cells
+in the ependymal cell layer of the central cord. Scale bar = 10 μm. Image
+processed with ImageJ running VolumeJ and provided by Andrea Mothe and
+Tony Collins, Toronto Western Research Institute.I MAGING S OFTWARE
+using the program to teach image pro-
+cessing to engineering students, 5,6 and the
+Center for Image Processing in Education
+of Tucson, Ariz., is using it for teaching
+basic imaging to high school students. 7
+Dr. Michael D. Abràmoff and co-work-
+Figure 6. The Visia complexion analysis system uses ImageJ to analyze how the
+client compares with a database of women in her age and skin-type groups for
+the given categories — in this example, spots. It includes scores that indicate the
+percentage of women who scored below the client’s evaluation for the category.
+Provided by Procter & Gamble.
+ers at the departments of ophthalmology
+and radiology at University Hospital
+Utrecht in the Netherlands, have used
+ImageJ and the FlowJ and VolumeJ plug-
+ins for the differentiation of orbital tu-
+mors and for measuring the motion of
+soft tissues in patients. 2,8
+Abràmoff also worked with other clin-
+icians to develop the EyeCheck Web site,
+an online diabetic retinopathy screening
+project in the Netherlands. It uses ImageJ’s
+capabilities for storing and displaying reti-
+nal images in a telediagnosis environ-
+ment. The program can accept and store
+a great variety of image formats, which
+can then be used for manual grading by
+ophthalmologists or for semiautomated
+or automated detection of diabetic
+retinopathy (Figure 7).
+Finally, Dr. Peter Hurd at the depart-
+ment of psychology, University of Alberta
+in Edmonton, Canada, is using ImageJ to
+determine the second to fourth digit ratio
+(index to ring finger) in Anolis carolinen-
+sis, or anole lizard, which is thought to
+reflect the relative concentration of (or
+sensitivity to) androgens during devel-
+opment (Figure 8).
+The program illustrates that imaging is
+on the boundary between being a field
+of science and a field of engineering. The
+solutions being proposed by and imple-
+mented in conjunction with users and de-
+velopers are sometimes engineering so-
+lutions (in that they are derived straight
+Figure 8. ImageJ is being used to
+examine the second to fourth digit
+ratio (index to ring finger) in the
+anole lizard, which is thought to
+reflect the relative concentration of
+or sensitivity to androgens during
+development. Provided by Peter
+Hurd, University of Alberta.
+Figure 7. The EyeCheck Web site provides online diabetic retinopathy screening
+from retinal color photographs. The left area of the image shows the Web page
+with patient information. When this page is accessed, an ImageJ applet
+automatically displays the retinal photographs (in this case, of a normal subject),
+at right. This allows for user interaction so that, for example, the intensity image
+can be displayed, as in the bottom part, or specific abnormalities can be marked.
+Courtesy of EyeCheck.I MAGING S OFTWARE
+Figure 9. The SmartRoot system, an
+interactive plant root image analysis
+plug-in, was developed by Xavier
+Draye and co-workers at the Unité
+d’Ecologie des Grandes Cultures,
+Université Catholique de Louvain,
+Louvain-la-Neuve, Belgium. The tool
+helps the user track root objects,
+displays them in different “layers,”
+saves them in Extend Markup
+Language documents and sends
+measurements to any Standardized
+Query Language-compliant
+databases. Courtesy of Xavier Draye.
+from textbook material or a publication)
+and sometimes scientific solutions (when
+necessity dictates a scientifically new ap-
+proach to solve a real-world problem).
+A critical and pragmatic reader may ex-
+pect some drawbacks to ImageJ, and there
+are some issues. The program requires
+minimal computer knowledge for instal-
+lation and first steps, while commercial
+vendors may offer on-site installation and
+training. Also, because of the continuous
+state of development, bugs and “undoc-
+umented features” can creep into the dis-
+tributed version. This can be a problem for
+the unaware researcher who compares
+data acquired with the old and new ver-
+sions. Users usually spot these problems,
+and corrected versions of the program are
+made available immediately.
+There is a misconception that an imag-
+ing program written in Java cannot be
+fast, and this may divert some potential
+users from ImageJ. Abràmoff used to share
+this worry and tested its validity by rewrit-
+ing some of his convolution routines
+(which he had originally implemented
+in Java) in C++ and calling these routines from a plug-in using the ImageJ Java
+Native Interface API. Although there
+was a decrease in processing time of
+about 30 percent, this did not weigh up
+to the increased development time for
+the routines.
+Furthermore, there is no inherent rea-
+son why an algorithm coded in C++ will
+run significantly faster than the same al-
+gorithm coded in Java. The execution
+speed depends on how good a compiler
+is at optimizing the generated code. Many
+people will even argue that the compil-
+ers that translate Java byte code into ma-
+chine code can do a better job of opti-
+mization because more information is
+available to them about the program
+being compiled and about the machine
+that it is running on. So the reason why
+some commercial image processing pro-
+Meet the authors Acknowledgment
+Dr. Michael D. Abràmoff, ophthalmologist
+and image science engineer, is at the depart-
+ment of ophthalmology and visual sciences,
+University of Iowa Hospitals and Clinics, Iowa
+City, Iowa. He is the author of VolumeJ and
+many other popular plug-ins; e-mail: michael
+abramoff@uiowa.edu.
+Paulo J. Magalhães is at the department of
+biomedical sciences, University of Padua in
+Italy. He has been a contributor of the popu-
+lar Ratio Plus plug-in.
+Sunanda J. Ram is assistant professor of
+medicine at the Louisiana State University
+Health Sciences Center in Shreveport. The authors wish to thank Wayne Rasband,
+without whom neither ImageJ nor its com-
+munity would have existed.
+Please send requests for additional copies of
+this article to biophotonics@laurin.com.
+References
+1. E. Meijering et al (April 2004). Cytometry
+58A, pp. 167-176.
+2. M.D. Abràmoff et al (February 2002). Invest
+Ophthalmol. Vis. Sci. 43, pp. 300-307.
+3. M.F. Abad et al (March 19, 2004). J Biol
+grams are appreciably faster than ImageJ
+at convolutions or similar processor-in-
+tense operations is related to increased
+sophistication of their algorithms. The
+open nature of ImageJ, however, may en-
+able end-users with inspiring insights to
+develop better and more sophisticated al-
+gorithms, without the constraints of pro-
+prietary code.
+In summary, ImageJ has attracted a var-
+ied and dedicated group of users because
+it is free and expandable, and can operate
+on any platform. It is especially remarkable
+how robustly the framework, designed six
+years ago, has withstood the test of time.
+Though it is difficult to predict where the
+program will be five years from now, the
+evolution will probably be a very inter-
+esting and rewarding experience for both
+users and developers.
+G
+Chem 279, pp. 11521-9.
+4. L. Filippin et al (Oct. 3, 2003). J Biol Chem
+278, pp. 39224-34.
+5. D. Sage and M. Unser (2001). Proc. of the
+2001 IEEE International Conference on Image
+Processing, Thessaloniki, Greece 3, pp. 298-
+301.
+6. D. Sage and M. Unser (2004). IEEE Signal
+Processing Magazine 20, pp. 43-52.
+7. J.V. Ekstrom (2000). The Science Teacher 67,
+pp. 53-55.
+8. M.D. Abràmoff and M.A. Viergever (2002).
+IEEE Trans. Med. Imaging 21, pp. 296-304.I MAGING S OFTWARE
+Web Resources
+•
+•
+•
+•
+•
+rsb.info.nih.gov/ij — ImageJ and most of its plug-ins and macros are available for download.
+www.uhnres.utoronto.ca/wcif/download.html — ImageJ manual by Tony Collins.
+mtd.fh-hagenberg.at/depot/imaging/imagej — The Medientechnik und design group tutorial on writing plug-ins.
+imagescience.bigr.nl/meijering/software/neuronj — NeuronJ is available for download.
+bij.isi.uu.nl — Web site for VolumeJ and many other biomedical imaging plug-ins.
+Publications in which ImageJ was used, listed by application
+Function and dynamics of cells and organelles Retinal image analysis
+• M. Ghosh et al (April 30, 2004). Cofilin promotes actin
+polymerization and defines the direction of cell motility. SCI-
+ENCE, pp. 743-746. • J. Staal et al (April 2004). Ridge-based vessel segmentation
+in color images of the retina. IEEE TRANS. MED. IMAGING, pp.
+501-509.
+• M.D. Abràmoff et al (2004). A spatial truncation approach
+to the analysis of optical imaging of the retina in humans and
+cats. Proc. IEEE International Symposium on Biomedical Imaging
+2004 2, pp. 1115-1118.
+Imaging calcium and signal transduction
+• T.J. Collins et al (April 2, 2002). Mitochondria are mor-
+phologically and functionally heterogeneous within cells. EMBO
+J., pp. 1616-1627.
+• T.J. Collins and M.D. Bootman (June 2003). Mitochondria
+are morphologically heterogeneous within cells. J. EXP. BIOL.,
+pp. 1993-2000.
+• J. Bruton et al (Aug. 15, 2003). Mitochondrial and my-
+oplasmic [Ca 2+ ] in single fibres from mouse limb muscles dur-
+ing repeated tetanic contractions. J. PHYSIOL., pp. 179-190.
+• J.D. Bruton et al (Oct. 15, 2003). Mitochondrial function
+in intact skeletal muscle fibres of creatine kinase deficient mice.
+J. PHYSIOL., pp. 393-402.
+Brain and fat tissue imaging
+• B. Haelewyn et al (September 2003). Desflurane affords
+greater protection than halothane against focal cerebral is-
+chaemia in the rat. BR. J. ANAESTH., pp. 390-396.
+• B. Haelewyn et al (April 2004). Cardioprotective effects of
+desflurane: effect of timing and duration of administration in
+rat myocardium. BR. J. ANAESTH., pp. 552-557.
+• J.P. Sacha et al (May 2003). Quantification of regional fat vol-
+ume in rat MRI. Proc. SPIE Medical Imaging, pp. 289-297.
+Dental imaging Neuroscience
+• R.A. Couture and C. Hildebolt (April 2000). Quantitative
+dental radiography with a new photostimulable phosphor sys-
+tem. ORAL SURG. ORAL MED. ORAL PATHOL. ORAL RA-
+DIOL. ENDOD., pp. 498-508.
+• R.A. Couture and C.F. Hildebolt (January 2002). Precise
+image-receptor calibration and monitoring of beam quality
+with a step wedge. DENTOMAXILLOFAC. RADIOL., pp. 56-
+62.
+• U. Meyer et al (April 2002). First experience with a public do-
+main computer-aided surgical system. BR. J. ORAL MAXILLO-
+FAC. SURG., pp. 96-104. • G. Aakalu et al (May 2001). Dynamic visualization of local
+protein synthesis in hippocampal neurons. NEURON, pp. 489-
+502.
+• S.J. Tang et al (Nov. 8, 2001). A role for a rat homolog of
+staufen in the transport of RNA to neuronal dendrites. NEURON,
+pp. 463-475.
+• M. Zonta et al (2003). Neuron-to-astrocyte signaling is cen-
+tral to the dynamic control of brain microcirculation. NAT.
+NEUROSCI., pp. 43-50.
+Tumor differentiation and soft-tissue motion
+measurement
+• M.D. Abràmoff et al (October 2000). MRI dynamic color
+mapping: a new quantitative technique for imaging soft tissue
+motion in the orbit. INVEST. OPHTHALMOL. VIS. SCI., pp.
+3256-3260.
+• M.D. Abràmoff, W.J. Niessen and M.A. Viergever (October
+2000). Objective quantification of the motion of soft tissues in
+the orbit. IEEE TRANS. MED. IMAGING, pp. 986-995.
+• M.D. Abràmoff et al (September 2001). Patients with per-
+sistent pain after enucleation studied by MRI dynamic color
+mapping and histopathology. INVEST. OPHTHALMOL. VIS.
+SCI., pp. 2188-2192.
+• M.D. Abràmoff and M.A. Viergever (April 2002).
+Computation and visualization of three-dimensional soft tis-
+sue motion in the orbit. IEEE TRANS. MED. IMAGING, pp.
+296-304.
+Craniofacial surgery simulation
+• T. Stamm et al (December 2003). Validity of a three-di-
+mensional public-domain system for contemporary endodontic
+research. J. ENDOD., pp. 801-805.
+Simulation of cell growth patterns
+• G. Landini and P.M. Iannaccone (April 2000). Modeling of
+mosaic patterns in chimeric liver and adrenal cortex: algorith-
+mic organogenesis? FASEB J., pp. 823-827.
+Telediagnosis and image servers
+• J.D. Parker and J.W. Wallis (October 2003). Systems for
+Remote Interpretation of Emergency Studies. SEMINARS IN
+NUCLEAR MEDICINE XXXIII, pp. 324-330.
+• M.D. Abràmoff (2003). Impact of Security on Data Transfer
+in Teleophthalmology for Diabetic Retinopathy Screening over
+the Internet. Proc. Computer Aided Fundus Imaging and Analysis
+(CAFIA).

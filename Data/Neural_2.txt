@@ -1,0 +1,2639 @@
+Neural Networks 71 (2015) 182–195
+
+Contents lists available at ScienceDirect
+
+Neural Networks
+journal homepage: www.elsevier.com/locate/neunet
+
+Investigation on Amari’s dynamical neural field with global
+constant inhibition✩
+Dequan Jin a,b,∗ , Jigen Peng b
+a
+
+School of Mathematics and Information Science, Guangxi University, China
+
+b
+
+School of Mathematics and Statistics, Xi’an Jiaotong University, China
+
+article
+
+info
+
+Article history:
+Received 29 September 2014
+Received in revised form 10 June 2015
+Accepted 20 August 2015
+Available online 28 August 2015
+Keywords:
+Dynamical neural field
+Stationary solution
+Interaction kernel
+Global inhibition
+
+abstract
+In this paper, the properties of Amari’s dynamical neural field with global constant inhibition induced
+by its kernel are investigated. Amari’s dynamical neural field illustrates many neurophysiological
+phenomena successfully and has been applied to unsupervised learning like data clustering in recent
+years. In its applications, the stationary solution to Amari’s dynamical neural field plays an important role
+that the underlying patterns being perceived are usually presented as the excited region in it. However, the
+type of stationary solution to dynamical neural field with typical kernel is often sensitive to parameters
+of its kernel that limits its range of application. Different from dynamical neural field with typical kernel
+that have been discussed a lot, there are few theoretical results on dynamical neural field with global
+constant inhibitory kernel that has already shown better performance in practice. In this paper, some
+important results on existence and stability of stationary solution to dynamical neural field with global
+constant inhibitory kernel are obtained. All of these results show that such kind of dynamical neural field
+has better potential for missions like data clustering than those with typical kernels, which provide a
+theoretical basis of its further extensive application.
+© 2015 Published by Elsevier Ltd.
+
+1. Introduction
+Dynamical neural field models are presented during 1970s,
+which describe large scale activation of cortical neurons as a
+continuous neural field (Amari, 1977; Ermentrout & Cowan, 1979;
+Feldman & Cowan, 1975; Kishimoto & Amari, 1979; Wilson &
+Cowan, 1972, 1973). Among these models, an important one
+is Amari’s dynamical neural field model (Amari, 1977). Amari’s
+dynamical neural field model has successfully interpreted large
+amounts of important phenomena and problems (Giese, 1999;
+Simmering, Schuttea, & Spencer, 2008), so that it has been
+extensively applied to psychophysics, neurophysiology, machine
+vision and cognition (Engels & Schöner, 1995; Erlhagen & Bicho,
+2006; Faubel & Schöner, 2008; Schöner, Dose, & Engels, 1995).
+In these application, Amari’s dynamical neural field is usually
+
+✩ This project is supported by National Natural Science Foundation of China
+(Grant No. 11301096, 11226141) and Natural Science Foundation of Guangxi under
+the contact no. 2013GXNSFBA019018.
+∗ Correspondence to: School of Mathematics and Information Science, Guangxi
+University, Nanning 530004, China. Tel.: +86 15978159527.
+E-mail addresses: dqjin@foxmail.com (D. Jin), jgpeng@mail.xjtu.edu.cn
+(J. Peng).
+
+http://dx.doi.org/10.1016/j.neunet.2015.08.009
+0893-6080/© 2015 Published by Elsevier Ltd.
+
+employed to describe the fundamental interaction function among
+neurons in the same cortical layer such as primary visual cortex
+V1, while some other models, for example, the neural model of
+Favorov and Kursun (2011), are employed to approximate more
+complex functions. In recent years, Amari’s dynamical neural field
+has been introduced to the fields like data clustering and obtained
+good results (Jin, Peng, & Li, 2011).
+In the research and applications of Amari’s dynamical neural
+field model, especially for practical applications such as data
+clustering, the stationary solution with local excited region to
+Amari’s dynamical neural field model that are usually considered
+as the patterns been perceived. As a result, The existence and
+stability of stationary solution to dynamical neural field have been
+discussed a lot. The existence of a local excitation pattern solution
+as well as its waveform stability in 1-dimensional Euclid space
+R is proved in the absent of external input, which shows that
+the field can keep short-term memory (Amari, 1977; Kishimoto
+& Amari, 1979; Laing & Troy, 2003; Owen, Laing, & Coombes,
+2007; Wennekers, 2002). Kubota et al. prove that with timeinvariant external input there can be bistable local excitation
+solutions with different lengths (Kubota, Hamaguchi, & Aihara,
+2009). The properties of stationary solution to Amari’s dynamical
+neural field in 2-dimensional Euclid space R2 are studied, which
+
+D. Jin, J. Peng / Neural Networks 71 (2015) 182–195
+
+show that some different conditions are required for the existence
+and stability for local excitation solutions (Taylor, 1999, 2003;
+Werner & Richter, 2001). For high dimensional space Rn , some
+results on the existence and stability of solution and stationary
+solution to Amari’s dynamical neural field are obtained (Jin, Liang,
+& Peng, 2011; Potthast & Graben, 2010).
+In these studies of the stationary solution to Amari’s dynamical
+neural field model, most discussions focus on dynamical neural
+field with typical ‘‘Mexican Hat’’ shape kernel. For dynamical
+neural field with such kind of kernel, the type of its stationary
+solution is sensitive to its parameters. When it is applied to
+missions like data clustering, sometimes it is difficult to find
+proper parameters, especially in some cases for data set with
+complex structures in high dimensional space (Jin, Peng et al.,
+2011). As a result, though dynamical neural field with ‘‘Mexican
+Hat’’ shape kernel has been studied a lot, it is not quite convenient
+for practical issues. Another kind of kernels of Amari’s dynamical
+neural field are those which generate global constant inhibition.
+Dynamical neural field with such global constant inhibitory kernel
+has also been employed to pattern recognition and data clustering
+(Faubel & Schöner, 2008; Jin & Huang, 2013), which shows good
+performance. However, the properties of dynamical neural field
+with global constant inhibitory kernel are rarely discussed.
+In this paper, the existence and stability of stationary solution
+to dynamical neural field with global constant inhibitory kernel
+are discussed. Some existence conditions for three important types
+of stationary solution: ‘‘φ ’’-solution, ‘‘∞’’-solution and ‘‘bubble’’solution for Heaviside Step and Sigmoid threshold functions, as
+well as unbounded and bounded perceive field, are presented,
+which provide the theoretical basis for further extensive application of dynamical neural field with global constant inhibitory kernel.
+The remainder of this paper is arranged as follows. In Section 2,
+Amari’s dynamical neural field model is briefly described, and
+the clustering result using dynamical neural field with‘‘Mexican
+Hat’’ shape kernel and global constant inhibitory kernel are given
+for comparison. In Section 3, some general results on stationary
+solution to dynamical neural field with global constant inhibitory
+kernel are given. In Section 4, when the threshold function is a
+discontinuous Heaviside Step function, the properties of dynamical
+neural field with global constant inhibitory kernel is discussed,
+in unbounded and bounded perceive field Ω respectively. In
+Section 5, when the threshold function is a continuous Sigmoid
+function, the properties of dynamical neural field with global
+constant inhibitory kernel is discussed, in unbounded and bounded
+perceive field Ω respectively. Section 6 is conclusion.
+
+183
+
+the threshold function θ (u) is selected as discontinuous functions
+like Heaviside step function
+
+θ (u) =
+
+1,
+0,
+
+
+
+if u > 0
+else
+
+(2)
+
+or continuous function like Sigmoid function
+
+θ (u) =
+
+1
+1 + exp(−u/α 2 )
+
+.
+
+The two cases are discussed in the following parts respectively.
+There are three important types of stationary solution of
+Amari’s model (1), which are call φ -solution, ‘‘bubble’’-solution
+and ∞-solution respectively (Amari, 1977; Taylor, 1999):
+Definition 1. (1) A stationary solution u∗ (z ) is called φ -solution if
+u(z ) ≤ 0 for all z ∈ Ω ;
+(2) A stationary solution u∗ (z ) is called ‘‘bubble’’-solution if u(z ) >
+0 in a bounded spherical region Ω ;
+(3) A stationary solution u∗ (z ) is called ∞-solution if u(z ) > 0 for
+all z ∈ Ω .
+The interaction strength of dynamical neural field is determined
+by the integration term
+
+
+Ω
+
+w(z , z ′ )θ (u(z ′ , t ))dz ′
+
+of Eq. (1). Since Amari’s neural field is usually assumed to be
+homogeneous, the interaction function w(z , z ′ ) is written as
+w(z − z ′ ). Then the function w(z ) is called the interaction
+kernel. Approximating the lateral interaction of neurons, the
+lateral interaction of neural field is usually assumed to be locally
+excitatory and globally inhibitory (Amari, 1977), so that w(x) is
+frequently supposed to be an isotropic function.
+One kind of kernels that are frequently used is those with
+‘‘Mexican Hat’’ shape, satisfying that
+
+w(z )
+
+
+
+> 0,
+≤ 0,
+
+if ∥z ∥ < η
+else
+
+lim w(z ) = 0.
+
+(5)
+
+∥z ∥→∞
+
+For example, one typical ‘‘Mexican Hat’’ shape function is the
+difference of Gaussian functions (DoG), given by
+
+w(z ) = Ag (z , σ ) − Bg (z , γ σ )
+where g (z , σ ) is a Gaussian function given by
+
+Typical Amari’s dynamical neural field model is usually
+described by
+
+∥z ∥2
+g (z , σ ) = exp −
+2σ 2
+
+
+Ω
+
+w(z , z ′ )θ (u(z ′ , t ))dz ′ + s(z , t ) − h. (1)
+
+Ω is called perceive space. τ is a positive time constant. h ≥ 0
+is the resting level of the neural field. s(z , t ) is the input signal
+distribution. The region
+
+{z ∈ Ω : u(z , t ) > 0}
+is called excited region. θ (u) is a monotonically increasing nonlinear threshold function, satisfying that limu→−∞ θ (u) = 0 and
+limu→+∞ θ (u) = 1, which describes the neural field’s feedback of
+each excited point to its neighboring positions in Ω . For most cases,
+
+(4)
+
+where η > 0, as well as
+
+2. Amari’s dynamical neural field model
+
+τ u˙ (z , t ) = −u(z , t ) +
+
+(3)
+
+
+
+(6)
+
+
+(7)
+
+and γ > 1. Though dynamical neural field with ‘‘Mexican Hat’’
+shape kernel is studied a lot, it is not quite suitable for mission
+like data clustering: to generate a large bubble that connects all
+data in the same cluster together, strong lateral excitatory effect is
+required. But, too strong lateral excitatory effect would lead to ∞solution. When ∞-solution appears, the inhibitory effect should
+be enhanced. But, it may lead to that data in the same cluster
+are separated into different excited regions. Noticing that data
+clustering is unsupervised, i.e., no priori information of the data
+structure being given, it is really difficult to find proper parameters
+that can resolve such a conflict. The following example is given to
+show this.
+
+184
+
+D. Jin, J. Peng / Neural Networks 71 (2015) 182–195
+
+Example 1. A data set X = {xi ∈ R2 : i = 1, 2, . . . , 1600}
+called ‘‘Double C’’ is shown in Fig. 1. Obviously it has two ‘‘C’’-shape
+clusters (Jin, Peng et al., 2011). Let
+I (z ) =
+
+N
+1 
+
+N i=1
+
+δ(z − xi ).
+
+a
+
+d
+
+b
+
+e
+
+(8)
+
+Suppose the input distribution is time invariant, given by
+s(z ) = sin (z , σin ) =
+
+
+Ω
+
+I (z − z ′ )g (z ′ , σin )dz ′
+
+(9)
+
+where σin = 0.01. Suppose θ is the Heaviside step function
+(2), then numerically solve the following dynamical neural field
+equation
+
+τ u˙ (z , t ) = −u(z , t ) +
+
+
+Ω
+
+w(z , z ′ )θ (u(z ′ , t ))dz ′ + s(z ) − h
+
+(10)
+
+where w(z ) is a DoG function with τ = 0.1, A = 1.2, B = 0.2,
+h = 0.01, γ = 1.1 and σ = 0.0344. The boundaries of the excited
+region in its stationary solution are shown in Fig. 1(a). It can be
+seen that the two expected clusters are found, though there are
+some small clusters remaining outside. Increasing the scale σ to
+0.0345 while fixing the other parameters, by adding only 0.0001,
+by numerically solving the above equation again, the boundaries of
+the excited region in its stationary solution are shown in Fig. 1(b).
+It can be seen that almost all data have been categorized in to
+the same cluster, which is not the expected result. Intending to
+reducing the impact of the increased σ , increasing the resting level
+h to 0.011 by adding only 0.001, while fixing the other parameters,
+the boundaries of the excited regions in the obtained stationary
+solution are shown in Fig. 1(c). It can be seen that one of the
+expected cluster on the right is divided into two parts, while the
+one on the left is almost divided.
+Similar results are obtained as shown in Fig. 1(d) and (e) when
+w(z ) is a plain Gaussian function, where σ = 0.0326 and σ =
+0.0327 while A = 1.2, B = 0, h = 0.01. When selected as the
+kernel of dynamical neural field, since the pain Gaussian function
+satisfies Condition (4) (by letting η → +∞) and especially
+Condition (5), it is also a ‘‘Mexican Hat’’ shape kernel. So dynamical
+neural field with plain Gaussian kernel shares similar properties
+to those with DoG kernel. Their differences are that DoG kernel
+induces lateral negative suppressing effect while plain Gaussian
+kernel with no lateral negative connection which cannot inducing
+such effect.
+As shown in Example 1, there are at least two issues on
+using dynamical neural field with ‘‘Mexican Hat’’ shape kernel for
+missions like data clustering. One is that the excited regions in
+its stationary solution depend too sensitively on its parameters
+that sometime it is uneasy to find proper parameters that can
+generate the expected result; The other one is that dynamical
+neural field with ‘‘Mexican Hat’’ shape kernel would possess no
+stable ‘‘bubble’’-solution but stable ∞-solution for some cases. For
+example, letting τ = 0.1, A = 1.2, h = 0.01, γ = 1.1, when
+σ > 0.6, then no matter dynamical neural field with DoG kernel
+for B = 0.2 or plain Gaussian kernel for B = 0, it would lead to
+G∞ − h > 0 where G∞ = limR→∞ G(R) that would induce such
+issue (see Taylor, 1999). To avoid this, the parameters should be
+adjusted under strong restriction. Considering clustering is a kind
+of unsupervised mission, these two issues may make great trouble.
+Another kind of kernels are those which generate global
+constant inhibition, such as
+
+w(z ) = wk (z ) − hk
+
+(11)
+
+where wk (z ) is a ‘‘Mexican Hat’’ shape function and hk > 0. Since
+lim w(z ) = −hk
+
+∥z ∥→∞
+
+c
+
+Fig. 1. Clustering results using dynamical neural field with DoG kernel, where
+τ = 0.1 and γ = 1.1. (a): σ = 0.0344, A = 1.2, B = 0.2, h = 0.01;
+(b): σ = 0.0345, A = 1.2, B = 0.2, h = 0.01; (c): σ = 0.0345, A = 1.2, B = 0.2,
+h = 0.011; (d) σ = 0.0326, A = 1.2, B = 0, h = 0.01; (e) σ = 0.0327, A = 1.2,
+B = 0, h = 0.01.
+
+the global inhibition of w(z ) induced by hk would impact on all
+position in Ω with the same strength, it is quite different from
+typical ‘‘Mexican Hat’’ shape kernels. Dynamical neural field with
+global constant inhibitory kernel has special properties.
+Example 2. Use the same ‘‘Double C’’ data set again. s(z ) is obtain
+in the same way as shown in Example 1. Suppose θ is the Heaviside
+step function, then numerically solve the dynamical neural field
+with global constant inhibitory kernel as following
+
+τ u˙ (z , t ) = −u(z , t ) +
+
+
+Ω
+
+w(z , z ′ )θ (u(z ′ , t ))dz ′ + s(z ) − h
+
+(12)
+
+where w(z ) = wk (z ) − kk . wk (z ) is a DoG function. Let τ = 0.1,
+A = 1.2, B = 0.1, h = 0.01, γ = 1.1. When σ = 0.1,
+hk = 0.005, the boundaries of the excited regions in its stationary
+solution are shown in Fig. 2(a). It is easy to see that the proper clusters are found. Increasing σ to 0.11 while fixing other parameters,
+the boundaries of the excited regions in its stationary solution are
+shown in Fig. 2(b), which the two clusters merge into one. Increasing hk to 0.006, while fixing other parameters, the boundaries of the
+excited regions in its stationary solution are shown in Fig. 2(c). It is
+easy to see that the proper clusters are also found. Similar results
+can be obtained for σ = 0.12, hk = 0.007, as shown in Fig. 2(d).
+Example 2 shows that different from dynamical neural field
+with ‘‘Mexican hat’’ shape kernel like regular DoG and plain
+Gaussian, dynamical neural field with global constant inhibitory
+kernel can generate the same expected clustering result with
+different parameters, which indicates that it is easier to find
+proper parameters. However, though it is guessed that such
+good performance owes to the global constant inhibition induced
+by its kernel, the properties of dynamical neural field with
+
+D. Jin, J. Peng / Neural Networks 71 (2015) 182–195
+
+c
+
+a
+
+185
+
+and
+Gmax = max G(R).
+
+(21)
+
+R≥0
+
+Let
+W (R) =
+
+
+
+w(z )dz .
+
+(22)
+
+D
+
+It is easy to see that
+
+b
+
+lim W (R) = −∞.
+
+d
+
+(23)
+
+R→+∞
+
+Define
+
+wk max (z ) = max{0, wk (z )}
+
+(24)
+
+and
+
+wk min (z ) = min{0, wk (z )}.
+
+(25)
+
+Assume that wk (z ) and wk max (z ) are integrable in Rn , i.e.,
+Fig. 2. Clustering results using dynamical neural field with global constant
+inhibitory kernel, where τ = 0.1, A = 1.2, B = 0.1, h = 0.01, γ = 1.1.
+(a): σ = 0.1, hk = 0.005; (b): σ = 0.11, hk = 0.005; (c): σ = 0.11, hk = 0.006;
+(d): σ = 0.12, hk = 0.007.
+
+global constant inhibitory kernel are rarely discussed, which
+significantly limits its extensive application. For this reason,
+some important properties of dynamical neural field with global
+constant inhibitory kernel are discussed in the following sections.
+
+
+Wk =
+Rn
+
+wk (z )dz < ∞
+
+and
+
+
+
+wk max (z )dz < ∞.
+
+Wk max =
+Rn
+
+
+Wk min = −
+Rn
+
+3. General results on stationary solution to dynamical neural
+field with global constant inhibitory kernel
+Consider the following Amari’s dynamical neural field model:
+
+τ u˙ (z , t ) = −u(z , t ) +
+
+
+Ω
+
+w(z , z ′ )θ (u(z ′ , t ))dz ′ + s(z ) − h
+
+(13)
+
+where Ω ⊂ Rn containing the origin as its inner point. u(z , 0) =
+u0 (z ) is its initial state. Without losing generality, u0 (z ) is assumed
+to be bounded, i.e.,
+
+∥u0 (z )∥∞ < b0
+
+(14)
+
+and continuous, where b0 > 0. Since in most applications, the
+input function s(z , t ) is usually assumed to be time invariant, it can
+be written as s(z ). Suppose
+
+w(z ) = wk (z ) − hk
+
+(15)
+
+where wk (z ) is ‘‘Mexican Hat’’ shape and satisfies condition (5). By
+letting ∂ u/∂ t = 0, then the stationary solution u∗ (z ) to dynamical
+neural field (13) should satisfy
+u∗ (z ) =
+
+
+Ω
+
+w(z − z ′ )θ (u∗ (z ′ ))dz ′ + s(z ) − h.
+
+(16)
+
+D = {z ∈ Ω : ∥z ∥ ≤ R}
+
+(17)
+
+and
+W (∥z ∥, R) =
+
+
+
+w(z − z ′ )dz ′ .
+
+
+
+w(z − z ′ )dz ′ .
+
+(19)
+
+D
+
+Define
+G∞ = lim G(R)
+R→∞
+
+(20)
+
+(28)
+
+(29)
+
+for all z ∈ Ω , where S0 ≥ s0 ≥ 0. Define
+V (Ω ) =
+
+
+dz
+
+(30)
+
+Ω
+
+and
+F (u(z )) = −u(z ) +
+
+
+Ω
+
+w(z , z ′ )θ (u(z ′ , t ))dz ′ + s(z ) − h.
+
+(31)
+
+Then all stationary solution u∗ (z ) to dynamical neural field (13)
+satisfy F (u∗ (z )) = 0.
+Proposition 1. Suppose s(z ) = 0, then there exists a φ -solution
+u∗ = −hφ < 0 to dynamical neural field (13) if and only if
+F (−hφ ) = 0.
+When θ is a Heaviside step function (2), since the integration
+
+
+
+w(z , z ′ )θ (u(z ′ , t ))dz ′ = 0
+
+and s(z ) = 0, then hφ = h. However, when θ is a Sigmoid
+function
+(3), for any u∗ < 0, θ (u∗ ) > 0, so that the integration
+
+′
+w(
+z
+,
+z
+)θ (hφ ) > 0 as well. As a result, hφ is not equal to the
+Ω
+resting level h, whose difference is
+
+
+h − hφ =
+
+When ∥z ∥ = R, then W (∥z ∥, R) = W (R, R). Let
+G(R) = W (R, R) =
+
+s0 ≤ s(z ) ≤ S0
+
+(18)
+
+D
+
+wk min (z )dz = Wk max − Wk .
+
+(27)
+
+Assume that s(z ) is a continuous and
+
+Ω
+
+Suppose R > 0. Let
+
+(26)
+
+Ω
+
+w(z , z ′ )θ (hφ )dz ′ .
+
+4. θ(u) being a Heaviside step function
+Suppose that the threshold function θ (u) is a Heaviside step
+function given by (2).
+
+186
+
+D. Jin, J. Peng / Neural Networks 71 (2015) 182–195
+
+Proposition 2. If there exists a stationary solution u∗ (z ) to dynamical neural field (13) and
+Wk max + S0 − h ≤ 0
+
+(32)
+
+then u∗ (z ) is a φ -solution.
+
+θ (u∗ (z )) = θ (−h) = 0.
+
+F (u (z )) = −u (z ) +
+∗
+
+Ω
+
+Ω
+
+≤ Wk max + S0 − h
+< 0.
+
+(33)
+
+It follows that there is only φ -solution to dynamical neural field
+(13).
+It is a sufficient condition for the existence of φ -solution.
+It indicates that when the positive lateral interaction inducing
+by wk (z ) and the external input s(z ) is too weak, the neurons
+cannot be activated that there would be no excited region in the
+stationary solution to dynamical neural field, then it is not suitable
+for applications like clustering. A numerical example is given as
+follows:
+Example 3. Use the dynamical neural field with global constant
+inhibitory kernel where wk (z ) is a DoG function with τ = 0.1,
+A = 1.2, B = 0.1, hk = 0.005, h = 0.04, γ = 1.1 and σ = 0.1. Let
+u(z , 0) = 0.1 and the input distribution
+s(z ) = 0.002 ∗ g (z , 1).
+
+(34)
+
+Then S0 = 0.002. By numerically computing, Wk max is about
+0.0333. As a result,
+Wk max + S0 − h = −0.0047 < 0.
+According to Proposition 2, the stationary solution u∗ (z ) of
+dynamical neural field with global constant inhibitory kernel (12)
+should be a φ -solution. Numerically solving dynamical neural field
+with global constant inhibitory kernel (12), a φ -solution u∗ (z ) is
+obtained, as show in Fig. 3.
+In the above example, we can see that when
+Wk max + S0 − h < 0
+the stationary solution u∗ (z ) is a φ -solution even for positive
+constant initial state and time invariant input, which is consistent
+with Proposition 2.
+According to Proposition 2, It follows that
+Corollary 1. If there exists a ‘‘bubble’’-solution to dynamical neural
+field (13), then
+Wk max + S0 − h > 0.
+Corollary 1 gives a necessary but not sufficient condition for
+the existence of ‘‘bubble’’-solution. It shows that when the resting
+level h is fixed, ‘‘bubble’’-solution may possibly exist if one of the
+following conditions is satisfied at least:
+(1) The positive lateral interaction inducing by wk (z ) is strong;
+(2) The external input s(z ) is time invariant and strong enough.
+If both of the above conditions are not satisfied, the existence of
+‘‘bubble’’-solution is impossible.
+Proposition 3. When s(z ) = 0, there exists one and only one φ solution u∗ (z ) = −h to dynamical neural field (13).
+
+
+Ω
+
+w(z , z ′ )θ (u∗ (z ′ ))dz ′ + s(z ) − h
+
+= h−h
+= 0.
+
+
+
+w(z − z ′ )θ (u(z ′ ))dz ′ + s(z ) − h
+Ω
+
+
+=
+wk (z − z ′ )θ (u(z ′ ))dz ′ − hk
+θ (u(z ′ ))dz ′ + s(z ) − h
+
+(35)
+
+As a result,
+∗
+
+Proof. Since the threshold function θ (u) ∈ [0, 1] for all u ∈ R,
+u(z ) =
+
+Proof. Let u∗ (z ) = −h, then
+
+(36)
+
+It follows that u (z ) = −h is a stationary solution to dynamical
+neural field (13).
+Assume that there is another φ -solution u∗1 (z ) < 0 to dynamical
+neural field (13) that there exists at least one point z1 ∈ Ω that
+u∗1 (z1 ) = −h1 , where h1 > 0 and h1 ̸= h. Since u∗1 (z ) < 0,
+θ (u∗1 (z1 )) = 0, i.e., the lateral interaction does not be activated.
+It follows that
+∗
+
+F (u1 (z )) = −u1 (z ) +
+∗
+
+∗
+
+= h1 − h.
+
+
+Ω
+
+w(z , z ′ )θ (u∗1 (z ′ ))dz ′ + s(z ) − h
+(37)
+
+Since u1 (z ) < 0 is a stationary solution to dynamical neural field
+(13), F (u∗1 (z )) = 0. It follows that h1 = h, which conflicts with the
+assumption h1 ̸= h. As a result, when the input s(z ) = 0, there
+is one and only one φ -solution u(z1 , t ) = −h to dynamical neural
+field (13).
+∗
+
+Proposition 3 shows that with Heaviside step threshold
+function θ , when the external input s(z ) vanishes, if there exists
+a φ -solution, it is also the only one φ -solution, i.e., there would not
+be another φ -solution different from it.
+Example 4. Use the same dynamical neural field with global
+constant inhibitory kernel where wk (z ) is a DoG function, where
+τ = 0.1, A = 1.2, B = 0.1, hk = 0.004, h = 0.04, γ = 1.1 and
+σ = 0.1 and s(z ) = 0. Suppose two initial states u1 (z , 0) = −0.01
+and u2 (z , 0) = −0.03, then numerically solve dynamical neural
+field with global constant inhibitory kernel (12) and obtain the
+same result u∗ = −h, as shown in Fig. 4, which indicates that the
+same stationary solution u∗ = −h with different negative initial
+states u1 (z , 0) = −0.01 and u2 (z , 0) = −0.03. The obtained
+results are consistent with Proposition 3.
+With similar proofs given by Taylor (1999), it is easy to obtain
+the following results:
+Proposition 4. When the input s(z ) = 0, there exists a ‘‘bubble’’solution to dynamical neural field (13) if and only if
+G(R) − h = 0.
+
+(38)
+
+Proposition 4 gives a way to calculate the radius of ‘‘bubble’’solution by solving Eq. (38), which is an indicator that presents how
+large excited region can be kept by dynamical neural field as shortterm memory without external stimulus. When the perceive space
+Ω is unbounded, the following results are obtained:
+Proposition 5. When the input s(z ) = 0, if Gmax > h and G∞ − h <
+0, then there exist one unstable and one stable spherical ‘‘Bubble’’solutions to dynamical neural field (13) with radiuses R1 and R2 that
+0 < R1 < R2 respectively, where R1 and R2 are the solutions to the
+equation G(R) = 0.
+In Proposition 5, G∞ − h < 0 is naturally satisfied for dynamical
+neural field′ with global constant inhibitory kernel since the term
+(−hk )dz in G(R) tends to −∞ as R → +∞. However, when Ω
+D
+is bounded, such condition is not satisfied when Ω is too small.
+
+D. Jin, J. Peng / Neural Networks 71 (2015) 182–195
+
+a
+
+187
+
+c
+–0.038
+–0.039
+–0.04
+4
+
+4
+2
+
+b
+
+0
+
+–2
+
+–4 –4
+
+–2
+
+0
+
+2
+
+4
+
+2
+
+0
+
+–2
+
+–4 –4
+
+–2
+
+0
+
+4
+
+2
+
+x10–4
+20
+10
+0
+4
+
+2
+
+5
+
+0
+
+–2
+
+0
+–4 –5
+
+Fig. 3. The stationary solution u∗ (z ) obtained by numerically solving dynamical neural field with global constant inhibitory kernel with initial state u(z , 0) = 0.1, input
+s(z ) = 0.002 ∗ g (z , 1) and τ = 0.1, A = 1.2, B = 0.1, hk = 0.005, h = 0.04, γ = 1.1 and σ = 0.1. (a): The initial state u(z , 0) = 0.1; (b): The input distribution s(z );
+(c): The obtained φ -solution u∗ (z ).
+
+c
+
+a
+0.05
+
+0.05
+
+0
+
+0
+
+–0.05
+4
+
+2
+
+0
+
+–2
+
+–4 –4
+
+–2
+
+0
+
+–0.05
+4
+
+4
+
+2
+
+b
+
+2
+
+0
+
+–2
+
+–4 –4 –2
+
+–2
+
+–2
+
+0
+
+2
+
+4
+
+d
+0.05
+
+0.05
+
+0
+
+0
+
+–0.05
+4
+
+2
+
+0
+
+–2
+
+–4 –4
+
+–2
+
+0
+
+2
+
+4
+
+–0.05
+4
+
+2
+
+0
+
+–4 –4
+
+0
+
+2
+
+4
+
+Fig. 4. The stationary-solution u∗ (z ) obtained by numerically solving dynamical neural field with global constant inhibitory kernel (12) with different initial states, where
+τ = 0.1, A = 1.2, B = 0.1, hk = 0.004, h = 0.02, γ = 1.1 and σ = 0.1 and s(z ) = 0. (a): The first initial state u1 (z , 0) = −0.01; (b): The stationary solution u∗ (z ) = −0.02
+for initial state u1 (z , 0) = −0.01; (c): The second initial state u2 (z , 0) = −0.03; (d): The stationary solution u∗ (z ) = −0.02 for initial state u2 (z , 0) = −0.03.
+
+In most studies on Amari’s dynamical neural field, the perceive
+space Ω is assumed to be unbounded, for instance, Ω = Rn . It
+is a reasonable and convenient assumption for theoretical analysis
+and applications, but finite perceive space Ω is also required for
+computability in practical applications like data clustering, which
+is rarely studied. In fact, unbounded and finite perceive space Ω
+would lead to different properties of dynamical neural field, which
+are discussed in the following respectively.
+
+θ (u) ∈ [0, 1] for all u ∈ R, when there is ∞-solution, i.e., u∗ (z ) > 0
+for all z ∈ Ω , then
+
+∗
+u (z ) =
+w(z − z ′ )θ (u∗ (z ′ ))dz ′ + s(z ) − h
+Ω
+
+
+=
+wk (z − z ′ )dz ′ − hk
+dz ′ + s(z ) − h
+Ω
+
+Ω
+
+≤ Wk max − hk V (Ω ) + S0 − h.
+
+4.1. Dynamical neural field with unbounded perceive space Ω
+Proposition 6. There is no ∞-solution to dynamical neural field (13).
+Proof. Assume that there exists an ∞-solution u∗ (z ) > 0 for all
+z ∈ Ω to dynamical neural field (13). Since the threshold function
+
+(39)
+
+Since Ω = R that V (Ω ) = +∞, it is obvious that u (z ) < 0,
+which conflicts with the assumption u∗ (z ) > 0. As a result, it
+follows that there is no ∞-solutions to dynamical neural field
+(13).
+n
+
+∗
+
+Proposition 6 is very important for the technical application
+of dynamical neural field with global constant inhibitory kernel,
+which theoretically ensures that there would not exist ∞-solution.
+
+188
+
+D. Jin, J. Peng / Neural Networks 71 (2015) 182–195
+
+That means, just keep hk < 0 and then we can adjust any parameter as we wish, without worrying about that it would lead to
+stable ∞-solution which we have to avoid carefully when we use
+dynamical neural field with ‘‘Mexican hat’’ shape kernel. As a result, it greatly decreases the difficulty in parameter adjustment so
+that gives us more freedom in using dynamical neural field. Furthermore, we can prove that not only ∞-solution is impossible, but
+also the excited region in the stationary solution would be bounded
+with the condition that the excited region in the initial state u(z , 0)
+is bounded. To prove this, we prove the excited region in the state
+u(z , t ) at any t ≥ 0 is bounded first.
+Proposition 7. For any initial state u(z , 0) to dynamical neural
+field (13), letting Ωt = {z ∈ Ω : u(z , t ) > 0}, if Ω0 is bounded,
+then Ωt is bounded for any t ≥ 0.
+Proof. Assume that for a given t0 > 0, Ωt0 is unbounded satisfying
+V (Ωt0 ) = ∞. Since Ω0 is bounded and u(z , t ) is continuous on t,
+there exists a 0 ≤ t1 < t0 that Ωt1 is bounded,
+V (Ωt1 ) >
+
+Wk max + S0 − h
+hk
+
+.
+
+(40)
+
+For any point z on the boundary ∂ Ωt1 of Ωt1 , u(z , t1 ) = 0, then
+with the assumption (26), we have
+
+
+
+τ u˙ (z , t1 ) = −u(z , t1 ) +
+w(z − z ′ )θ (u(z ′ , t1 ))dz ′ + S (z ) − h
+Ω
+
+=
+(wk (z − z ′ ) − hk )θ (u(z ′ , t1 ))dz ′ + S (z ) − h
+Ω
+
+=
+wk (z − z ′ )θ (u(z ′ , t1 ))dz ′
+Ω
+
+−
+hk θ (u(z ′ , t1 ))dz ′ + S (z ) − h
+Ω
+
+≤ Wk max − hk
+dz + S0 − h
+
+Since Ω ∗ is unbounded, we have
+V (Ω ∗ ) = +∞.
+As a result,
+u∗ (z ) = −∞
+
+which conflicts with u (z ) > 0 in Ω . As a result, if there exists
+a stationary solution u(z )∗ that u(z )∗ > 0 in Ω ∗ , then Ω ∗ is
+bounded.
+
+Since u˙ (z , t1 ) < 0 on the boundary ∂ Ωt , u(z , t1 ) is going to decreases but not increase. Since u(z , t ) is continuous both on Ω and
+t, Ωt1 cannot be larger any more that it cannot evolve to an unbounded region, which conflicts with Ωt0 is unbounded satisfying
+V (Ωt0 ) = ∞ for a t0 > t1 . As a result, if Ω0 is bounded, Ωt is
+bounded for any t ≥ 0.
+
+Proposition 8 shows that, when Ω0 is bounded, the excited
+region is bounded, not only in the evolutionary process, but also
+in the stationary solution. With the above two propositions, we
+obtain the following result:
+Proposition 9. For any bounded initial state u(z , 0) that |u(z , 0)| <
+b0 for all z ∈ Ω to dynamical neural field (13), if Ω0 is bounded, then
+there exists a constant Cu ≥ 0 that |u(z , t )| ≤ Cu for all z ∈ Ω and
+t ≥ 0.
+Proof. Let Ωt = {z ∈ Ω : u(z , t ) > 0} where t ≥ 0. For any
+z ∈ Ω , we have
+
+τ u˙ (z , t ) = −u(z , t ) +
+
+
+
+= −u(z , t ) +
+
+
+
+u (z ) =
+
+
+Ω
+
+=
+Ω
+
+=
+
+w(z − z )θ (u (z ))dz + S (z ) − h
+′
+
+∗
+
+′
+
+(wk (z − z ′ ) − hk )θ (u(z ′ , t ))dz ′
+
+= −u(z , t ) +
+wk (z − z ′ )θ (u(z ′ , t ))dz ′
+Ω
+
+−
+hk θ (u(z ′ , t ))dz ′ + s(z ) − h
+Ω
+
+≤ −u(z , t ) + Wk max − hk V (Ωt ) + S0 − h
+≤ −u(z , t ) + Wk max + S0 − h
+
+(45)
+
+and
+
+τ u˙ (z , t ) = −u(z , t ) +
+
+
+
+= −u(z , t ) +
+
+
+
++ s(z ) − h
+
+Ω
+
+Ω
+
+w(z − z ′ )θ (u(z ′ , t ))dz ′ + s(z ) − h
+(wk (z − z ′ ) − hk )θ (u(z ′ , t ))dz ′
+
+
+= −u(z , t ) +
+wk (z − z ′ )θ (u(z ′ , t ))dz ′
+Ω
+
+−
+hk θ (u(z ′ , t ))dz ′ + s(z ) − h
+Ω
+
+≥ −u(z , t ) − Wk min − hk
+dz + s0 − h
+Ωt
+
+≥ −u(z , t ) − Wk min − hk V (Ωt ) + s0 − h.
+
+(46)
+
+By Proposition 7, Ωt is bounded, letting
+hk V (Ωt ) = CΩt
+
+′
+
+then
+
+(wk (z − z ′ ) − hk )θ (u∗ (z ′ ))dz ′ + S (z ) − h
+
+τ u˙ (z , t ) ≥ −u(z , t ) − Wk min − CΩt + s0 − h.
+
+wk (z − z ′ )θ (u∗ (z ′ ))dz ′
+
+−
+hk θ (u∗ (z ′ ))dz ′ + S (z ) − h
+
+(47)
+
+Let
+
+Ω
+
+a=
+
+Ω
+
+≤ Wk max − hk V (Ω ∗ ) + S0 − h.
+
+Ω
+
+w(z − z ′ )θ (u(z ′ , t ))dz ′ + s(z ) − h
+
+
+
+Proposition 8. Let u(z )∗ be a stationary solution to dynamical
+neural field (13). If there exists an excited region Ω ∗ = {z ∈ Ω :
+u(z )∗ > 0}, then Ω ∗ is bounded.
+
+∗
+
+Ω
+
++ s(z ) − h
+
+Proposition 7 indicates that if Ω0 is bounded, the excited region
+Ωt in the evolutionary process of dynamical neural field keeps
+bounded and would not expand to an unbounded region for all
+t > 0.
+
+Proof. Assume that there exists an unbounded set Ω ∗ = {z ∈ Ω :
+u(z )∗ > 0}. Then for any z ∈ Ω ∗ , it follows that
+
+∗
+
+Remark 1. In fact, since Ω ∗ = limt →+∞ Ωt , as well as Ωt has been
+proved to be bounded by Proposition 7, Ω ∗ is obviously bounded.
+
+≤ Wk max − hk V (Ωt1 ) + S0 − h
+(41)
+
+(44)
+∗
+
+Ωt1
+
+< 0.
+
+(43)
+
+(42)
+
+1
+
+(48)
+
+τ
+
+b1 =
+
+Wk max + S0 − h
+
+τ
+
+(49)
+
+D. Jin, J. Peng / Neural Networks 71 (2015) 182–195
+
+4.2. Dynamical neural field with bounded perceive space Ω
+
+and
+b2 =
+
+189
+
+−Wk min − CΩt + s0 − h
+.
+τ
+
+Proposition 10. If
+
+Then
+u˙ (z , t ) ≤ −au(z , t ) + b1
+
+(51)
+
+and
+
+
+v˙ 1 (z , t ) = −av1 (z , t ) + b1
+v1 (z , 0) = u(z , 0)
+
+(53)
+
+u (z ) =
+
+(54)
+
+It is easy to see that
+
+v2 (z , t ) ≤ u(z , t ) ≤ v1 (z , t )
+
+(55)
+
+for all t ≥ 0.
+By solving differential equations (53) and (54), it is easy to see
+
+
+
+b1
+b1
+v1 (z , t ) = e−at v1 (z , 0) −
++
+a
+
+a
+
+
+
+b2
+b2
+v2 (z , 0) −
++ .
+a
+
+a
+
+(57)
+
+Since v1 (z , 0) = v2 (z , 0) = u(z , 0)
+u(z , 0) −
+
+b1
+
+
+
+v2 (z , t ) = e
+
+
+
+u(z , 0) −
+
++
+
+a
+
+b1
+
+(58)
+
+a
+
+b2
+a
+
+
++
+
+b2
+a
+
+.
+
+(59)
+
+It is easy to see that v1 (z , t ) and v2 (z , t ) are bounded. As a result,
+u(z , t ) is also bounded that there exists a constant
+
+
+
+Ω
+Ω
+
+w(z − z ′ )θ (u∗ (z ′ ))dz ′ + s(z ) − h
+
+′
+∗ ′
+′
+wk (z − z )θ (u (z ))dz − hk
+dz ′ + s(z ) − h
+
+≤ Wk max − hk V (Ω ) + s(z ) − h
+≤ Wk max − hk V (Ω ) + S0 − h
+≤0
+
+Ω
+
+(61)
+
+which conflicts with the assumption u∗ (z ) > 0. As a result, it
+follows that there is no ∞-solutions to dynamical neural field
+(13).
+
+Example 5. Use dynamical neural field with global constant inhibitory kernel where wk (z ) is a DoG function with τ = 0.1,
+A = 1.2, B = 0.1, h = 0.02, hk = 0.002 γ = 1.1, σ = 0.1,
+s(z ) = 0. Then Wk max = 0.0685. Let initial state u(z , 0) = 0.1,
+as shown in Fig. 5(a). Suppose the perceive space Ω is a bounded
+[−4, 4] × [−4, 4] square in R2 that V (Ω ) = 8 ∗ 8 = 64, then
+Wk max − h
+
+and
+−at
+
+
+
+An example is given to show the above result as follows:
+(56)
+
+and
+
+v1 (z , t ) = e
+
+∗
+
+=
+
+
+v˙ 2 (z , t ) = −av2 (z , t ) + b2
+v2 (z , 0) = u(z , 0).
+
+−at
+
+(60)
+
+V (Ω )
+
+Proof. Assume that there exists a stationary solution u∗ (z ) > 0 for
+all z ∈ Ω . Since the threshold function θ (u) ∈ [0, 1] for all u ∈ R,
+when there is ∞-solution, i.e., u∗ (z ) > 0 for all z ∈ Ω , then
+
+and
+
+
+
+Wk max + S0 − h
+
+(52)
+
+Let
+
+v2 (z , t ) = e
+
+hk >
+
+there is no ∞-solution to dynamical neural field (13).
+
+u˙ (z , t ) ≥ −au(z , t ) + b2 .
+
+−at
+
+When Ω is bounded, the following results are obtained:
+
+(50)
+
+   
+ b1   b2 
+, 
+a a
+
+Cu = max b0 , 
+
+that |u(z , t )| < Cu for all z ∈ Ω and t ≥ 0.
+Proposition 9 shows that the state u(z , t ) of dynamical neural
+field (13) would not evolve to be unbounded if u(z , 0) has bounded
+excited region Ω0 and is bounded. Together with Propositions 7
+and 8, these theoretical results seem useless in missions like
+clustering. However, in fact, these results are essential for practical
+use of dynamical neural field, because such unbounded excited
+region Ωt and Ω ∗ , as well as unbounded state u(z , t ), cannot be
+presented by computer that would make problem in computing.
+Propositions 7–9 ensure that such issues would not happen
+theoretically, which is greatly helpful for designing corresponding
+algorithms.
+In theoretical analysis, the unbounded perceive space Ω is a
+general assumption. It is reasonable, because dynamical neural
+field with bounded Ω has almost the same properties on stationary
+solution as those with unbounded Ω , when its kernel is ‘‘Mexican
+hat’’ shape. But for dynamical neural field with global constant
+inhibitory kernel, the perceive field Ω is unbounded or not would
+lead to different results. Since numerical computation is carried on
+in bounded space indeed, its properties should be considered.
+
+V (Ω )
+
+= 7.58 × 10−4 < hk .
+
+Numerically solving corresponding dynamical neural field, a φ solution u∗1 (z ) = −0.02 < 0 for all z ∈ Ω is obtained, as shown in
+Fig. 5(b).
+For comparison, use dynamical neural field with DoG kernel
+w(z ) = wk (z ) and other parameter remain the same. Since the
+new G∞ = 0.0338, i.e., G∞ − h > 0, then there exists no stable ‘‘Bubble’’-solution but a stable ∞-solution (Taylor, 1999). Numerically solving such a dynamical neural field, an ∞-solution
+u∗2 (z ) = 0.8274 > 0 for all z ∈ Ω .
+The condition of Proposition 10 is different from Proposition 6,
+which gives a lower bound of hk . However, it is not a strongly
+restrictive condition. Since the denominator of such lower bound
+is the measure of Ω , when we need a smaller hk than its present
+lower bound, just enlarging Ω is enough, there would be no more
+problem in fact.
+Since Ω is bounded, Ωt ⊂ Ω and Ω ∗ are obviously bounded.
+With similar proof to Proposition 9, it is easy to obtain the following
+result:
+Proposition 11. For any bounded initial state u(z , 0) that |u(z , 0)|
+< b0 for all z ∈ Ω to dynamical neural field (13), if Ω0 is bounded,
+then there exists a constant Cu ≥ 0 that |u(z , t )| ≤ Cu for all z ∈ Ω
+and t ≥ 0.
+5. θ(u) being a Sigmoid function
+When the threshold function θ is required to be continuous,
+it is usually selected as a Sigmoid function (3). Different from
+the discontinuous threshold function defined as a Heaviside step
+function, since θ (u) > 0 for all u ∈ R, the Sigmoidal threshold
+function θ would activate the lateral effect of dynamical neural
+field even when u < 0. It makes the properties of dynamical neural
+field (13) more complicated.
+
+190
+
+D. Jin, J. Peng / Neural Networks 71 (2015) 182–195
+
+Fig. 5. The stationary solution u∗1 (z ) and u∗2 (z ) obtained by numerically solving dynamical neural field with global constant inhibitory kernel w(z ) = wk (z ) − hk and
+dynamical neural field with DoG kernel w(z ) = wk (z ) respectively, where wk (z ) is a DoG function, while τ = 0.1, A = 1.2, B = 0.1, h = 0.02, hk = 0.002 γ = 1.1, σ = 0.1,
+s(z ) = 0 and V (Ω ) = 64. (a): Initial state u(z , 0) = 0.1; (b): The stationary solution u∗1 (z ) = −0.02 for all z ∈ Ω to dynamical neural field with global constant inhibition;
+(c): The stationary solution u∗2 (z ) = 0.8274 for all z ∈ Ω to dynamical neural field with DoG kernel.
+
+5.1. Dynamical neural field with infinite perceive space Ω
+
+5.2. Dynamical neural field with bounded perceive space Ω
+
+When Ω is unbounded, if there exists a stationary solution to
+dynamical neural field (13), for any z ∈ Ω , it follows that
+u∗ ( z ) =
+
+
+Ω
+
+Suppose that Ω is a bounded sphere that V (Ω ) > 0. Define
+
+θu min = min{u(z )}.
+
+wk (z − z ′ )θ (u∗ (z ′ ))dz ′ − hk
+
+×
+θ (u∗ (z ′ ))dz ′ + s(z ) − h
+Ω
+
+≤ Wk max − hk
+θ (u∗ (z ′ ))dz ′ + S0 − h
+
+Proposition 13. If
+
+=
+
+Ω
+
+hk >
+
+= Wk max − hk
+
+θ (u (z ))dz + S0 − h.
+∗
+
+Ω
+
+′
+
+′
+
+(62)
+
+If u∗ (z ) is bounded, let
+u∗min = min{u∗ (z )}.
+
+(63)
+
+z ∈Ω
+
+Since V (Ω ) is unbounded and θ (u) > 0 for all u ∈ R, it follows
+u∗ (z ) ≤ Wk max − hk
+
+2(Wk max + S0 − h)
+
+Proof. Assume that there exists a stationary solution u∗ (z ) > 0 for
+all z ∈ Ω . Since the threshold function θ (u) ∈ [0, 1] for all u ∈ R,
+when there is ∞-solution, i.e., u∗ (z ) > 0 for all z ∈ Ω , then
+u∗ ( z ) =
+
+
+Ω
+
+
+=
+Ω
+
+
+
+θ (u∗ (z ′ ))dz ′ + S0 − h
+Ω
+
+≤ Wk max − hk θ (u∗min )
+dz ′ + S0 − h
+
+w(z − z ′ )θ (u∗ (z ′ ))dz ′ + s(z ) − h
+wk (z − z ′ )θ (u∗ (z ′ ))dz ′ − hk
+
+
+×
+Ω
+
+θ (u∗ (z ′ ))dz ′ + s(z ) − h
+
+≤ Wk max − hk θu min V (Ω ) + S0 − h
+
+Ω
+
+= Wk max − hk θ (u∗min )V (Ω ) + S0 − h
+= −∞
+
+(66)
+
+V (Ω )
+
+there is no ∞-solution to dynamical neural field (13).
+
+Ω
+
+
+
+(65)
+
+z ∈Ω
+
+w(z − z ′ )θ (u∗ (z ′ ))dz ′ + s(z ) − h
+
+≤ Wk max − hk θ (0)V (Ω ) + S0 − h
+(64)
+
+which conflicts with the assumption that u∗ (z ) is bounded.
+
+= Wk max − hk V (Ω )/2 + S0 − h
+<0
+
+(67)
+
+which conflicts with the assumption u (z ) > 0. As a result, it
+follows that there is no ∞-solutions to dynamical neural field
+(102).
+∗
+
+Proposition 12. When Ω is unbounded, if w(z ) is a kernel with
+global constant inhibition defined by (15), dynamical neural field (13)
+has unbounded φ -solution as its stationary solution only, if the threshold function θ is a Sigmoid function defined by (3).
+As a result, dynamical neural field with Sigmoidal threshold
+function θ and global constant inhibitory kernel w(z ) is not
+suitable for its applications in technique.
+
+Proposition 14. For any bounded initial state u(z , 0) that |u(z , 0)| <
+b0 for all z ∈ Ω to dynamical neural field (13), if Ω0 is bounded, then
+there exists a constant Cu ≥ 0 that |u(z , t )| ≤ Cu for all z ∈ Ω and
+t ≥ 0.
+
+D. Jin, J. Peng / Neural Networks 71 (2015) 182–195
+
+Proof. The proof is similar with the proof of Proposition 9. For any
+z ∈ Ω , we have
+
+τ u˙ (z , t ) = −u(z , t ) +
+= −u(z , t ) +
+
+
+Ω
+Ω
+
++ s(z ) − h
+
+w(z − z )θ (u(z , t ))dz + s(z ) − h
+′
+
+′
+
+′
+
+By solving differential equations (53) and (54), it is easy to see
+
+
+
+b1
+b1
+v1 (z , t ) = e−at v1 (z , 0) −
++
+a
+
+
+
+b2
+b2
++ .
+v2 (z , t ) = e−at v2 (z , 0) −
+a
+
+a
+
+= −u(z , t ) +
+
+Ω
+
+(wk (z − z ′ ) − hk )θ (u(z ′ , t ))dz ′
+
+that |u(z , t )| < Cu for all z ∈ Ω and t ≥ 0.
+Assume that the function wk (z ) satisfies the Lipschitz condition:
+
+∥wk (z − z1 ) − wk (z − z2 )∥L1 (Ω ) < Lw |z1 − z2 |,
+∀ z1 , z2 ∈ Ω .
+(69)
+
+By Proposition 7, Ωt is bounded, letting
+
+then
+(70)
+
+Let
+(71)
+
+Wk max + S0 − h
+
+τ
+
+(72)
+
+Ω
+
+w(z − z ′ )θ (u(z ′ ))dz ′ + s(z ) − h.
+
+−Wk min − CΩ + s0 − h
+.
+τ
+
+(73)
+
+Denoting the space of the bounded continuous functions on Ω by
+BC (Ω ). It is easy to see that BC (Ω ) is a Banach space with the norm
+∥ · ∥∞ . Define
+
+T : BC (Ω ) → BC (Ω ).
+
+(74)
+
+
+=
+Ω
+
+(75)
+
+
+
+(wk (z − z ′ ) − hk )θ (u(z ′ ))dz ′ + s(z ) − h
+
+
+=
+wk (z − z ′ )θ (u(z ′ ))dz ′ −
+hk θ (u(z ′ ))dz ′ + s(z ) − h
+Ω
+
+(76)
+
+Ω
+
+and
+(77)
+
+uˆ (z ) = Tu(z )
+
+
+
+It is easy to see that
+
+v2 (z , t ) ≤ u(z , t ) ≤ v1 (z , t )
+
+Ω
+
+≤ Wk max + S0 − h
+
+and
+
+
+v˙ 2 (z , t ) = −av2 (z , t ) + b2
+v2 (z , 0) = u0 (z ).
+
+w(z − z ′ )θ (u(z ′ ))dz ′ + s(z ) − h
+
+=
+
+Let
+
+
+v˙ 1 (z , t ) = −av1 (z , t ) + b1
+v1 (z , 0) = u0 (z )
+
+(86)
+
+uˆ (z ) = Tu(z )
+
+and
+u˙ (z , t ) ≥ −au(z , t ) + b2 .
+
+(85)
+
+ = max{|Wk max + S0 − h|, | − Wk min − hk V (Ω ) + s0 − h|},
+and let M
+ }.
+b = max{C0 , M
+Assume that the initial state u(z , 0) = u0 (z ) ∈ BC (Ω ).
+
+Proof. Let uˆ (z ) = Tu(z ), since Ω is unbounded,
+
+Then
+u˙ (z , t ) ≤ −au(z , t ) + b1
+
+(84)
+
+Proposition 15. The operator
+
+and
+
+for all t ≥ 0.
+
+
+
+Ωu = {z ∈ Ω : u(z ) > 0}
+
+τ
+
+b2 =
+
+(83)
+
+Define an operator T by
+Tu(z ) =
+
+hk V (Ω ) = CΩ
+
+b1 =
+
+   
+ b1   b2 
+, 
+a a
+
+
+
+Ω
+
+1
+
+(82)
+
+Cu = max b0 , 
+
++ s(z ) − h 
+= −u(z , t ) +
+wk (z − z ′ )θ (u(z ′ , t ))dz ′
+Ω
+
+−
+hk θ (u(z ′ , t ))dz ′ + s(z ) − h
+Ω
+
+≥ −u(z , t ) − Wk min − hk
+dz + s0 − h
+
+τ u˙ (z , t ) ≥ −u(z , t ) − Wk min − CΩ + s0 − h.
+
+a
+
+It is easy to see that v1 (z , t ) and v2 (z , t ) are bounded. As a result,
+u(z , t ) is also bounded that there exists a constant
+
+w(z − z ′ )θ (u(z ′ , t ))dz ′ + s(z ) − h
+
+≥ −u(z , t ) − Wk min − hk V (Ω ) + s0 − h.
+
+(81)
+
+a
+
+
+
+b2
+b2
++ .
+v2 (z , t ) = e−at u(z , 0) −
+a
+
+Ω
+
+(80)
+
+and
+(68)
+
+and
+
+τ u˙ (z , t ) = −u(z , t ) +
+
+a
+
+
+
+b1
+b1
+v1 (z , t ) = e−at u(z , 0) −
++
+
+Ω
+
+
+
+(79)
+
+Since v1 (z , 0) = v2 (z , 0) = u(z , 0)
+
+= −u(z , t ) +
+wk (z − z ′ )θ (u(z ′ , t ))dz ′
+Ω
+
+hk θ (u(z ′ , t ))dz ′ + s(z ) − h
+−
+≤ −u(z , t ) + Wk max + S0 − h
+≤ −u(z , t ) + Wk max + S0 − h
+
+a
+
+and
+
+(wk (z − z ′ ) − hk )θ (u(z ′ , t ))dz ′
+
+
+
+a=
+
+191
+
+=
+Ω
+
+(78)
+
+
+=
+Ω
+
+w(z − z ′ )θ (u(z ′ ))dz ′ + s(z ) − h
+(wk (z − z ′ ) − hk )θ (u(z ′ ))dz ′ + s(z ) − h
+
+(87)
+
+192
+
+D. Jin, J. Peng / Neural Networks 71 (2015) 182–195
+
+
+
+then
+
+wk (z − z ′ )θ (u(z ′ ))dz ′
+Ω
+
+−
+hk θ (u(z ′ ))dz ′ + s(z ) − h
+Ω
+
+≥
+wk min (z − z ′ )θ (u(z ′ ))dz ′
+Ω
+
+−
+hk θ (u(z ′ ))dz ′ + s(z ) − h
+
+=
+
+∥Tu1 − Tu2 ∥∞ < ϵ.
+
+Therefore, T is continuous compact operator. The proof is
+complete.
+
+Ω
+
+≥ −Wk min − hk V (Ω ) + s0 − h
+
+(88)
+
+we can see that uˆ (z ) is uniformly bounded.
+For a given ϵ > 0, there exists a δ0 that for any z1 , z2 ∈ Ω that
+∥z1 − z2 ∥ < δ0 , |s(z1 ) − s(z2 )| < ϵ/2. Let δ = min{ϵ/(2Lw ), δ0 }.
+When u ∈ BC (Ω ), for any z1 , z2 ∈ Ω that ∥z1 − z2 ∥ < δ , then
+
+|ˆu(z1 ) − uˆ (z2 )|
+= |Tu(z1 ) − Tu(z2 )|
+
+
+
+
+′
+′
+′
+′
+
+=  (w(z1 − z ) − w(z2 − z ))θ (u(z ))dz + s(z1 ) − s(z2 )
+
+Ω
+
+
+≤  (wk (z1 − z ′ ) − wk (z2 − z ′ ))dz ′  + |s(z1 ) − s(z2 )|
+Ω
+
+≤ Lw (z1 − z2 ) + ϵ/2
+≤ ϵ.
+
+(89)
+
+Then uˆ is continuous in Ω . As a result, Tu ∈ BC (Ω ), then
+T : BC (Ω ) → BC (Ω ).
+
+(90)
+
+Proposition 16. The operator T is a continuous compact operator.
+Proof. As shown in the proof of Proposition 15, Tu is bounded and
+
+|Tu(z1 ) − Tu(z2 )| ≤ ϵ
+
+(91)
+
+for a given ϵ > 0, where δ = min{ϵ/(2Lw ), δ0 }, u ∈ BC (Ω ), and
+z1 , z2 ∈ Ω that ∥z1 − z2 ∥ < δ .
+Since θ is continuous and bounded, for any ϵ > 0, let M =
+Wk min + Wk max , then there exists a δ > 0 that for any u1 , u2 ∈
+BC (Ω ) satisfying ∥u1 − u2 ∥∞ < δ , we have
+
+|θ(u1 ) − θ (u2 )| < ϵ/(M + hk V (Ω )).
+
+(92)
+
+Since
+
++ hk
+≤
+≤
+
+ϵ
+
+ϵ
+
+M + hk V (Ω )
+
+ϵ
+
+M + hk V (Ω )
+
+=ϵ
+
+
+Ω
+
+ϵ
+M + hk V ( Ω )
+
+Tu = u
+
+(95)
+
+in the Banach space BC u (Ω ).
+ i.e.,
+As show by (87) and (88), for any u ∈ ∂ U, |Tu(z )| < M,
+ ≤ b. It follows that
+∥Tu∥∞ ≤ M
+T (U¯ ) ⊂ U¯ .
+
+(96)
+
+By Rothe’s Fixed Point Theorem, there exists a fixed point u ∈ U¯ of
+operator equation (95). Therefore, there exists a stationary solution
+u∗ (x) ∈ U¯ to dynamical neural field (13).
+∗
+
+For Sigmoidal threshold function θ , since it is differential,
+letting L = maxu∈R {θ ′ (u)} = θ ′ (0), for any u1 , u2 ∈ R,
+
+|θ (u1 ) − θ (u2 )| < L|u1 − u2 |.
+
+(97)
+
+We have the following results:
+Proposition 18. If LM < 1, there exists a unique stationary solution
+u∗ (x) to dynamical neural field (13).
+Proof. For any u1 , u2 ∈ BC (Ω ), since
+(98)
+
+(99)
+
+For any z ∈ Ω , we have
+
+|Tu1 (z ) − Tu2 (z )|
+
+
+
+= 
+w(z − z )′ θ (u1 (z )′ )dz ′ + s(z ) − h
+Ω
+
+
+
+′
+′
+′
+−
+w(z − z )θ (u2 (z ) )dz + s(z ) − h 
+Ω
+
+
+
+
+′
+′
+′
+′
+
+=  wk (z − z ) (θ (u1 (z ) ) − θ (u2 (z )))dz 
+Ω
+≤
+|wk (z − z ′ )| · |θ (u1 (z ′ )) − θ (u2 (z ′ ))|dz ′
+Ω
+
+≤ L ∥ u1 − u2 ∥ ∞
+|wk (z − z ′ )|dz ′
+
+V (Ω )
+
+|wk (z − z ′ )|dz ′ + hk
+
+Proof. The existence of a stationary solution u∗ (z ) to dynamical
+neural field (13) equals to the existence of a solution to the operator
+equation
+
+∥θ (u1 ) − θ (u2 )∥∞ ≤ L∥u1 − u2 ∥∞ .
+
+Ω
+
+M + hk V (Ω )
+
+Proposition 17. There exists a stationary solution u∗ (z ) of dynamical neural field (13).
+
+for all z ∈ Ω , we have
+
+ϵ
++ hk
+V (Ω )
+M + hk V (Ω )
+
+
+
+
+
+
+ 
+
+′  
+′
+′
+
+≤ wk (z − z ) · (θ (u1 (z )) − θ (u2 (z )))dz ′
+Ω
+
+Similar results of Propositions 15 and 16 are obtained in Jin,
+Liang et al. (2011) as Proposition 5 for dynamical neural field
+with typical ‘‘Mexican Hat’’ shape kernel when perceive field Ω is
+selected as unbounded space Rn . However, when Ω is unbounded,
+T is no longer compact. As a result, the perceive field Ω should
+be bounded to hold the corresponding result for dynamical neural
+field with typical ‘‘Mexican Hat’’ shape kernel as well.
+Let U = {u ∈ BC (Ω ) : ∥u∥∞ ≤ (b)}, then we have the following result:
+
+|θ (u1 (z )) − θ (u2 (z ))| ≤ L|u1 (z ) − u2 (z )|
+
+|Tu1 (z ) − Tu2 (z )|
+
+
+
+
+
+′
+′
+′
+′
+′
+′
+
+=  w(z − z )θ (u1 (z ))dz −
+w(z − z )θ (u2 (z ))dz 
+Ω
+Ω
+
+
+′
+′
+′
+=  wk (z − z )θ (u1 (z ))dz −
+wk (z − z ′ )θ (u2 (z ′ ))dz ′
+Ω
+Ω
+
+
+
+′
+′
+− hk (θ (u1 (z )) − θ (u2 (z ))dz ′ )
+ Ω
+
+
+
+
+′
+′
+′
+′
+′
+′
+
+≤  wk (z − z )θ (u1 (z ))dz −
+wk (z − z )θ (u2 (z ))dz 
+Ω
+
+(94)
+
+Ω
+
+V (Ω )
+
+= LM ∥u1 − u2 ∥∞ .
+
+(M + hk V (Ω ))
+
+(100)
+
+Then
+(93)
+
+∥Tu1 − Tu2 ∥∞ ≤ LM ∥u1 − u2 ∥∞ .
+
+(101)
+
+D. Jin, J. Peng / Neural Networks 71 (2015) 182–195
+
+Since LM < 1, T is a strict contraction. By Banach’s Fixed Point
+Theorem, there exists a unique fixed u∗ ∈ BC (Ω ) of the operator
+equation
+
+According to Eq. (99), if ϵ(z ∗ ) > 0,
+F (u(z ∗ )) ≤ L(M + hk V (Ω ))∥ϵ(z ′ )∥∞ − ϵ(z ∗ )
+
+< ∥ϵ(z ′ )∥∞ − ϵ(z ∗ )
+=0
+
+Tu = u.
+As a result, there exists one and only one stationary solution u∗ (x)
+to dynamical neural field (13).
+For further discussion, we assume that s(z ) = 0. Then
+
+τ u˙ (z , t ) = −u(z , t ) +
+
+
+Ω
+
+w(z , z ′ )θ (u(z ′ , t ))dz ′ − h.
+
+193
+
+(105)
+
+then the maximal of activation u(z , t ) would become smaller when
+t increases. If ϵ(z ∗ ) ≤ 0,
+F (u(z ∗ )) ≥ −L(M + hk V (Ω ))∥ϵ(z ′ )∥∞ − ϵ(z ∗ )
+
+> −∥ϵ(z ′ )∥∞ − ϵ(z ∗ )
+=0
+
+(102)
+
+By Propositions 1 and 3, when θ is a Heaviside step function,
+u∗ = −hφ = −h is the φ -solution to dynamical neural field (102).
+However, it is not true when θ is selected as a Sigmoid function.
+Proposition 19. If u∗ (z ) = −hφ < 0 is a φ -solution to dynamical
+neural field (102), then hφ ̸= h.
+When u∗ (z ) = −hφ < 0 is a φ -solution to dynamical neural
+field (102), since Ω is bounded and θ (−hφ ) > 0,
+
+− hφ = u∗ (z )
+
+=
+w(z − z ′ )θ (u∗ (z ′ ))dz ′ − h
+Ω
+
+= θ (−hφ )
+w(z − z ′ )dz ′ − h
+Ω
+
+
+= θ (−hφ )
+w(z − z ′ )dz ′ − hk V (Ω ) − h
+
+(106)
+
+then the minimal of u(z , t ) would become larger when t increases.
+It follows that ∥u(z , t ) − u∗ (z )∥∞ < ϵ holds when t increases.
+As a result, if ∥u(z , 0)− u∗ (z )∥∞ < ϵ , then ∥u(z , t )− u∗ (z )∥∞ <
+ϵ for all t > 0. That means u∗ (z ) is a stable stationary solution.
+Since u∗ (z ) is a stationary solution to dynamical neural field,
+then
+u∗ (z ) =
+
+
+Ω
+
+w(z , z ′ )θ (u∗ (z ′ ))dz ′ − h.
+
+(107)
+
+When Wk max < h,
+u∗ (z ) =
+
+
+Ω
+
+=
+Ω
+
+wk (z , z ′ )θ (u∗ (z ′ ))dz ′ − hk
+
+
+Ω
+
+θ (u∗ (z ))dz − h
+
+≤ Mk max − h
+<0
+
+Ω
+
+̸= −h.
+
+w(z , z ′ )θ (u∗ (z ′ ))dz ′ − h
+
+(103)
+
+(108)
+
+then u (z ) is a φ -solution.
+The proof is complete.
+∗
+
+Proposition 20. The φ -solution u(x) = −hφ < 0 to dynamical
+neural field (102) is stable if
+F ′ (−hφ ) < 0.
+
+If there exists a ‘‘bubble’’-solution with radius R0 , the equation
+
+
+
+Proposition 21. If L(M + hk V (Ω )) < 1, there exists one and only
+one stable stationary solution u∗ (z ) to dynamical neural field (102),
+which is a φ -solution when Wk max < h.
+Proof. Since L(M + hk V (Ω )) < 1 and hk > 0, then LM < 1. By
+Proposition 18, there is one and only one stationary solution u∗ (z ).
+As a result,
+F (u (z )) = −u (z ) +
+∗
+
+∗
+
+
+Ω
+
+w(z − z ′ )θ (u∗ (z ′ ))dz ′ − h = 0.
+
+For any ϵ > 0 and t ≥ 0, if u(z , t ) satisfies ∥u(z , t ) − u (z )∥∞ < ϵ ,
+let u(z ) = u(z , t ) and ϵ(z ) = u(z ) − u∗ (z ), then |ϵ(z )| < ϵ for all
+z ∈ Ω . For z ∗ = arg maxz ∈Ω (|ϵ(z )|), i.e., |ϵ(z ∗ )| = ∥ϵ(z )∥∞ , we
+have
+
+
+Ω
+
+w(z ∗ − z ′ )
+
+
+Ω
+
+w(x − x′ )θ (u(x′ , t ))dx′
+
+− θ (u (z )))dz − ϵ(z ).
+∗
+
+(110)
+
+where ∥x∥ = R(u).
+Suppose that a neural activation ball with radius R satisfies
+u(x′ , t ) = 0 on only on {x ∈ Rn : ∥x∥ = R}. Let
+(111)
+
+Assume
+
+|E (R, α)| < b0
+
+(112)
+
+for R ∈ [0, Rb ], where Rb > 0 is large. It follows that
+
+Gθ (R) < G(R) + b0
+
+(113)
+
+(114)
+
+for any R ∈ [0, Rb ]. Suppose that G(R) is convex in [0, ∞) and
+limR→∞ G(R) < 0. With similar proof of Proposition 12 in Jin, Liang
+et al. (2011), we have
+Proposition 22. Suppose that θ is continuous and E (R, α) satisfies
+the assumption (112). R1 and R2 are constants that satisfy 0 < R1 <
+R2 < Rb . Then a ‘‘bubble’’-solution with radius R ∈ (R1 , R2 ) can be
+sustained if
+G(R1 ) − b0 − h ≥ 0
+
+(115)
+
+and
+
+Ω
+
+′
+
+Gθ (R(u)) =
+
+and
+
+× θ (u∗ (z ′ ) + ϵ(z ′ ))dz ′ − h
+
+= −u∗ (z ) +
+w(z − z ′ )θ (u∗ (z ′ ))dz ′ − h
+Ω
+
++
+w(z ∗ − z ′ )θ (u∗ (z ′ ) + ϵ(z ′ ))dz ′
+Ω
+
+−
+w(z − z ′ )θ (u∗ (z ′ ))dz ′ − ϵ(z ∗ )
+Ω
+
+=
+w(z ∗ − z ′ )(θ (u∗ (z ′ ) + ϵ(z ′ ))dz ′
+′
+
+(109)
+
+for ∥x∥ = R0 should be satisfied. Let
+
+Gθ (R) > G(R) − b0
+
+F (u(z ∗ )) = F (u∗ (z ∗ ) + ϵ(z ∗ ))
+
+∗
+
+w(x − x′ )θ (u(x′ , t ))dx′ − h = 0
+
+E (R, α) = Gθ (R) − G(R).
+
+∗
+
+= −(u∗ (z ∗ ) + ϵ(z ∗ )) +
+
+Ω
+
+(104)
+
+G(R2 ) + b0 − h ≤ 0.
+
+(116)
+
+194
+
+D. Jin, J. Peng / Neural Networks 71 (2015) 182–195
+
+a
+
+d
+
+b
+
+e
+
+c
+
+f
+
+Fig. 6. The stationary-solution u∗1 (z ) obtained by numerically solving dynamical neural field with global constant inhibitory kernel w(z ) = wk (z )− hk and Sigmoid threshold
+function θ (u). (a) The clustering results with τ = 0.1, A = 1.2, B = 0.1, hk = 0.005, h = 0.01, γ = 1.1 and σ = 0.1 for ‘‘Double C’’ data set with α = 0.001; (b): The
+stationary solution to dynamical neural field with τ = 0.1, A = 1.2, B = 0.1, hk = 0.005, h = 0.04, γ = 1.1 and σ = 0.07, u(z , 0) = 0.1 and the input distribution s(z )
+given by (34) with α = 0.001; (c): The stationary solution to dynamical neural field with τ = 0.1, A = 1.2, B = 0.1, h = 0.02, hk = 0.002 γ = 1.1, σ = 0.1, s(z ) = 0 and
+V (Ω ) = 64 with α = 0.001. Increasing α to 0.1, with the other parameters remain the same as given in (a), (b) and (c) above respectively, (d), (e) and (f) show corresponding
+results respectively.
+
+Example 6. Let θ (u) be a Sigmoid function (3) with α = 0.001. Use
+the dynamical neural field with global constant inhibitory kernel
+where w(z ) is a DoG function.
+(1) With τ = 0.1, A = 1.2, B = 0.1, hk = 0.005, h = 0.01, γ = 1.1
+and σ = 0.1, for ‘‘Double C’’ data set that are employed in
+Example 2, the clustering results are shown in Fig. 6(a), which
+is similar with Fig. 2(a);
+(2) With τ = 0.1, A = 1.2, B = 0.1, hk = 0.005, h = 0.04, γ = 1.1
+and σ = 0.07, u(z , 0) = 0.1 and the input distribution s(z )
+given by (34) that are employed in Example 3;
+(3) With τ = 0.1, A = 1.2, B = 0.1, h = 0.02, hk = 0.002 γ = 1.1,
+σ = 0.1, s(z ) = 0 and V (Ω ) = 64 that are employed in
+Example 5. So that
+2(Wk max − h)
+V (Ω )
+
+= 1.52 × 10−3 < hk .
+
+The stationary solution to dynamical neural field is shown in
+Fig. 6(c), which is similar with Fig. 5(b).
+For comparison, by increasing α to 0.1 with the other
+parameters remain the same as given in (1)–(3) above respectively,
+the corresponding results are shown in Fig. 6(d)–(f).
+Generally speaking, as shown in Example 6, when α is very
+small, the properties of the stationary solution to dynamical neural
+field with Sigmoid and Heaviside step kernels are similar: the
+clustering results shown in Fig. 6(a) is similar with those shown in
+Fig. 2(a); the stationary solution to dynamical neural field shown in
+
+Fig. 6(b) is similar with that shown Fig. 3(a); the stationary solution
+to dynamical neural field is shown in Fig. 6(c), is similar with that
+shown in Fig. 5(b). However, when α is large, some properties of
+dynamical neural field are changed, slightly or significantly. For
+example, the clustering results shown in Fig. 6(d) are also similar
+with those shown in Fig. 2(a), but the range of the both of the two
+large excited regions are slightly smaller; the stationary solution
+to dynamical neural field is shown in Fig. 6(e) is also a φ -solution
+with a small negative peak in the center, but it is quite different
+from that shown in Fig. 6(b); the stationary solution to dynamical
+neural field is shown in Fig. 6(f) is no longer a φ -solution that there
+is a positive peak in the center which is ‘‘bubble’’-solution (notice
+that the perceive field Ω is bounded and θ (−h) = 0.45 here).
+Such differences indicate that when α in θ is large, it may impact
+the stationary solution to dynamical neural field. In the same
+time, it is still consistent with the above propositions, especially
+Proposition 13 that there exists no ∞-solution. By Proposition 22,
+since the sigmoid threshold function θ with large α would interfere
+in the range of excited region of the stationary solution that may
+lead to unexpected results as shown in Fig. 6(f), it should be
+avoided to use dynamical neural field with such threshold function
+for applications like clustering.
+6. Conclusion
+In this paper, we discuss the properties of Amari’s dynamical
+neural field with global constant inhibition. Some important
+results on the existence and stability of its stationary solution are
+
+D. Jin, J. Peng / Neural Networks 71 (2015) 182–195
+
+obtained, providing a basis for further extensive application of
+dynamical neural field to technical fields.
+When threshold function θ is a Heaviside step function, some
+sufficient conditions and necessary conditions for existence of
+φ -solution and ‘‘bubble’’-solution to dynamical neural field with
+global constant inhibitory kernel are discussed. It is proved that
+u(z , t ) would be bounded with bounded initial excited region
+Ω0 and bounded initial state u(z , 0). If the perceive space Ω is
+unbounded, it is proved that there is no ∞-solution; With the
+bounded initial excited region Ω0 , the excited region Ωt for any
+time t > 0, including the excited region Ω ∗ in the stationary
+solution, is also bounded. If the perceive space Ω is bounded, with
+the constant inhibition hk > (Wk max + S0 − h)/V (Ω ), there is no
+∞-solution as well.
+When threshold function θ is a Sigmoid function, if the perceive
+space Ω is unbounded, it is proved that dynamical neural field with
+global constant inhibitory kernel has only unbounded φ -solution,
+which is not suitable for practical application. If the perceive space
+Ω is bounded, when hk > 2(Wk max + S0 − h)/V (Ω ), there is
+no ∞-solution; u(z , t ) would be bounded with bounded Ω0 and
+bounded u(z , 0); Some existence and unique existence conditions
+for stationary solution are presented, as well as the existence and
+stability condition for φ -solution and ‘‘bubble’’-solution.
+Numerical examples are also given, which are consistent with
+the obtained theoretical analysis.
+References
+Amari, S. (1977). Dynamics of pattern formation in lateral-inhibition type neural
+filed. Biological Cybernetics, 27(2), 77–87.
+Engels, C., & Schöner, G. (1995). Dynamic fields endow behavior-based robots with
+representations. Robotics and Autonomous Systems, 14(1), 55–77.
+Erlhagen, W., & Bicho, E. (2006). The dynamic neural field approach to cognitive
+robotics. Journal of Neural Engineering, 3(3), 36–54.
+Ermentrout, G. B., & Cowan, J. D. (1979). A mathematical theory of visual
+hallucination patterns. Biological Cybernetics, 34(3), 137–150.
+
+195
+
+Faubel, C., & Schöner, G. (2008). Learning to recognize objects on the fly: A neurally
+based dynamic field approach. Neural Networks, 21(4), 562–576.
+Favorov, O. V., & Kursun, O. (2011). Neocortical layer 4 as a pluripotent function
+linearizer. Journal of Neurophysiology, 105(3), 1342–1360.
+Feldman, J. L., & Cowan, J. D. (1975). Large-scale activity in neural nets I: Theory with
+application to motoneuron pool responses. Biological Cybernetics, 17(1), 29–38.
+Giese, M. A. (1999). Dynamic neural field theory for motion perception. Norwell:
+Klwer Academic Publishers.
+Jin, D., & Huang, Z. (2013). A new vision inspired clustering approach. In Lecture
+notes in electrical engineering: Vol. 256. Proceedings of 2013 Chinese intelligent
+automation conference (pp. 129–136).
+Jin, D., Liang, D., & Peng, J. (2011). Existence and properties of stationary solution of
+dynamical neural field. Nonlinear Analysis-Real, 12(5), 2706–2716.
+Jin, D., Peng, J., & Li, B. (2011). A new clustering approach on the basis of dynamical
+neural field. Neural Computation, 23(8), 1–26.
+Kishimoto, K., & Amari, S. (1979). Existence and stability of local excitations in
+homogeneous neural fields. Journal of Mathematical Biology, 7(4), 308–318.
+Kubota, S., Hamaguchi, K., & Aihara, K. (2009). Local excitation solutions in onedimensional neural fields by external input. Neural Computing and Applications,
+18(6), 591–602.
+Laing, C. R., & Troy, W. C. (2003). PDE methods for nonlocal models. SIAM Journal on
+Applied Dynamical Systems, 2(3), 487–516.
+Owen, M. R., Laing, C. R., & Coombes, S. (2007). Bumps and rings in a twodimensional neural field: splitting and rotational. New Journal of Physics, 9(10),
+378–401.
+Potthast, R., & Graben, P. B. (2010). Existence and properties of solutions for neural
+field equations. Mathematical Methods in the Applied Sciences, 33(8), 935–949.
+Schöner, G., Dose, M., & Engels, C. (1995). Dynamics of behavior: theory and
+applications for autonomous robot architectures. Robotics and Autonomous
+Systems, 16(2–4), 213–245.
+Simmering, V. R., Schuttea, A. R., & Spencer, J. P. (2008). Generalizing the dynamic
+field theory of spatial cognition across real and developmental time scales.
+Brain Research, 1202(2), 68–86.
+Taylor, J. G. (1999). Neural ‘bubble’ dynamics in two dimesions: foundations.
+Biological Cybernetics, 80(6), 393–409.
+Taylor, J. G. (2003). Bubbles in the brain? Trends in Cognitive Sciences, 7(10),
+429–431.
+Wennekers, T. (2002). Dynamic approximation of spatiotemporal receptive fields
+in nonlinear neural field models. Neural Computation, 14(8), 1801–1825.
+Werner, H., & Richter, T. (2001). Circular stationary solutions in two-dimensional
+neural fields. Biological Cybernetics, 85(3), 211–217.
+Wilson, H. R., & Cowan, J. D. (1972). Excitatory and inhibitory interactions in
+localized populations of model neurons. Biophysical Journal, 12(1), 1–24.
+Wilson, H. R., & Cowan, J. D. (1973). A mathematical theory of the functional
+dynamics of cortical and thalamic nervous tissue. Biological Cybernetics, 13(2),
+55–80.
+
+

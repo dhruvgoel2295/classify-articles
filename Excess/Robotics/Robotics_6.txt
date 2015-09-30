@@ -1,0 +1,2091 @@
+Robotics and Autonomous Systems 73 (2015) 24–43
+
+Contents lists available at ScienceDirect
+
+Robotics and Autonomous Systems
+journal homepage: www.elsevier.com/locate/robot
+
+Posture estimation and human support using wearable sensors and
+walking-aid robot
+Jian Huang a,∗ , Wenxia Xu a , Samer Mohammed b , Zhen Shu a
+a
+
+Key Laboratory of Ministry of Education for Image Processing and Intelligent Control, School of Automation, Huazhong University of Science and
+Technology, No. 1037, Luoyu Road, Wuhan, China
+b
+
+LISSI Lab, University Paris Est Créteil (UPEC), France
+
+highlights
+•
+•
+•
+•
+•
+
+An omni-directional walking-aid robot is developed to assist and support the elderly.
+A wearable sensor system was designed to estimate online the human posture.
+A fall detection method by wearable sensor is obtained based on possibility theory.
+Normally the robot uses admittance control while it is braked when fall detected.
+Experiments were conducted to test the wearable sensor and walking-aid robot.
+
+article
+
+info
+
+Article history:
+Available online 13 December 2014
+Keywords:
+Walking-aid robot
+Wearable sensors
+Fall detection
+Motion control
+
+abstract
+In this paper, an omni-directional walking-aid robot is developed to assist the elderly in the daily living
+movements. A motion control strategy of walking-aid robot based on the observation of the human
+status through wearable sensors is proposed. During normal walking, the robot is controlled using
+a conventional admittance control scheme. When the tendency of a fall is detected, the robot will
+immediately react to prevent the user from falling down. The distance between the human Center of
+Pressure (COP) and the midpoint of the human feet is assumed to be a significant feature to detecting the
+fall events. When the user is in a quasi-static state or walking slowly, the COP can be approximated by the
+projection of Center of Gravity (COG) of the user’s body. A simple and low-cost wearable sensor system
+is proposed to measure online the COG of the user. A limitation of the proposed wearable sensor system
+is that the Head–Arms–Torso (HAT) of the user is assumed to be always in upright position, which may
+generate measurement error. From comparison experiments with a reference optical system it is found
+that the measurement error is acceptable especially at the early stage of fall event. Dubois possibility
+theory is applied to describe the membership function of ‘‘normal walking’’ state. A threshold based
+fall detection approach is obtained from online evaluation of the walking status. Finally, experiments
+demonstrate the validity of the proposed strategy.
+© 2014 Elsevier B.V. All rights reserved.
+
+1. Introduction
+The elderly people population is rapidly increasing in developing and developed countries. The increase of human average
+lifespan escalated the need for elderly-care technologies [1]. This
+increase along with a shortage of skilled caregivers presents an
+opportunity for robotic applications to address some of the disparities in elderly patient care. In addition, as many elderly and
+
+∗
+
+Corresponding author.
+E-mail address: huang_jan@mail.hust.edu.cn (J. Huang).
+
+http://dx.doi.org/10.1016/j.robot.2014.11.013
+0921-8890/© 2014 Elsevier B.V. All rights reserved.
+
+handicapped people suffer from lower extremity deceases, the demand for walking aid devices has increased. Robotic applications
+such as walking-aid robots to assist the elderly in their daily living activities and to help the elderly to regain independence and
+an increased quality of life will play an important role in the rehabilitative care systems of increasingly aging societies [2,3].
+The current walking-aid robot systems proposed so far may
+be classified into two groups according to the mobility factor,
+i.e., the systems moving on the ground according to the motion
+of the subjects and the system giving effects of walking to the
+subjects [4]. The former system is active-type walker which is
+driven by servo motors [5–7]. The latter corresponds to a system
+
+J. Huang et al. / Robotics and Autonomous Systems 73 (2015) 24–43
+
+25
+
+Nomenclature
+L1 , L2 , L3 : The hip, knee, ankle joints of the left human leg.
+R1 , R2 , R3 : The hip, knee, ankle joints of the right human leg.
+G1 , G2 , G3 , G4 , G5 : Center of Gravity (COG) points of torso,
+left thigh, left shank, right thigh and right shank.
+s1 , s2 , s3 , s4 , s5 : Posture sensor units mounted at the torso,
+left thigh, left shank, right thigh and right shank.
+{0}, {h}, {r }, {si }: Coordinate systems of the reference frame,
+human, robot and the ith sensor respectively (i =
+1, 2, . . . , 5).
+{P }:
+Coordinate system that is fixed on point P and
+has the same orientation as {h}. Here P
+∈
+{L1 , L2 , L3 , R1 , R2 , R3 }.
+{Psi }:
+Sensor coordinate system of si that is fixed on point
+P (z-axis is perpendicular to the sensor surface. xaxis is upward and parallel to the sensor surface).
+Q
+XP :
+The coordinate value of point P represented in
+system {Q }.
+vrR :
+Velocity vector of robot in coordinate system {r }.
+frI :
+Interaction force vector between human and robot.
+si (n), zi (n): State and observation variables of filtering
+system.
+gxi , gyi , gzi , Hxi , Hyi , Hzi : Acceleration of gravity vector and
+geomagnetic intensity vector for sensor unit si .
+axi , ayi , azi : Outputs of accelerometer for sensor unit si .
+hxi , hyi , hzi : Outputs of magnetometer for sensor unit si .
+ωxi , ωyi , ωzi : Outputs of gyroscopes for sensor unit si .
+wi (n), vi (n): Process noise and sensor output noise for
+sensor unit si .
+y
+Cx :
+Rotation transformation matrix which describes
+coordinate system {y} relative to coordinate system
+{ x} .
+y
+Tx :
+Homogeneous transformation matrix which describes coordinate system {y} relative to coordinate
+system {x}.
+θi , φi , ψi : Pitch, roll and yaw angles of the ith sensor unit
+(i = 1, 2, . . . , 5).
+Ki , ϑi : General axis and rotation angle of the ith sensor unit.
+mi : 
+Masses
+ of human body segment.
+P3 : xcog , ycog : Position of human COG on the ground. It
+is approximately equal to COP when the walking
+acceleration is small.
+P1 , P2 , P4 : Projection points of two feet on the ground and
+their midpoint.
+p(nj ), π (nj ): Probability distribution and possibility distribution of histogram over each bin nj .
+µ(·):
+Membership degree function.
+
+driven by servo brakes and is passive-type walker [8,9]. For the
+first group of walking-aid robots, force control techniques including impedance and admittance control methods are widely
+used in the robot motion control since they enable user-friendly
+Human–Robot-Interactions (HRI) that transform interaction forces
+from the user to the desired robot motion velocity. Huang et al. proposed an intention based admittance control for an intelligent cane
+robot, in which the human motion intention was identified from
+the interaction forces and used to guide the motion of robot [10].
+Frizera-Neto et al. presented a method which offers effective cancelation of the undesired components from force data, allowing
+the system to extract in real-time voluntary user’s navigation commands [11]. These techniques greatly improve the comfort of users
+when they are operating the active walkers in a ‘‘normal’’ case.
+Whereas there are not so many studies discussing the‘‘emergency’’
+
+Fig. 1. Omni-directional walking-aid robot.
+
+cases (e.g. fall accidents caused by stumbling or slipping). Generally, it is difficult to identify the occurrence of an ‘‘emergency’’ case
+by only using force measurement.
+Falling down is a major cause of fatal injury especially for elderly and may create a serious obstruction for independent living [12]. The development of walkers should aim at improving the
+ability of interaction based on the data from the environment, particularly the ability of fall detection and fall prevention for the
+user. Hirata designed a fall prevention motion control strategy
+for a intelligent passive-type walker [13]. In his study, the user
+state was estimated by a couple of laser ranger finders that predict
+the occurrence of falling down. Huang et al. proposed a cane-type
+walking-aid robot which is controlled based on the estimation of
+the user’s walking intention [10]. A fall detection method is also
+utilized in the cane robot by combining the sensory data of an
+omni-directional camera and a laser ranger finder[14]. It should be
+noted that a laser ranger finder is normally expensive and the process of vision information is time-consuming. Considering the cost
+and real-time requirement in a practical system, wearable sensors
+might be a better choice in the fall detection.
+Wearable device based fall detection method mainly relies on
+various sensors to detect the motion and location of the body of
+the user [15]. To analyze the output of a waist accelerometer, researchers use variance and average, kurtosis and skewness statistics to realize eight kinds of activities such as walking, climbing,
+running, standing, sitting, and lying prone [16]. Masaki et al. [17]
+classified the output of waist accelerometers during human climbing motion using fractal analysis method based on a wavelet transform process. Wang et al. [18] obtained data from a 3-axis waist
+accelerometer, then used 33 different time-domain characteristics
+to classify the five different types of gaits characteristic of walking
+on flat ground, uphill, downhill, upstairs and downstairs. In this paper, the force sensors of the robotic device are used to ensure motion control while the wearable sensors are used to monitor user’s
+gait and detect the occurrence of falling down.
+First, the walking-aid robot and its motion control algorithm
+are introduced in Section 2. The framework of the fall detection
+system based on observing human status by wearable sensors is
+presented in Section 3. Having such data, the experimental results
+of proposed algorithm are shown in Section 4. The final section
+concludes the paper and gives further perspectives.
+2. Walking-aid robot
+The prototype of an omni-directional walking-aid robot is illustrated in Fig. 1. The robot consists of an omni-directional base, a
+support frame, a motion controller and a battery system.
+The omni-directional mobile base comprises three commercial omni-wheels and actuators. Several passive casters are also
+mounted on the base to widen the support area so as to enhance the stability. Coordinate systems are depicted in Fig. 2. Three
+one-dimensional force sensors are used to measure the interaction forces between the robot and the operator. Both the forward
+
+26
+
+J. Huang et al. / Robotics and Autonomous Systems 73 (2015) 24–43
+
+Fig. 2. Robot coordinate system (top view) and measurement of interaction forces.
+
+Fig. 3. Omni-directional base of the walking-aid robot.
+
+and lateral forces can be obtained, as well as the exerted rotation
+torque.
+
+R is the radius of each wheel and L is the effective distance between
+the center of base and the rim of the wheel.
+
+2.1. Kinematics
+
+2.2. Motion control
+
+The omni-directional base is shown in Fig. 3. In [19], the
+robot kinematics using universal wheels are previously studied.
+
+During normal walking, a conventional admittance control is
+assumed to generate a comfortable human–robot interaction
+(HRI). The admittance model emulates a dynamic system and
+gives the user a ‘‘feeling’’ as if he is interacting with the system
+specified by the model. In the control of our walking-aid robot,
+the admittance of modeled dynamic system is given by a transfer
+function with the interaction force/torque, frI , as input and the
+desired robot velocities, vrR , as the output. This transfer function
+can be expressed as
+
+
+T
+
+T
+
+vRx , vRy , ω = x˙ r , y˙ r , θ˙ and ϕ = φ1 ,
+
+Introducing vrR =
+
+φ2 , φ3
+
+T
+
+to denote respectively the velocity of robot in {r } and
+the posture of three wheels, the kinematics of the proposed omnidirectional base can be described as follows:
+
+ϕ˙ = J · vrR
+
+(1)
+
+where
+
+√
+
+
+1
+
+−
+1 2
+J=  1
+R −
+2
+1
+
+3
+2
+√
+
+−
+
+3
+2
+0
+
+
+L
+
+
+,
+L
+L
+
+G(s) =
+
+vrR (s)
+frI (s)
+
+(2)
+
+where frI and vrR are defined in system {r } with the three components along the xr -axis, the yr -axis and around the zr -axis respectively.
+
+J. Huang et al. / Robotics and Autonomous Systems 73 (2015) 24–43
+
+27
+
+Fig. 5. The motion control block diagram of the system.
+Fig. 4. Diagram of admittance control.
+
+According to the setup of force sensing array shown in Fig. 2,
+the interaction force vector frI can be given by
+FIY
+FIX
+MI θ
+
+
+frI =
+
+
+
+
+
+1
+ 0
+= H
+
+1
+0
+H
+
+2
+
+2
+
+−
+
+
+
+0  
+Fl
+1
+ Fr .
+Fh
+0
+
+(3)
+
+For each DOF of the omni-directional base, the admittance
+model can be described by a first-order transfer function. That is,
+Eq. (2) can be rewritten as
+
+
+vRx (s)
+
+  Mx s + Bx   FIX (s) 
+  v (s) 
+
+Gx (s)
+1
+  Ry 
+
+Gy (s) = 
+=
+
+M
+s
++
+B
+  FIY (s) 
+
+y
+y
+Gz (s)
+  ω(s) 
+
+1
+1
+
+
+
+
+
+
+
+(4)
+
+MI θ (s)
+
+Mz s + Bz
+
+Fig. 6. Wearable gait recognition sensor units.
+
+which leads to the motion control algorithm given by
+M · v˙ rR + B · vrR = frI
+
+(5)
+
+where M = diag Mx , My , Mz is the virtual mass parameter matrix
+
+
+
+
+
+and B = diag Bx , By , Bz is the virtual damping parameter matrix.
+Note that the desired robot velocity vrR should be transformed to
+the desired rotation velocity of each omni-wheel according to (1)
+in the practical system. The transformed wheel desired velocities
+are then used as the inputs of servo controllers to drive the wheels.
+The detailed diagram of admittance control is depicted in Fig. 4.
+There are many possible walking modes during the operation
+of the walking-aid robot. In this paper, we divided all possible human walking states into two modes, ‘‘normal walking’’ and ‘‘emergency’’. During ‘‘normal walking’’ mode, the admittance control
+strategy (3) is assumed. Wearable sensors are used to detect the occurrence of ‘‘emergency’’ including stumbling or slippage. If emergent state is detected, the walking-aid robot is quickly braked to
+prevent the operator from falling down. The whole control architecture is proposed, which is depicted by Fig. 5. The fall detection
+approach is illustrated in the following sections.
+
+
+
+
+
+3. Fall detection and prevention based on wearable sensors
+3.1. Wearable sensors
+A wearable sensor unit consists of a tri-axial magnetometer, a
+tri-axial accelerometer and a tri-axial gyroscope for measuring the
+
+acceleration and the angular velocity along three orthogonal axes
+simultaneously.
+The full-scale ranges of the magnetic field, the acceleration and
+the gyroscope are ±1.3 gauss, ±2 g and ±250°/s respectively.
+All sensor units were checked on a mechanical turntable to
+establish offset values for sensor data in addition to obtaining
+inclination relationships of the measured values.
+The wearable sensor units are placed on five body segments,
+including both shanks, both thighs and the waist (see Fig. 6). The
+tri-axial accelerometer and magnetometer of each sensor unit are
+integrated on a chip (LSM303). The product model of tri-axial
+gyroscope is MPU3050. A STM32F020 Micro Control Unit (MCU)
+is used to collect data of all sensor units.
+3.2. Gait recognition
+Firstly, several coordinate systems are defined to fulfill the gait
+recognition (see Fig. 7). System {h} is a reference coordinate system
+which is fixed at the waist with the z-axis pointing to the ground
+and the x-axis to the magnetic north direction. The direction of yaxis of system {h} is obtained following the right hand rule. System
+{hs1 } is a sensor coordinate system describing the orientation of
+the sensor unit s1 mounted at the waist. For each hip and knee joint
+point, there are three coordinate systems. For example, system {R2 }
+is a coordinate system that is fixed at the right knee joint point
+R2 and has the same orientation as system {h}. System {R2 s4 } is
+a sensor coordinate system that is fixed at point R2 with same
+
+28
+
+J. Huang et al. / Robotics and Autonomous Systems 73 (2015) 24–43
+
+Fig. 7. Coordinate definition of gait recognition task.
+
+orientation as a local sensor coordinate system {s4 } of the sensor
+unit fixed on the right thigh. The z-axis is perpendicular to the
+sensor surface and the x-axis points upward and is parallel to the
+sensor surface. System {R2 s5 } is also defined which is related to the
+sensor unit s5 fixed on the right shank. For any other joint point P,
+similar coordinate systems {P } and {Psi } are defined. Normally, the
+sampled wearable gait recognition sensory data are represented in
+the corresponding sensor coordinate system.
+When considering the dynamic process of any sensor unit si ,
+let us introduce two time instants t and t + ∆t to denote the
+start and the end point of a process. Based on the equivalent
+angle–axis representation, we assume that the sensor unit rotates
+angle ϑi around a general axis Ki during the process (see Fig. 7). The
+corresponding rotation matrix Rot (Ki (t ), ϑi ) is given by [20]
+Rot (Ki (t ), ϑi )
+k2xi vϑi + c ϑi
+= kxi kyi vϑi + kzi sϑi
+kxi kzi vϑi − kyi sϑi
+
+
+
+kxi kyi vϑi − kzi sϑi
+k2yi vϑi + c ϑi
+kyi kzi vϑi + kxi sϑi
+
+kxi kzi vϑi + kyi sϑi
+kyi kzi vϑi − kxi sϑi 
+k2zi vϑi + c ϑi
+
+
+
+(6)
+where c ϑi = cos ϑi , sϑi = sin ϑi and vϑi = 1 − cos ϑi . Ki (t ) =
+[kxi (t ), kyi (t ), kzi (t )]T denotes the standard orthonormal basis of
+the general rotation axis at time t. The time increment ∆t is
+assumed to be very small so that the rotation angle ϑi is small to
+yield cos ϑi ≈ 1 and sin ϑi ≈ ϑi . Thus, the rotation matrix could be
+simplified as
+1
+kzi (t )ϑi
+−kyi (t )ϑi
+
+
+Rot (Ki (t ), ϑi ) ≈
+
+
+=
+
+1
+ωzi (t )∆t
+−ωyi (t )∆t
+
+−kzi (t )ϑi
+1
+kxi (t )ϑi
+
+−ωzi (t )∆t
+1
+ωxi (t )∆t
+
+kyi (t )ϑi
+−kxi (t )ϑi
+1
+
+
+
+ωyi (t )∆t
+−ωxi (t )∆t
+
+
+(7)
+
+1
+
+where ωxi (t ) = kxi (t ) · (ϑi /∆t )|∆t →0 , ωyi (t ) = kyi (t ) ·
+(ϑi /∆t )|∆t →0 and ωzi (t ) = kzi (t ) · (ϑi /∆t )|∆t →0 denote the
+components of angular velocity.
+The dynamic rotation of sensor unit i from time t to time t + ∆t
+can be expressed by the following equations:
+
+
+T
+
+gxi (t + ∆t ) gyi (t + ∆t ) gzi (t + ∆t )
+
+
+
+T
+
+= Rot (Ki (t ), ϑi ) gxi (t ) gyi (t ) gzi (t ) ,
+
+T
+
+Hxi (t + ∆t ) Hyi (t + ∆t ) Hzi (t + ∆t )
+
+
+
+T
+
+= Rot (Ki (t ), ϑi ) Hxi (t ) Hyi (t ) Hzi (t )
+
+where gxi , gyi and gzi are the acceleration components of gravity
+represented in the sensor coordinate system {si }. [Hxi , Hyi , Hzi ]T is
+the geomagnetic intensity vector represented in system {si }.
+Taking n and T as the discrete time scale and the sampling period, from (7) and (8) we can obtain the following dynamic model
+of Kalman filter:
+si (n) = Ai (n)si (n − 1) + wi (n)
+zi (n) = si (n − 1) + vi (n)
+
+
+
+(9)
+
+where matrix Ai is composed of gyroscope measurements ωxi , ωyi
+and ωzi , satisfying:
+Ai (n)
+
+−ωzi (n)T ωyi (n)T
+0
+ωzi (n)T
+1
+−ωxi (n)T 0
+
+−ωyi (n)T ωxi (n)T
+1
+0
+=
+0
+0
+0
+1
+
+0
+0
+0
+ωzi (n)T
+
+
+1
+
+0
+
+0
+
+0
+0
+0
+
+
+
+
+
+
+.
+−ωzi (n)T ωyi (n)T 
+
+1
+−ωxi (n)T 
+−ωyi (n)T ωxi (n)T
+1
+
+0
+
+(10)
+The state vector satisfies
+si (n) = gxi
+
+
+
+gyi
+
+gzi
+
+Hxi
+
+Hyi
+
+Hzi
+
+T
+
+.
+
+(11)
+
+The observation vector satisfies
+zi (n) = axi
+
+
+
+ayi
+
+azi
+
+hxi
+
+hyi
+
+hzi
+
+T
+
+(12)
+
+where axi , ayi , azi are the accelerometer outputs and hxi , hyi , hzi are
+the magnetometer outputs. wi (n) and vi (n) are used to denote the
+process noise and sensor output noise, respectively.
+At each time n, the estimation of state variable is calculated
+from standard Kalman filter procedure and denoted by
+sˆ i (n) = gˆxi
+
+
+
+gˆyi
+
+gˆzi
+
+ˆ xi
+H
+
+ˆ yi
+H
+
+ˆ zi
+H
+
+T
+
+.
+
+(13)
+
+The filtered sˆ i (n) of sensor unit si is originally represented in
+the sensor coordinate system {si } and used to estimate the Euler
+angles of this sensor. Note that the rotation transformation matrix
+Cshi which describes coordinate system {h} relative to coordinate
+system {si } is given by:
+Cshi = Rot (z , −ψi )Rot (x, −φi )Rot (y, −θi )
+
+(14)
+
+where
+cos ψi
+− sin ψi
+Rot (z , −ψi ) = 
+0
+0
+
+
+
+(8)
+
+0
+0
+0
+
+sin ψi
+cos ψi
+0
+0
+
+0
+0
+1
+0
+
+
+
+0
+0
+0
+1
+
+J. Huang et al. / Robotics and Autonomous Systems 73 (2015) 24–43
+
+
+
+1
+
+0
+cos φi
+− sin φi
+0
+
+0
+Rot (x, −φi ) = 
+0
+0
+
+cos θi
+ 0
+Rot (y, −θi ) = 
+sin θi
+0
+
+
+
+0
+1
+0
+0
+
+
+
+0
+sin φi
+cos φi
+0
+
+− sin θi
+0
+cos θi
+0
+
+0
+0
+0
+1
+
+joint points in system {h} are then computed by
+
+
+
+0
+0
+.
+0
+1
+
+It should be noted that the different representations of the
+gravity and geomagnetic intensity in different coordinate systems
+have the following relationships:
+
+
+T
+
+T
+0 0 g 1 = Csh · gˆxi gˆyi gˆzi 1
+
+
+i
+
+
+
+
+
+
+ Hˆ h 0 Hˆ h 1 T = Rot (z , ψi ) · Hˆ m Hˆ m Hˆ m
+xi
+yi
+zi
+xi
+zi
+
+T
+
+m
+m
+m
+ˆ
+ˆ
+ˆ
+
+Hxi Hyi Hzi 1
+
+
+
+
+T
+
+= Rot (x, φi ) · Rot (y, θi ) · Hˆ xi Hˆ yi Hˆ zi 1 .
+
+1
+
+T
+(15)
+
+From (14) and (15), the pitch angle θi , roll angle φi and yaw angle
+ψi of any sensor unit can be calculated as follows:
+
+arctan(ˆgxi /ˆgzi )
+gˆzi > 0
+
+
+
+π + arctan(ˆgxi /ˆgzi )
+gˆxi > 0 and gˆzi < 0
+θi = −π + arctan(ˆgxi /ˆgzi ) gˆxi < 0 and gˆzi < 0
+(16)
+
+
+π
+/
+2
+gˆxi > 0 and gˆzi = 0
+
+
+−π /2
+gˆxi < 0 and gˆzi = 0
+
+ˆ yim /Hˆ xim )
+ˆ xim > 0
+arctan(H
+H
+
+
+
+
+m
+m
+ˆ yim > 0 and Hˆ xim < 0
+
+H
+π + arctan(Hˆ yi /Hˆ xi )
+ψi = −π + arctan(Hˆ yim /Hxim ) Hˆ yim < 0 and Hˆ xim < 0
+(17)
+
+
+m
+m
+ˆ
+ˆ
+
+π /2
+Hyi > 0 and Hxi = 0
+
+
+
+ˆ yim < 0 and Hˆ xim = 0
+−π /2
+H
+
+ 
+(18)
+φi = − arctan gˆyi / gˆxi2 + gˆzi2 .
+Let us define the translation transform matrix as
+
+
+
+1
+
+0
+D (x, y, z ) = 
+0
+0
+
+0
+1
+0
+0
+
+0
+0
+1
+0
+
+x
+y
+.
+z
+1
+
+Assume the lengths of thigh, shank and the distance between two
+hip joints are known as denoted by lt , ls , lw . For all the coordinate
+systems shown in Fig. 7, the homogeneous transform matrices
+between every two continuous systems are concluded as follows:
+
+L2
+
+L s
+
+TL32s33
+
+
+
+R1 s1
+
+
+TR1
+
+
+R s
+
+TR21s44
+
+
+
+R s
+
+T 24
+
+
+ RR22 s5
+
+TR3 s5
+
+L2 s2
+
+L2 s3
+
+L2 s3
+
+= D(−ls , 0, 0)
+ h −1
+R
+= Chs
+,
+TR11s4 = CRh1 s4 ,
+1
+= D(−lt , 0, 0)
+
+−1
+R
+,
+TR22s5 = CRh2 s5 ,
+= CRh2 s4
+= D(−ls , 0, 0)
+
+ h
+hs
+L s
+h
+T 1 · XL11 1
+XL1 = Ths
+
+1 L1 s1
+
+
+L s
+L s
+L
+L
+s
+hs
+h
+h
+1
+1
+
+XL2 = Ths1 TL1 s1 TL1 1 TL11s2 TL21s22 · XL22 2
+
+
+
+X h = T h T hs1 T L1 s1 T L1 T L1 s2 T L2 s2 T L2 T L2 s3 · X L3 s3
+hs1 L1 s1 L1
+L3
+L3
+L2 s3 L3 s3
+L1 s2 L2 s2 L2
+XRh1 = Thsh 1 TRhs1 1s1 · XRR11 s1
+
+
+
+R s
+R s
+R
+R s
+hs
+h
+
+X h = Ths
+T 1 T 1 1 TR11s4 TR21s44 · XR22 4
+
+
+1 R1 s1 R1
+ Rh2
+R s
+R s
+R
+R
+s
+R
+s
+R
+R
+s
+hs
+h
+T 1 T 1 1 TR11s4 TR21s44 TR22 4 TR22s5 TR32s55 · XR33 5
+XR3 = Ths
+1 R1 s1 R1
+
+(20)
+
+where the local coordinate values satisfy
+L s1
+
+XL11
+
+L s
+
+L s
+
+R s
+
+= XL22 2 = XL33 3 = XR11 1
+
+R s
+R s
+= XR22 4 = XR33 5 = 0 0
+
+0
+
+T
+
+1
+
+.
+
+After estimating the coordinate values related to all joint points
+by (20), the segment COG points (Gi with i = 1, 2, . . . , 5) can
+also be easily obtained since the length of each segment is known.
+Then, the real-time gait is well described by all the point coordinate
+values. The whole gait recognition algorithm can be concluded as
+follows:
+Algorithm 1 Gait Recognition
+Input:
+sˆ i (n − 1), z(n), Ai with i = 1, 2, . . . , 5
+Output:
+sˆ i (n), XP1 with P ∈ {L1 , L2 , L3 , R1 , R2 , R3 , G1 , G2 , . . . , G5 }
+1: i ← 1
+2: repeat
+3:
+Use Kalman filter to infer sˆ i (n) according to model (9).
+4:
+Calculate θi , ψi and φi from (16)-(18).
+5:
+i←i+1
+6: until i = 5
+7: Calculate all the homogeneous transform matrices from (14)
+and (19).
+h
+8: Calculate XP according to (20).
+ˆ i (n), XPh with i = 1, 2, . . . , 5.
+9: return s
+
+3.3. Fall detection
+
+
+
+ h
+hs
+h
+Ths1 = Chs
+,
+TL1 s11 = D(0, lw /2, 0),
+
+1
+
+
+hs
+
+TR1 1s1 = D(0, −lw /2, 0)
+
+
+
+ h −1
+
+L s
+L
+
+TL11 1 = Chs
+,
+TL11s2 = CLh1 s2 ,
+
+
+1
+
+L
+s
+T 1 2 = D(−l , 0, 0)
+
+
+t
+L2 s2
+
+
+L
+T L2 s2 = C h −1 ,
+T 2 = Ch ,
+
+29
+
+(19)
+
+h
+where Chs
+, CLh2 s2 , CLh2 s3 , CRh2 s4 , CRh2 s5 represent the rotation trans1
+form matrices which can be obtained from (14) using filtered sensory data related to each sensor unit si . The coordinate values of all
+
+Normally, one can mainly categorize the falling accidents during the usage of walking-aid robot into two types: the falls along
+horizontal direction due to stumbling, and the falls along vertical
+direction due to weak legs or for foot slipping [13]. All possible falls
+are depicted in Fig. 8. To detect the falls in time during walking,
+two significant features and a real-time detection approach based
+on fuzzy possibility theory is proposed.
+The Center of Pressure (COP) point, which is equivalent to the
+well-known Zero Moment Point (ZMP), is a good feature to decide
+whether a fall along horizontal direction occurs or not [21]. It is
+observed that while human is walking, the projection of COP is
+nearby the supporting foot. If the distance between the COP and
+the supporting foot suddenly increases, a fall may happen. In the
+case of an elderly operating the walking-aid robot, the acceleration
+of human body is usually small. The COP can then be approximated
+by the COG given by
+
+
+i
+
+xcog = 
+i
+
+
+
+m i xi
+mi
+
+,
+
+mi yi
+
+i
+
+ycog = 
+
+mi
+
+(21)
+
+i
+
+where (xcog , ycog ) is the coordinate value of the COG on the ground
+and is approximately equal to the COP on the ground. mi is the mass
+of the ith segment of human body and (xi , yi , zi ) is the coordinate
+value of point Gi in system {h}.
+Since it is not easy to determine precisely the supporting foot
+by wearable sensors, an alternative feature is assumed based on
+
+30
+
+J. Huang et al. / Robotics and Autonomous Systems 73 (2015) 24–43
+
+Fig. 8. Possible falling states. ((a)-fall forward; (b)-fall laterally; (c)-fall backward; (d)-fall along vertical direction due to slipping of foot; (e)-fall along vertical direction due
+to weak legs).
+
+the relative position between the COP and the midpoint of two
+feet to identify whether a fall occurs along the horizontal direction.
+This feature is denoted by the distance d1 (see Fig. 7), which can be
+calculated as
+
+
+
+xL3 + xR3
+d1 = 
+,
+ xcog −
+2
+
+ycog −
+
+yL3 + yR3
+2
+
+T 
+
+
+
+
+(22)
+
+where (xL3 , yL3 , zL3 ) and (xR3 , yR3 , zR3 ) are respectively the coordinate values of points L3 and R3 in system {h}.
+On the other hand, to effectively detect the falls along the
+vertical direction, an obvious feature is the height of human waist.
+This feature is evaluated by the z-axial distance between point O
+and the support foot, which is given by
+d2 = max {|zL3 | , |zR3 |} .
+
+(23)
+
+Although threshold-based fall detection method can be directly
+applied by monitoring online the values of d1 and d2 , it is not
+easy to obtain the reasonable thresholds for different subjects.
+Therefore, a fuzzy fall detection approach is proposed based on
+Dubois possibility theory [22]. This method has the learning ability
+to adapt different users by building the possibility distributions of
+‘‘normal walking’’ status.
+First, the data histograms for each feature are computed from
+the training set of adequate ‘‘normal walking’’ experimental data.
+The support of a histogram according to a feature is defined by
+the minimal and maximal values of the feature components of the
+training points. Parameter h is used to denote the number of bins
+for a histogram. Each bin is represented by the center of interval
+denoted by nj . For the ith feature, the probability distribution
+{pi (nj ) : j = 1, 2, . . . , h} is then calculated by dividing the
+height of each bin by the total number of training points. The
+possibility distribution {πi (nj ) : j = 1, 2, . . . , h} is deduced from
+the probability distribution using the bijective transformation of
+Dubois and Prade defined by
+
+πi (nk ) =
+
+h
+
+
+min[pi (nk ), pi (nj )].
+
+(24)
+
+j =1
+
+For any newly sampled walking state point d(n) = [d1 (n),
+d2 (n)]T , the membership degree µ (d(n)) is obtained by the
+aggregation between the possibility values of the point on each
+feature. This aggregation is calculated using the minimum operator
+as follows:
+
+
+
+µ (d(n)) = min π1 (d∗1 (n)), π2 (d∗2 (n))
+
+(25)
+
+where d1 (n) and d2 (n) are normalized distances according to the
+support of a histogram.
+As a fuzzy pattern recognition problem, normally we also need
+to collect feature data samples of ‘‘emergency’’ state for the fall
+detection task. Considering the difficulty of collecting all possible ‘‘emergency’’ data, we only investigate the case of ‘‘normal
+walking’’. The fall detection problem is then reduced to check∗
+
+∗
+
+Algorithm 2 Fall Detection
+Input:
+d(n − 1), d(n − 2), . . . , d(n − k), sˆ i (n − 1), z(n), Ai with i =
+1, 2, . . . , 5
+Output:
+I (n)
+1: Call Algorithm 1 to recognize the current gait.
+2: Calculate d(n) according to (22) and (23).
+3: if µ(d(n)) < c and µ(d(n − 1)) and · · · and µ(d(n − k))
+then
+4:
+I (n) ← 1
+5: else
+6:
+I (n) ← 0
+7: end if
+8: return I (n)
+Table 1
+Parameters of subjects.
+Parameter
+
+Subject A
+
+Subject B
+
+Description
+
+lh
+lt
+ls
+lw
+m1
+m11 , m12
+m13
+m2 , m4
+m3 , m5
+
+55 cm
+30 cm
+40 cm
+10 cm
+29.1 kg
+2.24 kg
+24.62 kg
+7.39 kg
+3.04 kg
+
+70 cm
+48 cm
+37 cm
+18 cm
+36.36 kg
+3.06 kg
+30.24 kg
+8.78 kg
+3.53 kg
+
+Length of HAT (Head–Arm–Torso)
+Length of thigh
+Length of shank
+Distance between two hip joints
+Mass of HAT
+Masses of arms
+Mass of torso–head
+Masses of thighs
+Masses of shanks
+
+ing whether the current feature data rejects the ‘‘normal walking’’
+class.
+Therefore, a sufficiently small µ (d(n)) for ‘‘normal walking’’
+state implies that a fall accident occurs. A simple fall detection algorithm can then be described using Algorithm 2. In this algorithm,
+the constant c is a small positive number that indicates a very low
+possibility of ‘‘normal walking’’ state. k is assumed to remove the
+disturbance. I (n) is used to denote whether a fall occurs. If I (n) is
+switched from 0 to 1, a fall event is then detected.
+The constant c is also equivalent to the membership reject
+threshold Tmem proposed in [23].
+4. Experiment study
+In this section, the proposed wearable sensor system was first
+evaluated by various experiments. Then several robot-aid-walking
+experiments were performed using the wearable sensor group to
+detect human walking gait and falls, as described previously to
+verify the validity of the fall detection method. The subjects are
+two university students (subject A (female, 160 cm) and subject B
+(male, 170 cm)). The physical parameters of the subjects are given
+in Table 1.
+
+J. Huang et al. / Robotics and Autonomous Systems 73 (2015) 24–43
+
+31
+
+(a) The procedure of experiment for analyzing magnetic influence.
+
+(b) The measurement results when and after the robot approached the subject.
+Fig. 9. Experiment of analyzing magnetic influence.
+
+4.1. Reliability analysis of magnetometer
+Because magnetic materials in real environment may influence
+the accuracy of magnetic systems, in this paper we use Kalman filtering algorithm to reduce the errors as illustrated in Section 3.2.
+For the usage of the proposed system, we can set up suitable environment with the ferromagnetic effect as less as possible. The magnetic effect is then more possibly caused by the body of walking-aid
+robot (made of metal). Then we conducted an experiment to evaluate the effect of the robot to the wearable sensors. Firstly subject A
+wore the wearable sensors and remained stationary for 15 s. Then
+the robot started to get close to the subject slowly and the subject
+still remained stationary at the same time (as shown in Fig. 9(a)).
+After 10 s, the robot stopped to move, the distance between the
+subject and the robot is about 0.2 m. Then both subject A and the
+robot kept static for 20 min. The positions of center of gravity of
+left thigh, left shank, right thigh, right shank are shown in Fig. 9(b).
+It can be seen that the detected positions of lower limbs have no
+obvious changes during the relatively long procedure.
+4.2. Evaluation of posture measurement by wearable sensors
+To verify the measurement performance of wearable sensors,
+we conducted experiments for both static posture recognition,
+COG estimation and dynamic step length measurement.
+
+4.2.1. Static posture recognition using wearable sensors
+Firstly, two static posture recognition experiments were performed with subject A to test the wearable sensor system. The gait
+recognition method proposed in Section 3.2 is applied to recognize
+the standing and sitting postures. The standing and sitting postures
+were detected as shown by Fig. 10(a) and (b). In these figures, the
+standing and sitting postures were recognized excellently.
+4.2.2. Comparison study of COG estimation
+To evaluate the COG estimation performance of proposed wearable sensor system, we conducted some comparison experiments
+using a reference motion capture system (PTI 3D Motion Capture
+System Visualeyez, PhoeniX Technologies Inc.). This commercial
+reference system has been proven to be the widest angle, moving parts free, high accuracy, high resolution, real-time optical 3D
+motion tracker in the world. The model number of reference system is VZ4000 and the accuracy of Visualeyez’s measurements is
+less than 0.5 mm RMS with the position resolution to be 0.015 mm
+(within the measurement distance of 1.2 m). Each Visualeyez system tracker can capture over a huge 190 m3 space. In our experiments we used two Visualeyez system trackers and twelve markers
+to capture the motions of subjects, as shown in Fig. 11. A reference
+PTI coordinate system was set at a fixed point on the level ground.
+To capture the full kinematics parameters of subject, there were
+twelve PTI markers installed on key points of the body segments.
+
+32
+
+J. Huang et al. / Robotics and Autonomous Systems 73 (2015) 24–43
+
+(a) Standing posture recognition.
+
+(b) Sitting posture recognition.
+
+(c) Corresponding postures of human.
+Fig. 10. Static posture recognition experiments.
+
+Six markers were placed on the lower limb joints, including the hip
+joints L1 and R1 , the knee joints L2 and R2 , and the ankle joints L3
+and R3 . To measure the motion of upper limbs, two markers were
+placed on both shoulders and wrists respectively (see Fig. 12). The
+other two markers were attached on the left and right waist parts.
+The four markers on hip joints and waist parts were used for calculating the transformation matrix between the coordinate system
+{h} and {PTI }. At the same time the subject wore the wearable sensor system to estimate her posture online. Eq. (21) is used to calculate the COG of subject when using the proposed wearable sensors.
+When using the PTI system, a more accurate equation including the
+effect of arms was applied, which is given by
+4
+
+
+xPTI
+cog =
+
+mi xi + m11 x11 + m12 x12 + m13 x13
+
+i=2
+4
+
+
+,
+mi + m11 + m12 + m13
+
+i=2
+4
+
+
+yPTI
+cog =
+
+(26)
+
+mi yi + m11 y11 + m12 y12 + m13 x13
+
+i =2
+4
+
+
+mi + m11 + m12 + m13
+
+i=2
+
+where m11 , m12 and m13 are the masses of left arm, right arm and
+torso–head of the subject, satisfying m1 = m11 + m12 + m13 . The coordinate values of COG points of left arm, right arm and torso–head
+
+are denoted by (x11 , y11 , z11 ), (x12 , y12 , z12 ) and (x13 , y13 , z13 ). All
+these coordinate values are defined in system {PTI } and can be easily obtained by tracking the markers. The anthropometric data of
+human body were also applied in the COG calculation. The data of
+subject A was listed in Table 1, which are obtained according to the
+methods proposed in [24].
+A limitation of the proposed wearable sensor system is that the
+user’s HAT segment is assumed to be always upright. It should be
+noted that the weight of the HAT segment can reach up to 60%
+of the body weight. Thus, system measurement error is inevitable
+without considering the effect of HAT orientation. To study the
+effect of arm orientation in the real application, subject A was
+requested to pretend to hold the handles during walking (i.e. to
+stretch her arms all the time during walking). At the last phase
+of COG measurement, the subject pretended to fall forward to get
+data for analyzing the effects of body orientation and sudden dynamical change. It should be pointed out that the proposed Kalman
+filter algorithm is based on an assumption that the accelerometer measures only the gravitational acceleration. In a real walking,
+there are always accelerations of body segments in other directions. To evaluate the effect of these accelerations, the subject was
+requested to walk several steps in different velocities while being
+monitored by both the PTI system and the wearable sensors (see
+Fig. 13).
+To verify the operation performances in longer duration, subject
+A wore the wearable sensors to conduct the comparison experi-
+
+J. Huang et al. / Robotics and Autonomous Systems 73 (2015) 24–43
+
+33
+
+Fig. 11. Setup of the comparison experiments using a reference PTI motion capture system.
+Table 2
+Maximum COG tracking errors in different walking velocities of the first
+experiment.
+Trial
+
+1
+
+2
+
+3
+
+4
+
+5
+
+Walking velocity [m/s]
+COGerr [cm]
+
+0.7
+6.03
+
+0.9
+5.74
+
+1.2
+5.37
+
+1.6
+4.17
+
+2
+4.15
+
+Table 3
+Maximum COG tracking errors in different walking velocities of the last experiment.
+Trial
+
+1
+
+2
+
+3
+
+4
+
+5
+
+Walking velocity [m/s]
+COGerr [cm]
+
+0.6
+5.71
+
+0.8
+5.33
+
+1.1
+5.82
+
+1.5
+4.98
+
+1.8
+5.72
+
+Table 4
+Comparisons of step length measurements.
+Direction
+
+By ruler [cm]
+
+By wearable sensors [cm]
+
+Errors [cm]
+
+North
+
+13
+26
+38
+
+15.1
+27.4
+35.8
+
+2.1
+1.4
+2.2
+
+North east
+
+15
+28
+38
+
+13.7
+27.7
+39.8
+
+1.3
+1.7
+1.8
+
+East
+
+15
+29
+37
+
+14.4
+27.8
+38.5
+
+0.6
+1.2
+1.5
+
+South east
+
+14
+27
+36
+
+14.9
+26
+38.2
+
+0.9
+1
+2.2
+
+South
+
+14
+29
+37
+
+14.7
+26.9
+38.4
+
+0.7
+2.1
+1.4
+
+South west
+
+16
+28
+35
+
+15.5
+28.6
+37.1
+
+0.5
+0.6
+2.1
+
+West
+
+16
+28
+40
+
+14.8
+26.5
+38.4
+
+1.2
+1.5
+1.6
+
+North west
+
+17
+27
+38
+
+16.4
+25.6
+36.5
+
+0.6
+1.4
+1.5
+
+Fig. 12. Positions of PTI markers.
+
+ments for five hours. Considering the obtained normal walking velocity value in [25], she repeated five trials with different walking
+velocities ranging from 0.6 m/s to 2 m/s every one hour. To evaluate the wearable sensor system by the PTI system, let us define the
+maximum tracking error of COG estimation by
+
+
+
+
+2
+2 
+(t ) − xPTI
++ yPTI
+(t ) − yPTI
+(27)
+COGerr = max
+xPTI
+w
+r (t )
+w
+r (t )
+t
+ PTI
+
+
+
+PTI
+PTI
+where xw (t ), yPTI
+w (t ) and xr (t ), yr (t ) are the estimated COG
+
+point series measured by the wearable sensors and the PTI system
+respectively. The maximum COG tracking errors of the first and the
+last comparison experiment were recorded and listed in Tables 2
+and 3. The maximum error (less than 6.1 cm) is acceptable in our
+application using an intelligent fall detection method. Comparing
+Tables 2 and 3, it turns out that there are no obvious changes of the
+maximum COG tracking errors in a fairly long duration.
+A group of typical trajectories of estimated COG and the tracking
+errors are shown in Figs. 14 and 15. All the data are represented in
+the PTI coordinate system. It turns out that the COG estimations
+using proposed wearable sensor system are sufficiently accurate
+most of the time. Relatively large COG tracking error occurs at the
+last phase (pretending to fall down) when the walking acceleration
+and the user’s HAT orientation drastically change. This is coincident
+
+with the limitation of proposed method that ignores motion
+accelerations and the effect of user’s HAT orientation. Meanwhile
+the measurement error is acceptable especially at the early stage
+of the fall event.
+
+34
+
+J. Huang et al. / Robotics and Autonomous Systems 73 (2015) 24–43
+
+Fig. 13. The procedure of comparison experiments using the reference PTI motion capture system. The experiments were performed in a relatively dark room to enhance
+the motion capture ability of PTI Visualeyez trackers.
+
+Fig. 15. Comparison results of estimated COG trajectories projected on the level
+ground (walking velocity = 1.8 m/s).
+
+Fig. 14. Comparison results of estimated COG trajectories and tracking errors
+using the reference PTI motion capture system and the wearable sensors
+(walking velocity= 1.8 m/s,
+
+tracking error =
+
+
+
+PTI
+xPTI
+w (t ) − x r (t )
+
+2
+
+
+2
+PTI
++ yPTI
+w (t ) − y r (t ) ).
+
+4.2.3. Dynamic step length measurement by wearable sensors
+Step length measurement experiments were also performed to
+evaluate the dynamic performance of the wearable sensors. The
+simultaneous measurement results of a ruler are used as the reference to verify the ability of proposed wearable sensory apparatus.
+Firstly, a one-step length measurement experiment was conducted. Subject A was asked to take a step towards different di-
+
+rections wearing the sensory apparatus. For a same direction, the
+subject was requested to take a step several times with different
+step lengths. The step length is measured both by the reference
+ruler and the wearable sensory apparatus. The comparison results
+are shown in Table 4 and Fig. 16. It is found that the maximum
+measuring error is less than 2.2 cm, which is acceptable in our application.
+To further evaluate the performance of the wearable sensor system in practical use, we conducted dynamic step length measurement experiments during operating the walking-aid robot. In the
+experiments, subject A was asked to follow the footprints on the
+ground in different velocities (as shown in Fig. 17) during operating the robot. In all the four trials, the walking velocity is within
+the range from 0.2 to 1 m/s, which is a little slower than normal
+
+J. Huang et al. / Robotics and Autonomous Systems 73 (2015) 24–43
+
+35
+
+(a) The scenario of dynamic step length measurement experiment.
+
+(b) Step length measurement comparisons in different directions.
+Fig. 16. One-step length measurement experiment.
+
+walking velocity reported in [25]. This is because the subject could
+not walk fast while operating the robot. The comparison results are
+shown in Fig. 18. To verify the operation performances in longer
+duration, it spent five hours to perform these experiments. Every
+one hour subject A conducted four trials with different walking velocities.
+It can be seen that the maximum error is less than 2.5 cm,
+which is at the same level as the COG tracking error we obtained in
+the previous section. In addition, the effect of walking velocity to
+measurement error is not very clear from the experiment results.
+One possible reason is that subject A walked in relatively slow
+velocities in all the trials. Comparing the two subfigures in Fig. 18, it
+turns out that there are no obvious changes of the maximum errors
+in a fairly long duration.
+
+4.3. Experiment of normal walking with the assistance of walking-aid
+robot
+In the ‘‘normal walking’’ experiments, the subjects wearing the
+sensors walked with the help of the walking-aid robot (see Fig. 19).
+Firstly, a selection procedure was performed to obtain appropriate admittance coefficients. A similar work can also be found
+in [26]. In this procedure, nine models with different mass and
+damping combinations (M and B) were tested with the walking-aid
+robot. For simplicity we only exemplified this procedure by discussing the motion in yr -axis (walking straightforward). Accordingly, My was set to 0.5, 4, or 7.5 kg and By was set to 1, 10, or
+20 Ns/m. Figs. 20 and 21 give the interaction forces/torque, the desired robot motion velocities in system {r } with different My and By .
+
+36
+
+J. Huang et al. / Robotics and Autonomous Systems 73 (2015) 24–43
+
+Fig. 17. Setup of dynamic step measurement experiments during operating the walking-aid robot.
+
+(a) The first comparison experiment. (Walking velocity: Trial (1) 0.2 m/s; Trial
+(2) 0.45 m/s; Trial (3) 0.7 m/s; Trial (4) 1.0 m/s).
+
+Fig. 19. Experiment setup.
+
+(b) The last comparison experiment. (Walking velocity: Trial (1) 0.2 m/s; Trial
+(2) 0.35 m/s; Trial (3) 0.5 m/s; Trial (4) 0.7 m/s).
+Fig. 18. Comparison results of dynamic step measurement experiments. The real
+step length trajectory was obtained using the ruler system. Data of all the trials were
+measured by the wearable sensor system.
+
+It can be seen that, a small mass and a small damping resulted in
+an oscillatory motion due to high frequency noise and small effective inertia. A small mass and a large damping resulted in the hard
+control of the robot. Large mass and small damping lead to a slowresponse and heavy system. By investigating the feeling of subjects,
+the acceptance range of My and By is illustrated in Fig. 22. Finally,
+we chose the optimal combination as My = 4 kg, By = 10 Ns/m in
+the other experiments.
+Second, the possibility distribution of ‘‘normal walking’’ was
+obtained as well as the membership degree function used in the
+fall detection algorithm. The subjects were asked to walk normally
+for about one minute. The trajectories and corresponding data
+histograms of d1 (n) and d2 (n) are shown in Fig. 23. Assuming h =
+10, the probability distribution p(nk ), possibility distribution π (nk )
+
+J. Huang et al. / Robotics and Autonomous Systems 73 (2015) 24–43
+
+37
+
+Fig. 20. Interaction forces/torque when using different mass-damping combinations.
+
+Fig. 21. Desired robot motion velocities when using different mass-damping combinations.
+
+for ‘‘normal walking’’ are calculated and also depicted in Fig. 23.
+In Fig. 24, the membership degree function µ(d(n)) obtained by
+aggregation (25) is given. It turns out that all the sampling points
+of ‘‘normal walking’’ are located at the area of sufficiently large
+positive membership degree (see Fig. 25).
+4.4. Experiments of fall detection and prevention with walking-aid
+robot
+To confirm the effectiveness of the proposed fall detection
+and motion control methods, three groups of fall prevention
+experiments were conducted on the two subjects. The investigated
+
+fall accidents include two types of falls along horizontal direction
+(falling forward and falling laterally to the left), and the falls along
+vertical direction due to eventual weaknesses in the legs. The
+subjects were asked to walk several steps and suddenly pretend
+to fall according to the experiment setup. Figs. 26 and 27 show the
+motion sequences of these experiments with subject A.
+During the experiments, features d1 (n) and d2 (n) were
+monitored online as well as the membership degree value µ(d(n)).
+According to Algorithm 2, the robot will be braked to prevent the
+subject from falling when continuous µ(d(n)) are less than a given
+threshold. Figs. 28–30 illustrate the procedures of fall detection
+and prevention for the subjects. Note that the three fall accidents
+
+38
+
+J. Huang et al. / Robotics and Autonomous Systems 73 (2015) 24–43
+
+accidents were detected. This confirms the effectiveness of the
+proposed fall prevention control strategy.
+5. Conclusion
+In this paper, we proposed a motion control of walking-aid
+robot based on observing human status using wearable sensors.
+There are several advantages of detecting fall accidents using wearable sensors:
+
+Fig. 22. Acceptance range of My and By .
+
+were respectively detected at instants 5 s, 7.2 s and 3.5 s for subject
+A, which is coincident with the motion sequence given in Figs. 26
+and 27.
+The robot movement velocities are also given in Figs. 28–30.
+It should be noted that the robot was braked as soon as the fall
+
+1. The price of wearable sensors is much lower than commonused laser range finders and visual systems.
+2. The fall accidents can be detected online by wearable sensors
+with less computation consumption than using visual systems,
+which is crucial for the real-time fall prevention control.
+3. The three-dimensional movement of human body can be recognized by wearable sensors. Therefore it is possible to detect all
+kinds of fall accidents, which cannot be achieved by using other
+type of sensors.
+During normal walking, the robot is controlled by a conventional admittance control strategy. If any fall is detected using
+
+(a) Subject A.
+
+(b) Subject B.
+Fig. 23. Trajectories, data histograms, probability and possibility distributions of a ‘‘normal walking’’.
+
+J. Huang et al. / Robotics and Autonomous Systems 73 (2015) 24–43
+
+(a) Subject A.
+
+39
+
+(b) Subject B.
+Fig. 24. The membership degree function of ‘‘normal walking’’.
+
+(a) Subject A.
+
+(b) Subject B.
+
+Fig. 25. The sampling points [d1 (n), d2 (n)]T of ‘‘normal walking’’ and the contour of membership degree µ(d(n)). The normal walking trajectories are denoted by cross
+points.
+
+(a) Fall forward (subject A).
+
+(b) Fall laterally to the left (subject A).
+Fig. 26. Fall along the horizontal direction (subject A).
+
+40
+
+J. Huang et al. / Robotics and Autonomous Systems 73 (2015) 24–43
+
+Fig. 27. Fall along the vertical direction due to weak legs (subject A).
+
+(a) Subject A.
+
+(b) Subject B.
+Fig. 28. Fall prevention experiment 1 (falling forward).
+
+J. Huang et al. / Robotics and Autonomous Systems 73 (2015) 24–43
+
+(a) Subject A.
+
+41
+
+(b) Subject B.
+Fig. 29. Fall prevention experiment 2 (falling laterally to the left).
+
+wearable sensors the robot will stop immediately to prevent the
+user from falling down. The proposed fall detection scheme is
+based on a fuzzy threshold approach considering the height of
+waist and the distance between the COP and midpoint of the feet
+of the user. Possibility theory was applied to describe the membership function of ‘‘normal walking’’. The effectiveness of proposed
+methods is confirmed through experiments. An obvious limitation
+of the proposed method is that we ignore the effect of user’s HAT
+
+orientation during measurement of the COG. Technically speaking,
+it is not difficult to add a wearable sensor unit to measure the orientation of HAT, whereas, it will make the system more complex
+and increase the total cost. From the evaluation of comparison experiments, we think that the proposed system is adequately accurate within current application. The focus of our future work is to
+investigate the feasibility of the proposed walking-aid robot and
+wearable sensors for helping subjects with walking dysfunction.
+
+42
+
+J. Huang et al. / Robotics and Autonomous Systems 73 (2015) 24–43
+
+(a) Subject A.
+
+(b) Subject B.
+
+Fig. 30. Fall prevention experiment 3 (falling along vertical direction).
+
+Acknowledgments
+This work was supported in part by the National Natural
+Science Foundation of China under Grant 61473130 and 61233015,
+Program for New Century Excellent Talents in University (Grant
+No. NCET-12-0214) and the Fundamental Research Funds for
+the Central Universities (Huazhong University of Science and
+Technology) under Grant 2013ZZGH007.
+
+References
+[1] M. Alwan, R.A. Felder, Eldercare Technology for Clinical Practitioners Totowa,
+Humana Press, NJ, 2008.
+[2] L. Jonsson, The Importance of the 4-WheeledWalker for Elderly Women Living
+in their Home Environment, The Swedish Handicap Institute, 2001.
+[3] S. Mohammed, Y. Amirat, H. Rifai, Lower-limb movement assistance through
+wearable robots: state of the art and challenges, Adv. Robot. 26 (2012) 1–22.
+[4] C.Y. Lee, I.K. Jeong, I.H. Lee, Development of rehabilitation robot systems for
+walking-aid, in: Proceeding of 2004 IEEE International Conference on Robotics
+and Automation (2004), 2004, pp. 2468–2473.
+
+J. Huang et al. / Robotics and Autonomous Systems 73 (2015) 24–43
+[5] S. Dubowsky, F. Genot, S.K. Godding, H.A. Skwersky, H. Yu, L. Yu, Pamma
+robotic aid to the elderly for mobility assistance and monitoring: a helpinghand for the elderly, in: Proceeding of IEEE International Conference on
+Robotics and Automation (2000), 2000, pp. 570–576.
+[6] Y. Hirata, T. Baba, K. Kosuge, Motion control of omni-directional type walking
+support system walking helper, in: Proceeding of RO-MAN (2003), 2003, pp.
+85–90.
+[7] H. Rifai, W. Hassani, S. Mohammed, Y. Amirat, Bounded control of an actuated
+lower limb orthosis, in: 2011 50th IEEE Conference on Decision and Control
+and European Control Conference (CDC-ECC), IEEE, 2011, pp. 873–878.
+[8] A.J. Rentschler, R.A. Cooper, B. Blaschm, M.L. Boninger, Intelligent walkers
+for the elderly performance and safety testing of va-pamaid robotic walker,
+J. Rehabil. Res. Dev. 40 (2003) 423–432.
+[9] Y. Hirata, A. Hara, K. Kosuge, Passive-type intelligent walking support system rt
+walker, in: Proceedings of the IEEE/RSJ International Conference on Intelligent
+Robots and Systems (2004), 2004, pp. 3871–3876.
+[10] K. Wakita, J. Huang, P. Di, K. Sekiyama, T. Fukuda, Human walking intention
+based motion control of omni-directional type cane robot, IEEE/ASME Trans.
+Mechatronics 18 (2013) 285–296.
+[11] A. Frizera-Neto, J. Gallego, E. Rocon, J. Pons, R. Ceres, Extraction of user’s
+navigation commands from upper body force interaction in walker assisted
+gait, Biomed. Eng. Online 9 (2010) 1–16.
+[12] C. Griffiths, C. Rooney, A. Brock, Leading causes of death in England and Wales
+how should we group causes?, in: Health Statistics Quarterly, vol. 28, Office
+for National Statistics, 2008.
+[13] Y. Hirata, A. Muraki, K. Kosuge, Motion control of intelligent walker based on
+renew of estimation parameters for user state, in: Proceedings of the IEEE/RSJ
+International Conference on Intelligent Robots and Systems (2006), 2006, pp.
+1050–1055.
+[14] J. Huang, P. Di, K. Wakita, T. Fukuda, K. Sekiyama, Study of fall detection
+using intelligent cane based on sensor fusion, in: Proceeding of International
+Symposium on Micro-Nano Mechatronics and Human Science (2008), 2008,
+pp. 495–500.
+[15] M. Mubashir, L. Shao, L. Seed, A survey on fall detection: principles and
+approaches, Neurocomputing 100 (2013) 144–152.
+[16] J. Baek, G. Lee, W. Park, B.J. Yun, Accelerometer signal processing for
+user activity detection, in: Knowledge-Based Intelligent Information and
+Engineering Systems, in: Lecture Notes in Computer Science, vol. 32, 2004,
+pp. 610–617.
+[17] S. Masaki, T. Toshiyo, A. Metin, T. Tamura, Discrimination of walking patterns
+using wavelet-based fractal analysis, IEEE Trans. Neural Syst. Rehabil. Eng. 10
+(2002) 188–196.
+[18] N. Wang, A. Eliathamby, H.L. Nigel, G.C. Branko, Accelerometry based classification of walking patterns using time-frequency analysis, in: Proceedings of
+the 29th Annual International Conference on the IEEE EMBS (2007), 2007, pp.
+4899–4902.
+[19] G. Campion, G. Bastin, B. Dandrea-Novel, Structural properties and classification of kinematic and dynamic models of wheeled mobile robots, IEEE Trans.
+Robot. Autom. 11 (1996) 47–62.
+[20] J.J. Craig, Introduction to Robotics Mechanics and Control, Addison-Wesley
+Publishing Company, 1989.
+[21] H.J. Lee, L.S. Chou, Detection of gait instability using the center of mass and
+center of pressure inclination angles, Arch. Phys. Med. Rehabil. 87 (2006)
+569–575.
+[22] D. Dubois, H. Prade, Possibility theory and its applications: A retrospective and
+prospective view, in: Proceeding of IEEE International Conference on Fuzzy
+Systems (2003), 2003, pp. 25–28.
+[23] A. Devillez, Four fuzzy supervised classi cation methods for discriminating
+classes of non-convex shape, Fuzzy Sets and Systems 141 (2004) 219–240.
+[24] P. de Leva, Adjustments to zatsiorsky-seluyanov’s segment inertia parameters,
+J. Biomech. 29 (8) (1996) 1223–1230.
+
+43
+
+[25] R.W. Bohannon, A. Andrews, Normal walking speed: a descriptive metaanalysis, Physiotherapy 97 (2011) 182–189.
+[26] M. Spenko, H. Yu, S. Dubowsky, Robotic personal aids for mobility and
+monitoring for the elderly, IEEE Trans. Neural Syst. Rehabil. Eng. 14 (2006)
+344–351.
+
+Jian Huang graduated from Huazhong University of
+Science and Technology (HUST), China in 1997 and
+received the Master of Engineering degree from HUST
+in 2000. He received his Ph.D from HUST in 2005.
+From 2006 to 2008, he was a postdoctoral researcher in
+the Department of Micro-Nano System Engineering and
+Department of Mechano-Informatics and Systems, Nagoya
+University, Japan. He is currently a full professor at School
+of Automation, HUST. His main research interests include
+rehabilitation robot, robotic assembly, networked control
+systems and bioinformatics.
+Wenxia Xu is currently a Ph.D. student at School of
+Automation, HUST. Her main research interests include
+rehabilitation robot and assistive robot.
+
+Samer Mohammed received the Diploma degree in
+electrical engineering from Lebanese University, Tripoli,
+Lebanon, the M.S. degree in automatic and microelectronic
+systems from the University of Montpellier II, Montpellier,
+France, and the Ph.D. degree in computer science from the
+Laboratory of Computer Science, Robotic and Microelectronic of Montpellier (LIRMM/CNRS), Montpellier. He is
+currently an Assistant Professor of computer science with
+the Laboratory of Image, Signal and Intelligent Systems,
+University of Paris-Est Créteil, Créteil, France. His current
+research interests include modeling, identification, and
+control of robotic systems (wearable robots), artificial intelligence, and decisionsupport theory. His current research involved the applications for the functional
+assisting of dependent people.
+
+Zhen Shu is a master student at School of Automation,
+HUST. His main research interests include rehabilitation
+robot and wearable sensors.
+
+

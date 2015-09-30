@@ -1,0 +1,476 @@
+Discrete Mathematics 311 (2011) 1918–1924
+
+Contents lists available at ScienceDirect
+
+Discrete Mathematics
+journal homepage: www.elsevier.com/locate/disc
+
+On a conjecture of Murty and Simon on diameter 2-critical graphs
+Teresa W. Haynes a,∗ , Michael A. Henning b , Lucas C. van der Merwe c , Anders Yeo d
+a
+
+Department of Mathematics, East Tennessee State University, Johnson City, TN 37614-0002, USA
+
+b
+
+Department of Mathematics, University of Johannesburg, Auckland Park 2006, South Africa
+
+c
+
+Department of Mathematics, University of Tennessee at Chattanooga, Chattanooga, TN 37403, USA
+
+d
+
+Department of Computer Science, Royal Holloway, University of London, Egham, Surrey, TW20 OEX, UK
+
+article
+
+abstract
+
+info
+
+Article history:
+Received 20 August 2010
+Received in revised form 10 May 2011
+Accepted 10 May 2011
+Available online 12 June 2011
+
+A graph G is diameter 2-critical if its diameter is two, and the deletion of any edge increases
+the diameter. Murty and Simon conjectured that the number of edges in a diameter
+2-critical graph of order n is at most n2 /4 and that the extremal graphs are complete
+bipartite graphs with equal size partite sets. We use an association with total domination
+to prove the conjecture for the graphs whose complements have diameter three.
+© 2011 Elsevier B.V. All rights reserved.
+
+Keywords:
+Diameter critical
+Total domination edge critical
+
+1. Introduction
+For notation and graph theory terminology, we in general follow [7]. Specifically, let G = (V , E ) be a graph with
+vertex set V of order |V | = n and edge set E of size |E | = m, and let v be a vertex in V . The open neighborhood of v is
+N (v) = {u ∈ V |uv ∈ E } and the closed neighborhood of v is N [v] = {v} ∪ N (v). For a set S ⊆ V , its open neighborhood is the
+set N (S ) = ∪v∈S N (v) and its closed neighborhood is the set N [S ] = N (S ) ∪ S.
+For two vertices u and v in a connected graph G, the distance dG (u, v) between u and v is the length of a shortest u–v path
+in G. The maximum distance among all pairs of vertices of G is the diameter of G, which is denoted by diam(G). Distance and
+diameter are fundamental concepts in graph theory and are well studied in the literature.
+A total dominating set, denoted TDS, of G with no isolated vertex is a set S of vertices of G such that every vertex is
+adjacent to a vertex in S, that is, N (S ) = V . Every graph without isolated vertices has a TDS, since S = V is such a set. The
+total domination number γt (G) is the minimum cardinality of a TDS. A TDS of G of cardinality γt (G) is called a γt (G)-set. Total
+domination in graphs was introduced by Cockayne et al. [3] and is now well studied in graph theory. For more details, the
+reader is referred to the two domination books [7,8] and a recent survey on total domination [11].
+1.1. The diameter 2-critical graph conjecture
+A graph G is called diameter 2-critical if its diameter is 2, and the deletion of any edge increases the diameter. Plesník [14]
+observed that all known minimal graphs of diameter 2 have no more than n2 /4 edges and that the extremal graphs are
+balanced complete bipartite graphs. Murty and Simon (see [2]) independently made the following conjecture:
+Conjecture 1. If G is a diameter 2-critical graph with order n and size m, then m ≤ n2 /4, with equality if and only if n is even
+and G is the complete bipartite graph K n , n .
+2 2
+
+∗
+
+Corresponding author.
+E-mail address: haynes@etsu.edu (T.W. Haynes).
+
+0012-365X/$ – see front matter © 2011 Elsevier B.V. All rights reserved.
+doi:10.1016/j.disc.2011.05.007
+
+T.W. Haynes et al. / Discrete Mathematics 311 (2011) 1918–1924
+
+1919
+
+According to Füredi [5], Erdős said that this conjecture goes back to the work of Ore in the 1960s. Plesník [14] proved
+that m < 3n(n − 1)/8. Caccetta and Häggkvist [2] showed m < .27n2 . Fan [4] proved the first part of the conjecture for
+n ≤ 24 and for n = 26. For n ≥ 25, he obtained m < n2 /4 + (n2 − 16.2n + 56)/320 < .2532n2 . Then Xu [15] gave an
+incorrect proof of the conjecture in 1984. Füredi [5] gave an asymptotic result proving the conjecture is true for large n, that
+is, for n > n0 where n0 is a tower of 2’s of height about 1014 . The conjecture has been studied by several other authors, see
+for example, [1,12,13] and elsewhere, but has yet to be settled.
+1.2. Total domination edge critical graphs
+A graph G is total domination edge critical if γt (G + e) < γt (G) for every edge e ∈ E (G) ̸= ∅. Further if γt (G) = k, then
+we say that G is a kt -critical graph. Thus if G is kt -critical, then its total domination number is k and the addition of any edge
+decreases the total domination number. The study of total domination edge critical graphs was initiated in [9]. It is shown
+in [9] that the addition of an edge to a graph can change the total domination number by at most two. Total domination edge
+critical graphs G with the property that γt (G) = k and γt (G + e) = k − 2 for every edge e ∈ E (G) are called kt -supercritical
+graphs. Thus if G is kt -supercritical, then its total domination number is k and the addition of any edge decreases the total
+domination number by two.
+1.3. The relationship: diameter 2-critical and total domination critical
+Hanson and Wang [6] were the first to observe the following key relationship between diameter 2-critical graphs and
+total domination edge critical graphs.
+Theorem 1 ([6]). A graph is diameter 2-critical if and only if its complement is 3t -critical or 4t -supercritical.
+The 4t -supercritical graphs are characterized in [10].
+Theorem 2 ([10]). A graph G is 4t -supercritical if and only if G is the disjoint union of two complete graphs.
+As noted by Hanson and Wang [6], the complement of a 4t -supercritical graph is a complete bipartite graph. The number
+of edges is minimized when the partite sets are equal in size, and so Conjecture 1 holds for this case and a subset of the
+complements of 4t -supercritical graphs yields the extremal graphs of the conjecture. Therefore, by Theorems 1 and 2,
+Conjecture 1 is equivalent to the following conjecture.
+Conjecture 2. If G is a 3t -critical graph with order n and size m, then m > n(n − 2)/4.
+1.4. Known results on the diameter of 3t -critical graphs
+Bounds on the diameter of 3t -critical graphs were established in [9].
+Theorem 3 ([9]). If G is a 3t -critical graph, then 2 ≤ diam(G) ≤ 3.
+By Theorem 3, every 3t -critical graph has diameter two or three. Hanson and Wang [6] proved the following result.
+Hanson–Wang Theorem. If G is a 3t -critical graph of diameter three and of order n and size m, then m ≥ n(n − 2)/4.
+In order to prove that Conjecture 2 holds for 3t -critical graphs of diameter three, we need strict inequality in the
+Hanson–Wang Theorem. Hence an additional edge is necessary to prove the conjecture in this case. We emphasize that
+without strict inequality in the Hanson–Wang Theorem, the conjecture is not proven. While the Hanson–Wang Theorem
+has a straightforward, short proof (only about a page), the difficult and challenging part is proving strictness in their bound.
+Indeed a surprising amount of work is required to find this one additional edge.
+2. Main results
+Our aim in this paper is to prove that Conjecture 2 is true for 3t -critical graphs with diameter three. We shall prove the
+following result, a proof of which is given in Section 3.
+Theorem 4. If G is a 3t -critical graph of diameter three and of order n and size m, then m > n(n − 2)/4.
+Thus using the important relationship between diameter 2-critical graphs and total domination edge critical graphs
+stated in Theorem 1, Conjecture 1 is proven for the graphs whose complements have diameter 3.
+2.1. Terminology and observations
+We restrict our attention to 3t -critical graphs. We note that since γt (G) ≥ 2 for any graph G, the addition of an edge to a
+3t -critical graph reduces the total domination number by exactly one. Hence if G is a 3t -critical graph, then γt (G) = 3 and
+γt (G + e) = 2 for every edge e ∈ E (G) ̸= ∅. To aid us in the proofs that follow, we introduce some additional notation.
+
+1920
+
+T.W. Haynes et al. / Discrete Mathematics 311 (2011) 1918–1924
+
+For a set S ⊆ V , the subgraph induced by S is denoted by G[S ], while the subgraph obtained from G by deleting vertices in
+S (and all edge incident with S) is denoted by G − S. For a vertex v ∈ V , we let NS (v) = NG (v) ∩ S and we let dS (v) = |NS (v)|.
+Thus, NS (v) is the set of neighbors of v that belong to the set S. We denote the degree of v in G by dG (v), or simply by d(v)
+if the graph G is clear from context. Thus, NG (v) = NV (v) and dG (v) = dV (v). A vertex w ∈ V is an S-private neighbor of
+v ∈ S if N [w] ∩ S = {v}, while the S-private neighbor set of v , denoted pn[v, S ], is the set of all S-private neighbors of v . An
+S-external private neighbor of a vertex v ∈ S is a vertex u ∈ V \ S which is adjacent to v but to no other vertex of S. The set
+of all S-external private neighbors of v ∈ S is called the S-external private neighbor set of v and is denoted epn(v, S ).
+If X and Y are two subsets of V , then we denote the set of all edges of G that join a vertex of X and a vertex of Y by [X , Y ].
+Further, if all edges are present between the vertices in X and the vertices in Y , we say that [X , Y ] is full, while if there are
+no edges between the vertices in X and the vertices in Y , we say that [X , Y ] is empty. Let X \ Y denote the set of vertices in
+X that do not belong to Y .
+For sets S , X ⊆ V , if X ⊆ N [S ] (X ⊆ N (S ), respectively), we say that S dominates X , written S ≻ X (S totally dominates X ,
+respectively, written S ≻t X ). If S = {s} or X = {x}, we also write s ≻ X , S ≻t x, etc. If S ≻ V (S ≻t V , respectively), we say
+that S is a dominating set (total dominating set) of G, and we also write S ≻ G (S ≻t G, respectively).
+Definition 5. Let G = (V , E ) be a 3t -critical graph, and let u and v be non-adjacent vertices in G. As γt (G + uv) = 2, there
+exists an edge xy ∈ E (G + uv) such that in G + uv , {x, y} ≻ V . The edge xy may not be unique. However, we select one such
+edge xy and call it the quasi-edge for uv , abbreviated q.e., and denote it by qeG (uv) = xy. (Thus with each edge in E (G), we
+associate a unique quasi-edge.) If G is clear from the context, we will write qe(uv) instead of qeG (uv). Abusing notation we
+will also denote V (qe(uv)) (= {x, y}) by qe(uv). Note that we always have |qe(uv) ∩ {u, v}| ≥ 1, as G is 3t -critical, implying
+that qe(uv) is not a TDS of G. Thus either qe(uv) = {u, v} or |qeG (uv) ∩ {u, v}| = 1.
+Definition 6. If e = uv is an edge of G such that exactly one vertex w is adjacent to neither u nor v , then we call w the
+unique non-neighbor of u and v and we write un(e) = w .
+We will frequently use the following observation and notation.
+Observation 7. For any 3t -critical graph G and non-adjacent vertices u and v in G, either {u, v} dominates G or, without loss of
+generality, {u, w} dominates G − v , but not v , for some w ∈ N (u). In this case, we write uw → v .
+If S ⊆ V , and u and v are two non-adjacent vertices that belong to S, then we say that uv is a missing edge in S (rather than
+‘‘uv is a missing edge in G[S ]’’). Also, if there are no missing edges in S, we take the liberty to write that S is complete (rather
+than ‘‘G[S ] is complete’’). If uv is a missing edge that does not dominate V , then by Observation 7, uw → v or vw → u for
+some vertex w ∈ V \ {u, v}. In particular, if uw is the q.e. for the missing edge uv , then un(uw) = v and uw → v .
+To aid us in our counting arguments, it helps to pair a missing edge with a unique q.e. such that there is a one-to-one and
+onto mapping from a set of missing edges to a set of quasi-edges. We call such a mapping a quasi-pairing. Let S be a set of
+vertices such that there is a quasi-pairing of the missing edges of S. Then we say that S induces a quasi-clique. We note that a
+quasi-edge has an endvertex outside of S, and a quasi-clique S contains both the existing edges of G[S ] and the quasi-edges
+associated missing edges of G[S ]. Similarly, if there is a quasi-pairing for the set of missing edges between two sets A and B
+of vertices, we say that [A, B] is quasi-full. We say that ab is an (A, B)-edge (respectively, missing (A, B)-edge) if a ∈ A, b ∈ B,
+and ab is an edge (respectively, missing edge) in G.
+The following observation and lemma will prove to be useful.
+Observation 8. Let G = (V , E ) be a 3t -critical graph. If xy ∈ E is a q.e. for some missing edge in G, then xy is a q.e. for at most
+two missing edges, namely xz and yz where z = un(xy).
+Lemma 9. If i + j = n for non-negative integers i and j, then the following holds.
+
+ 
+i
+
+2
+
+ 
++
+
+j
+
+2
+
+=
+
+n(n − 2)
+4
+
++
+
+(i − j)2
+4
+
+.
+
+Proof. Let k = (i − j)/2 and note that i = n/2 + k and j = n/2 − k. The following now proves the lemma.
+
+
+
+n/2 + k
+
+
+
+2
+
+
++
+
+n/2 − k
+2
+
+
+=
+
+(n/2 + k)2 − (n/2 + k)
+2
+
++
+
+(n/2 − k)2 − (n/2 − k)
+
+=
+
+2
+
+n(n − 2)
+4
+
++ k2 .
+
+As a consequence of Lemma 9, we have the following result.
+Corollary 10. Let G be a graph of order n and size m. If n = i + j and m ≥
+inequality if i ̸= j.
+3. A proof of Theorem 4
+Recall the statement of Theorem 4.
+
+ 
+i
+2
+
++
+
+ 
+j
+2
+
+, then m ≥ n(n − 2)/4 with strict
+
+T.W. Haynes et al. / Discrete Mathematics 311 (2011) 1918–1924
+
+1921
+
+Theorem 4. If G is a 3t -critical graph of diameter three of order n and size m, then m > n(n − 2)/4.
+Proof of Theorem 4. For sake of contradiction, let G = (V , E ) be a counterexample to the theorem, and let G = (V , E ).
+Amongst all vertices of eccentricity 3 in G, let u be one with minimum degree, and let A, B, C , be the sets of vertices at
+distance 1, 2, and 3, respectively, from u. We proceed with a series of claims that we may assume the graph G satisfies.
+Claim 1. C is complete.
+Proof. Suppose to the contrary that xy is a missing edge in C . Consider G + xy. Since {x, y} ̸≻ G, Observation 7 implies
+that, without loss of generality, xz → y. But no neighbor of x dominates u, and so xz is not a dominating edge of G − y, a
+contradiction. Hence, C is complete.
+Claim 2. [B, C ] is quasi-full.
+Proof. We need to show that for each missing (B, C )-edge, we can associate a unique quasi-edge. Suppose that x ∈ B, y ∈ C ,
+and xy ∈ E. Consider G + xy. Since neither x nor y dominates u, by Observation 7, xz → y or yz → x. Further since no
+neighbor of y dominates u, it follows that xz → y and z ∈ A to dominate u. Hence we associate the edge xz with the
+missing edge xy. By Observation 8, we note that yz is the only other missing edge which can have xz as its q.e. However as
+yz is a missing (A, C )-edge, we can uniquely associate the q.e. xz with the missing (B, C )-edge xy. We furthermore note that
+un(xz ) = y ∈ C .
+Claim 3. B is a quasi-clique.
+Proof. To prove the claim, we show that for each missing edge of B, we can associate a unique quasi-edge. Let xy be a missing
+edge in B, and consider G + xy. Then Observation 7 implies that, without loss of generality, xz → y and z ∈ A to dominate
+u. We associate xz with the missing edge xy. We note that un(xz ) = y ∈ B, which implies that the q.e. xz is not associated
+with a (B, C )-missing edge in Claim 2. By Observation 8 and the fact that yz is a missing (A, B)-edge we note that xz is not
+associated with another B-missing edge.
+Claim 4. A is a quasi-clique.
+Proof. To prove the claim, we show that for each missing edge of A, we can associate a unique quasi-edge. Let xy be a missing
+edge of A, and consider G + xy. Then it follows from Observation 7 that, without loss of generality, xz → y and z ∈ B to
+dominate C . We associate xz with the missing edge xy. We note that un(xz ) = y ∈ A, which implies that the q.e. xz is not
+associated with a (B, C )-missing edge in Claim 2 or a B-missing edge in Claim 3. By Observation 8 and the fact that yz is a
+missing (A, B)-edge we note that xz is not associated with another A-missing edge.
+By Claims 1–4, we have that K = A ∪{u} is 
+a quasi-clique
+and L = B ∪ C is a quasi-clique. Hence, letting |K | = k and
+
+k
+ℓ
+|L| = ℓ, we have that n = k + ℓ and m ≥ 2 + 2 . If k ̸= ℓ, then by Corollary 10, m > n(n − 2)/4. Hence we may assume
+that k = ℓ = n/2. In particular, we have that |A| = k − 1 = n/2 − 1. If some (A, B)-edge is not assigned as a quasi-edge
+in the quasi-clique K or the quasi-clique L, then m > n(n − 2)/4. Hence we may assume that all (A, B)-edges have been
+assigned as quasi-edges in the quasi-clique K or the quasi-clique L. Equivalently, we may assume that there exists exactly
+one q.e. for each missing edge; otherwise, some (A, B)-edge is not assigned and the result holds. We proceed with a series
+of claims that the graph G satisfies.
+Claim 5. No vertex in B dominates A.
+Proof. Suppose v ∈ B dominates A. Then all the n/2 − 1 (A, B)-edges incident to v have been counted as q.e. associated
+with missing edges in B or missing (B, C )-edges. Thus, v has n/2 − 1 missing edges incident with it in B ∪ C , and so v is
+non-adjacent with at least n/2 − 1 vertices in G[B ∪ C ]. However, |B ∪ C | = ℓ = n/2, implying that v is isolated in B ∪ C .
+Now consider the graph G + uv . Since neither u nor v dominates C , by Observation 7, uw → v or vw → u. But no neighbor
+of u and no neighbor of v dominates C , a contradiction.
+Claim 6. If |C | ≥ 2, then [B, C ] is full.
+Proof. Assume, to the contrary, that xy ∈ E where x ∈ B and y ∈ C , and consider the graph G + uy. Neither u nor y dominates
+x, and so Observation 7 implies that uz → y or yz → u. If uz → y, then z ∈ A. But since |C | ≥ 2, {u, z } does not dominate
+C \ {y}, a contradiction. Hence, yz → u. But then z ∈ B and z dominates A, contradicting Claim 5.
+Claim 7. If |C | ≥ 2, then A is a clique.
+Proof. Assume, to the contrary, that xy is a missing edge in A, and consider the graph G + xw , where w ∈ C . Neither x nor
+w dominates y, and so Observation 7 implies w z → x or xz → w . But no neighbor of w dominates u, and so xz → w. Then,
+z ∈ B to dominate C \ {w}. But since [B, C ] is full by Claim 6, we have that z is also adjacent to w , a contradiction.
+
+1922
+
+T.W. Haynes et al. / Discrete Mathematics 311 (2011) 1918–1924
+
+Claim 8. |C | = 1.
+Proof. Suppose that |C | ≥ 2. Then, by Claim 1, C is complete. By Claim 6, [B, C ] is full. By Claim 7, A is a clique. If B is a
+clique, then both K and L are cliques and therefore no (A, B)-edge is a quasi-edge. As G is connected, there is at least one
+(A, B)-edge, implying that m > n(n − 2)/4. Hence we may assume that B is not a clique. Let xy be a missing edge in B, and
+consider the graph G + ux. Neither u nor x dominates y, and so Observation 7 implies uz → x or xz → u. But no neighbor
+of u dominates C , and so xz → u. Thus, z ∈ B ∪ C . By Claim 5, no vertex in B dominates A, and so z ∈ B and {x, z } dominates
+A ∪ B ∪ C . Since {x, z } dominates A, there are at least n/2 − 1 (A, B)-edges from A to the set {x, z }. Since A is a clique and
+[B, C ] is full, these edges have been counted as q.e. associated with missing edges in B. Let M be the set of missing edges in
+B associated with the quasi-pairing of the (A, {x, z })-edges. Then, |M | ≥ n/2 − 1 and every edge in M is incident with x or
+z in G. Since xz ∈ E and there are at most n/2 − 3 vertices in B \ {x, z }, at least two edges in M have a common neighbor w ,
+say, in G. Thus, xw and w z are missing edges in B. But this contradicts the fact that {x, z } dominates B.
+Let C = {v}. Recall that amongst all vertices of eccentricity 3 in G, u was chosen to be one with minimum degree.
+Since the vertex v has eccentricity 3 in G, our choice of the vertex u implies that |A| = dG (u) ≤ dG (v) ≤ |B|. However,
+|A| = |B| = n/2 − 1 implying that dG (v) = |B|. Thus, v dominates B.
+Claim 9. If {u1 , u2 } ⊆ A, {v1 , v2 } ⊆ B, {u1 v1 , u2 v2 } ⊆ E and {u1 v2 , u2 v1 } ⊆ E, then {u1 u2 , v1 v2 } ⊆ E.
+Proof. Let v1 v2 be a missing edge in B. Then there are two possible q.e.s for the missing edge v1 v2 , namely u1 v1 and u2 v2 ,
+contradicting that there is a one-to-one correspondence between the missing edges and the quasi-edges. Hence, v1 v2 ∈ E.
+Similarly, u1 u2 ∈ E.
+Claim 10. If u1 u2 is a missing edge in A where dB (u1 ) ≥ dB (u2 ), then NB (u1 ) = NB (u2 ) ∪ {y}, where y is the end of the q.e.
+qe(u1 u2 ) that belongs to B. Similarly, if v1 v2 is a missing edge in B where dA (v1 ) ≥ dA (v2 ), then NA (v1 ) = NA (v2 ) ∪ {y}, where
+y is the end of the q.e. qe(v1 v2 ) that belongs to A.
+Proof. Note that the q.e. qe(u1 u2 ) belongs to [A, B] and the end of this q.e. in B, namely y, is adjacent to exactly one of u1
+and u2 . If there is a vertex in NB (u2 ) that is not in NB (u1 ), then since dB (u1 ) ≥ dB (u2 ), there is also a vertex in NB (u1 ) that is
+not in NB (u2 ). But then by Claim 9, u1 u2 ∈ E, a contradiction. Hence, NB (u2 ) ⊆ NB (u1 ). However, y is adjacent to exactly one
+of u1 and u2 , and so {y} ⊆ NB (u1 ) \ NB (u2 ). If |NB (u1 ) \ NB (u2 )| ≥ 2, then there are two possible q.e. for the missing edge
+u1 u2 , a contradiction. Hence, NB (u1 ) = NB (u2 ) ∪ {y}. An identical argument holds with the set A replaced by the set B.
+Claim 11. There exists a vertex w ∈ A such that dB (w) >
+and w ̸≻ B.
+
+1
+2
+
+|B| and w ̸≻ A or there exists a vertex w ∈ B such that dA (w) > 21 |A|
+
+Proof. If both A and B are cliques, then the theorem holds. Hence we may assume that B is not a clique. Let v1 v2 be a missing
+edge in B. By Claim 10, we may assume that dA (v1 ) = dA (v2 ) − 1. If dA (v2 ) > 12 |A|, then we are done by taking w = v2 .
+
+Hence we may assume that dA (v2 ) ≤ 12 |A|, and so dA (v1 ) < 12 |A|.
+We now consider the graph G + uv1 . Neither u nor v1 dominates v2 , and so Observation 7 implies uw → v1 or v1 w → u.
+But no neighbor of u dominates v , and so v1 w → u. Thus, w ∈ B ∪ {v}. By Claim 5, no vertex in B dominates A, and so w ∈ B
+and {v1 , w} ≻ A ∪ B ∪ C . Suppose that w ≻ B. Let {x} = NA (v2 ) \ NA (v1 ). Since {v1 , w} ≻ A, xw ∈ E. Let y = un(xw).
+Since w ≻ B, it follows that y ∈ A. Thus, v1 y ∈ E. But then considering the set {x, y, v1 , w}, we have by Claim 9 that
+xy ∈ E, a contradiction. Hence, w ̸≻ B. Since {v1 , w} ≻ A, dA (w) ≤ |A|/2 and dA (v1 ) < |A|/2 is impossible. Hence, w ∈ B,
+dA (w) > 12 |A| and w ̸≻ B, which proves the claim.
+By Claim 11, we may assume, without loss of generality, that there exists a vertex w ∈ B such that dA (w) > 12 |A| and
+w ̸≻ B. Among all such vertices in B, we may assume that w is chosen so that dA (w) is a maximum. Let ww′ be a missing
+edge in B. Then, dA (w) ≥ dA (w ′ ). By Claim 10, NA (w) = NA (w ′ ) ∪ {y′ }, where y′ is the end of the q.e. qe(ww ′ ) that belongs
+to A.
+Claim 12. For every (A, B)-edge e incident with w , we have un(e) ∈ B.
+Proof. Let e = xw ∈ E, where x ∈ A. Let un(e) = y and assume, to the contrary, that y ∈ A. Since {x, w} ≻ B, we have that
+xw ′ ∈ E. Since NA (w ′ ) ⊂ NA (w), we know that yw ′ ̸∈ E. But this implies that there are two possible q.e. for the missing edge
+xy in A, a contradiction.
+Let NA (w) = A1 = {u1 , u2 , . . . , up }. For i = 1, 2, . . . , p, let wi = un(ui w). By Claim 12, wi ∈ B for each i. Let
+B1 = {wi |wi = un(ui w), 1 ≤ i ≤ p}.
+Claim 13. wi ̸= wj for 1 ≤ i < j ≤ p.
+Proof. Assume, to the contrary, that wi = wj for some i and j where 1 ≤ i < j ≤ p. Then there are two possible q.e. for the
+missing edge wwi in A, namely the edges w ui and w uj , a contradiction.
+By Claim 13, the unique non-neighbors of the q.e. that join w and A are unique. Let B1 = {w1 , w2 , . . . , wp }.
+
+T.W. Haynes et al. / Discrete Mathematics 311 (2011) 1918–1924
+
+1923
+
+Claim 14. The set [A1 , B1 ] is full except for the missing edges u1 w1 , u2 w2 , . . . , up wp . Further, NA (w) = NA (wi ) ∪ {ui } for each
+i = 1, 2, . . . , p.
+Proof. Let i ∈ {1, 2, . . . , p}. Then, ui wi ̸∈ E and wwi is a missing edge in B. Further, un(ui w) = wi . By our choice of the
+vertex w , we have by Claim 10 that NA (w) = NA (wi ) ∪ {ui }.
+Claim 15. p ≥ 3.
+Proof. Assume that p ≤ 2 and note that |A|/2 < p ≤ 2, by Claim 11, which implies that |A| < 4. If p = 1, then |A| = 1.
+But then |B| = 1, contradicting Claim 5. Hence, p = 2. If |A| ≤ 2, then Claims 11 and 5 contradict each other, so we may
+assume that |A| = |B| = 3. By Claims 11 and 13, we have {u1 , u2 } ⊆ A and B = {w, w1 , w2 }. Let u3 be defined such that
+A = {u1 , u2 , u3 }. Claim 14 yields that {u1 w2 , u2 w1 } ⊂ E and u1 w1 , u2 w2 ̸∈ E. By Claim 9, u1 u2 , w1 w2 ∈ E. By the definition
+of w , we have w u1 , w u2 ∈ E and ww1 , ww2 ̸∈ E. As NA (w) = {u1 , u2 } and NA (w1 ) ⊂ NA (w) and NA (w2 ) ⊂ NA (w), it
+follows that u3 w, u3 w1 , u3 w2 ̸∈ E. As the un(u1 w) = w1 , we have that u3 u1 ∈ E. Analogously, u3 u2 ∈ E. However this
+implies that there are four edges in [A, B], but A is complete and G[B] contains exactly one edge. Therefore, G contains more
+than n(n − 2)/4 edges, a contradiction to G being a counterexample.
+Claim 16. For every (A1 , B1 )-edge, we have un(e) ∈ B.
+Proof. For the sake of contradiction, assume that there exists an edge e = ui wj such that {x} = un(e) ∈ A. If x ∈ A1 , then
+x = uj as all other vertices in A1 are adjacent to wj . However this is a contradiction to Claim 9, when considering the vertices
+{ui , wi , uj , wj }. Therefore x ̸∈ A1 . By Claim 10, we note that NA (w) = NA (ws ) ∪ {us } for all s = 1, 2, . . . , p, which implies
+that [x, B1 ] is empty. As p ≥ 3 by Claim 15, there exist two vertices wi1 , wi2 ∈ B1 such that {ui wi1 , ui wi2 } ⊆ E. However
+both of these edges have x as their unique non-neighbor, and so xui has two possible q.e., a contradiction.
+Claim 17. For 1 ≤ i < j ≤ p, we have un(ui wj ) ∈ B \ (B1 ∪ {w}).
+Proof. Let x = un(ui wj ) and note that by Claim 16, we have x ∈ B. If x ∈ B1 then x = wi as xui ̸∈ E. However if x = wi
+then wi wj ̸∈ E and we obtain a contradiction to Claim 9, when considering the vertices {ui , wi , uj , wj }. Therefore x ̸∈ B1 . As
+ui ∈ N (w) we note that x ̸= w , which implies that x ∈ B \ (B1 ∪ {w}), as desired.
+Claim 18. If {e1 , e2 , e3 } ⊆ [A1 , B1 ], then un(e1 ) = un(e2 ) = un(e3 ) is impossible.
+Proof. For the sake of contradiction assume that {x} = un(e1 ) = un(e2 ) = un(e3 ). Let ei = uti wsi for i = 1, 2, 3. If t1 = t2 ,
+then x is non-adjacent to ut1 , ws1 , ws2 . By Claim 10, we note that NA (ws2 ) = NA (x) ∪ {ut1 } = NB (ws1 ), a contradiction as
+us1 ∈ NB (ws2 ) \ NB (ws1 ). Therefore t1 ̸= t2 and analogously t1 ̸= t3 and t2 ̸= t3 . Note that ws1 has at most one non-neighbor
+in {ut1 , ut2 , ut3 } (as it only has one non-neighbor in A1 ). Without loss of generality, assume that ws1 ut1 , ws1 ut2 ∈ E. However
+this implies that we could have chosen either ws1 ut1 or ws1 ut2 as the q.e. of xws1 , a contradiction.
+We now continue with our proof of Theorem 4. Note that there are p(p − 1) edges in [A1 , B1 ], and let U denote the
+set of unique non-neighbors of these edges. By Claim 18, we get that |U | ≥ p(p − 1)/2 and by Claim 17 we note that
+U ⊆ B \ (B1 ∪ {w}). As B \ (B1 ∪ {w}) = |B| − p − 1 and |A| = |B| and p > |A|/2, we get the following.
+p(p − 1)
+2
+
+⇕
+
+≤ |A| − p − 1
+
+p2 + p ≤ 2|A| − 2
+
+⇓
+
+
+|A| + 1
+2
+
+2
+
+
++
+
+|A| + 1
+2
+
+
+≤ 2|A| − 2
+
+⇕
+(|A| − 2)2 + 7 ≤ 0.
+This contradiction completes the proof of Theorem 4.
+Acknowledgments
+The second author’s research was supported in part by the South African National Research Foundation and a partial
+travel grant from East Tennessee State University. The fourth author’s research was supported in part by the East Tennessee
+State University.
+
+1924
+
+T.W. Haynes et al. / Discrete Mathematics 311 (2011) 1918–1924
+
+References
+[1]
+[2]
+[3]
+[4]
+[5]
+[6]
+[7]
+[8]
+[9]
+[10]
+[11]
+[12]
+
+J.A. Bondy, U.S.R. Murty, Extremal graphs of diameter two with prescribed minimum degree, Studia Sci. Math. Hungar. 7 (1972) 239–241.
+L. Caccetta, R. Häggkvist, On diameter critical graphs, Discrete Math. 28 (3) (1979) 223–229.
+E. Cockayne, R. Dawes, S. Hedetniemi, Total domination in graphs, Networks 10 (1980) 211–219.
+G. Fan, On diameter 2-critical graphs, Discrete Math. 67 (1987) 235–240.
+Z. Füredi, The maximum number of edges in a minimal graph of diameter 2, J. Graph Theory 16 (1992) 81–98.
+D. Hanson, P. Wang, A note on extremal total domination edge critical graphs, Util. Math. 63 (2003) 89–96.
+T.W. Haynes, S.T. Hedetniemi, P.J. Slater, Fundamentals of Domination in Graphs, Marcel Dekker, Inc., New York, 1998.
+T.W. Haynes, S.T. Hedetniemi, P.J. Slater (Eds.), Domination in Graphs: Advanced Topics, Marcel Dekker, Inc., New York, 1998.
+T.W. Haynes, C.M. Mynhardt, L.C. van der Merwe, Total domination edge critical graphs, Util. Math. 54 (1998) 229–240.
+T.W. Haynes, C.M. Mynhardt, L.C. van der Merwe, Criticality index of total domination, Congr. Numer. 131 (1998) 67–73.
+M.A. Henning, Recent results on total domination in graphs: a survey, Discrete Math. 309 (2009) 32–63.
+V. Krishnamoorthy, R. Nandakumar, A class of counterexamples to a conjecture on diameter critical graphs, in: Combinatorics and Graph Theory,
+in: Lecture Notes in Mathematics, Springer, Berlin, Heidelberg, 1981, pp. 297–300.
+[13] U.S.R. Murty, On critical graphs of diameter 2, Math. Mag. 41 (1968) 138–140.
+[14] J. Plesník, Critical graphs of given diameter, Acta F.R.N Univ Comen Math. 30 (1975) 71–93.
+[15] J. Xu, A proof of a conjecture of Simon and Murty, J. Math. Res. Exposition 4 (1984) 85–86 (in Chinese).
+
+

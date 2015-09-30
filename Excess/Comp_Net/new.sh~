@@ -1,0 +1,6 @@
+n=0
+for f in $( ls *.txt | sort ) ; 
+do
+    n=$(( n+1 ))
+    mv -n "$f" "Comp_Net_${n}.txt"
+done

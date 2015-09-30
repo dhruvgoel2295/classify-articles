@@ -1,0 +1,803 @@
+Discrete Mathematics 311 (2011) 1863–1873
+
+Contents lists available at ScienceDirect
+
+Discrete Mathematics
+journal homepage: www.elsevier.com/locate/disc
+
+Locating–dominating codes in paths
+Geoffrey Exoo a , Ville Junnila b,c,∗ , Tero Laihonen c
+a
+
+Department of Mathematics and Computer Science, Indiana State University, Terre Haute, IN 47809, USA
+
+b
+
+Turku Centre for Computer Science TUCS, Finland
+
+c
+
+Department of Mathematics, University of Turku, FI-20014 Turku, Finland
+
+article
+
+info
+
+Article history:
+Received 6 October 2009
+Received in revised form 5 May 2011
+Accepted 5 May 2011
+Available online 1 June 2011
+Keywords:
+Locating–dominating code
+Optimal code
+Domination
+Graph
+Path
+
+abstract
+Bertrand, Charon, Hudry and Lobstein studied, in their paper in 2004 [1], r-locating–
+dominating codes in paths Pn . They conjectured that if r ≥ 2 is a fixed integer, then
+the smallest cardinality of an r-locating–dominating code in Pn , denoted by MrLD (Pn ),
+satisfies MrLD (Pn ) = ⌈(n + 1)/3⌉ for infinitely many values of n. We prove that this
+conjecture holds. In fact, we show a stronger result saying that for any r ≥ 3 we have
+MrLD (Pn ) = ⌈(n + 1)/3⌉ for all n ≥ nr when nr is large enough. In addition, we solve a
+conjecture on location–domination with segments of even length in the infinite path.
+© 2011 Elsevier B.V. All rights reserved.
+
+1. Introduction
+Let G = (V , E ) be a simple connected and undirected graph with V as the set of vertices and E as the set of edges. Let u
+and v be vertices in V . If u and v are adjacent to each other, then the edge between u and v is denoted by uv . The distance
+d(u, v) is the number of edges in any shortest path between u and v . Let r be a positive integer. We say that u r-covers v if
+the distance d(u, v) is at most r. The ball of radius r centered at u is defined as
+Br (u) = {x ∈ V | d(u, x) ≤ r }.
+A nonempty subset of V is called a code, and its elements are called codewords. Let C ⊆ V be a code and u be a vertex in
+V . An I-set (or an identifying set) of the vertex u with respect to the code C is defined as
+Ir (C ; u) = Ir (u) = Br (u) ∩ C .
+Definition 1.1. Let r be a positive integer. A code C ⊆ V is said to be r-locating–dominating in G if for all u, v ∈ V \ C the
+set Ir (C ; u) is nonempty and
+Ir (C ; u) ̸= Ir (C ; v).
+Let X and Y be subsets of V . The symmetric difference of X and Y is defined as X Y = (X \ Y ) ∪ (Y \ X ). We
+say that the vertices u and v are r-separated by a code C ⊆ V (or by a codeword of C ) if the symmetric difference
+Ir (C ; u) Ir (C ; v) is nonempty. The definition of r-locating–dominating codes can now be reformulated as follows: C ⊆ V
+
+∗
+
+Corresponding author at: Department of Mathematics, University of Turku, FI-20014 Turku, Finland. Tel.: +358 2 333 6021; fax: +358 2 333 6595.
+E-mail addresses: gexoo@indstate.edu (G. Exoo), viljun@utu.fi (V. Junnila), terolai@utu.fi (T. Laihonen).
+
+0012-365X/$ – see front matter © 2011 Elsevier B.V. All rights reserved.
+doi:10.1016/j.disc.2011.05.004
+
+1864
+
+G. Exoo et al. / Discrete Mathematics 311 (2011) 1863–1873
+
+is an r-locating–dominating code in G if and only if for all u, v ∈ V \ C the vertex u is r-covered by a codeword of C and
+Ir (C ; u) Ir (C ; v) ̸= ∅.
+The smallest cardinality of an r-locating–dominating code in a finite graph G is denoted by MrLD (G). Notice that there
+always exists an r-locating–dominating code in G. An r-locating–dominating code attaining the smallest cardinality is called
+optimal. In [4], it is shown that the problem of determining MrLD (G) is NP-hard.
+Locating–dominating codes are also known as locating–dominating sets in the literature. The concept of locating–dominating codes was first introduced by Slater in [13,15,16] and later generalized by Carson in [3]. Locating–dominating codes have been since studied in various papers such as [2,6,7,9,10,14,17–19]. For other papers on the
+subject, we refer to the Web site [12]. Moreover, location–domination in paths has been examined in [1,8] (for cycles see [5]).
+Let n be a positive integer. A path Pn = (Vn , En ) is a graph such that the set of vertices is defined as Vn = {vi | i =
+0, 1, . . . , n − 1} and the set of edges is defined as
+En = {vi vi+1 | i = 0, 1, . . . , n − 2}.
+In [15], Slater showed that M1LD (Pn ) = ⌈2n/5⌉. Bertrand et al. [1] provide the following lower bound for r ≥ 2.
+Theorem 1.2. Let n and r be integers such that n ≥ 1 and r ≥ 2. Then we have
+MrLD
+
+(Pn ) ≥
+
+
+
+n+1
+3
+
+
+
+.
+
+(1)
+
+Moreover, in [1], it is conjectured that for any fixed r ≥ 2, there exist infinitely many values of n such that MrLD (Pn ) attains
+the previous lower bound. In [8], it is shown that M2LD (Pn ) = ⌈(n + 1)/3⌉ for any n. Hence, the conjecture holds when r = 2.
+In Sections 4 and 5, we prove that the conjecture also holds when r ≥ 3. Moreover, we show that for any r ≥ 3 we have
+MrLD (Pn ) = ⌈(n + 1)/3⌉ for all n ≥ nr when nr is large enough (nr = O (r 3 )).
+In Section 2, we begin by introducing some basic results concerning r-locating–dominating codes in paths. In Section 3,
+we continue by considering r-locating–dominating codes in paths Pn with small n (compared to r). Then, in Section 5, we
+present optimal 3- and 4-locating–dominating codes in Pn for all n. Finally, in Section 6, we solve the conjecture stated
+in [1, Conjecture 2], which considers location-domination with segments of even lengths in the infinite path.
+2. Basics
+Let C be a nonempty subset of Vn . We first present a useful characterization of r-locating–dominating codes in paths. For
+this, we need the concept of C -consecutive vertices introduced in [1]. Let i and j be positive integers such that 0 ≤ i < j ≤
+n − 1. We say that (vi , vj ) is a pair of C -consecutive vertices in Pn if vi , vj ∈ Vn \ C and vk ∈ C for 0 ≤ i < k < j ≤ n − 1.
+Now we are ready to present the following characterization, which is introduced in [1, Remark 3].
+Lemma 2.1 ([1]). Let r be a positive integer. A code C ⊆ Vn is r-locating–dominating in Pn if and only if each vertex u ∈ Vn \ C
+is r-covered by a codeword of C and for each pair (u, v) of C -consecutive vertices in Pn the vertices u and v are r-separated by
+a codeword of C .
+The following theorem provides a handy property on the size of the optimal r-locating–dominating codes in Pn .
+Theorem 2.2. Let n and r be positive integers. Then we have
+MrLD (Pn ) ≤ MrLD (Pn+1 ) ≤ MrLD (Pn ) + 1.
+Proof. Consider first the inequality MrLD (Pn ) ≤ MrLD (Pn+1 ). Let C ⊆ Vn+1 = {v0 , v1 , . . . , vn } be an r-locating–dominating
+code in Pn+1 . Assume first that the vertex vn ̸∈ C . Now it is obvious that C is also an r-locating–dominating code in Pn .
+Assume then that vn ∈ C . Denote by X the set of pairs of C -consecutive vertices in Pn . There exists at most one pair
+(u, v) ∈ X such that the codeword vn belongs to the symmetric difference of Ir (u) and Ir (v). If there is no such pair of
+C -consecutive vertices, then it is clear that (C \ {vn }) ∪ {vn−1 } is an r-locating–dominating code in Pn . Assume then that
+(vi , vj ) with i < j is the unique pair of C -consecutive vertices such that vn ∈ Ir (vi ) Ir (vj ). Now define C ′ = (C \ {vn }) ∪ {vj }.
+Since all the pairs of C -consecutive vertices belonging to X \ {(vi , vj )} are r-separated by a codeword of C ′ , then it is easy
+to conclude that all the pairs of C ′ -consecutive vertices are r-separated by a codeword of C ′ in Pn . Notice that if a vertex
+is r-covered by vn , then it is also r-covered by vj . Therefore, each vertex in Vn is r-covered by a codeword of C ′ . Thus, by
+Lemma 2.1, C ′ is an r-locating–dominating code in Pn . In conclusion, we have MrLD (Pn ) ≤ MrLD (Pn+1 ).
+Let then C ⊆ Vn be an r-locating–dominating code in Pn . Since C ∪ {vn } is an r-locating–dominating code in Pn+1 , we
+immediately have MrLD (Pn+1 ) ≤ MrLD (Pn ) + 1.
+In what follows, we present a couple of lemmas that are useful in determining the smallest cardinalities of
+r-locating–dominating codes in paths with a small number of vertices in Section 3. The first lemma says that an
+r-locating–dominating code in Pn is such that at least r of both the first and the last 2r + 1 vertices of the path are codewords.
+
+G. Exoo et al. / Discrete Mathematics 311 (2011) 1863–1873
+
+1865
+
+Lemma 2.3. Let C be an r-locating–dominating code in Pn and n be an integer such that n ≥ 2r + 1.
+(i) The intersection C ∩ {v0 , v1 , . . . , v2r } contains at least r vertices.
+(ii) The intersection C ∩ {vn−2r −1 , vn−2r , . . . , vn−1 } contains at least r vertices.
+Proof. Let C be an r-locating–dominating code in Pn . Denote {v0 , v1 , . . . , vr } by Qr . Assume that there are k codewords
+in C ∩ Qr with 0 ≤ k ≤ r − 1. (Notice that if k ≥ r, then the case (i) immediately follows.) Now there are r − k
+pairs (u, v) of C -consecutive vertices such that u ∈ Qr and v ∈ Qr . Notice that if (u, v) and (u′ , v ′ ) are such pairs of
+C -consecutive vertices, then the symmetric differences Ir (u) Ir (v) and Ir (u′ ) Ir (v ′ ) are subsets of {vr +1 , vr +2 , . . . , v2r }
+and the intersection of the symmetric differences Ir (u) Ir (v) and Ir (u′ ) Ir (v ′ ) is empty. Hence, there are at least r − k
+codewords in {vr +1 , vr +2 , . . . , v2r }. Thus, the claim (i) follows.
+The case (ii) follows by symmetry.
+The second lemma says that an r-locating–dominating code in Pn is such that any set of 3r + 1 consecutive vertices in
+the path contains at least r codewords.
+Lemma 2.4. Let C be an r-locating–dominating code in Pn and n be an integer such that n ≥ 3r + 1. For i = 0, 1, . . . , n − 3r − 1,
+the set
+
+{vi , vi+1 , . . . , vi+3r } ⊆ Vn
+contains at least r codewords of C .
+Proof. Let C be an r-locating–dominating code in Pn and i be an integer such that 0 ≤ i ≤ n − 3r − 1. Denote
+{vi+r , vi+r +1 , . . . , vi+2r } by Qr . Assume that there are k codewords in C ∩ Qr with 0 ≤ k ≤ r − 1. Now there are r − k
+pairs (u, v) of C -consecutive vertices such that u ∈ Qr and v ∈ Qr . Notice that if (u, v) and (u′ , v ′ ) are such pairs
+of C -consecutive vertices, then it is easy to see that the symmetric differences Ir (u) Ir (v) and Ir (u′ ) Ir (v ′ ) are subsets
+of {vi , vi+1 , . . . , vi+r −1 } ∪ {vi+2r +1 , vi+2r +2 , . . . , vi+3r } and the intersection of the symmetric differences Ir (u) Ir (v) and
+Ir (u′ ) Ir (v ′ ) is empty. Hence, there are at least r − k codewords in {vi , vi+1 , . . . , vi+r −1 } ∪ {vi+2r +1 , vi+2r +2 , . . . , vi+3r }.
+Thus, the claim follows.
+3. Paths with a small number of vertices
+Let r be a positive integer. In this section, we determine the exact values of MrLD (Pn ) when 1 ≤ n ≤ 7r + 3. We also
+present a new lower bound on MrLD (Pn ) (improving the previous lower bound of Theorem 1.2) for some specific lengths n
+of the paths.
+Consider then the exact values of MrLD (Pn ) when 1 ≤ n ≤ 7r + 3. Clearly, we have MrLD (P1 ) = 1. The exact values
+of MrLD (Pn ), when 2 ≤ n ≤ 7r + 3, are given in the following theorem. Previously, in [1], it has been shown that
+MrLD (P3r +1 ) = MrLD (P3r +2 ) = r + 1 and MrLD (P3r +3 ) = r + 2.
+Theorem 3.1. Let r be an integer such that r ≥ 2. Then we have the following results for 2 ≤ n ≤ 7r + 3:
+(1)
+(2)
+(3)
+(4)
+(5)
+(6)
+(7)
+(8)
+(9)
+
+If
+If
+If
+If
+If
+If
+If
+If
+If
+
+2 ≤ n ≤ r + 1, then MrLD (Pn ) = n − 1.
+r + 2 ≤ n ≤ 2r + 1, then MrLD (Pn ) = r.
+2r + 2 ≤ n ≤ 3r + 2, then MrLD (Pn ) = r + 1.
+n = 3r + 3, then MrLD (Pn ) = r + 2.
+3r + 4 ≤ n ≤ 4r + 2, then MrLD (Pn ) = n − 2(r + 1).
+4r + 3 ≤ n ≤ 5r + 2, then MrLD (Pn ) = 2r.
+5r + 3 ≤ n ≤ 6r + 2, then MrLD (Pn ) = 2r + 1.
+6r + 3 ≤ n ≤ 6r + 5, then MrLD (Pn ) = 2r + 2.
+6r + 6 ≤ n ≤ 7r + 3, then MrLD (Pn ) = n − 4r − 3.
+
+Proof. Let C be an r-locating–dominating code in Pn .
+(1) Assume that 2 ≤ n ≤ r +1. Now it is obvious that Br (u) = Vn for all u ∈ Vn . Hence, it is immediate that Mr (Pn ) = n−1.
+(2) Assume that r + 2 ≤ n ≤ 2r + 1. Now, by Theorem 2.2, we have MrLD (Pn ) ≥ MrLD (Pr +1 ) = r. On the other hand,
+using Lemma 2.1, it is easy to verify that D2 = {v0 , v1 , . . . , vr −2 } ∪ {v2r } is an r-locating–dominating code in P2r +1 with r
+codewords. Therefore, by Theorem 2.2, MrLD (Pn ) = r when r + 2 ≤ n ≤ 2r + 1.
+(3) Assume that 2r + 2 ≤ n ≤ 3r + 2. Consider first the path P2r +2 . It is easy to conclude that each codeword can
+r-separate at most one pair of C -consecutive vertices in P2r +2 . The number of pairs of C -consecutive vertices in P2r +2 is
+equal to 2r + 2 − |C | − 1. Therefore, we have the following inequality:
+
+|C | ≥ 2r + 1 − |C | ⇐⇒ |C | ≥
+
+2r + 1
+2
+
+.
+
+Thus, by the previous inequality and Theorem 2.2, MrLD (Pn ) ≥ MrLD (P2r +2 ) ≥ r + 1. The code D3 = {vr , vr +1 , . . . , v2r −1 } ∪
+{v3r } introduced in [1] is r-locating–dominating in P3r +2 . Therefore, MrLD (Pn ) = r + 1 when 2r + 2 ≤ n ≤ 3r + 2.
+
+1866
+
+G. Exoo et al. / Discrete Mathematics 311 (2011) 1863–1873
+
+(4) In [1], it is shown that D4 = {v0 } ∪ {vr +1 , vr +2 , . . . , v2r } ∪ {v3r +2 } is an r-locating–dominating code in P3r +3 . Hence,
+by Theorem 1.2, we have MrLD (P3r +3 ) = r + 2.
+(5) Assume that 3r + 4 ≤ n ≤ 4r + 2. Now we can denote n = 3r + 3 + p, where 1 ≤ p ≤ r − 1. By Lemma 2.3,
+subsets {v0 , v1 , . . . , v2r } and {vr +p+2 , vr +p+3 , . . . , v3r +p+2 } both contain at least r codewords of C . The number of vertices
+in the intersection of these subsets is equal to r − p − 1. Therefore, we have
+
+|C | ≥ r − p − 1 + 2(r − (r − p − 1)) = r + p + 1.
+On the other hand, using Lemma 2.1, it is straightforward to verify that D5 = {v1 } ∪ {vr +2 , vr +3 , . . . , v2r +p } ∪ {v3r +p+1 } is
+an r-locating–dominating code in Pn . Thus, MrLD (P3r +3+p ) = r + p + 1 = n − 2(r + 1) when 3r + 4 ≤ n ≤ 4r + 2.
+(6) Assume that 4r + 3 ≤ n ≤ 5r + 2. By Theorem 2.2, we have MrLD (Pn ) ≥ MrLD (P4r +2 ) = 2r. Then define
+D6 = {v0 } ∪ {vr +2 , vr +3 , . . . , v2r } ∪ {v3r +1 , v3r +2 , . . . , v4r −1 } ∪ {v5r +1 }.
+The number of vertices in D6 is equal to 2r and, by Lemma 2.1, it can be easily verified that D6 is an r-locating–dominating
+code in P5r +2 . Therefore, by Theorem 2.2, MrLD (Pn ) = 2r when 4r + 3 ≤ n ≤ 5r + 2.
+(7) Assume that 5r + 3 ≤ n ≤ 6r + 2. Let us first show that MrLD (P5r +3 ) ≥ 2r + 1. Assume to the contrary that C is an
+r-locating–dominating code in P5r +3 with at most 2r codewords. By Lemma 2.3, we know that both {v0 , v1 , . . . , v2r } and
+{v3r +2 , v3r +3 , . . . , v5r +2 } contain at least r codewords of C . Hence, there are no codewords of C in {v2r +1 , v2r +2 , . . . , v3r +1 }.
+Therefore, since all the pairs (u, v) of C -consecutive vertices in P5r +3 such that u, v ∈ {v0 , v1 , . . . , v2r +1 } are r-separated
+by a codeword of C , then the codewords of C belonging to {v0 , v1 , . . . , v2r +1 } form an r-locating–dominating code in P2r +2
+with r codewords. This is a contradiction with the case (3). Thus, by Theorem 2.2, MrLD (Pn ) ≥ MrLD (P5r +3 ) ≥ 2r + 1. Define
+then
+D7 = {vr , vr +1 , . . . , v2r −1 } ∪ {v3r } ∪ {v4r +2 , v4r +3 , . . . , v5r } ∪ {v5r +2 }.
+Using Lemma 2.1, it is straightforward to verify that D7 is an r-locating–dominating code in P6r +2 with 2r + 1 codewords.
+Thus, MrLD (Pn ) = 2r + 1 when 5r + 3 ≤ n ≤ 6r + 2.
+(8) Assume that 6r + 3 ≤ n ≤ 6r + 5. By Theorem 1.2, we have MrLD (Pn ) ≥ 2r + 2. Define then
+D8 = {v1 , vr +1 } ∪ {vr +3 , vr +4 , . . . , v2r } ∪ {v3r +1 , v3r +3 } ∪ {v4r +4 , v4r +5 , . . . , v5r +1 } ∪ {v5r +3 , v6r +3 }.
+By Lemma 2.1, D8 is an r-locating–dominating code in P6r +5 with 2r + 2 vertices. Thus, MrLD (Pn ) = 2r + 2 when
+6r + 3 ≤ n ≤ 6r + 5.
+(9) Assume that 6r + 6 ≤ n ≤ 7r + 3. Now we can denote n = 6r + 5 + p, where 1 ≤ p ≤ r − 2. Consider first
+the path P7r +3 . By Lemma 2.3, the subsets {v0 , v1 , . . . , v2r } and {v5r +2 , v5r +3 , . . . , v7r +2 } of V7r +3 both contain at least r
+codewords of C . By Lemma 2.4, the same also holds for the subset {v2r +1 , v2r +2 , . . . , v5r +1 }. Therefore, MrLD (P7r +3 ) ≥ 3r.
+Thus, by Theorem 2.2 and the fact that MrLD (P6r +5 ) = 2r + 2, we have MrLD (P6r +5+p ) = 2r + 2 + p when 1 ≤ p ≤ r − 2. In
+other words, MrLD (Pn ) = n − 4r − 3 when 6r + 6 ≤ n ≤ 7r + 3.
+By generalizing the lower bound in the case (9) of the previous proof, the following theorem is immediately obtained.
+Theorem 3.2. Let r be a positive integer and n = 2(2r + 1) + p(3r + 1) where p ≥ 0 is an integer. Then we have
+MrLD (Pn ) ≥ (p + 2)r .
+Using the notations of the previous theorem, the lower bound of Theorem 1.2 implies that
+MrLD (Pn ) ≥
+
+
+
+n+1
+3
+
+
+
+= (p + 1)r + 1 +
+
+
+
+r +p
+3
+
+
+
+.
+
+By straightforward calculations, it can be shown that (p + 2)r > (p + 1)r + 1 + ⌈(r + p)/3⌉ if and only if 0 ≤ p ≤ 2r − 6.
+Thus, the previous theorem gives improvements on the previously known lower bound when n = 2(2r + 1) + p(3r + 1)
+and 0 ≤ p ≤ 2r − 6.
+By applying Theorem 2.2 to the previous lower bound, we also obtain new lower bounds for some other values of n. For
+example, by Theorem 1.2, we have M5LD (P56 ) ≥ 19. However, by Theorem 3.2, we have M5LD (P54 ) ≥ 20 and, therefore,
+M5LD (P56 ) ≥ M5LD (P54 ) ≥ 20.
+The values given by the lower bound of Theorem 3.2 are sometimes optimal. For example, when r = 5 and p = 4, we
+have M5LD (P86 ) ≥ 30. On the other hand,
+D86 = {v2 , v6 , v8 , v9 , v10 , v12 , v17 , v21 , v24 , v25 , v27 , v29 , v33 , v37 , v41 , v43 , v45 , v46 ,
+
+v53 , v55 , v59 , v61 , v62 , v63 , v71 , v75 , v76 , v78 , v79 , v83 }
+is a 5-locating–dominating code in P86 . Therefore, M5LD (P86 ) = 30.
+
+G. Exoo et al. / Discrete Mathematics 311 (2011) 1863–1873
+
+1867
+
+Fig. 1. The r-locating–dominating code C1 illustrated when r = 5.
+
+Fig. 2. The r-locating–dominating code C2 illustrated when r = 5.
+
+4. Paths with a large number of vertices
+Let n be a positive integer and r be an integer such that r ≥ 5. In this section, we show that the size of an optimal
+r-locating–dominating code in Pn is equal to ⌈(n + 1)/3⌉ for all n ≥ nr when nr is large enough. The proof of this is based on
+the result of Theorem 4.3 saying that if n = 3r + 2 + p((r − 3)(6r + 3) + 3r + 3) + q(6r + 3), where p and q are non-negative
+integers, then we have MrLD (Pn ) ≤ ⌈(n + 1)/3⌉. The proof of Theorem 4.3 is illustrated in the following example when
+r = 5.
+Example 4.1. Assume that r = 5. Let p and q be non-negative integers. In what follows, we show that if n = 3r + 2 +
+p((r − 3)(6r + 3) + 3r + 3) + q(6r + 3) = 17 + 84p + 33q, then M5LD (Pn ) ≤ ⌈(n + 1)/3⌉. In Figs. 1 and 2, first consider
+the pattern D (the upper dashed box in the figures), which is formed by concatenating the patterns K1 , K2 and K3 , which are
+of lengths 6r + 3, 6r + 3 and 3r + 3, respectively. The pattern D is of length (r − 3)(6r + 3) + 3r + 3 = 84 and contains
+((r − 3)(6r + 3) + 3r + 3)/3 = 28 codewords, i.e. 1/3 of the vertices of D are codewords. Moreover, it is easy to verify
+that D is a 5-locating–dominating code in a cycle of length 84 (compare this with Lemma 4.2). Similarly, the pattern (the
+lower dashed box in the figures) formed by K1 and L2 , which is of length 2(6r + 3) = 66 and contains (2(6r + 3))/3 = 22
+codewords, is a 5-locating–dominating code in a cycle of length 66.
+The actual 5-locating–dominating code in Pn depends on the parity of q. Assume first that q is even, i.e. q = 2q′ for some
+integer q′ . The code C1 is now defined as in Fig. 1, where the pattern D is repeated p times and the pattern formed by K1 and
+L2 is repeated q′ times. Since the patterns D and the one formed by K1 and L2 are 5-locating–dominating codes, respectively,
+in cycles of lengths 84 and 66, it is straightforward to verify that C1 is a 5-locating–dominating code in Pn (by Lemma 2.1).
+Similarly, it can be shown that the code C2 defined in Fig. 2 is 5-locating–dominating in Pn when q is odd, i.e. q = 2q′ + 1
+for some integer q′ . Therefore, if n = 17 + 84p + 33q, we have MrLD (Pn ) ≤ 6 + 28p + 11q = ⌈(n + 1)/3⌉.
+For the formal proof of Theorem 4.3, we first need to introduce some preliminary definitions and results. Let i and s be
+non-negative integers. First, for 1 ≤ i ≤ r − 2, define
+
+
+
+
+r −1
+
+ 
+
+Mi (s) = 
+
+j=0
+j̸=r −i−1
+
+
+{vs+j } ∪ {vs+2r −i }
+
+1868
+
+G. Exoo et al. / Discrete Mathematics 311 (2011) 1863–1873
+
+and Mi′ (s) = Mi (s) \ {vs+2r −i }. Notice that |Mi (s)| = r. Furthermore, for 1 ≤ i ≤ r − 3, define
+
+
+
+
+4r
+
+
+
+Ki (s) = Mi′ (s) ∪ {vs+2r , vs+3r −i } ∪ 
+{vs+j } ∪ {vs+5r −i , vs+5r +2 },
+j=3r +2
+j̸=4r −i
+
+and Kr −2 (s) = Mr′ −2 (s) ∪ {vs+2r , vs+2r +2 }. Notice that for i = 1, 2, . . . , r − 3, we have |Ki (s)| = 2r + 1 and |Kr −2 (s)| = r + 1.
+Finally, define
+
+
+L1 (s) = M1 (s) ∪
+
+
+
+4r −1
+
+
+
+{vs+j } ∪ {vs+4r +1 , vs+6r +1 } ∪
+
+j=3r +1
+
+
+
+7r +1
+
+
+
+
+{vs+j } ∪ {vs+8r +3 }
+
+j=6r +3
+
+and, for 2 ≤ i ≤ r − 2, define
+
+
+
+
+
+{vs+j } ∪ {vs+6r −i+2 }.
+Li (s) = Mi (s) ∪ 
+
+
+4r +1
+
+j=3r +1
+j̸=4r −i+1
+
+Notice that |L1 (s)| = 3r + 1 and |Li (s)| = 2r + 1 when 2 ≤ i ≤ r − 2.
+As in Example 4.1, denote by Ki , Li and Mi the patterns {vs , vs+1 , . . . , vs+ℓ−1 } where the codewords are determined by
+Ki (s), Li (s) and Mi (s), respectively. The length ℓ of each pattern Ki and Li is equal to three times the number of codewords in
+the pattern. For example, the length of the pattern L1 is equal to 9r + 3 (see the case (iv) below). The length of the pattern
+Mi is equal to 2r + 1. The following lemma says for general r ≥ 5 that the patterns Ki , Li and Mi can be concatenated to form
+r-locating dominating codes as in Example 4.1 (because the beginning of each of them contains Mi′ (s)).
+Lemma 4.2. Let n and s be positive integers, and let r be an integer such that r ≥ 5. Let C be a code in Pn .
+(i) Let i be an integer such that 1 ≤ i ≤ r − 3. If Ki (s) ∪ Mi′+1 (s + 6r + 3) ⊆ C , then each pair (vj1 , vj2 ) of C -consecutive
+vertices in Pn such that s ≤ j1 ≤ s + 7r + 2 and s ≤ j2 ≤ s + 7r + 2 is r-separated by a codeword of C .
+(ii) If Kr −2 (s) ∪ M1′ (s + 3r + 3) ⊆ C , then each pair (vj1 , vj2 ) of C -consecutive vertices in Pn such that s ≤ j1 ≤ s + 4r + 2
+and s ≤ j2 ≤ s + 4r + 2 is r-separated by a codeword of C .
+(iii) Let i be an integer such that 2 ≤ i ≤ r − 2. If Li (s) ∪ Mi′−1 (s + 6r + 3) ⊆ C , then each pair (vj1 , vj2 ) of C -consecutive
+vertices in Pn such that s ≤ j1 ≤ s + 7r + 2 and s ≤ j2 ≤ s + 7r + 2 is r-separated by a codeword of C .
+(iv) If L1 (s) ∪ Mr′ −2 (s + 9r + 3) ⊆ C , then each pair (vj1 , vj2 ) of C -consecutive vertices in Pn such that s ≤ j1 ≤ s + 10r + 2
+and s ≤ j2 ≤ s + 10r + 2 is r-separated by a codeword of C .
+Proof. (i) Let i be an integer with 1 ≤ i ≤ r − 3 and C ⊆ Vn a code such that Ki (s) ∪ Mi′+1 (s + 6r + 3) ⊆ C . Consider then
+the symmetric differences Br (vj1 ) Br (vj2 ), where (vj1 , vj2 ) are pairs of C -consecutive vertices such that s ≤ j1 ≤ s + 7r + 2
+and s ≤ j2 ≤ s + 7r + 2. For the following considerations, notice that
+7r +2
+
+Mi′+1 (s + 6r + 3) =
+
+
+
+{vs+j }.
+
+j=6r +3
+j̸=7r −i+1
+
+Let k be a positive integer. If s + r ≤ k ≤ s + 2r − i − 2, s + 2r − i ≤ k ≤ s + 2r − 2, s + 4r + 2 ≤ k ≤ s + 5r − i − 2
+or s + 5r − i + 1 ≤ k ≤ s + 5r, then it is straightforward to verify that the vertex vk−r belongs to the symmetric difference
+Ir (vk ) Ir (vk+1 ). If s + 2r + 1 ≤ k ≤ s + 3r − i − 2, s + 3r − i + 1 ≤ k ≤ s + 3r − 1, s + 5r + 3 ≤ k ≤ s + 6r − i − 1 or
+s + 6r − i + 1 ≤ k ≤ s + 6r + 1, then it can be seen that the vertex vk+r +1 belongs to the symmetric difference Ir (vk ) Ir (vk+1 ).
+Moreover, we have that
+
+vs+2r ∈ Ir (vs+r −i−1 ) Ir (vs+r ),
+vs+3r −i ∈ Ir (vs+2r −i−1 ) Ir (vs+2r −i ),
+vs+r −1 ∈ Ir (vs+2r −1 ) Ir (vs+2r +1 ),
+vs+4r −i+1 ∈ Ir (vs+3r −i−1 ) Ir (vs+3r −i+1 ),
+vs+2r ∈ Ir (vs+3r ) Ir (vs+3r +1 ),
+vs+5r −i ∈ Ir (vs+3r +1 ) Ir (vs+4r −i ),
+vs+3r −i ∈ Ir (vs+4r −i ) Ir (vs+4r +1 ),
+vs+5r +2 ∈ Ir (vs+4r +1 ) Ir (vs+4r +2 ),
+vs+4r −i−1 ∈ Ir (vs+5r −i−1 ) Ir (vs+5r −i+1 ),
+vs+6r +3 ∈ Ir (vs+5r +1 ) Ir (vs+5r +3 ),
+vs+5r −i ∈ Ir (vs+6r −i ) Ir (vs+6r −i+1 ) and
+vs+5r +2 ∈ Ir (vs+6r +2 ) Ir (vs+7r −i+1 ).
+
+G. Exoo et al. / Discrete Mathematics 311 (2011) 1863–1873
+
+1869
+
+In conclusion, all the pairs (vj1 , vj2 ) of C -consecutive vertices in Pn such that s ≤ j1 ≤ s + 7r + 2 and s ≤ j2 ≤ s + 7r + 2
+are r-separated by a codeword of C .
+The proofs of the cases (ii), (iii) and (iv) are analogous to the first one.
+The following theorem now proves the conjecture stated in [1, Conjecture 1] when r ≥ 5.
+Theorem 4.3. Let r ≥ 5 be an integer and n = 3r + 2 + p((r − 3)(6r + 3)+ 3r + 3)+ q(6r + 3), where p and q are non-negative
+integers. Then we have
+MrLD
+
+
+
+(Pn ) ≤
+
+n+1
+3
+
+
+
+.
+
+Proof. Let r ≥ 5 be an integer and n = 3r + 2 + p((r − 3)(6r + 3) + 3r + 3) + q(6r + 3), where p and q are non-negative
+integers. Let s be a non-negative integer and define
+D(s) =
+
+r −3
+
+
+Ki+1 (s + i(6r + 3)).
+
+i=0
+
+Assume that q is even, i.e. q = 2q′ for some integer q′ . Define then
+p−1
+
+C1 = {vr −2 } ∪
+
+
+
+D(r + 1 + j((r − 3)(6r + 3) + 3r + 3))
+
+j=0
+q ′ −1
+
+∪
+
+
+
+K1 (r + 1 + p((r − 3)(6r + 3) + 3r + 3) + 2j(6r + 3))
+
+j =0
+q ′ −1
+
+∪
+
+
+
+L2 (r + 1 + p((r − 3)(6r + 3) + 3r + 3) + (2j + 1)(6r + 3))
+
+j =0
+
+∪ M1 (r + 1 + p((r − 3)(6r + 3) + 3r + 3) + q(6r + 3)).
+Notice that if r = 5, this definition of C1 coincides with the one of Example 4.1. (Recall also the length of the patterns Ki , Li
+and Mi as described earlier.) As in the previous example, C1 is formed by concatenating the patterns Ki , Li and Mi . Since
+Mi′ (s) ⊆ Ki (s) and Mi′ (s) ⊆ Li (s), Lemma 4.2 applies to each occurrence of Ki (s) and Li (s) in C1 . Therefore, each pair (vj , vk )
+of C1 -consecutive vertices in Pn such that r + 1 ≤ j ≤ n − r − 2 and r + 1 ≤ k ≤ n − r − 2 is r-separated by a codeword
+of C1 . Hence, it is easy to see that each pair of C1 -consecutive vertices in Pn is r-separated by C1 . Since there are no 2r + 1
+consecutive vertices belonging to Vn \ C1 in Pn , all the vertices in Pn are r-covered by a codeword of C1 . Thus, by Lemma 2.1,
+it is easy to conclude that C1 is an r-locating–dominating code in Pn with ⌈(n + 1)/3⌉ vertices.
+Assume then that q is odd, i.e. q = 2q′ + 1 for some integer q′ . Define then
+p−1
+
+C2 = {vr −2 } ∪
+
+
+
+D(r + 1 + j((r − 3)(6r + 3) + 3r + 3))
+
+j=0
+
+∪
+
+q′
+
+
+K1 (r + 1 + p((r − 3)(6r + 3) + 3r + 3) + 2j(6r + 3))
+
+j=0
+q ′ −1
+
+∪
+
+
+
+L2 (r + 1 + p((r − 3)(6r + 3) + 3r + 3) + (2j + 1)(6r + 3))
+
+j =0
+
+∪ M2 (r + 1 + p((r − 3)(6r + 3) + 3r + 3) + q(6r + 3)).
+Similarly, as in the previous case, it can be shown that C2 is an r-locating–dominating code in Pn with ⌈(n + 1)/3⌉
+vertices.
+In [11, Theorem 8.3], the following theorem is presented. This theorem turns out useful in future considerations.
+Theorem 4.4 ([11]). Let a and b be positive integers such that the greatest common divisor of a and b is equal to 1. Then, for any
+integer n > ab − a − b, there exist such non-negative integers p and q that n = pa + qb.
+The length of the path in Theorem 4.3 can be written as follows:
+n = 3r + 2 + p((r − 3)(6r + 3) + 3r + 3) + q(6r + 3)
+
+= 3r + 2 + 3(p((r − 3)(2r + 1) + r + 1) + q(2r + 1)).
+
+1870
+
+G. Exoo et al. / Discrete Mathematics 311 (2011) 1863–1873
+
+The greatest common divisor of (r − 3)(2r + 1)+ r + 1 and 2r + 1 is equal to 1. Thus, by Theorem 4.4, if n′ is an integer such that
+n′ ≥ 2r ((r − 3)(2r + 1)+ r ), then there exist non-negative integers p and q such that n′ = p((r − 3)(2r + 1)+ r + 1)+ q(2r + 1).
+Therefore, if n is an integer such that n ≥ 3r + 2 + 3 · 2r ((r − 3)(2r + 1) + r ) and n ≡ 2(mod 3), then there exist integers
+p ≥ 0 and q ≥ 0 such that n = 3r + 2 + p((r − 3)(6r + 3) + 3r + 3) + q(6r + 3).
+Assume that n ≥ 3r + 2 + 6r ((r − 3)(2r + 1) + r ) and n = 3k + 2, where k is an integer. Combining the lower bound
+of Theorems 1.2, 2.2 and 4.3, we obtain
+k + 1 ≤ MrLD (P3k ) ≤ MrLD (P3k+1 ) ≤ MrLD (P3k+2 ) ≤ k + 1.
+Therefore, MrLD (P3k ) = MrLD (P3k+1 ) = MrLD (P3k+2 ) = k + 1. Thus, the following theorem immediately follows.
+Theorem 4.5. Let r be a positive integer such that r ≥ 5. If n ≥ 3r + 2 + 6r ((r − 3)(2r + 1) + r ), then
+MrLD (Pn ) =
+
+
+
+n+1
+
+
+
+3
+
+.
+
+Theorem 4.3 provides one approach to form r-locating–dominating codes in paths using Lemma 4.2. However, this lemma
+can also be applied in other ways. For example, when k is an integer such that 0 ≤ k ≤ r − 3,
+
+
+C (k) = {vr −2 } ∪ L1 (r + 1) ∪
+
+k−1
+
+
+
+Lr −2−j (10r + 4 + j(6r + 3))
+
+∪ Mr −2−k (10r + 4 + k(6r + 3))
+
+j =0
+
+is an optimal r-locating–dominating code in Pn with n = 12r + 5 + k(6r + 3). Notice that the optimal r-locating–dominating
+codes in paths of these lengths cannot be obtained using Theorem 4.3.
+5. The exact values of M3LD (Pn ) and M4LD (Pn )
+Let n be a positive integer. In this section, we solve the exact values of M3LD (Pn ) and M4LD (Pn ) for all n. In order to do this,
+we first need to present some preliminary definitions and results.
+Define an infinite path P∞ = (V∞ , E∞ ), where V∞ = {vi | i ∈ Z} and E∞ = {vi vi+1 | i ∈ Z}. Define then
+C = {vi ∈ V∞ | i ≡ 0, 2 mod 6}.
+In [8], it is stated that if r is an integer such that r ≥ 2 and r ≡ 1, 2, 3 or 4(mod 6), then C is an r-locating–dominating code
+in P∞ . This result is rephrased in the following lemma when r = 3 or r = 4.
+Lemma 5.1. Let n and k be integers such that
+D = {vk , vk+2 , vk+6 , vk+8 , vk+12 , vk+14 } ⊆ Vn .
+If a pair (vi , vj ) of D-consecutive vertices in Pn is such that k + 5 ≤ i ≤ k + 13 and k + 5 ≤ j ≤ k + 13, then vi and vj are
+3- and 4-separated by a codeword of D. Moreover, each vertex vi ∈ Vn \ D such that k + 6 ≤ i ≤ k + 11 is 3- and 4-covered by
+a codeword of D.
+Consider then r-locating–dominating codes in Pn when r = 3. By Theorem 3.1, the exact values of M3LD (Pn ) are known
+when 1 ≤ n ≤ 24. Let p be an integer such that p ≥ 1. Define
+
+
+
+
+p
+
+D1 (p) = {v1 } ∪
+{v4+6i , v6+6i } ∪ {v9+6p , v14+6p , v15+6p , v17+6p }
+i=0
+
+and
+
+
+
+
+p
+
+D2 (p) = {v1 } ∪
+{v4+6i , v6+6i } ∪ {v10+6p , v12+6p , v16+6p , v18+6p , v21+6p }.
+i=0
+
+It is straightforward to verify that D1 (1) and D2 (1) are 3-locating–dominating codes in P26 and P29 , respectively. Therefore,
+using Lemma 5.1, it is easy to conclude that D1 (p) and D2 (p) are 3-locating–dominating codes in P20+6p and P23+6p ,
+respectively, when p ≥ 2. Moreover, by Theorems 1.2 and 2.2, we have
+
+|D1 (p)| ≥ M3LD (P20+6p ) ≥ M3LD (P19+6p ) ≥ M3LD (P18+6p ) ≥ 7 + 2p
+and
+
+|D2 (p)| ≥ M3LD (P23+6p ) ≥ M3LD (P22+6p ) ≥ M3LD (P21+6p ) ≥ 8 + 2p.
+Since |D1 (p)| = 7 + 2p and |D2 (p)| = 8 + 2p, we have that M3LD (Pn ) = ⌈(n + 1)/3⌉ for any n ≥ 24. In conclusion, all the
+values of M3LD (Pn ) are determined.
+
+G. Exoo et al. / Discrete Mathematics 311 (2011) 1863–1873
+
+1871
+
+Consider then r-locating–dominating codes in Pn when r = 4. By Theorem 3.1, the exact values of M4LD (Pn ) are known
+when 1 ≤ n ≤ 31. Assume now that p ≥ 0. Define
+
+
+
+
+p
+
+D3 (p) = {v1 , v5 , v7 , v8 } ∪
+{v13+6i , v15+6i } ∪ {v20+6p , v21+6p , v23+6p , v27+6p }
+i =0
+
+and
+
+
+
+
+p
+
+D4 (p) = {v1 , v5 , v7 , v8 } ∪
+{v13+6i , v15+6i } ∪ {v20+6p , v21+6p , v23+6p , v28+6p }
+i=0
+
+∪{v31+6p , v34+6p , v36+6p , v39+6p , v42+6p , v47+6p , v49+6p , v50+6p , v53+6p }.
+It is straightforward to verify that D3 (0), D3 (1), D4 (0) and D4 (1) are 4-locating–dominating codes in P29 , P35 , P56 and P62 ,
+respectively. Therefore, using Lemma 5.1, it is easy to conclude that D1 (p) and D2 (p) are 4-locating–dominating codes in
+P29+6p and P56+6p , respectively, when p ≥ 2. Moreover, by Theorems 1.2 and 2.2, we have
+|D3 (p)| ≥ M4LD (P29+6p ) ≥ M4LD (P28+6p ) ≥ M4LD (P27+6p ) ≥ 10 + 2p
+and
+
+|D4 (p)| ≥ M4LD (P56+6p ) ≥ M4LD (P55+6p ) ≥ M4LD (P54+6p ) ≥ 19 + 2p.
+Since |D3 (p)| = 10 + 2p and |D4 (p)| = 19 + 2p, we have that M4LD (Pn ) = ⌈(n + 1)/3⌉ when 27 + 6p ≤ n ≤ 29 + 6p and
+54 + 6p ≤ n ≤ 56 + 6p (p ≥ 0). In conclusion, the values of M4LD (Pn ) are determined except when n = 32, 36 ≤ n ≤
+38, 42 ≤ n ≤ 44 or 48 ≤ n ≤ 50.
+By Theorem 3.1, we have M4LD (P31 ) = 12. Therefore, by Theorem 2.2, since M4LD (P35 ) = 12, we also have that
+LD
+M4 (P32 ) = 12. Define then
+D37 = {v2 , v3 , v5 , v6 , v13 , v16 , v17 , v19 , v23 , v29 , v30 , v31 , v33 },
+D43 = {v2 , v3 , v5 , v8 , v10 , v16 , v18 , v21 , v23 , v24 , v31 , v34 , v35 , v37 , v41 }
+and
+D49 = {v2 , v5 , v6 , v8 , v13 , v16 , v19 , v20 , v26 , v27 , v30 , v33 , v38 , v40 , v41 , v42 , v48 }.
+It is easy to verify that D37 , D43 and D49 are 4-locating–dominating codes in P37 , P43 and P49 attaining the lower bound of
+Theorem 1.2, respectively. Therefore, by Theorem 2.2, we also have the optimal 4-locating–dominating codes for the paths
+P36 , P42 and P48 . By Theorem 3.2, we have M4LD (P44 ) ≥ 16. On the other hand, we have MrLD (P44 ) ≤ MrLD (P45 ) = 16.
+Hence, M4LD (P44 ) = 16.
+Now the only open values are M4LD (P38 ) and M4LD (P50 ). By the previous constructions, we know that M4LD (P38 ) ≤
+M4LD (P39 ) = 14 and M4LD (P50 ) ≤ M4LD (P51 ) = 18. By an exhaustive computer search, we have been able to prove that
+there are no 4-locating–dominating codes in P38 and P50 with 13 and 17 codewords, respectively. Hence, M4LD (P38 ) = 14
+and M4LD (P50 ) = 18. In conclusion, all the values of M4LD (Pn ) are determined.
+6. On the conjecture of even segment lengths
+In this section, the focus is on the infinite path P∞ . Previously, we have considered the balls Br (vi ) = {vj ∈ V∞ | i − r ≤
+j ≤ i + r }, i ∈ Z, of size (or length) 2r + 1, which is necessarily odd. In [1], also the case where a ball or rather a segment can
+have an even length is considered in P∞ . Clearly, the ‘center’ of the segment of even size is not a vertex of V∞ , so we also
+need to choose how to associate a segment with a codeword. Notice that this prevents the usual symmetry
+
+vj ∈ Br (vi ) ⇔ vi ∈ Br (vj )
+which we often used earlier. In what follows, we always associate a segment in the same way with every codeword.
+The problem is stated analogously after selecting the association of a segment with a codeword: how to place the
+codewords (segments) in P∞ in such a way that every vertex of V∞ , which is not in the code, belongs to at least one segment
+and no two non-codewords belong to the same set of segments. Again, we would like to have as small density of a code as
+possible. The density of a code C is defined as usually
+|Qn ∩ C |
+D(C ) = lim sup
+|Qn |
+n→∞
+where Qn = {vi ∈ V∞ | −n ≤ i ≤ n}.
+In [1], it is pointed out that the choice how to associate a segment with a codeword affects on the minimum density of a
+locating–dominating code in P∞ . However, it is shown in Theorem 16 of [1] that no matter how one chooses the association
+with a codeword, the smallest density is at least 1/3.
+Related to this lower bound, the following conjecture is given in [1].
+Conjecture 6.1. Let s be a positive integer divisible by 6. Then we can achieve the density 1/3 for a locating–dominating code
+using segments of length s in P∞ .
+
+1872
+
+G. Exoo et al. / Discrete Mathematics 311 (2011) 1863–1873
+
+Fig. 3. The code C of Theorem 6.2 illustrated when k = 3. The code is formed by repeating the pattern in the dashed box infinitely many times to the left
+and to the right.
+
+In the next theorem we shall confirm this conjecture.
+Theorem 6.2. Let s be a positive integer divisible by 6. There exists a code C ⊆ V∞ and an assignment of a segment of length s
+with a codeword such that C is locating–dominating in P∞ with density 1/3.
+Proof. Let s be a positive integer with s = 6k and k ≥ 1. Denote S = {0, 1, 2, . . . , 3k − 2, 6k − 1}. Take
+C = {vi ∈ V∞ | i ≡ x mod 9k for some x ∈ S }.
+In Fig. 3, the code C is illustrated when k = 3. Let us associate, for all the codewords vc ∈ C , the segment as follows: 
+Bs (vc ) =
+
+B6k (vc ) = {vc −3k+1 , . . . , vc , . . . , vc +3k }. Clearly, the density of the code is 1/3. Next we show that C is locating–dominating
+in P∞ by determining any vertex vi ∈ V∞ \ C with the aid of the segments of codewords it belongs to.
+First of all, every non-codeword vi belongs to some segment, namely to a segment associated with vc1 ∈ C for some
+c1 ≡ 3k − 2(mod 9k) or with vc2 ∈ C for some c2 ≡ 6k − 1(mod 9k).
+Suppose first that there exists a codeword vc ∈ C such that c ≡ 6k − 1(mod 9k) with vi ∈ 
+Bs (vc ). If there is no other
+codeword to whose segment vi belongs, then vi = vc +1 . Assume then that we have at least one codeword vc ′ for which c ′ > c
+and to whose segment vi belongs. Let c1 = max{a ∈ Z | vi ∈ 
+Bs (va ), va ∈ C }. Consequently, vi = vc1 −3k+1 . Suppose now
+Bs (va ), va ∈ C }.
+that we do not have codewords with larger index c ′ than c for which vi ∈ 
+Bs (vc ′ ). Let c2 = min{a ∈ Z | vi ∈ 
+Then vi = vc2 +3k .
+Suppose finally that none of the codewords vc such that vi ∈ 
+Bs (vc ) satisfies c ≡ 6k − 1(mod 9k). Now vi = vc2 +3k−1
+where again c2 = min{a ∈ Z | vi ∈ 
+Bs (va ), va ∈ C }. This completes the proof.
+Locating–dominating codes achieving the density 1/3 for the even segment lengths satisfying s ̸≡ 0(mod 6), can be
+found in [1].
+7. Conclusions
+Previously, the exact values of M1LD (Pn ) and M2LD (Pn ) are known due to [15] and [8], respectively. In Section 5, we
+computed the exact values of M3LD (Pn ) and M4LD (Pn ). In Section 3, the exact values of MrLD (Pn ) have been determined when
+1 ≤ n ≤ 7r + 3. Furthermore, by Theorem 4.5, we have that MrLD (Pn ) = ⌈(n + 1)/3⌉ when n ≥ 3r + 2 + 6r ((r − 3)(2r + 1)+ r ).
+In conclusion, although some of the exact values of MrLD (Pn ) are known when 7r + 3 < n < 3r + 2 + 6r ((r − 3)(2r + 1) + r ),
+the question remains open in general.
+Acknowledgments
+We would like to thank Iiro Honkala for helpful discussions. We also wish to thank anonymous referees for providing
+constructive comments to improve this paper. The second author’s research was supported by the Academy of Finland under
+grant 210280.
+References
+[1] N. Bertrand, I. Charon, O. Hudry, A. Lobstein, Identifying and locating–dominating codes on chains and cycles, European J. Combin. 25 (7) (2004)
+969–987.
+[2] M. Blidia, M. Chellali, F. Maffray, J. Moncel, A. Semri, Locating–domination and identifying codes in trees, Australas. J. Combin. 39 (2007) 219–232.
+[3] D.I. Carson, On generalized location-domination, in: Graph Theory, Combinatorics, and Algorithms, Kalamazoo, MI, 1992, in: Wiley-Intersci. Publ.,
+vols. 1, 2, Wiley, New York, 1995, pp. 161–179.
+[4] I. Charon, O. Hudry, A. Lobstein, Minimizing the size of an identifying or locating–dominating code in a graph is NP-hard, Theoret. Comput. Sci. 290
+(3) (2003) 2109–2120.
+[5] G. Exoo, V. Junnila, T. Laihonen, Locating–dominating codes in cycles, Australas. J. Combin. 49 (2011) 177–194.
+[6] S. Gravier, R. Klasing, J. Moncel, Hardness results and approximation algorithms for identifying codes and locating–dominating codes in graphs,
+Algorithmic Oper. Res. 3 (1) (2008) 43–50.
+[7] I. Honkala, An optimal locating–dominating set in the infinite triangular grid, Discrete Math. 306 (21) (2006) 2670–2681.
+[8] I. Honkala, On r-locating–dominating sets in paths, European J. Combin. 30 (4) (2009) 1022–1025.
+[9] I. Honkala, T. Laihonen, On locating–dominating sets in infinite grids, European J. Combin. 27 (2) (2006) 218–227.
+[10] I. Honkala, T. Laihonen, S. Ranto, On locating–dominating codes in binary Hamming spaces, Discrete Math. Theor. Comput. Sci. 6 (2) (2004) 265–281.
+[11] L.K. Hua, Introduction to Number Theory, Springer-Verlag, Berlin, 1982, Translated from the Chinese by Peter Shiu.
+[12] A. Lobstein, Identifying and locating–dominating codes in graphs, a bibliography. Published electronically at:
+http://perso.enst.fr/~lobstein/debutBIBidetlocdom.pdf.
+[13] D.F. Rall, P.J. Slater, On location-domination numbers for certain classes of graphs, Congr. Numer. 45 (1984) 97–106.
+[14] P.J. Slater, Domination and location in graphs, Research Report 93, National University of Singapore, 1983.
+
+G. Exoo et al. / Discrete Mathematics 311 (2011) 1863–1873
+
+1873
+
+[15] P.J. Slater, Domination and location in acyclic graphs, Networks 17 (1) (1987) 55–64.
+[16] P.J. Slater, Dominating and reference sets in a graph, J. Math. Phys. Sci. 22 (1988) 445–455.
+[17] P.J. Slater, Locating–dominating sets and locating–dominating sets, in: Graph Theory, Combinatorics and Applications: Proceedings of the Seventh
+Quadrennial International Conference on the Theory and Applications of Graphs, vol. 2, Wiley, 1995, pp. 1073–1079.
+[18] P.J. Slater, Fault-tolerant locating–dominating sets, Discrete Math. 249 (1–3) (2002) 179–189.
+[19] J. Suomela, Approximability of identifying codes and locating–dominating codes, Inform. Process. Lett. 103 (1) (2007) 28–33.
+
+

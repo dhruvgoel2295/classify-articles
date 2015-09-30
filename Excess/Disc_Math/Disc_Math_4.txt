@@ -1,0 +1,589 @@
+Discrete Mathematics 311 (2011) 1978–1987
+
+Contents lists available at ScienceDirect
+
+Discrete Mathematics
+journal homepage: www.elsevier.com/locate/disc
+
+On the extendability of certain semi-Cayley graphs of finite
+abelian groups✩, ✩✩
+Xing Gao ∗ , Wenwen Liu, Yanfeng Luo
+Department of Mathematics and Statistics, Lanzhou University, Lanzhou, 730000, PR China
+
+article
+
+info
+
+Article history:
+Received 26 March 2009
+Received in revised form 22 May 2011
+Accepted 23 May 2011
+Available online 15 June 2011
+Keywords:
+Extendability
+Semi-Cayley graphs
+Abelian groups
+Cayley graphs
+Generalized dicyclic (respectively, dihedral)
+groups
+
+abstract
+A connected graph Γ with at least 2n + 2 vertices is said to be n-extendable if every
+matching of size n in Γ can be extended to a perfect matching. The aim of this paper is
+to study the 1-extendability and 2-extendability of certain semi-Cayley graphs of finite
+abelian groups, and the classification of connected 2-extendable semi-Cayley graphs of
+finite abelian groups is given. Thus the 1-extendability and 2-extendability of Cayley graphs
+of non-abelian groups which can be realized as such semi-Cayley graphs of abelian groups
+can be deduced. In particular, the 1-extendability and 2-extendability of connected Cayley
+graphs of generalized dicyclic groups and generalized dihedral groups are characterized.
+© 2011 Elsevier B.V. All rights reserved.
+
+1. Introduction
+All groups considered in this paper are finite, and all graphs are finite, simple, and undirected. The operation of a group
+will be written multiplicatively, except for abelian groups, where it is written additively. For a graph Γ , denote by V (Γ ) and
+E (Γ ) its vertex set and edge set.
+The concept of Cayley graphs was introduced by Arthur Cayley in 1878 to explain the concept of abstract groups which
+are described by a set of generators. Let G be a group and S a subset of G such that 1 ̸∈ S and S −1 = S. The Cayley graph
+G(S ) of G with respect to S is a graph with vertex set V (G(S )) = G and edge set E (G(S )) = {xy | x, y ∈ G, yx−1 ∈ S }.
+Equivalently, a graph Γ is a Cayley graph if and only if its automorphism group Aut(Γ ) contains a regular subgroup. It is
+well known that the Cayley graph G(S ) of a group G with respect to some S ⊆ G is vertex transitive and G acts regularly
+on G(S ) as an automorphism group with one orbit. A graph is said to be a semi-Cayley graph of a group G if it admits G as a
+semiregular automorphism group with two orbits (of equal size). The following characterization of semi-Cayley graphs is
+due to Resmini and Jungnickel [3]. Let A, B, C be subsets of a group G such that A = A−1 , B = B−1 and 1 ̸∈ A ∪ B. Define the
+graph SC (G; A, B, C ) to have vertex set G × {0, 1}, and to have vertices (g , i), (h, j) adjacent if and only if one of the following
+three possibilities occurs:
+(1) i = j = 0 and hg −1 ∈ A;
+(2) i = j = 1 and hg −1 ∈ B;
+(3) i = 0, j = 1 and hg −1 ∈ C .
+
+✩ Dedicated to Professor Kar Ping Shum on the occasion of his 70th birthday.
+✩✩ This research was partially supported by the National Natural Science Foundation of China (No. 10971086) and the Fundamental Research Funds for
+
+the Central Universities (No. lzujbky-2011-46).
+∗ Corresponding author.
+E-mail address: gaoxing@lzu.edu.cn (X. Gao).
+0012-365X/$ – see front matter © 2011 Elsevier B.V. All rights reserved.
+doi:10.1016/j.disc.2011.05.027
+
+X. Gao et al. / Discrete Mathematics 311 (2011) 1978–1987
+
+1979
+
+Then SC (G; A, B, C ) is a semi-Cayley graph of the group G. Conversely, every semi-Cayley graph can be obtained in this
+way [3]. Investigation of semi-Cayley graphs is a part of a larger project which aims at obtaining a deeper understanding of
+various classes of symmetric graphs ([7–9,12] and their references). Strong regular semi-Cayley graphs were characterized
+in [3] as well as semisymmetry [4], and arc transitivity [7].
+A set M of edges of a graph Γ is a matching if no two members of M share a vertex. A matching M is perfect if every
+vertex of Γ is covered by an edge of M. Let n ≥ 1 be an integer. A connected graph Γ having at least 2n + 2 vertices is said
+to be n-extendable if every matching M of size n can be extended to a perfect matching. The concept of n-extendable graphs
+was introduced by Plummer [13] in 1980, and the relationship between n-extendability and other graph properties was
+studied [13,14]. The 2-extendable Cayley graphs of finite abelian groups were classified in [1]. In that paper, the problem of
+characterization of 1-extendable and 2-extendable Cayley graphs of non-abelian groups was posed. Chen et al. [2] classified
+the 2-extendable Cayley graphs of dihedral groups.
+A semi-Cayley graph is a natural generalization of a Cayley graph, and a semi-Cayley graph has high symmetry degree.
+The class of semi-Cayley graphs of the form SC (G; A, A, C ) of abelian groups contains not only all Cayley graphs of abelian
+groups of even order but also some Cayley graphs of non-abelian groups of even order. For example, Cayley graphs of dihedral
+groups can be realized as semi-Cayley graphs SC (G; A, A, C ) of some abelian groups [5], and in this paper we shall show that
+Cayley graphs of generalized dihedral (respectively, dicyclic) groups can be realized as semi-Cayley graphs SC (G; A, A, C ) of
+some abelian groups. Luo and Gao [11] characterized the 2-extendable and 3-extendable semi-Cayley graphs SC (G; ∅, ∅, C )
+of finite abelian groups. The aim of this paper is to study the 1-extendability and 2-extendability of semi-Cayley graphs of
+the form SC (G; A, A, C ) of abelian groups.
+After some preliminaries, in Section 3, the 1-extendability and 2-extendability of semi-Cayley graphs SC (G; A, A, C ) of
+abelian groups are studied and the classification of connected 2-extendable semi-Cayley graphs SC (G; A, A, C ) is given.
+Thus the 1-extendability and 2-extendability of Cayley graphs of non-abelian groups which can be realized as semi-Cayley
+graphs of the form SC (G; A, A, C ) of abelian groups can be deduced. In particular, the 1-extendability and 2-extendability of
+connected Cayley graphs of generalized dicyclic groups and generalized dihedral groups are characterized in Section 4.
+2. Preliminaries
+In this section, we shall list some definitions and known results which will be used in this paper.
+Definition 2.1 ([6]). Let Γ1 and Γ2 be two graphs. The Cartesian product Γ = Γ1 × Γ2 of Γ1 and Γ2 is defined as a graph with
+vertex set V (Γ ) = V (Γ1 ) × V (Γ2 ) and edge set E (Γ ) = {(u1 , u2 )(v1 , v2 ) | u1 = v1 and u2 v2 ∈ E (Γ2 ) or u2 = v2 and u1 v1 ∈
+E (Γ1 )}.
+It is known from [6] that the Cartesian product of graphs is commutative and associative.
+Lemma 2.2 ([10]). Let Γ1 be a k-extendable graph and Γ2 a graph without isolated vertices. Then Γ1 × Γ2 is (k + 1)-extendable.
+Lemma 2.3. Let Pm be a path of length m − 1 with m ≥ 2 and Cn a cycle of length n (Cn = P2 whenever n = 2). Then Cn × Pm × P2
+is 2-extendable.
+Proof. The proof follows directly from Lemma 2.2 and the fact that Cn × P2 is 1-extendable.
+For a Cayley graph G(S ) of a group G, if S = {a1 , a2 , . . . , an }, we denote G(S ) by G(a1 , a2 , . . . , an ). The next lemma gives
+the classification of 2-extendable Cayley graphs of abelian groups.
+Lemma 2.4 ([1]). Let G(S ) be a connected Cayley graph of an abelian group G of even order (Fig. 1). Then G(S ) is 2-extendable if
+and only if it is not isomorphic to any of the following graphs:
+(i)
+(ii)
+(iii)
+(iv)
+(v)
+
+Z2n (1, 2n − 1), n ≥ 3;
+Z2n (1, 2, 2n − 1, 2n − 2), n ≥ 3;
+Z4n (1, 4n − 1, 2n), n ≥ 2;
+Z4n+2 (2, 4n, 2n + 1), n ≥ 1; and
+Z4n+2 (1, 4n + 1, 2n, 2n + 2), n ≥ 1.
+
+The following lemma characterizes the 2-extendable semi-Cayley graphs SC (G; ∅, ∅, C ) of abelian groups.
+Lemma 2.5 ([11]). Let G be an abelian group and C a nonempty subset of G. Then SC (G; ∅, ∅, C ) is 2-extendable if and only if
+|C | ≥ 3.
+The reader is referred to [16,17] for the terminology and notation not defined in this paper.
+
+1980
+
+X. Gao et al. / Discrete Mathematics 311 (2011) 1978–1987
+
+Fig. 1. Some graphs of Lemma 2.4.
+
+3. 1-extendable and 2-extendable semi-Cayley graphs
+In this section, we shall study the 1-extendability and 2-extendability of semi-Cayley graphs SC (G; A, A, C ) of abelian
+groups G. It will be shown that every connected semi-Cayley graph SC (G; A, A, C ) is 1-extendable and the connected 2extendable semi-Cayley graphs SC (G; A, A, C ) will be characterized.
+Lemma 3.1. Let SC (G; A, A, C ) and SC (G; A, A, C ′ ) be two connected semi-Cayley graphs of an abelian group G with C =
+{c1 , c2 , . . . , cn } and C ′ = {0, c2 − c1 , . . . , cn − c1 }. Then SC (G; A, A, C ) ∼
+= SC (G; A, A, C ′ ).
+Proof. Let Γ1 = SC (G; A, A, C ) and Γ2 = SC (G; A, A, C ′ ). Define a map φ from V (Γ1 ) to V (Γ2 ) by φ((x, 0)) = (x, 0) and
+φ((x, 1)) = (x − c1 , 1) for x ∈ G. Then φ is a bijection. To prove that φ is an isomorphism, let (g1 , i), (g2 , j) ∈ V (Γ1 ). If
+i = j = 0, then
+
+(g1 , 0)(g2 , 0) ∈ E (Γ1 ) ⇔ g2 − g1 ∈ A
+⇔ (g1 , 0)(g2 , 0) ∈ E (Γ2 )
+⇔ φ((g1 , 0))φ((g2 , 0)) ∈ E (Γ2 ).
+If i = j = 1, then
+
+(g1 , 1)(g2 , 1) ∈ E (Γ1 ) ⇔ g2 − g1 ∈ A
+⇔ (g1 − c1 , 1)(g2 − c1 , 1) ∈ E (Γ2 )
+⇔ φ((g1 , 1))φ((g2 , 1)) ∈ E (Γ2 ).
+If i = 0 and j = 1, then
+
+(g1 , 0)(g2 , 1) ∈ E (Γ1 ) ⇔
+⇔
+⇔
+⇔
+
+g2 − g1 ∈ C
+(g2 − c1 ) − g1 ∈ C ′
+(g1 , 0)(g2 − c1 , 1) ∈ E (Γ2 )
+φ((g1 , 0))φ((g2 , 1)) ∈ E (Γ2 ).
+
+Therefore φ is an isomorphism.
+In view of Lemma 3.1, without loss of generality, we may suppose that 0 ∈ C for any connected semi-Cayley graph
+SC (G; A, A, C ). The next theorem gives the 1-extendability of connected semi-Cayley graphs SC (G; A, A, C ) of abelian groups.
+Theorem 3.2. Every connected semi-Cayley graph SC (G; A, A, C ) of an abelian group G is 1-extendable.
+Proof. Let Γ = SC (G; A, A, C ) be a connected semi-Cayley of an abelian group G and e = (g , i)(h, j) ∈ E (Γ ). If i = 0 and
+j = 1, then M = {(x, 0)(h − g + x, 1) | x ∈ G} is a perfect matching of Γ containing e. If i = j = 0, then
+M = {e, (g , 1)(h, 1)} ∪ {(x, 0)(x, 1) | x ∈ G \ {g , h}}
+is a perfect matching of Γ . If i = j = 1, then
+M = {e, (g , 0)(h, 0)} ∪ {(x, 0)(x, 1) | x ∈ G \ {g , h}}
+is a perfect matching of Γ .
+Lemma 3.3. Let Γ = SC (G; A, A, {0, a}) be a semi-Cayley graph of a cyclic group G = ⟨a⟩ of order n. Then Γ ∼
+= Z2n (S ) with
+S = {1, 2n − 1} ∪ {2k | ka ∈ A}.
+
+X. Gao et al. / Discrete Mathematics 311 (2011) 1978–1987
+
+1981
+
+Proof. Define a map φ : Γ → Z2n (S ) by φ((ka, 0)) = 2k + 1 and φ((ka, 1)) = 2k for k = 0, 1, . . . , n − 1. It is clear that
+φ is a bijection. To prove that φ is an isomorphism, let u = (k1 a, i), v = (k2 a, j) ∈ V (Γ ) with k1 , k2 ∈ {0, 1, . . . , n − 1}. If
+i = j = 0, then
+uv ∈ E (Γ ) ⇔ (k2 − k1 )a ∈ A
+
+⇔ 2k2 − 2k1 ∈ S
+⇔ (2k1 + 1)(2k2 + 1) ∈ E (Z2n (S ))
+⇔ φ(u)φ(v) ∈ E (Z2n (S )).
+If i = j = 1, then
+uv ∈ E (Γ ) ⇔ (k2 − k1 )a ∈ A
+
+⇔ 2k2 − 2k1 ∈ S
+⇔ (2k1 )(2k2 ) ∈ E (Z2n (S ))
+⇔ φ(u)φ(v) ∈ E (Z2n (S )).
+If i = 0 and j = 1, then
+uv ∈ E (Γ ) ⇔ k2 a = k1 a or k2 a = k1 a + a
+
+⇔
+⇔
+⇔
+⇔
+⇔
+
+k2 ≡ k1 or k2 ≡ k1 + 1 (mod n)
+2k2 − (2k1 + 1) ≡ ±1 (mod 2n)
+
+(2k2 − (2k1 + 1)) (mod 2n) ∈ S
+(2k1 + 1)(2k2 ) ∈ E (Z2n (S ))
+φ(u)φ(v) ∈ E (Z2n (S )).
+
+Therefore φ is an isomorphism.
+Let Γ be a graph and U ⊆ V (Γ ). Denote by Γ [U ] the subgraph of Γ induced by U. For a semi-Cayley graph Γ =
+SC (G; A, A, C ) of an abelian group G, let E1 = E (Γ [G × {0}]), E2 = E (Γ [G × {1}]) and E3 = E (Γ ) \ (E1 ∪ E2 ). An edge
+(g , i)(h, j) of SC (G; A, A, C ) is said to be of type a if h − g = a or h − g = −a for some a ∈ A ∪ C .
+Lemma 3.4. Let Γ = SC (G; A, A, C ) be a connected semi-Cayley graph of an abelian group G and e1 ∈ E1 , e2 ∈ E2 . If Γ is not
+isomorphic to any of the graphs listed in Lemma 2.4, then {e1 , e2 } can be extended to a perfect matching of Γ .
+Proof. Let e1 ∈ E1 and e2 ∈ E2 . Since both Γ [G × {0}] and Γ [G × {1}] are isomorphic to G(A), which is vertex-transitive,
+without loss of generality, we may assume that e1 = (0, 0)(a, 0) with a ∈ A and e2 = (c , 1)(c + a′ , 1) with c ∈ G and a′ ∈ A.
+There are two cases.
+Case 1. e1 and e2 have different types; that is, a′ ̸= ±a. Let |a| = n and let m be the smallest positive integer such that
+ma′ ∈ ⟨a⟩ and ma′ = la for some nonnegative integer l.
+Subcase 1.1. a′ ̸∈ ⟨a⟩, that is m ≥ 2. Let X = Γ [⟨a, a′ ⟩ × {0, 1}]. Then Γ [⟨a, a′ ⟩ × {0}] has a spanning subgraph (for
+example, graphs Γ1 , Γ2 in Fig. 2 are such subgraphs) isomorphic to Cn × Pm , where Cn = P2 whenever n = 2. Note that
+Γ [⟨a, a′ ⟩×{0}] ∼
+= Γ [⟨a, a′ ⟩×{1}] and 0 ∈ C . It follows that X has a spanning subgraph X1 containing e1 which is isomorphic
+to Cn × Pm × P2 , where Cn = P2 whenever n = 2.
+Let H be a coset of ⟨a, a′ ⟩ in G. Then Γ [H × {0, 1}] ∼
+= X . Therefore Γ can be decomposed into a finite number of copies
+of X . If e2 ∈ E (X ), then we may choose X1 such that e1 , e2 ∈ E (X1 ). Since X1 is 2-extendable by Lemma 2.3, there is a perfect
+matching M of X containing e1 and e2 . Therefore M can be extended to a perfect matching of Γ . If e2 ̸∈ E (X ), then there is a
+copy X ′ of X containing e2 . So there is a perfect matching M1 in X containing e1 and a perfect matching M2 in X ′ containing
+e2 . Therefore M1 ∪ M2 can be extended to a perfect matching of Γ .
+Subcase 1.2. a′ ∈ ⟨a⟩. If {c , c + a′ } ∩ {0, a} = ∅, then
+M = {e1 , e2 , (0, 1)(a, 1), (c , 0)(c + a′ , 0)} ∪ {(x, 0)(x, 1) | x ∈ G \ {0, a, c , c + a′ }}
+is a perfect matching of Γ containing e1 and e2 . If {c , c + a′ } ∩ {0, a} ̸= ∅, then |{c , c + a′ } ∩ {0, a}| = 1 by a′ ̸= ±a. Without
+loss of generality, suppose that c = a. Then e2 = (a, 1)(a + a′ , 1), and
+M = {e1 , e2 , (a′ , 0)(a′ + a, 0), (0, 1)(a′ , 1)} ∪ {(x, 0)(x, 1) | x ∈ G \ {0, a, a′ , a + a′ }}
+is the required perfect matching of Γ .
+Case 2. e1 and e2 have the same type. In this case, e2 = (c , 1)(c + a, 1) for some c ∈ G. If c ̸∈ {0, a, −a}, then
+M = {e1 , e2 , (0, 1)(a, 1), (c , 0)(c + a, 0)} ∪ {(x, 0)(x, 1) | x ∈ G \ {0, a, c , c + a}}
+
+1982
+
+X. Gao et al. / Discrete Mathematics 311 (2011) 1978–1987
+
+Fig. 2. Graphs Γ1 and Γ2 (where the second coordinate 0 of vertices is omitted).
+
+is a perfect matching of Γ which contains e1 and e2 . If c = 0, then
+M = {e1 , e2 } ∪ {(x, 0)(x, 1) | x ∈ G \ {0, a}}
+is a perfect matching of Γ containing e1 and e2 . So we may assume that c = a, without loss of generality. Thus e2 =
+(a, 1)(2a, 1).
+Subcase 2.1. |a| is even. There is a perfect matching M1 of Γ [⟨a⟩×{0}] containing e1 and a perfect matching M2 of Γ [⟨a⟩×{1}]
+containing e2 . Since the set of vertices of Γ not in M1 ∪ M2 can be partitioned into a disjoint union of even cycles, M1 ∪ M2
+can be extended to a perfect matching of Γ .
+Subcase 2.2. |a| is odd.
+Suppose that A ̸⊆ ⟨a⟩, and assume that, b ∈ A \ ⟨a⟩. Let X = Γ [⟨a, b⟩ × {0, 1}]. By an argument similar to that for Subcase
+1.1, we may show that {e1 , e2 } can be extended to a perfect matching of Γ .
+Suppose that A ⊆ ⟨a⟩ and A \ {±a} ̸= ∅, and assume that, ka ∈ A with 1 < k < |a| − 1. If k ≥ 3, then
+M = {e1 , e2 , (2a, 0)(2a + ka, 0), (ka, 0)(ka + a, 0), (0, 1)(ka, 1), (ka + a, 1)(ka + 2a, 1)}
+
+∪{(x, 0)(x, 1) | x ∈ G \ {0, a, 2a, ka, ka + a, ka + 2a}}
+is a perfect matching of Γ which contains e1 and e2 . If k = 2, then
+M = {e1 , e2 , (2a, 0)(4a, 0), (3a, 0)(3a, 1)}
+is a set of independent edges containing e1 and e2 . Since the set of vertices of Γ [⟨a⟩ × {0, 1}] not in M can be partitioned
+into even paths, M can be extended to a perfect matching M1 of Γ [⟨a⟩ × {0, 1}]. Furthermore, since the set of vertices of Γ
+not in M1 can be decomposed into a finite number of copies of Γ [⟨a⟩ × {0, 1}], M1 can be extended to a perfect matching of
+Γ.
+Suppose that A = {±a} and ⟨a⟩ ̸= G. If C ⊆ ⟨a⟩, then there is no edge in Γ between the vertices of ⟨a⟩ × {0, 1} and of
+H × {0, 1}, where H ̸= ⟨a⟩ is a coset of ⟨a⟩ in G. This contradicts that Γ is connected. Thus we may assume that C ̸⊆ ⟨a⟩. Let
+b ∈ C \ ⟨a⟩. Then
+M = {e1 , e2 , (a − b, 0)(2a − b, 0), (b, 1)(b + a, 1)} ∪ {(x, 0)(b + x, 1) | x ∈ G \ {0, a, a − b, 2a − b}}
+is the required perfect matching of Γ containing e1 and e2 .
+Suppose that A = {±a} and ⟨a⟩ = G. Let |a| = 2k + 1. If there is b ∈ C \ {0, a, 2a}, then
+M = {e1 , e2 , (a − b, 0)(2a − b, 0), (b, 1)(b + a, 1)} ∪ {(x, 0)(b + x, 1) | x ∈ G \ {0, a, a − b, 2a − b}}
+is a perfect matching of Γ containing e1 and e2 . So we may suppose that C ⊆ {0, a, 2a}. If C = {0}, then Γ ∼
+=
+C2k+1 × P2 ∼
+= Z4k+2 (2, 4k, 2k + 1), a graph in class (iv) of Lemma 2.4, which is a contradiction. If C = {0, a}, then
+Γ ∼
+= Z4k+2 (1, 2, 4k, 4k + 1), a graph in class (ii) of Lemma 2.4, which is a contradiction again. If C = {0, 2a}, then
+Γ ∼
+= Z4k+2 (1, 4k + 1, 2k, 2k + 2), a graph in class (v) of Lemma 2.4, which is also a contradiction. If C = {0, a, 2a}, then
+M = {e1 , e2 } ∪ {(x, 0)(x + a, 1) | x ∈ G \ {0, a}}
+is the required perfect matching of Γ containing e1 and e2 .
+Lemma 3.5. Let Γ = SC (G; A, A, C ) be a connected semi-Cayley graph of an abelian group G and {e1 , e2 } a matching of Γ with
+e1 , e2 ∈ E3 . If Γ is not isomorphic to any of the graphs listed in Lemma 2.4, then {e1 , e2 } can be extended to a perfect matching
+of Γ .
+
+X. Gao et al. / Discrete Mathematics 311 (2011) 1978–1987
+
+1983
+
+Proof. Suppose that e1 and e2 have the same type. If e1 = (g1 , 0)(g1 + b, 1) and e2 = (g2 , 0)(g2 + b, 1) for some g1 , g2 ∈ G
+and b ∈ C , then M = {(x, 0)(x + b, 1) | x ∈ G} is a perfect matching of Γ containing e1 and e2 . If e1 = (g1 , 0)(g1 + b, 1)
+and e2 = (g2 , 0)(g2 − b, 1) for some g1 , g2 ∈ G and −b, b ∈ C with b ̸= −b, then {0, −b, b} ⊆ C and so |C | ≥ 3. Therefore
+{e1 , e2 } can be extended to a perfect matching of Γ by Lemma 2.5.
+Suppose that e1 and e2 have different types. Without loss of generality, let e1 = (0, 0)(0, 1) and e2 = (c , 0)(c + b, 1)
+with c ∈ G and 0 ̸= b ∈ C . If C \ {0, b} ̸= ∅, then, by Lemma 2.5, {e1 , e2 } can be extended to a perfect matching of Γ . So we
+may assume that C = {0, b}. If ⟨b⟩ = G, then Γ is isomorphic to a circulant graph by Lemma 3.3. It follows from Lemma 2.4
+and the hypothesis that Γ is 2-extendable. Thus we may assume that ⟨b⟩ ̸= G.
+Let G0 = ⟨b⟩, |G0 | = k + 1. Then the 2(k + 1)-cycle
+
+Γ0 = (0, 0)(b, 1)(b, 0)(2b, 1) · · · (kb, 1)(kb, 0)(0, 1)(0, 0)
+is a Hamiltonian cycle of Γ [G0 × {0, 1}] containing e1 . Let G0 , G1 , . . . , Gm be the cosets of ⟨b⟩ in G and Gi = ai + G0 with
+ai ∈ Gi for i = 1, . . . , m. Then the 2(k + 1)-cycle
+
+Γi = (ai , 0)(ai + b, 1)(ai + b, 0)(ai + 2b, 1) · · · (ai + kb, 1)(ai + kb, 0)(ai , 1)(ai , 0)
+is a Hamiltonian cycle of Γ [Gi × {0, 1}] for i = 1, 2, . . . , m. It is clear that e2 ∈ E (Γi ) for some i ∈ {0, 1, . . . , m}. If i ̸= 0,
+that is, e1 and e2 are in different even cycles, then Γ has a perfect matching containing e1 and e2 . So we may suppose that
+i = 0; that is, e1 , e2 ∈ E (Γ [G0 × {0, 1}]).
+We claim that A ̸⊆ ⟨b⟩. Otherwise, there is no edge in Γ between the vertices of Γ [⟨b⟩ × {0, 1}] and the vertices of
+Γ [Gi × {0, 1}] for i ̸= 0. This contradicts that Γ is connected. Now, let a ∈ A \ ⟨b⟩. Then a ∈ Gi for some i ∈ {1, 2, . . . , m}. It
+is clear that the subgraph Γ [(G0 ∪ Gi ) × {0, 1}] of Γ has a spanning subgraph isomorphic to C2(k+1) × P2 containing e1 and
+e2 . Since C2(k+1) is 1-extendable, C2(k+1) × P2 is 2-extendable by Lemma 2.2. Thus there is a perfect matching M containing
+e1 and e2 in Γ [(G0 ∪ Gi ) × {0, 1}]. Since the set of vertices of Γ not in M can be decomposed into even cycles, M can be
+extended to a perfect matching of Γ .
+Now we are ready to give the classification of connected 2-extendable semi-Cayley graphs SC (G; A, A, C ).
+Theorem 3.6. Let Γ = SC (G; A, A, C ) be a connected semi-Cayley graph of an abelian group G. Then Γ is 2-extendable if and
+only if it is not isomorphic to any of the following graphs:
+(i) Z2n (1, 2n − 1), n ≥ 3;
+(ii) Z2n (1, 2, 2n − 1, 2n − 2), n ≥ 3;
+(iii) Z4n (1, 4n − 1, 2n), n ≥ 2;
+(iv) Z4n+2 (2, 4n, 2n + 1), n ≥ 1; and
+(v) Z4n+2 (1, 4n + 1, 2n, 2n + 2), n ≥ 1.
+Proof. Necessity. It follows directly from Lemma 2.4.
+Sufficiency. Suppose that Γ is not isomorphic to any of the graphs of classes (i)–(v). We shall prove that Γ is 2-extendable.
+To this aim, let e1 and e2 be two independent edges in Γ . If e1 ∈ E1 and e2 ∈ E2 or e1 , e2 , ∈ E3 , then {e1 , e2 } can be extended
+to a perfect matching of Γ by Lemmas 3.4 and 3.5.
+If {e1 , e2 } ⊆ E1 or {e1 , e2 } ⊆ E2 , since Γ [G × {0}] ∼
+= Γ [G × {1}], it suffices to consider the case {e1 , e2 } ⊆ E1 . Without
+loss of generality, let e1 = (0, 0)(a, 0) for some a ∈ A and e2 = (c , 0)(d, 0) for some c , d ∈ G with d − c ∈ A. Then
+M = {e1 , e2 , (0, 1)(a, 1), (c , 1)(d, 1)} ∪ {(x, 0)(x, 1) | x ∈ G \ {0, a, c , d}}
+is the required perfect matching of Γ containing e1 and e2 .
+If e1 ∈ E1 ∪ E2 and e2 ∈ E3 , by symmetry, we only need to consider the cases e1 ∈ E1 and e2 ∈ E3 . Without loss generality,
+we may assume that e1 = (0, 0)(a, 0) ∈ E1 for some a ∈ A and e2 = (c , 0)(d, 1) ∈ E3 for some c , d ∈ G with d − c ∈ C .
+Then
+M = {e1 , (d − c , 1)(d − c + a, 1)} ∪ {(x, 0)(d − c + x, 1) | x ∈ G \ {0, a}}
+is a perfect matching of Γ containing e1 and e2 .
+Consequently, {e1 , e2 } can be extended to a perfect matching of Γ and Γ is 2-extendable.
+In view of Lemma 2.4 and Theorem 3.6, the non-2-extendable semi-Cayley graphs of the form SC (G; A, A, C ) of abelian
+groups are the only non-2-extendable Cayley graphs of abelian groups of even order. Moreover, the 1-extendability and 2extendability of Cayley graphs of non-abelian groups which can be realized as semi-Cayley graphs of the form SC (G, A, A, C )
+of abelian groups can be deduced from Theorems 3.2 and 3.6.
+
+1984
+
+X. Gao et al. / Discrete Mathematics 311 (2011) 1978–1987
+
+4. Some applications
+The connected 1-extendable and 2-extendable semi-Cayley graphs of the form SC (G; A, A, C ) of abelian groups have been
+characterized in the previous section. As an application, in this section, we shall study the extendability of connected Cayley
+graphs of two kinds of non-abelian group. We shall show that every connected Cayley graph of a generalized dicyclic group
+is 2-extendable and give the classification of connected 2-extendable Cayley graphs of generalized dihedral groups.
+Let H be an abelian group having a specific element y of order 2. A group G is called a generalized dicyclic group, written
+as Dic (H , y), if it is generated by H and an additional element x, such that [G : H ] = 2, x2 = y, and for all h ∈ H, x−1 hx = h−1 .
+Obviously, G = H ∪ Hx and 4 | |G|. Let G = Dic (H , y) and let G(S ) be a connected Cayley graph of G. Then G = ⟨S ⟩ and so
+S ∩ {hx | h ∈ H } ̸= ∅. Take h0 x ∈ S. The next theorem shows that connected Cayley graphs of generalized dicyclic groups
+can be realized as semi-Cayley graphs of abelian groups.
+Lemma 4.1. Let G = Dic (H , y) be a generalized dicyclic group and G(S ) a connected Cayley graph of G. Then G(S ) ∼
+=
+SC (H ; H ∩ S , H ∩ S , C ), where C = {h ∈ H | h0 h−1 x ∈ S }.
+Proof. Let Γ = SC (H ; H ∩ S , H ∩ S , C ). Define a map φ : G(S ) → Γ by φ(h) = (h, 0) and φ(hx) = (h−1 h0 , 1) for h ∈ H. It
+is clear that φ is a bijection. To prove that φ is an isomorphism, let u, v ∈ V (G(S )). If u, v ∈ H, then v u−1 ∈ H, and
+uv ∈ E (G(S )) ⇔ v u−1 ∈ S
+
+⇔ v u− 1 ∈ H ∩ S
+⇔ (u, 0)(v, 0) ∈ E (Γ )
+⇔ φ(u)φ(v) ∈ E (Γ ).
+1
+If u = h1 x and v = h2 x for h1 , h2 ∈ H, then h1 h−
+2 ∈ H, and
+1
+−1
+uv ∈ E (G(S )) ⇔ h1 h−
+∈S
+2 = (h1 x)(h2 x)
+1
+⇔ h1 h−
+2 ∈ H ∩S
+1
+⇔ h−
+2 h1 ∈ H ∩ S
+1
+−1
+⇔ (h−
+1 h0 , 1)(h2 h0 , 1) ∈ E (Γ )
+⇔ φ(u)φ(v) ∈ E (Γ ).
+
+If u ∈ H and v = hx for h ∈ H, then
+uv ∈ E (G(S )) ⇔ hux = (hx)u−1 ∈ S
+
+⇔ h−1 h0 u−1 = (hu)−1 h0 ∈ C
+⇔ (u, 0)(h−1 h0 , 1) ∈ E (Γ )
+⇔ φ(u)φ(v) ∈ E (Γ ).
+Therefore φ is an isomorphism.
+Now we are ready to characterize the 2-extendability of Cayley graphs of generalized dicyclic groups.
+Theorem 4.2. Let G = Dic (H , y) and let G(S ) be a connected Cayley graph of G. Then G(S ) is 2-extendable.
+Proof. By Theorem 3.6 and Lemma 4.1, it suffices to show that the graphs listed in Theorem 3.6 cannot be realized as Cayley
+graphs of generalized dicyclic groups. Since 4 | |V (G(S ))| for any generalized dicyclic group G and S ⊆ G with ⟨S ⟩ = G,
+the graphs in the classes (iv) and (v) of Theorem 3.6 cannot be realized as connected Cayley graphs of generalized dicyclic
+groups.
+Suppose that Z2n (1, 2n − 1) ∼
+= G(S ) for some n ≥ 3 and some generalized dicyclic group G = Dic (H , y). Then |S | = 2 and
+|V (G(S ))| ≥ 6. Hence S = {hx, hyx} for some h ∈ H. It follows that G = {1, y, hx, hyx} and G(S ) ∼
+= C4 . This contradicts the
+fact that |V (G(S ))| ≥ 6. Therefore the graphs in the class (i) of Theorem 3.6 cannot be realized as connected Cayley graphs
+of generalized dicyclic groups.
+Suppose that Z4n (1, 4n − 1, 2n) ∼
+= G(S ) for some n ≥ 2 and some generalized dicyclic group G = Dic (H , y). Then |S | = 3
+and |V (G(S ))| ≥ 8. Hence S = {y1 , hx, hyx} for some y1 , h ∈ H with |y1 | = 2. It follows that
+G = ⟨y1 , hx, hyx⟩ = ⟨y1 ⟩ ∪ ⟨y1 ⟩y ∪ ⟨y1 ⟩hx ∪ ⟨y1 ⟩hyx.
+If y1 = y, then G(S ) ∼
+= K4 (see Fig. 3(i)), a contradiction. If y1 ̸= y, then G(S ) ∼
+= C4 × P2 (see Fig. 3(ii)), and so G(S ) is
+2-extendable by Lemma 2.2. This is a contradiction. Consequently, the graphs in the class (iii) of Theorem 3.6 cannot be
+realized as connected Cayley graphs of generalized dicyclic groups.
+Suppose that Z2n (1, 2, 2n − 1, 2n − 2) ∼
+= G(S ) for some n ≥ 3 and some generalized dicyclic groups G = Dic (H , y). Then
+1
+|S | = 4 and |V (G(S ))| ≥ 6. Hence S = {hx, hyx, h1 x, h1 yx} for some h, h1 ∈ H or S = {hx, hyx, h1 , h−
+1 } for some h, h1 ∈ H
+
+X. Gao et al. / Discrete Mathematics 311 (2011) 1978–1987
+
+1985
+
+Fig. 3. Graph G(S ) for S = {y1 , hx, hyx}.
+
+1
+Fig. 4. Graph G(S ) for S = {hx, hyx, h1 , h−
+1 }, y ̸∈ ⟨h1 ⟩.
+
+Fig. 5. Graph G(S ) for S = {h1 , h2 , hx, hyx}.
+
+with h21 ̸= 1 or S = {h1 , h2 , hx, hyx} for some h, h1 , h2 ∈ H with h1 ̸= h2 and |h1 | = |h2 | = 2. If S = {hx, hyx, h1 x, h1 yx}
+1
+−1
+for some h, h1 ∈ H, then, by Lemma 4.1, G(S ) ∼
+= SC (H ; ∅, ∅, {1, y, hh−
+1 , hh1 y}), and G(S ) is a bipartite graph. However,
+1
+∼
+G(S ) = Z2n (1, 2, 2n−1, 2n−2) contains triangles, and so G(S ) is not bipartite. This is a contradiction. If S = {hx, hyx, h1 , h−
+1 }
+2
+for some h, h1 ∈ H with h1 ̸= 1, then
+1
+G = ⟨hx, hyx, h1 , h−
+1 ⟩ = ⟨h1 ⟩ ∪ ⟨h1 ⟩y ∪ ⟨h1 ⟩hx ∪ ⟨h1 ⟩hyx.
+
+If y ̸∈ ⟨h1 ⟩, then hyx ̸∈ h⟨h1 ⟩x. Let |h1 | = k. Then G(S ) ∼
+= Ck × C4 (see Fig. 4). Thus G(S ) is 2-extendable by Lemma 2.2.
+This is a contradiction. If y ∈ ⟨h1 ⟩, then hyx ∈ h⟨h1 ⟩x. It follows that G = ⟨h1 ⟩ ∪ ⟨h1 ⟩hx and H = ⟨h1 ⟩. Since
+1
+−1
+2
+G(S ) ∼
+= Z2n (1, 2, 2n − 1, 2n − 2), we must have hyx(hx)−1 ∈ {h1 , h−
+1 }; that is, y = h1 or h1 . Hence h1 = 1. This is a
+contradiction. If S = {h1 , h2 , hx, hyx} for some h, h1 , h2 ∈ H with h1 ̸= h2 and |h1 | = |h2 | = 2, then
+G = ⟨h1 , h2 , hx, hyx⟩ = ⟨h1 , h2 ⟩ ∪ ⟨h1 , h2 ⟩y ∪ ⟨h1 , h2 ⟩hx ∪ ⟨h1 , h2 ⟩hyx.
+If y ̸∈ ⟨h1 , h2 ⟩, then G(S ) ∼
+= C4 × C4 (see Fig. 5(i)), and G(S ) is 2-extendable. This is impossible. If y ∈ ⟨h1 , h2 ⟩, then
+G = ⟨h1 , h2 ⟩ ∪ ⟨h1 , h2 ⟩hx. Since G(S ) ∼
+= Z2n (1, 2, 2n − 1, 2n − 2), we must have hyx(hx)−1 ∈ {h1 , h2 }; that is, y ∈ {h1 , h2 }.
+∼
+Thus G(S ) = K4 × P2 (see Fig. 5(ii)), and hence G(S ) is 2-extendable. This is a contradiction. Consequently, the graphs in the
+class (ii) of Theorem 3.6 cannot be realized as semi-Cayley graphs of generalized dicyclic groups.
+A 1-factor of a graph is a collection of edges such that each vertex is incident with exactly one edge. A 1-factorization of a
+regular graph is a partition of the edge set of the graph into disjoint 1-factors. Stong [15] verified that every connected Cayley
+graph Dn (S ) of a dihedral group Dn is 1-factorizable. His result implies that Dn (S ) is 1-extendable. Chen et al. [2] classified
+the 2-extendable Cayley graphs of dihedral groups. Now, one can generalize these results to Cayley graphs of generalized
+dihedral groups.
+
+1986
+
+X. Gao et al. / Discrete Mathematics 311 (2011) 1978–1987
+
+Let H be any abelian group. The generalized dihedral group of H, written Dih(H ), is the semidirect product of H and Z2 ,
+with Z2 acting on H by inverting elements. Thus
+
+(h1 , 0)(h2 , t ) = (h1 + h2 , t ),
+
+(h1 , 1)(h2 , t ) = (h1 − h2 , 1 + t ),
+
+where h1 , h2 ∈ H and t ∈ Z2 . If H is cyclic, then Dih(H ) is just a dihedral group.
+Let G = Dih(H ) and let G(S ) be a connected Cayley graph of G. Then G = ⟨S ⟩, and so S ∩ {(h, 1) | h ∈ H } ̸= ∅.
+Take (h0 , 1) ∈ S. The next theorem shows that connected Cayley graphs of generalized dihedral groups can be realized as
+semi-Cayley graphs of abelian groups.
+Lemma 4.3. Let G = Dih(H ) be a generalized dihedral group and G(S ) a connected Cayley graph of G. Then G(S ) ∼
+=
+SC (H ; A, A, C ), where A = {h | (h, 0) ∈ S } and C = {h0 − h | (h, 1) ∈ S }.
+Proof. Let Γ = SC (H ; A, A, C ). Define a map φ : G(S ) → Γ by φ((h, 0)) = (h, 0) and φ((h, 1)) = (h0 − h, 1) for h ∈ H.
+It is clear that φ is a bijection. To prove that φ is an isomorphism, let u, v ∈ V (G(S )). If u = (h1 , 0) and v = (h2 , 0) for
+h1 , h2 ∈ H, then
+uv ∈ E (G(S )) ⇔ (h2 − h1 , 0) ∈ S
+
+⇔ h2 − h1 ∈ A
+⇔ (h1 , 0)(h2 , 0) ∈ E (Γ )
+⇔ φ(u)φ(v) ∈ E (Γ ).
+If u = (h1 , 1) and v = (h2 , 1) for h1 , h2 ∈ H, then
+uv ∈ E (G(S )) ⇔ (h2 − h1 , 0) ∈ S
+
+⇔
+⇔
+⇔
+⇔
+
+(h1 − h2 , 0) ∈ S
+h1 − h2 ∈ A
+(h0 − h1 , 1)(h0 − h2 , 1) ∈ E (Γ )
+φ(u)φ(v) ∈ E (Γ ).
+
+If u = (h1 , 0) and v = (h2 , 1) for h1 , h2 ∈ H, then
+uv ∈ E (G(S )) ⇔ (h1 + h2 , 1) ∈ S
+
+⇔ h0 − h1 − h2 ∈ C
+⇔ (h1 , 0)(h0 − h2 , 1) ∈ E (Γ )
+⇔ φ(u)φ(v) ∈ E (Γ ).
+Therefore φ is an isomorphism.
+As direct consequences of our main results in Section 3, now the 1-extendability and 2-extendability of Cayley graphs of
+generalized dihedral groups can be obtained.
+Theorem 4.4. Every connected Cayley graph of generalized dihedral groups is 1-extendable.
+Proof. The proof follows directly from Theorem 3.2 and Lemma 4.3.
+The next theorem gives the classification of connected 2-extendable Cayley graphs of generalized dihedral groups.
+Theorem 4.5. Let G = Dih(H ) and G(S ) a connected Cayley graph of G. Then G(S ) is 2-extendable if and only it is not isomorphic
+to any of the following graphs.
+(i) Z2n (1, 2n − 1), n ≥ 3;
+(ii) Z2n (1, 2, 2n − 1, 2n − 2), n ≥ 3;
+(iii) Z4n (1, 4n − 1, 2n), n ≥ 2;
+(iv) Z4n+2 (2, 4n, 2n + 1), n ≥ 1; and
+(v) Z4n+2 (1, 4n + 1, 2n, 2n + 2), n ≥ 1.
+Proof. It is easy to verify that the graphs of the classes (i)–(v) can be realized as Cayley graphs of (generalized) dihedral
+groups. Therefore the assertion follows directly from Theorem 3.6 and Lemma 4.3.
+As a direct consequence of Theorems 4.4 and 4.5, we have the following.
+Corollary 4.6. Let Dn (S ) be a connected Cayley graph of the dihedral group Dn . Then
+(1) [15] Dn (S ) is 1-extendable;
+(2) [2] Dn (S ) is 2-extendable if and only it is not isomorphic to any of the following graphs:
+(i) Z2n (1, 2n − 1), n ≥ 3;
+(ii) Z2n (1, 2, 2n − 1, 2n − 2), n ≥ 3;
+(iii) Z4n (1, 4n − 1, 2n), n ≥ 2;
+(iv) Z4n+2 (2, 4n, 2n + 1), n ≥ 1; and
+(v) Z4n+2 (1, 4n + 1, 2n, 2n + 2), n ≥ 1.
+
+X. Gao et al. / Discrete Mathematics 311 (2011) 1978–1987
+
+1987
+
+Acknowledgments
+The authors would like to express their gratitude to the referees for their valuable remarks and suggestions which greatly
+contributed to the paper.
+References
+[1]
+[2]
+[3]
+[4]
+[5]
+[6]
+[7]
+[8]
+[9]
+[10]
+[11]
+[12]
+[13]
+[14]
+[15]
+[16]
+[17]
+
+O. Chan, C.C. Chen, Q.L. Yu, On 2-extendable abelian Cayley graphs, Discrete Math. 146 (1995) 19–32.
+C.C. Chen, J.P. Liu, Q.L. Yu, On the classification of 2-extendable Cayley graphs on dihedral groups, Australas. J. Combin. 6 (1992) 209–219.
+M.J. de Resmini, D. Jungnickel, Strongly regular semi-Cayley graphs, J. Algebraic Combin. 1 (1992) 171–195.
+S.F. Du, D. Maru˘si˘c, Biprimitive graphs of smallest order, J. Algebraic Combin. 9 (1999) 151–156.
+X. Gao, Y.F. Luo, The spectrum of semi-Cayley graphs of finite abelian groups, Linear Algebra Appl. 432 (2010) 2974–2983.
+W. Imrich, S. Klav˘zar, Product Graphs, John Wiley & Sons, New York, 2000.
+˘ Miklavi˘c, One-matching bi-Cayley graphs over abelian groups, European J. Combin. 30 (2009) 602–616.
+I. Kovács, A. Malni˘c, D. Maru˘si˘c, S.
+C.H. Li, The finite vertex-primitive and vertex-biprimitive s-transitive graphs for s > 4, Trans. Amer. Math. Soc. 353 (2001) 3511–3529.
+C.H. Li, Permutation groups with a cyclic regular subgroup and arc transitive circulants, J. Algebraic Combin. 21 (2005) 131–136.
+Jiping Liu, Qinglin Yu, Matching extensions and products of graphs, Ann. Discrete Math. 55 (1993) 191–200.
+Y.F. Luo, X. Gao, On the extendability of bi-Cayley graphs, Discrete Math. 309 (20) (2009) 5943–5949.
+M. Muzychuk, A solution of the isomorphism problem for circulant graphs, Proc. Lond. Math. Soc. 88 (2004) 1–41.
+M.D. Plummer, On n-extendable graphs, Discrete Math. 31 (1980) 201–210.
+M.D. Plummer, Matching extension and the genus of a graph, J. Combin. Theory (B) 44 (1988) 329–337.
+R.A. Stong, On 1-factorizability of Cayley graphs, J. Combin. Theory (B) 39 (1985) 298–307.
+W.H. Thomas, Algebra, Springer-Verlag, New York, 1974.
+R.J. Wilson, Introduction to Graph Theory, third edition, Longman Inc., New York, 1982.
+
+
