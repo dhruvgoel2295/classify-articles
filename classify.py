@@ -1,16 +1,18 @@
 import nltk
-from nltk.corpus import stopwords
 import collections
 from pprint import pprint
+''' We define an "item" class. We instantiate an object of this class for every research article'''
+
 class item():
 	
 	
 	def __init__(self, name, category):
 		self.name = name
 		self.category = category
-		self.feature = {}
+		self.feature = {}	# feature set of the article(being treated as data item)
 
 	
+	'''Reading data and creating a list of items(articles).'''
 
 	def read_words(self):
 	
@@ -30,19 +32,15 @@ class item():
 
 		return wordList
 		
-
+	'''This creates the feature set of the article by giving back the frequency of every dictionary word in the article.'''
 
 	def features(self, top_words):
 		for w in top_words:
 			self.feature["%s" % w] = self.read_words().count(w)
-			'''if self.feature["%s" % w] == 0:
-				self.feature["%s" % w] = 1
-			elif self.feature["%s" % w] > 10:
-				self.feature["%s" % w] = self.feature["%s" % w] * 100
-			self.feature["%s" % w] = self.feature["%s" % w] / 10000.0'''
+
 		return self.feature
 
-	
+	'''This returns the most frequent words from the article.'''	
 
 	def return_frequent(self):
 		properNameList = []
@@ -68,7 +66,7 @@ class item():
 		return frequent
 
 
-
+'''This is the classifier function. It return a trained classifier.'''
 
 def classify_articles(items_classify, top_words_classify):
 	training_set = []
@@ -87,6 +85,7 @@ def main():
 	total_top_words = []
 	k = open("metadata.txt" ,'r')
 
+	'''Reading data and creating a list of items(articles).'''
 
 	for line1 in k:
 		l = line1.split(",")
@@ -96,32 +95,29 @@ def main():
 		total_top_words.extend(frequent_m)
 
 
+	'''Taking the most frequent words from the collection of words achieved by combining the words from every article.'''
+
 
 	total_top_words = collections.Counter(total_top_words)
-	total_top_words = sorted(total_top_words, key=total_top_words.get, reverse=True)[:30]
-	total_top_words.remove('This')
-	#total_top_words.remove('When')
-	#total_top_words.remove('Example')
-	total_top_words.remove('Then')
-	'''set_stop = set(stopwords.words('english'))
-	total_top_words = filter(lambda w : w not in set_stop , total_top_words)'''
+	total_top_words = sorted(total_top_words, key=total_top_words.get, reverse=True)[:50]
 	print sorted(total_top_words)
 	
 
-	classifier = classify_articles(items_train , total_top_words)
+	classifier = classify_articles(items_train , total_top_words)  #this is the classifer
 
 
 	s = open("test_data.txt", 'r')
 	items_test = []
 	
 
+	'''Reading test data and creating a list of items(test articles).'''
+
 	for line in s:
 		l = line.split(",")
 		q = item(l[0],l[1])
 		items_test.append(q)
 
-	z = open("result.txt",'w+')
-	y = open("result_wrong.txt",'w+')
+	z = open("result.txt",'w+')		# this file stores resultant labels
 	i = 0
 	j = 0
 	for item_to_be in items_test:
@@ -129,18 +125,11 @@ def main():
 		category = classifier.classify(features_test)
 		probabilities = classifier.prob_classify(features_test)
 
-		z.write(category)
+		z.write(item_to_be.name+","+category)
 		j = j+1
 		if category == item_to_be.category:
 			i = i+1
-		else:
-			prob_array = []
-			for sample in probabilities.samples():
-				tupxyz = (probabilities.prob(sample) , sample)
-				prob_array.append(tupxyz)
-			y.write(item_to_be.name +"    :\n" +str(sorted(prob_array,reverse = True)).strip('[]')+"\n\n")
-
-	
+			
 	print ( i / (j*1.0))* 100
 	print i
 
